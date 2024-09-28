@@ -8,6 +8,14 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
+
 export class AppComponent {
+  initData = window.Telegram?.WebApp?.initData;
   title = 'client';
+}
+
+declare global {
+  interface Window {
+    Telegram: any;
+  }
 }
