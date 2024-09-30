@@ -11,6 +11,7 @@ import { RouterLink } from '@angular/router';
 export class HomeComponent implements OnInit {
   ngOnInit(): void {
     if (window.Telegram?.WebApp) {
+      window.Telegram?.WebApp?.expand();
       window.Telegram?.WebApp?.BackButton?.hide();
     }
   }
