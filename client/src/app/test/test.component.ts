@@ -9,13 +9,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TestComponent implements OnInit {
   ngOnInit(): void {
-    if (window.Telegram?.WebApp?.BackButton) {
-      // Показать кнопку "Назад"
-      window.Telegram?.WebApp?.BackButton.show();
-
-      // Обработка клика по кнопке "Назад"
-      window.Telegram?.WebApp?.BackButton.onClick(() => {
-        // Логика для возврата на предыдущий экран
+    if (window.Telegram?.WebApp) {
+      window.Telegram?.WebApp?.BackButton?.show();
+      window.Telegram?.WebApp?.BackButton?.onClick(() => {
         window.history.back();
       });
     }
