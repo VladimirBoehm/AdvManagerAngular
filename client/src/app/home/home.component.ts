@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
+import { AdvListStates } from '../adv-list/advListStates';
+import { TelegramBaseComponent } from '../_framework/telegramBaseComponent';
 
 @Component({
   selector: 'app-home',
@@ -9,11 +11,6 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
-export class HomeComponent implements OnInit {
-  ngOnInit(): void {
-    if (window.Telegram?.WebApp) {
-      window.Telegram?.WebApp?.expand();
-      window.Telegram?.WebApp?.BackButton?.hide();
-    }
-  }
+export class HomeComponent extends TelegramBaseComponent {
+  advListStates = AdvListStates;
 }
