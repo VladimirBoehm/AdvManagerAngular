@@ -11,6 +11,14 @@ import { TelegramBaseComponent } from '../_framework/telegramBaseComponent';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
-export class HomeComponent extends TelegramBaseComponent {
+export class HomeComponent extends TelegramBaseComponent implements OnInit {
   advListStates = AdvListStates;
+
+  override ngOnInit(): void {
+    super.ngOnInit();
+    if (window.Telegram?.WebApp) {
+      window.Telegram?.WebApp?.expand();
+      window.Telegram?.WebApp?.BackButton?.hide();
+    }
+  }
 }
