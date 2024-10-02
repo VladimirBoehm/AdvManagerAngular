@@ -1,1 +1,27 @@
-<p>adv-list works!</p>
+<div *ngIf="advertisements.length > 0; else noAdvertisements">
+  <ul class="list-group list-group-flush">
+    <li
+      *ngFor="let advertisement of advertisements"
+      class="list-group-item"
+      [routerLink]="['/app-advertisement-preview', advertisement.id]"
+    >
+      <div class="d-flex">
+        <div class="d-flex flex-column col-11">
+          <h6>{{ advertisement.title }}</h6>
+          <div class="fw-normal">
+            {{ getUserDisplayName(advertisement) }}
+          </div>
+        </div>
+        <div
+          class="d-flex fw-normal col-1 align-items-center justify-content-end"
+        >
+          >
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<ng-template #noAdvertisements>
+  <p>Нет объявлений для отображения.</p>
+</ng-template>

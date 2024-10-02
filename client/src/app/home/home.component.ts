@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { AdvListStates } from '../adv-list/advListStates';
+import { AdvListStates } from '../_framework/constants/advListStates';
 import { TelegramBaseComponent } from '../_framework/telegramBaseComponent';
 
 @Component({

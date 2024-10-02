@@ -1,0 +1,25 @@
+<div class="container">
+  <h5>{{ advertisement?.title }}</h5>
+  <p class="lh-sm">{{ advertisement?.message }}</p>
+  <div class="image-container col-4">
+    <img
+      [src]="advertisement?.adImage?.url"
+      alt="Изображение"
+      class="preview-image"
+    />
+  </div>
+  <mat-card appearance="raised" class="mt-2">
+    <mat-card-content>
+      <div class="d-flex">
+        <div>Кнопка:</div>
+        <div class="ms-1 linkName">{{ advertisement?.linkName }}</div>
+      </div>
+      <div class="d-flex">
+        <div>Ссылка:</div>
+        <a [href]="advertisement?.linkValue" class="ms-1">
+          {{ advertisement?.linkValue }}
+        </a>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

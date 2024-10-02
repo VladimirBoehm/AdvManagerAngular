@@ -1,0 +1,19 @@
+.image-container {
+  height: auto;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.preview-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+}
+
+.linkName {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-all;
+  white-space: normal;
+}
