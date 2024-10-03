@@ -22,12 +22,14 @@ export class AdvertisementValidateComponent {
   private location = inject(Location);
   private backButtonService = inject(TelegramBackButtonService);
   private route = inject(ActivatedRoute);
+  private modalService = inject(BsModalService)
   advertisementId: number = 0;
   private advertisementService = inject(AdvertisementService);
   advertisement?: Advertisement;
   modalRef?: BsModalRef;
 
-  constructor(private modalService: BsModalService) {}
+  defaultFrequencyValue: number = 10;
+
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
@@ -59,5 +61,12 @@ export class AdvertisementValidateComponent {
 
   ngOnDestroy(): void {
     this.backButtonService.removeBackButtonHandler();
+  }
+
+  setMaxValue(event: any, max: number) {
+    if (event.target.value > max) {
+      event.target.value = max;
+    }
+    this.defaultFrequencyValue = event.target.value; 
   }
 }
