@@ -65,30 +65,42 @@
 
   <ng-template #template>
     <div class="modal-header">
-      <h4 class="modal-title pull-left">Modal</h4>
-      <button
-        type="button"
-        class="btn-close close pull-right"
-        aria-label="Close"
-        (click)="modalRef?.hide()"
-      >
-        <span aria-hidden="true" class="visually-hidden">&times;</span>
-      </button>
+      <h5 class="modal-title pull-left">Одобрить рекламу?</h5>
     </div>
     <div class="modal-body">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit officiis
-      quae, quas ab fugiat, natus ipsum earum soluta at fugit dicta deleniti
-      odio! Iste eius deserunt voluptates corrupti, similique dolor. Lorem ipsum
-      dolor sit amet consectetur adipisicing elit. Velit officiis quae, quas ab
-      fugiat, natus ipsum earum soluta at fugit dicta deleniti odio! Iste eius
-      deserunt voluptates corrupti, similique dolor. Lorem ipsum dolor sit amet
-      consectetur adipisicing elit. Velit officiis quae, quas ab fugiat, natus
-      ipsum earum soluta at fugit dicta deleniti odio! Iste eius deserunt
-      voluptates corrupti, similique dolor. Lorem ipsum dolor sit amet
-      consectetur adipisicing elit. Velit officiis quae, quas ab fugiat, natus
-      ipsum earum soluta at fugit dicta deleniti odio! Iste eius deserunt
-      voluptates corrupti, similique dolor.
+      <div>Установите разрешенную периодичность размещения:</div>
+      <div class="input-group mb-3 mt-3">
+        <span class="input-group-text" id="basic-addon1">Дни</span>
+        <input
+          type="number"
+          class="form-control"
+          placeholder="10"
+          aria-label="Username"
+          aria-describedby="basic-addon1"
+        />
+      </div>
+      <div class="d-flex justify-content-end">
+      <button
+        class="btn"
+        style="border: none; background: none; cursor: pointer"
+      >
+        <div>Одобрить</div></button
+      ><button
+        class="btn"
+        style="border: none; background: none; cursor: pointer"
+      >
+        <div>Назад</div>
+      </button>
+    </div>
     </div>
   </ng-template>
 </div>
 }
+
+<!-- <button
+type="button"
+class="btn-close close pull-right"
+aria-label="Close"
+(click)="modalRef?.hide()"
+>
+</button> -->
