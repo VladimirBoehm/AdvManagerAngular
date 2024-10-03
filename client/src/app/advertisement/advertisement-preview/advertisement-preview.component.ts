@@ -10,9 +10,9 @@ import { MatCardModule } from '@angular/material/card';
   styleUrl: './advertisement-preview.component.scss',
 })
 export class AdvertisementPreviewComponent {
-  title = input.required<string | undefined>();
-  message = input.required<string | undefined>();
-  url = input.required<string | undefined>();
-  linkName = input.required<string | undefined>();
+  title = input.required<string | undefined >();
+  message = input.required<string | undefined >();
+  url = input.required<string | undefined >();
+  linkName = input.required<string | undefined >();
   linkValue = input.required<string | undefined>();
 }

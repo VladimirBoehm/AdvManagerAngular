@@ -1,7 +1,12 @@
+@if(advertisement){
 <div class="container">
   <div class="d-flex mt-2">
-    <div class="col-6">
-      <div class="d-flex flex-column align-items-center justify-content-center">
+    <div class="col-6 d-flex align-items-center justify-content-center">
+      <button
+        class="btn"
+        (click)="confirm()"
+        style="border: none; background: none; cursor: pointer"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           height="24px"
@@ -14,10 +19,16 @@
           />
         </svg>
         <div>Одобрить</div>
-      </div>
+      </button>
     </div>
-    <div class="col-6">
-      <div class="d-flex flex-column align-items-center justify-content-center">
+    <div
+      class="col-6 d-flex flex-column align-items-center justify-content-center"
+    >
+      <button
+        class="btn"
+        (click)="reject()"
+        style="border: none; background: none; cursor: pointer"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           height="24px"
@@ -30,15 +41,26 @@
           />
         </svg>
         <div>Отклонить</div>
-      </div>
+      </button>
     </div>
   </div>
 
   <app-advertisement-preview
-    [title]="advertisement?.title"
-    [message]="advertisement?.message"
-    [url]="advertisement?.adImage?.url"
-    [linkName]="advertisement?.linkName"
-    [linkValue]="advertisement?.linkValue"
+    [title]="advertisement.title"
+    [message]="advertisement.message"
+    [url]="advertisement.adImage?.url"
+    [linkName]="advertisement.linkName"
+    [linkValue]="advertisement.linkValue"
   ></app-advertisement-preview>
+
+  <form id="editForm" #editForm="ngForm" (ngSubmit)="confirm()" class="mt-2">
+    <textarea
+      class="form-control"
+      placeholder="Комментарий"
+      rows="3"
+      name="adminMessage"
+      [(ngModel)]="advertisement.adminMessage"
+    ></textarea>
+  </form>
 </div>
+}
