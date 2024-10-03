@@ -1,9 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { TelegramBaseComponent } from '../../_framework/telegramBaseComponent';
 import { ActivatedRoute } from '@angular/router';
 import { AdvertisementService } from '../../_services/advertisement.service';
 import { Advertisement } from '../../_models/advertisement';
-import {MatCardModule} from '@angular/material/card';
+import { MatCardModule } from '@angular/material/card';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-advertisement-preview',
@@ -12,31 +12,36 @@ import {MatCardModule} from '@angular/material/card';
   templateUrl: './advertisement-preview.component.html',
   styleUrl: './advertisement-preview.component.scss',
 })
-export class AdvertisementPreviewComponent
-  extends TelegramBaseComponent
-  implements OnInit
-{
+export class AdvertisementPreviewComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private location = inject(Location);
   advertisementId: number = 0;
   private advertisementService = inject(AdvertisementService);
   advertisement?: Advertisement;
 
-  override ngOnInit(): void {
-    super.ngOnInit();
+  ngOnInit(): void {
+    if (window.Telegram?.WebApp) {
+      window.Telegram?.WebApp?.BackButton?.show();
+      window.Telegram?.WebApp?.BackButton?.onClick(() => {
+        //window.history.back();
+        this.location.back();
+        //this.router.(['../']);
+      });
 
-    this.route.paramMap.subscribe((params) => {
-      const id = params.get('id');
-      if (id) {
-        this.advertisementService.getById(Number(id)).subscribe({
-          next: (advertisement: Advertisement) => {
-            this.advertisement = advertisement;
-            console.log(advertisement);
-          },
-          error: (err) => {
-            console.error('Error when loading ads:', err);
-          },
-        });
-      }
-    });
+      this.route.paramMap.subscribe((params) => {
+        const id = params.get('id');
+        if (id) {
+          this.advertisementService.getById(Number(id)).subscribe({
+            next: (advertisement: Advertisement) => {
+              this.advertisement = advertisement;
+              console.log(advertisement);
+            },
+            error: (err) => {
+              console.error('Error when loading ads:', err);
+            },
+          });
+        }
+      });
+    }
   }
 }
