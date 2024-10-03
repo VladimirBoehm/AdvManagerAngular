@@ -18,6 +18,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 export class AdvertisementValidateComponent {
   @ViewChild('editForm') editForm?: NgForm;
   @ViewChild('template') template?: any;
+  defaultFrequencyValue: number = 10;
 
   private location = inject(Location);
   private backButtonService = inject(TelegramBackButtonService);
@@ -28,7 +29,6 @@ export class AdvertisementValidateComponent {
   advertisement?: Advertisement;
   modalRef?: BsModalRef;
 
-  defaultFrequencyValue: number = 10;
 
 
   ngOnInit(): void {

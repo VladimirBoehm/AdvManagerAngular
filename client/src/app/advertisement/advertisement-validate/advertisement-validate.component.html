@@ -78,7 +78,7 @@
       <div class="d-flex justify-content-end">
         <button class="btn empty-button">
           <div>Одобрить</div></button
-        ><button class="btn empty-button">
+        ><button class="btn empty-button" (click)="modalRef?.hide()">
           <div>Назад</div>
         </button>
       </div>
@@ -86,11 +86,3 @@
   </ng-template>
 </div>
 }
-
-<!-- <button
-type="button"
-class="btn-close close pull-right"
-aria-label="Close"
-(click)="modalRef?.hide()"
->
-</button> -->
