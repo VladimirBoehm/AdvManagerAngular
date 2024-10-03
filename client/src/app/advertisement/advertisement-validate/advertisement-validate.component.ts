@@ -6,6 +6,7 @@ import { Advertisement } from '../../_models/advertisement';
 import { TelegramBackButtonService } from '../../_framework/telegramBackButtonService';
 import { ActivatedRoute } from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-advertisement-validate',
@@ -16,6 +17,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 })
 export class AdvertisementValidateComponent {
   @ViewChild('editForm') editForm?: NgForm;
+  @ViewChild('template') template?: any;
 
   private location = inject(Location);
   private backButtonService = inject(TelegramBackButtonService);
@@ -23,6 +25,9 @@ export class AdvertisementValidateComponent {
   advertisementId: number = 0;
   private advertisementService = inject(AdvertisementService);
   advertisement?: Advertisement;
+  modalRef?: BsModalRef;
+
+  constructor(private modalService: BsModalService) {}
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
@@ -35,7 +40,6 @@ export class AdvertisementValidateComponent {
         this.advertisementService.getById(Number(id)).subscribe({
           next: (advertisement: Advertisement) => {
             this.advertisement = advertisement;
-
           },
           error: (err) => {
             console.error('Error when loading ads:', err);
@@ -47,6 +51,7 @@ export class AdvertisementValidateComponent {
 
   confirm() {
     console.log(this.editForm);
+    this.modalRef = this.modalService.show(this.template);
   }
 
   reject() {
