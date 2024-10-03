@@ -20,13 +20,7 @@ export class AdvertisementPreviewComponent implements OnInit {
   advertisement?: Advertisement;
 
   ngOnInit(): void {
-    if (window.Telegram?.WebApp) {
-      window.Telegram?.WebApp?.BackButton?.show();
-      window.Telegram?.WebApp?.BackButton?.onClick(() => {
-        //window.history.back();
-        this.location.back();
-        //this.router.(['../']);
-      });
+
 
       this.route.paramMap.subscribe((params) => {
         const id = params.get('id');
@@ -44,4 +38,4 @@ export class AdvertisementPreviewComponent implements OnInit {
       });
     }
   }
-}
+
