@@ -1,9 +1,10 @@
 import { Injectable, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Injectable()
 export abstract class TelegramBaseComponent implements OnInit {
-  constructor(private location: Location) {}
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
     console.log(window.history);
@@ -15,7 +16,8 @@ export abstract class TelegramBaseComponent implements OnInit {
       window.Telegram?.WebApp?.BackButton?.show();
       window.Telegram?.WebApp?.BackButton?.onClick(() => {
         //window.history.back();
-        this.location.back();
+        //this.location.back();
+        this.router.navigate(['../']);
       });
     }
   }
