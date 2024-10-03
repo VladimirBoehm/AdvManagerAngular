@@ -50,7 +50,6 @@ export class AdvertisementValidateComponent {
   }
 
   confirm() {
-    console.log(this.editForm);
     this.modalRef = this.modalService.show(this.template);
   }
 
