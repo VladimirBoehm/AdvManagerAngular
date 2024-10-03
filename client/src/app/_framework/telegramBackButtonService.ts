@@ -20,7 +20,7 @@ export class TelegramBackButtonService {
     const tg = window.Telegram?.WebApp;
     if (tg?.BackButton && this.backButtonClickHandler) {
       tg.BackButton.offClick(this.backButtonClickHandler);
-     // tg.BackButton.hide();
+      tg.BackButton.hide();
       this.backButtonClickHandler = null;
     }
   }

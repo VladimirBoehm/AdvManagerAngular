@@ -5,7 +5,7 @@ import { AdvertisementService } from '../_services/advertisement.service';
 import { Advertisement } from '../_models/advertisement';
 import { NgFor, NgIf } from '@angular/common';
 import { TelegramBackButtonService } from '../_framework/telegramBackButtonService';
-
+import { Location } from '@angular/common';
 @Component({
   selector: 'app-adv-list',
   standalone: true,
@@ -15,6 +15,7 @@ import { TelegramBackButtonService } from '../_framework/telegramBackButtonServi
 })
 export class AdvListComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
+  private location = inject(Location);
   private advertisementService = inject(AdvertisementService);
   private backButtonService = inject(TelegramBackButtonService);
   advertisements: Advertisement[] = [];
@@ -23,7 +24,10 @@ export class AdvListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
-      window.history.back();
+      console.log("AdvListStates");
+      console.log(this.location.getState);
+      console.log(this.location);
+      this.location.back();
     });
 
     this.route.paramMap.subscribe((params) => {

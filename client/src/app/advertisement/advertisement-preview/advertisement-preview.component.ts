@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AdvertisementService } from '../../_services/advertisement.service';
 import { Advertisement } from '../../_models/advertisement';
 import { MatCardModule } from '@angular/material/card';
-//import { Location } from '@angular/common';
+import { Location } from '@angular/common';
 import { TelegramBackButtonService } from '../../_framework/telegramBackButtonService';
 
 @Component({
@@ -15,7 +15,7 @@ import { TelegramBackButtonService } from '../../_framework/telegramBackButtonSe
 })
 export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
-  //private location = inject(Location);
+  private location = inject(Location);
   private backButtonService = inject(TelegramBackButtonService);
   advertisementId: number = 0;
   private advertisementService = inject(AdvertisementService);
@@ -23,7 +23,10 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
-      window.history.back();
+      console.log('AdvertisementPreviewComponent');
+      console.log(this.location.getState);
+      console.log(this.location);
+      this.location.back();
     });
 
     this.route.paramMap.subscribe((params) => {
