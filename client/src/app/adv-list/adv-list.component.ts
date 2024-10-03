@@ -74,6 +74,6 @@ export class AdvListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.backButtonService.removeBackButtonHandler();
+   // this.backButtonService.removeBackButtonHandler();
   }
 }

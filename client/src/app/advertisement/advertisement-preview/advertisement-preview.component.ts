@@ -22,12 +22,12 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   advertisement?: Advertisement;
 
   ngOnInit(): void {
-    this.backButtonService.setBackButtonHandler(() => {
-      console.log('AdvertisementPreviewComponent');
-      console.log(this.location.getState);
-      console.log(this.location);
-      this.location.back();
-    });
+    // this.backButtonService.setBackButtonHandler(() => {
+    //   console.log('AdvertisementPreviewComponent');
+    //   console.log(this.location.getState);
+    //   console.log(this.location);
+    //   this.location.back();
+    // });
 
     this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
@@ -46,6 +46,6 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.backButtonService.removeBackButtonHandler();
+    //this.backButtonService.removeBackButtonHandler();
   }
 }
