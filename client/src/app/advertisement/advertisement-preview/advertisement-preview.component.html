@@ -1,19 +1,21 @@
-<h5>{{ title() }}</h5>
-<p class="lh-sm">{{ message() }}</p>
-<div *ngIf="url()" class="image-container col-4">
-  <img [src]="url()" alt="Изображение" class="preview-image" />
+<div class="mt-2">
+  <h5>{{ title() }}</h5>
+  <p class="lh-sm">{{ message() }}</p>
+  <div *ngIf="url()" class="image-container col-4">
+    <img [src]="url()" alt="Изображение" class="preview-image" />
+  </div>
+  <mat-card *ngIf="linkName()" appearance="raised" class="mt-2">
+    <mat-card-content>
+      <div class="d-flex">
+        <div>Кнопка:</div>
+        <div class="ms-1 linkName">{{ linkName() }}</div>
+      </div>
+      <div class="d-flex">
+        <div>Ссылка:</div>
+        <a [href]="linkValue()" class="ms-1">
+          {{ linkValue() }}
+        </a>
+      </div>
+    </mat-card-content>
+  </mat-card>
 </div>
-<mat-card *ngIf="linkName()" appearance="raised" class="mt-2">
-  <mat-card-content>
-    <div class="d-flex">
-      <div>Кнопка:</div>
-      <div class="ms-1 linkName">{{ linkName() }}</div>
-    </div>
-    <div class="d-flex">
-      <div>Ссылка:</div>
-      <a [href]="linkValue()" class="ms-1">
-        {{ linkValue() }}
-      </a>
-    </div>
-  </mat-card-content>
-</mat-card>
