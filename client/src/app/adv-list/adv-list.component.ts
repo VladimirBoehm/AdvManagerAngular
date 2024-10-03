@@ -1,10 +1,10 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AdvListStates } from '../_framework/constants/advListStates';
-import { TelegramBaseComponent } from '../_framework/telegramBaseComponent';
 import { AdvertisementService } from '../_services/advertisement.service';
 import { Advertisement } from '../_models/advertisement';
 import { NgFor, NgIf } from '@angular/common';
+import { TelegramBackButtonService } from '../_framework/telegramBackButtonService';
 
 @Component({
   selector: 'app-adv-list',
@@ -13,16 +13,19 @@ import { NgFor, NgIf } from '@angular/common';
   templateUrl: './adv-list.component.html',
   styleUrl: './adv-list.component.scss',
 })
-export class AdvListComponent extends TelegramBaseComponent implements OnInit {
+export class AdvListComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private advertisementService = inject(AdvertisementService);
+  private backButtonService = inject(TelegramBackButtonService);
   advertisements: Advertisement[] = [];
 
   state: AdvListStates | undefined;
 
-  override ngOnInit(): void {
-    super.ngOnInit();
-    
+  ngOnInit(): void {
+    this.backButtonService.setBackButtonHandler(() => {
+      window.history.back();
+    });
+
     this.route.paramMap.subscribe((params) => {
       this.state = params.get('state') as AdvListStates;
     });
@@ -64,5 +67,9 @@ export class AdvListComponent extends TelegramBaseComponent implements OnInit {
     const lastName = advertisement.lastName ? advertisement.lastName : '';
 
     return `${userName} ${firstName || lastName}`.trim();
+  }
+
+  ngOnDestroy(): void {
+    this.backButtonService.removeBackButtonHandler();
   }
 }
