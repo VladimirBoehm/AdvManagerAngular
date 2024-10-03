@@ -25,7 +25,7 @@ export class HomeComponent  implements OnInit {
 
     if (window.Telegram?.WebApp) {
       window.Telegram?.WebApp?.expand();
-      window.Telegram?.WebApp?.BackButton?.hide();
+      //window.Telegram?.WebApp?.BackButton?.hide();
     }
   }
 }
