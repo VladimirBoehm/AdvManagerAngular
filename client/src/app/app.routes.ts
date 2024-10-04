@@ -4,6 +4,7 @@ import { TestComponent } from './test/test.component';
 import { AdvListComponent } from './adv-list/adv-list.component';
 import { AdvertisementPreviewComponent } from './advertisement/advertisement-preview/advertisement-preview.component';
 import { AdvertisementValidateComponent } from './advertisement/advertisement-validate/advertisement-validate.component';
+import { AdvertisementEditComponent } from './advertisement/advertisement-edit/advertisement-edit.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -17,5 +18,9 @@ export const routes: Routes = [
   {
     path: 'app-advertisement-validate/:id',
     component: AdvertisementValidateComponent,
+  },
+  {
+    path: 'app-advertisement-edit/:id',
+    component: AdvertisementEditComponent,
   },
 ];

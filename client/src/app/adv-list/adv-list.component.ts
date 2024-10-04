@@ -3,13 +3,14 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AdvListStates } from '../_framework/constants/advListStates';
 import { AdvertisementService } from '../_services/advertisement.service';
 import { Advertisement } from '../_models/advertisement';
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import { TelegramBackButtonService } from '../_framework/telegramBackButtonService';
+import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
 
 @Component({
   selector: 'app-adv-list',
   standalone: true,
-  imports: [NgIf, NgFor, RouterLink],
+  imports: [NgIf, NgFor, RouterLink, NgTemplateOutlet],
   templateUrl: './adv-list.component.html',
   styleUrl: './adv-list.component.scss',
 })
@@ -20,7 +21,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
   private forceRefresh: boolean = false;
   private router = inject(Router);
   advertisements: Advertisement[] = [];
-
+  advListStates = AdvListStates;
   state: AdvListStates | undefined;
 
   ngOnInit(): void {
@@ -53,6 +54,15 @@ export class AdvListComponent implements OnInit, OnDestroy {
         break;
       }
       case AdvListStates.MyAdvertisements: {
+        this.advertisementService
+          .getMyAdvertisements(this.forceRefresh)
+          .subscribe({
+            next: (advertisements: Advertisement[]) =>
+              (this.advertisements = advertisements),
+            error: (err) => {
+              console.error('Error when loading ads:', err);
+            },
+          });
         break;
       }
       case AdvListStates.Publishing: {
@@ -60,6 +70,26 @@ export class AdvListComponent implements OnInit, OnDestroy {
       }
       default: {
         break;
+      }
+    }
+  }
+
+  getStatus(advertisement: Advertisement): string {
+    switch (advertisement.statusId) {
+      case AdvertisementStatus.new: {
+        return "Новый"
+      }
+      case AdvertisementStatus.pendingPublication: {
+        return "Ожидает публикации"
+      }
+      case AdvertisementStatus.pendingValidation: {
+        return "Ожидает валидации"
+      }
+      case AdvertisementStatus.rejected: {
+       return "Отклонён"
+      }
+      case AdvertisementStatus.validated: {
+        return "Одобрен"
       }
     }
   }

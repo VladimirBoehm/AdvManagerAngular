@@ -47,6 +47,31 @@ export class AdvertisementService {
       );
   }
 
+  getMyAdvertisements(forceRefresh: boolean = false) {
+    if (!forceRefresh) {
+      this.advertisementSearchParams.update((params) => ({
+        ...params,
+        cacheType: AdvertisementCacheType.MyAdvertisements,
+      }));
+
+      const cachedResponse = this.advertisementCache.get(
+        Object.values(this.advertisementSearchParams()).join('-')
+      );
+      if (cachedResponse) {
+        return of(cachedResponse);
+      }
+    }
+
+    return this.http.get<Advertisement[]>(this.baseUrl + 'advertisement').pipe(
+      tap((response) => {
+        this.advertisementCache.set(
+          Object.values(this.advertisementSearchParams()).join('-'),
+          response
+        );
+      })
+    );
+  }
+
   getById(id: number) {
     const searchParamsKey = Object.values(
       this.advertisementSearchParams()
