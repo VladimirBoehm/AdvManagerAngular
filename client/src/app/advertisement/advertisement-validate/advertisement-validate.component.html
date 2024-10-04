@@ -55,9 +55,9 @@
     ></textarea>
   </form>
 
-  <ng-template #template>
+  <ng-template #modalDialog>
     <div class="modal-header">
-      <h5 class="modal-title pull-left">Одобрить рекламу?</h5>
+      <h5 class="modal-title pull-left">Одобрить объявление?</h5>
     </div>
     <div class="modal-body">
       <div>Установите разрешенную периодичность размещения:</div>
@@ -71,15 +71,36 @@
           aria-describedby="basic-addon1"
           step="1"
           max="100"
-          [(ngModel)]="defaultFrequencyValue"
+          [(ngModel)]="frequencyValue"
           (input)="setMaxValue($event, 100)"
         />
       </div>
       <div class="d-flex justify-content-end">
-        <button class="btn empty-button">
+        <button
+          class="btn empty-button"
+          (click)="modalDialogConfirm(advertisementStatus.validated)"
+        >
           <div>Одобрить</div></button
         ><button class="btn empty-button" (click)="modalRef?.hide()">
           <div>Назад</div>
+        </button>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #modalDialogReject>
+    <div class="modal-header">
+      <h5 class="modal-title pull-left">Отклонить объявление?</h5>
+    </div>
+    <div class="modal-body">
+      <div class="d-flex justify-content-end">
+        <button
+          class="btn empty-button me-4"
+          (click)="modalDialogConfirm(advertisementStatus.rejected)"
+        >
+          <div>Да</div></button
+        ><button class="btn empty-button" (click)="modalRef?.hide()">
+          <div>Нет</div>
         </button>
       </div>
     </div>

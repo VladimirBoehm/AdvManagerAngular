@@ -1,12 +1,14 @@
 import { Component, inject, ViewChild } from '@angular/core';
 import { AdvertisementPreviewComponent } from '../advertisement-preview/advertisement-preview.component';
-import { Location } from '@angular/common';
 import { AdvertisementService } from '../../_services/advertisement.service';
 import { Advertisement } from '../../_models/advertisement';
 import { TelegramBackButtonService } from '../../_framework/telegramBackButtonService';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { UpdateAdvertisementAdminRequest } from '../../_models/updateAdvertisementAdminRequest';
+import { AdvertisementStatus } from '../../_framework/constants/advertisementStatus';
+import { AdvListStates } from '../../_framework/constants/advListStates';
 
 @Component({
   selector: 'app-advertisement-validate',
@@ -17,23 +19,24 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 })
 export class AdvertisementValidateComponent {
   @ViewChild('editForm') editForm?: NgForm;
-  @ViewChild('template') template?: any;
-  defaultFrequencyValue: number = 10;
+  @ViewChild('modalDialog') modalDialog?: any;
+  @ViewChild('modalDialogReject') modalDialogReject?: any;
+  frequencyValue: number = 10;
 
-  private location = inject(Location);
   private backButtonService = inject(TelegramBackButtonService);
   private route = inject(ActivatedRoute);
-  private modalService = inject(BsModalService)
-  advertisementId: number = 0;
+  private modalService = inject(BsModalService);
+  private router = inject(Router);
   private advertisementService = inject(AdvertisementService);
+
+  advertisementId: number = 0;
   advertisement?: Advertisement;
+  advertisementStatus = AdvertisementStatus;
   modalRef?: BsModalRef;
-
-
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
-      this.location.back();
+      this.router.navigate(['/adv-list', AdvListStates.Validate, false]);
     });
 
     this.route.paramMap.subscribe((params) => {
@@ -52,11 +55,30 @@ export class AdvertisementValidateComponent {
   }
 
   confirm() {
-    this.modalRef = this.modalService.show(this.template);
+    this.modalRef = this.modalService.show(this.modalDialog);
+  }
+
+  modalDialogConfirm(advertisementStatus: AdvertisementStatus) {
+      const updateAdvertisementAdminRequest: UpdateAdvertisementAdminRequest = {
+      advertisementId: this.advertisement?.id ?? 0,
+      advertisementStatus: advertisementStatus,
+      publishFrequency: this.frequencyValue || 0,
+      adminMessage: this.editForm?.form.value.adminMessage,
+    };
+
+    this.advertisementService
+      .updateAdvertisementAdmin(updateAdvertisementAdminRequest)
+      .subscribe({
+        next: () => {
+          this.modalRef?.hide();
+          this.router.navigate(['/adv-list', AdvListStates.Validate, true]);
+        },
+        error: (error: any) => console.log(error),
+      });
   }
 
   reject() {
-    console.log('reject');
+    this.modalRef = this.modalService.show(this.modalDialogReject);
   }
 
   ngOnDestroy(): void {
@@ -67,6 +89,6 @@ export class AdvertisementValidateComponent {
     if (event.target.value > max) {
       event.target.value = max;
     }
-    this.defaultFrequencyValue = event.target.value; 
+    this.frequencyValue = event.target.value;
   }
 }

@@ -5,6 +5,7 @@ import { environment } from '../../environments/environment';
 import { AdvertisementSearchParams } from '../_framework/constants/advertisementSearchParams';
 import { AdvertisementCacheType } from '../_framework/constants/advertisementCacheType';
 import { of, tap } from 'rxjs';
+import { UpdateAdvertisementAdminRequest } from '../_models/updateAdvertisementAdminRequest';
 
 @Injectable({
   providedIn: 'root',
@@ -17,17 +18,19 @@ export class AdvertisementService {
     new AdvertisementSearchParams()
   );
 
-  getPendingValidationAdvertisements() {
-    this.advertisementSearchParams.update((params) => ({
-      ...params,
-      cacheType: AdvertisementCacheType.History,
-    }));
+  getPendingValidationAdvertisements(forceRefresh: boolean = false) {
+    if (!forceRefresh) {
+      this.advertisementSearchParams.update((params) => ({
+        ...params,
+        cacheType: AdvertisementCacheType.History,
+      }));
 
-    const cachedResponse = this.advertisementCache.get(
-      Object.values(this.advertisementSearchParams()).join('-')
-    );
-    if (cachedResponse) {
-      return of(cachedResponse);
+      const cachedResponse = this.advertisementCache.get(
+        Object.values(this.advertisementSearchParams()).join('-')
+      );
+      if (cachedResponse) {
+        return of(cachedResponse);
+      }
     }
 
     return this.http
@@ -48,9 +51,9 @@ export class AdvertisementService {
     const searchParamsKey = Object.values(
       this.advertisementSearchParams()
     ).join('-');
-    const cachedAdvertisement = this.advertisementCache.get(searchParamsKey);
-    if (cachedAdvertisement) {
-      const result = cachedAdvertisement.find(
+    const cachedAdvertisements = this.advertisementCache.get(searchParamsKey);
+    if (cachedAdvertisements) {
+      const result = cachedAdvertisements.find(
         (x: Advertisement) => x.id === id
       );
       if (result) {
@@ -58,5 +61,14 @@ export class AdvertisementService {
       }
     }
     return this.http.get<Advertisement>(this.baseUrl + `advertisement/${id}`);
+  }
+
+  updateAdvertisementAdmin(
+    updateAdvertisementAdminRequest: UpdateAdvertisementAdminRequest
+  ) {
+    return this.http.post(
+      this.baseUrl + 'advertisementAdmin',
+      updateAdvertisementAdminRequest
+    );
   }
 }

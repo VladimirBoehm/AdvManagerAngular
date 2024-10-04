@@ -9,7 +9,7 @@ export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'home', component: HomeComponent },
   { path: 'test', component: TestComponent },
-  { path: 'adv-list/:state', component: AdvListComponent },
+  { path: 'adv-list/:state/:forceRefresh', component: AdvListComponent },
   {
     path: 'app-advertisement-preview',
     component: AdvertisementPreviewComponent,

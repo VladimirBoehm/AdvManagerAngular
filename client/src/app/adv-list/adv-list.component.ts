@@ -18,6 +18,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
   private location = inject(Location);
   private advertisementService = inject(AdvertisementService);
   private backButtonService = inject(TelegramBackButtonService);
+  private forceRefresh: boolean = false;
   advertisements: Advertisement[] = [];
 
   state: AdvListStates | undefined;
@@ -29,6 +30,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
 
     this.route.paramMap.subscribe((params) => {
       this.state = params.get('state') as AdvListStates;
+      this.forceRefresh = params.get('forceRefresh') === 'true';
     });
     this.initialize();
   }
@@ -37,7 +39,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
     switch (this.state) {
       case AdvListStates.Validate: {
         this.advertisementService
-          .getPendingValidationAdvertisements()
+          .getPendingValidationAdvertisements(this.forceRefresh)
           .subscribe({
             next: (advertisements: Advertisement[]) =>
               (this.advertisements = advertisements),
