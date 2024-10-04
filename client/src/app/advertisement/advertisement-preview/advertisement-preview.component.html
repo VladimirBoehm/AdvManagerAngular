@@ -25,24 +25,9 @@
   </mat-card>
 
   <ng-template #imageShowTemplate>
-    <div class="modal-header">
-
-      <button
-        type="button"
-        class="btn-close close pull-right"
-        aria-label="Close"
-        (click)="modalRef?.hide()"
-      >
-        <span aria-hidden="true" class="visually-hidden">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body">
-      <img
-        [src]="url()"
-        (click)="showImage()"
-        alt="Изображение"
-        class="preview-image"
-      />
-    </div>
+    <app-image-preview-modal
+      [imageUrl]="url()"
+      [modalRef]="modalRef"
+    ></app-image-preview-modal>
   </ng-template>
 </div>

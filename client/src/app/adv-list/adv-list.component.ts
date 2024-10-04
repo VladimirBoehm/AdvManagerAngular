@@ -1,11 +1,11 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AdvListStates } from '../_framework/constants/advListStates';
 import { AdvertisementService } from '../_services/advertisement.service';
 import { Advertisement } from '../_models/advertisement';
 import { NgFor, NgIf } from '@angular/common';
 import { TelegramBackButtonService } from '../_framework/telegramBackButtonService';
-import { Location } from '@angular/common';
+
 @Component({
   selector: 'app-adv-list',
   standalone: true,
@@ -15,17 +15,17 @@ import { Location } from '@angular/common';
 })
 export class AdvListComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
-  private location = inject(Location);
   private advertisementService = inject(AdvertisementService);
   private backButtonService = inject(TelegramBackButtonService);
   private forceRefresh: boolean = false;
+  private router = inject(Router);
   advertisements: Advertisement[] = [];
 
   state: AdvListStates | undefined;
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
-      this.location.back();
+      this.router.navigate(['']);
     });
 
     this.route.paramMap.subscribe((params) => {
