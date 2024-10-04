@@ -9,11 +9,12 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { UpdateAdvertisementAdminRequest } from '../../_models/updateAdvertisementAdminRequest';
 import { AdvertisementStatus } from '../../_framework/constants/advertisementStatus';
 import { AdvListStates } from '../../_framework/constants/advListStates';
+import { ConfirmModalComponent } from '../../_framework/component/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-advertisement-validate',
   standalone: true,
-  imports: [AdvertisementPreviewComponent, FormsModule],
+  imports: [AdvertisementPreviewComponent, FormsModule, ConfirmModalComponent],
   templateUrl: './advertisement-validate.component.html',
   styleUrl: './advertisement-validate.component.scss',
 })
@@ -59,7 +60,7 @@ export class AdvertisementValidateComponent {
   }
 
   modalDialogConfirm(advertisementStatus: AdvertisementStatus) {
-      const updateAdvertisementAdminRequest: UpdateAdvertisementAdminRequest = {
+    const updateAdvertisementAdminRequest: UpdateAdvertisementAdminRequest = {
       advertisementId: this.advertisement?.id ?? 0,
       advertisementStatus: advertisementStatus,
       publishFrequency: this.frequencyValue || 0,
