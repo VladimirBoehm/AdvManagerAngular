@@ -98,6 +98,13 @@
       </div>
     </div>
     <hr />
+    <div class="alert alert-success" role="alert">
+      <div class="text-center">Одобрено!</div>
+      <div class="text-center">
+        Периодичность размещения раз в (дни):
+        {{ advertisement.publishFrequency }}
+      </div>
+    </div>
   </div>
 
   <!-- buttons: status PENDING_PUBLICATION  -->
@@ -141,6 +148,9 @@
       </div>
     </div>
     <hr />
+    <div class="alert alert-info text-center" role="alert">
+      Ожидает размещения!
+    </div>
   </div>
 
   <!-- buttons: status REJECTED  -->
@@ -182,7 +192,19 @@
       </div>
     </div>
     <hr />
-    <div class="alert alert-warning" role="alert">This is a warning alert!</div>
+    <div class="alert alert-warning text-center" role="alert">
+      Объявление отклонено администратором!
+    </div>
+  </div>
+
+  <!-- buttons: status PENDING_VALIDATION  -->
+  <div
+    *ngIf="advertisement.statusId === advertisementStatus.pendingValidation"
+    class="mt-2"
+  >
+    <div class="alert alert-info text-center" role="alert">
+      Отправлено администратору на подтверждение!
+    </div>
   </div>
 
   <app-advertisement-preview
