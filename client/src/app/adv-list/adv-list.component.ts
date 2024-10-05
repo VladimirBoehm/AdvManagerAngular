@@ -83,7 +83,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
         return "Ожидает публикации"
       }
       case AdvertisementStatus.pendingValidation: {
-        return "Ожидает валидации"
+        return "На рассмотрении"
       }
       case AdvertisementStatus.rejected: {
        return "Отклонён"
