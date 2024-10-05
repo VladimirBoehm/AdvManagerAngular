@@ -4,7 +4,7 @@
   <div *ngIf="advertisement.statusId === advertisementStatus.new">
     <div class="d-flex mt-2">
       <div class="col-4 d-flex align-items-center justify-content-center">
-        <button class="btn empty-button">
+        <button class="btn empty-button" (click)="delete()">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="24px"
@@ -63,7 +63,7 @@
   <div *ngIf="advertisement.statusId === advertisementStatus.validated">
     <div class="d-flex mt-2">
       <div class="col-6 d-flex align-items-center justify-content-center">
-        <button class="btn empty-button">
+        <button class="btn empty-button" (click)="delete()">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="24px"
@@ -101,14 +101,17 @@
     <div class="alert alert-success" role="alert">
       <div class="text-center">Одобрено!</div>
 
-      <div *ngIf="advertisement.publishFrequency" class="text-center">
+      <div
+        *ngIf="advertisement.publishFrequency; else oneTime"
+        class="text-center"
+      >
         Периодичность размещения: раз в {{ advertisement.publishFrequency }}
-        {{ getDayWord(advertisement.publishFrequency) }}
+        {{ getDayWord(advertisement.publishFrequency) }}.
       </div>
 
-      <div *ngIf="!advertisement.publishFrequency" class="text-center">
-        Одноразовое размещение.
-      </div>
+      <ng-template #oneTime>
+        <div class="text-center">Одноразовое размещение.</div>
+      </ng-template>
     </div>
   </div>
 
@@ -162,7 +165,7 @@
   <div *ngIf="advertisement.statusId === advertisementStatus.rejected">
     <div class="d-flex mt-2">
       <div class="col-6 d-flex align-items-center justify-content-center">
-        <button class="btn empty-button">
+        <button class="btn empty-button" (click)="delete()">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="24px"
@@ -223,13 +226,13 @@
     </div>
   </div>
 
-  <app-advertisement-preview
+  <app-advertisement-main-data
     [title]="advertisement.title"
     [message]="advertisement.message"
     [url]="advertisement.adImage?.url"
     [linkName]="advertisement.linkName"
     [linkValue]="advertisement.linkValue"
-  ></app-advertisement-preview>
+  ></app-advertisement-main-data>
   <div
     *ngIf="advertisement.adminMessage && advertisement.adminMessage.length > 0"
     class="input-group mt-3 pb-4"

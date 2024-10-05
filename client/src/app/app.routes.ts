@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { TestComponent } from './test/test.component';
 import { AdvListComponent } from './adv-list/adv-list.component';
-import { AdvertisementPreviewComponent } from './advertisement/advertisement-preview/advertisement-preview.component';
+import { AdvertisementMainDataComponent } from './advertisement/advertisement-main-data/advertisement-main-data.component';
 import { AdvertisementValidateComponent } from './advertisement/advertisement-validate/advertisement-validate.component';
 import { AdvertisementEditComponent } from './advertisement/advertisement-edit/advertisement-edit.component';
 
@@ -12,8 +12,8 @@ export const routes: Routes = [
   { path: 'test', component: TestComponent },
   { path: 'adv-list/:state/:forceRefresh', component: AdvListComponent },
   {
-    path: 'app-advertisement-preview',
-    component: AdvertisementPreviewComponent,
+    path: 'app-advertisement-main-data',
+    component: AdvertisementMainDataComponent,
   },
   {
     path: 'app-advertisement-validate/:id',

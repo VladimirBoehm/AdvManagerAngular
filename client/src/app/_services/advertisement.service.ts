@@ -88,6 +88,28 @@ export class AdvertisementService {
     return this.http.get<Advertisement>(this.baseUrl + `advertisement/${id}`);
   }
 
+  delete(id: number | undefined) {
+    if (!id) return;
+    const searchParamsKey = Object.values(
+      this.advertisementSearchParams()
+    ).join('-');
+    const cachedAdvertisements = this.advertisementCache.get(searchParamsKey);
+
+    return this.http
+      .delete<Advertisement>(this.baseUrl + `advertisement/${id}`)
+      .pipe(
+        tap(() => {
+          if (cachedAdvertisements) {
+            this.advertisementCache.set(
+              searchParamsKey,
+              cachedAdvertisements.filter((x) => x.id !== id)
+            );
+          }
+        })
+      );
+  }
+
+  //TODO обновлять cache
   updateAdvertisementAdmin(
     updateAdvertisementAdminRequest: UpdateAdvertisementAdminRequest
   ) {

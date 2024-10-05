@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { AdvertisementPreviewComponent } from '../advertisement-preview/advertisement-preview.component';
+
 import { AdvertisementService } from '../../_services/advertisement.service';
 import { Advertisement } from '../../_models/advertisement';
 import { TelegramBackButtonService } from '../../_framework/telegramBackButtonService';
@@ -10,11 +10,12 @@ import { UpdateAdvertisementAdminRequest } from '../../_models/updateAdvertiseme
 import { AdvertisementStatus } from '../../_framework/constants/advertisementStatus';
 import { AdvListStates } from '../../_framework/constants/advListStates';
 import { ConfirmModalComponent } from '../../_framework/component/confirm-modal/confirm-modal.component';
+import { AdvertisementMainDataComponent } from '../advertisement-main-data/advertisement-main-data.component';
 
 @Component({
   selector: 'app-advertisement-validate',
   standalone: true,
-  imports: [AdvertisementPreviewComponent, FormsModule, ConfirmModalComponent],
+  imports: [AdvertisementMainDataComponent, FormsModule, ConfirmModalComponent],
   templateUrl: './advertisement-validate.component.html',
   styleUrl: './advertisement-validate.component.scss',
 })
