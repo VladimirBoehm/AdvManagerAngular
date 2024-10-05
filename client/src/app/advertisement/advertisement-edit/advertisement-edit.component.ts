@@ -16,6 +16,9 @@ import { AccountService } from '../../_services/account.service';
   styleUrl: './advertisement-edit.component.scss',
 })
 export class AdvertisementEditComponent implements OnInit {
+save() {
+throw new Error('Method not implemented.');
+}
   @ViewChild('editForm') editForm?: NgForm;
 
   private backButtonService = inject(TelegramBackButtonService);
