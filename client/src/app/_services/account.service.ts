@@ -15,6 +15,7 @@ export class AccountService {
     this.http.get<User>(this.baseUrl + 'account/getLoginData').subscribe({
       next: (user: User) => {
         this.currentUser.set(user);
+        console.log(user);
       },
       error: (error) => {
         console.error('Error during login:', error);

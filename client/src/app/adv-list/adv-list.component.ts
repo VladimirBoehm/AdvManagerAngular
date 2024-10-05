@@ -102,6 +102,10 @@ export class AdvListComponent implements OnInit, OnDestroy {
     return `${userName} ${firstName || lastName}`.trim();
   }
 
+  create() {
+    this.router.navigate(['/app-advertisement-edit', 0]);
+  }
+
   ngOnDestroy(): void {
     this.backButtonService.removeBackButtonHandler();
   }

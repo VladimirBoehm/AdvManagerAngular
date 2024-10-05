@@ -5,6 +5,7 @@ import { AdvListComponent } from './adv-list/adv-list.component';
 import { AdvertisementMainDataComponent } from './advertisement/advertisement-main-data/advertisement-main-data.component';
 import { AdvertisementValidateComponent } from './advertisement/advertisement-validate/advertisement-validate.component';
 import { AdvertisementPreviewComponent } from './advertisement/advertisement-preview/advertisement-preview.component';
+import { AdvertisementEditComponent } from './advertisement/advertisement-edit/advertisement-edit.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -22,5 +23,9 @@ export const routes: Routes = [
   {
     path: 'app-advertisement-preview/:id',
     component: AdvertisementPreviewComponent,
+  },
+  {
+    path: 'app-advertisement-edit/:id',
+    component: AdvertisementEditComponent,
   },
 ];

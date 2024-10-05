@@ -23,14 +23,14 @@ export class AdvertisementValidateComponent implements OnInit {
   @ViewChild('editForm') editForm?: NgForm;
   @ViewChild('modalDialog') modalDialog?: any;
   @ViewChild('modalDialogReject') modalDialogReject?: any;
-  frequencyValue: number = 10;
 
   private backButtonService = inject(TelegramBackButtonService);
   private route = inject(ActivatedRoute);
   private modalService = inject(BsModalService);
   private router = inject(Router);
   private advertisementService = inject(AdvertisementService);
-
+  
+  frequencyValue: number = 10;
   advertisementId: number = 0;
   advertisement?: Advertisement;
   advertisementStatus = AdvertisementStatus;
