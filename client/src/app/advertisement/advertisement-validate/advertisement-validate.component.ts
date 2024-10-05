@@ -1,4 +1,4 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { AdvertisementPreviewComponent } from '../advertisement-preview/advertisement-preview.component';
 import { AdvertisementService } from '../../_services/advertisement.service';
 import { Advertisement } from '../../_models/advertisement';
@@ -18,7 +18,7 @@ import { ConfirmModalComponent } from '../../_framework/component/confirm-modal/
   templateUrl: './advertisement-validate.component.html',
   styleUrl: './advertisement-validate.component.scss',
 })
-export class AdvertisementValidateComponent {
+export class AdvertisementValidateComponent implements OnInit {
   @ViewChild('editForm') editForm?: NgForm;
   @ViewChild('modalDialog') modalDialog?: any;
   @ViewChild('modalDialogReject') modalDialogReject?: any;
