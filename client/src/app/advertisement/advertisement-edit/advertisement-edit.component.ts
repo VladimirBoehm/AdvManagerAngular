@@ -52,5 +52,25 @@ export class AdvertisementEditComponent implements OnInit {
         });
       }
     });
+    
+  }
+  
+  getDayWord(frequency: number): string {
+    const lastDigit = frequency % 10;
+    const lastTwoDigits = frequency % 100;
+  
+    if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
+      return 'дней';
+    }
+  
+    if (lastDigit === 1) {
+      return 'день';
+    }
+  
+    if (lastDigit >= 2 && lastDigit <= 4) {
+      return 'дня';
+    }
+  
+    return 'дней';
   }
 }

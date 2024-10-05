@@ -77,19 +77,19 @@ export class AdvListComponent implements OnInit, OnDestroy {
   getStatus(advertisement: Advertisement): string {
     switch (advertisement.statusId) {
       case AdvertisementStatus.new: {
-        return "Новый"
+        return 'Новый';
       }
       case AdvertisementStatus.pendingPublication: {
-        return "Ожидает публикации"
+        return 'Ожидает размещения';
       }
       case AdvertisementStatus.pendingValidation: {
-        return "На рассмотрении"
+        return 'На рассмотрении';
       }
       case AdvertisementStatus.rejected: {
-       return "Отклонён"
+        return 'Отклонён';
       }
       case AdvertisementStatus.validated: {
-        return "Одобрен"
+        return 'Одобрен';
       }
     }
   }

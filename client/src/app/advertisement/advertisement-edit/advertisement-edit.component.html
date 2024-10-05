@@ -100,9 +100,14 @@
     <hr />
     <div class="alert alert-success" role="alert">
       <div class="text-center">Одобрено!</div>
-      <div class="text-center">
-        Периодичность размещения раз в (дни):
-        {{ advertisement.publishFrequency }}
+
+      <div *ngIf="advertisement.publishFrequency" class="text-center">
+        Периодичность размещения: раз в {{ advertisement.publishFrequency }}
+        {{ getDayWord(advertisement.publishFrequency) }}
+      </div>
+
+      <div *ngIf="!advertisement.publishFrequency" class="text-center">
+        Одноразовое размещение.
       </div>
     </div>
   </div>
@@ -193,7 +198,7 @@
     </div>
     <hr />
     <div class="alert alert-warning text-center" role="alert">
-      Объявление отклонено администратором!
+      Объявление отклонено!
     </div>
   </div>
 
@@ -203,11 +208,11 @@
     class="mt-2"
   >
     <div class="alert alert-info text-center" role="alert">
-      Отправлено администратору на подтверждение!
+      Отправлено администратору для подтверждения!
     </div>
   </div>
 
-<!-- No Username error  -->
+  <!-- No Username error  -->
   <div *ngIf="!accountService.currentUser()?.userName" class="mt-2">
     <div class="alert alert-warning text-center" role="alert">
       <div class="text-center">⚠️ У вас не указан &#64;Username!</div>
