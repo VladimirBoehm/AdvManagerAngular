@@ -207,6 +207,17 @@
     </div>
   </div>
 
+<!-- No Username error  -->
+  <div *ngIf="!accountService.currentUser()?.userName" class="mt-2">
+    <div class="alert alert-warning text-center" role="alert">
+      <div class="text-center">⚠️ У вас не указан &#64;Username!</div>
+      <div class="text-center">
+        Обновите свой профиль и в боте выполните комманду
+        <strong>/start</strong>.
+      </div>
+    </div>
+  </div>
+
   <app-advertisement-preview
     [title]="advertisement.title"
     [message]="advertisement.message"

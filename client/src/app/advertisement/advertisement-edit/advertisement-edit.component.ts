@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AdvListStates } from '../../_framework/constants/advListStates';
 import { NgIf } from '@angular/common';
 import { AdvertisementStatus } from '../../_framework/constants/advertisementStatus';
+import { AccountService } from '../../_services/account.service';
 
 @Component({
   selector: 'app-advertisement-edit',
@@ -29,6 +30,7 @@ export class AdvertisementEditComponent implements OnInit {
   private advertisementService = inject(AdvertisementService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  accountService = inject(AccountService);
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
