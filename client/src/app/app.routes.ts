@@ -4,7 +4,7 @@ import { TestComponent } from './test/test.component';
 import { AdvListComponent } from './adv-list/adv-list.component';
 import { AdvertisementMainDataComponent } from './advertisement/advertisement-main-data/advertisement-main-data.component';
 import { AdvertisementValidateComponent } from './advertisement/advertisement-validate/advertisement-validate.component';
-import { AdvertisementEditComponent } from './advertisement/advertisement-edit/advertisement-edit.component';
+import { AdvertisementPreviewComponent } from './advertisement/advertisement-preview/advertisement-preview.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -20,7 +20,7 @@ export const routes: Routes = [
     component: AdvertisementValidateComponent,
   },
   {
-    path: 'app-advertisement-edit/:id',
-    component: AdvertisementEditComponent,
+    path: 'app-advertisement-preview/:id',
+    component: AdvertisementPreviewComponent,
   },
 ];
