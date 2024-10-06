@@ -158,6 +158,9 @@ export class AdvertisementEditComponent implements OnInit {
 
   deleteImage() {
     this.selectedImage = null;
+    if (this.advertisement) {
+      this.advertisement.adImage = undefined;
+    }
   }
 
   selectImage(): void {

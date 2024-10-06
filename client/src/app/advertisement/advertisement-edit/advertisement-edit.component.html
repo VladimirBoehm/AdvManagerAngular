@@ -76,7 +76,7 @@
   <div class="d-flex flex-column align-items-start">
     <div class="d-flex">
       <button
-        *ngIf="!selectedImage"
+        *ngIf="!this.advertisement.adImage"
         class="btn empty-button ps-0 text-start"
         (click)="showImageSelector()"
       >
@@ -95,7 +95,7 @@
       </button>
 
       <button
-        *ngIf="selectedImage"
+        *ngIf="this.advertisement.adImage"
         class="btn empty-button ps-0 text-start"
         (click)="deleteImage()"
       >
@@ -113,9 +113,13 @@
         <div class="text-muted my-info-text">Удалить</div>
       </button>
 
-      <div *ngIf="selectedImage" class="image-container" style="width: 100px">
+      <div
+        *ngIf="this.advertisement.adImage"
+        class="image-container"
+        style="width: 100px"
+      >
         <img
-          [src]="selectedImage.url"
+          [src]="this.advertisement.adImage.url"
           (click)="showImage()"
           alt="Изображение"
           class="preview-image"
@@ -201,7 +205,7 @@
   </ng-template>
   <ng-template #imageShowTemplate>
     <app-image-preview-modal
-      [imageUrl]="selectedImage?.url"
+      [imageUrl]="this.advertisement.adImage?.url"
       [modalRef]="modalRef"
     ></app-image-preview-modal>
   </ng-template>
