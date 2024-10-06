@@ -74,23 +74,55 @@
   </form>
 
   <div class="d-flex flex-column align-items-start">
-    <button
-      class="btn empty-button ps-0 text-start"
-      (click)="showImageSelector()"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        height="48px"
-        viewBox="0 -960 960 960"
-        width="48px"
-        fill="#5f6368"
+    <div class="d-flex">
+      <button
+        *ngIf="!selectedImage"
+        class="btn empty-button ps-0 text-start"
+        (click)="showImageSelector()"
       >
-        <path
-          d="M480-480ZM226-172q-22.77 0-38.39-15.61Q172-203.23 172-226v-508q0-22.78 15.61-38.39Q203.23-788 226-788h282v22H226q-14 0-23 9t-9 23v508q0 14 9 23t23 9h508q14 0 23-9t9-23v-282h22v282q0 22.77-15.61 38.39Q756.78-172 734-172H226Zm54-141h400L559-474 437-323l-78-90-79 100Zm404-289v-82h-82v-22h82v-82h22v82h82v22h-82v82h-22Z"
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="48px"
+          viewBox="0 -960 960 960"
+          width="48px"
+          fill="#5f6368"
+        >
+          <path
+            d="M480-480ZM226-172q-22.77 0-38.39-15.61Q172-203.23 172-226v-508q0-22.78 15.61-38.39Q203.23-788 226-788h282v22H226q-14 0-23 9t-9 23v508q0 14 9 23t23 9h508q14 0 23-9t9-23v-282h22v282q0 22.77-15.61 38.39Q756.78-172 734-172H226Zm54-141h400L559-474 437-323l-78-90-79 100Zm404-289v-82h-82v-22h82v-82h22v82h82v22h-82v82h-22Z"
+          />
+        </svg>
+        <div class="text-muted my-info-text">Изображение</div>
+      </button>
+
+      <button
+        *ngIf="selectedImage"
+        class="btn empty-button ps-0 text-start"
+        (click)="deleteImage()"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="48px"
+          viewBox="0 -960 960 960"
+          width="48px"
+          fill="#5f6368"
+        >
+          <path
+            d="m254-238-16-16 226-226-226-226 16-16 226 226 226-226 16 16-226 226 226 226-16 16-226-226-226 226Z"
+          />
+        </svg>
+        <div class="text-muted my-info-text">Удалить</div>
+      </button>
+
+      <div *ngIf="selectedImage" class="image-container" style="width: 100px">
+        <img
+          [src]="selectedImage.url"
+          (click)="showImage()"
+          alt="Изображение"
+          class="preview-image"
         />
-      </svg>
-      <div class="text-muted my-info-text">Изображение</div>
-    </button>
+      </div>
+    </div>
+
     <button class="btn empty-button ps-0">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -108,27 +140,70 @@
   </div>
 
   <ng-template #imageSelectorDialog>
-    <div class="modal-header">
-      <h6 class="modal-title pull-left">Выберите изображение</h6>
-      <button
-        type="button"
-        class="btn-close close pull-right"
-        aria-label="Close"
-        (click)="modalRef?.hide()"
-      >
-        <span aria-hidden="true" class="visually-hidden">&times;</span>
-      </button>
+    <div class="container d-flex justify-content-between align-items-center">
+      <h6 class="text-muted mt-3 mb-0">Выберите изображение</h6>
+      <div class="d-flex mt-2">
+        <button
+          type="button"
+          class="btn empty-button"
+          aria-label="Close"
+          [disabled]="!selectedImage"
+          (click)="selectImage()"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#5f6368"
+          >
+            <path
+              d="m422-332 248-248-20-20-228 228-114-114-20 20 134 134Zm58.17 200q-72.17 0-135.73-27.39-63.56-27.39-110.57-74.35-47.02-46.96-74.44-110.43Q132-407.65 132-479.83q0-72.17 27.39-135.73 27.39-63.56 74.35-110.57 46.96-47.02 110.43-74.44Q407.65-828 479.83-828q72.17 0 135.73 27.39 63.56 27.39 110.57 74.35 47.02 46.96 74.44 110.43Q828-552.35 828-480.17q0 72.17-27.39 135.73-27.39 63.56-74.35 110.57-46.96 47.02-110.43 74.44Q552.35-132 480.17-132Zm-.17-28q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"
+            />
+          </svg>
+          <div class="text-muted my-info-text">Выбрать</div>
+        </button>
+        <button
+          type="button"
+          class="btn empty-button ms-2"
+          (click)="modalRef?.hide()"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#5f6368"
+          >
+            <path
+              d="m256-236-20-20 224-224-224-224 20-20 224 224 224-224 20 20-224 224 224 224-20 20-224-224-224 224Z"
+            />
+          </svg>
+          <div class="text-muted my-info-text">Закрыть</div>
+        </button>
+      </div>
     </div>
+    <hr class="mt-2 mb-0" />
     <div class="modal-body">
       <div *ngFor="let image of userImages; let first = first">
         <img
           [src]="image.url"
           alt="image"
-          [ngClass]="{ 'mt-1': !first }"
+          [ngClass]="{
+            'mt-1': !first,
+            'selected-image': selectedImage === image
+          }"
           class="preview-image"
+          (click)="selectImageHandler(image)"
         />
       </div>
     </div>
+  </ng-template>
+  <ng-template #imageShowTemplate>
+    <app-image-preview-modal
+      [imageUrl]="selectedImage?.url"
+      [modalRef]="modalRef"
+    ></app-image-preview-modal>
   </ng-template>
 </div>
 }

@@ -17,6 +17,7 @@ import { FormErrorMessageComponent } from '../../_framework/component/form-error
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ImageService } from '../../_services/image.service';
 import { AdImage } from '../../_models/adImage';
+import { ImagePreviewModalComponent } from '../../_framework/component/image-preview-modal/image-preview-modal.component';
 
 @Component({
   selector: 'app-advertisement-edit',
@@ -27,7 +28,8 @@ import { AdImage } from '../../_models/adImage';
     NgIf,
     NgFor,
     FormErrorMessageComponent,
-    NgClass
+    NgClass,
+    ImagePreviewModalComponent,
   ],
   templateUrl: './advertisement-edit.component.html',
   styleUrl: './advertisement-edit.component.scss',
@@ -35,6 +37,7 @@ import { AdImage } from '../../_models/adImage';
 export class AdvertisementEditComponent implements OnInit {
   editForm: FormGroup = new FormGroup({});
   @ViewChild('imageSelectorDialog') imageSelectorDialog?: any;
+  @ViewChild('imageShowTemplate') imageShowTemplate?: any;
 
   private backButtonService = inject(TelegramBackButtonService);
   private advertisementService = inject(AdvertisementService);
@@ -55,6 +58,7 @@ export class AdvertisementEditComponent implements OnInit {
   advertisementId: number = 0;
   advertisement?: Advertisement;
   userImages: AdImage[] = [];
+  selectedImage: AdImage | null | undefined = null;
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
@@ -71,6 +75,7 @@ export class AdvertisementEditComponent implements OnInit {
         this.advertisementService.getById(Number(id)).subscribe({
           next: (advertisement: Advertisement) => {
             this.advertisement = advertisement;
+            this.selectedImage = advertisement.adImage;
           },
           error: (err) => {
             console.error('Error when loading ads:', err);
@@ -149,5 +154,26 @@ export class AdvertisementEditComponent implements OnInit {
       },
     });
     this.modalRef = this.modalService.show(this.imageSelectorDialog);
+  }
+
+  deleteImage() {
+    this.selectedImage = null;
+  }
+
+  selectImage(): void {
+    if (this.selectedImage) {
+      if (this.advertisement) {
+        this.advertisement.adImage = this.selectedImage;
+      }
+      this.modalRef?.hide();
+    }
+  }
+
+  selectImageHandler(image: any): void {
+    this.selectedImage = image;
+  }
+
+  showImage() {
+    this.modalRef = this.modalService.show(this.imageShowTemplate);
   }
 }

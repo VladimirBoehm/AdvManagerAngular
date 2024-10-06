@@ -2,3 +2,11 @@ input.ng-invalid.ng-touched,
 textarea.ng-invalid.ng-touched {
   border-color: red;
 }
+
+.selected-image {
+  border: 3px solid #007bff;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+}
+
+
+
