@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -12,25 +12,41 @@ import { AdvListStates } from '../../_framework/constants/advListStates';
 import { Advertisement } from '../../_models/advertisement';
 import { AdvertisementService } from '../../_services/advertisement.service';
 import { AccountService } from '../../_services/account.service';
-import { NgIf } from '@angular/common';
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import { FormErrorMessageComponent } from '../../_framework/component/form-error-message/form-error-message.component';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { ImageService } from '../../_services/image.service';
+import { AdImage } from '../../_models/adImage';
 
 @Component({
   selector: 'app-advertisement-edit',
   standalone: true,
-  imports: [ConfirmModalComponent, ReactiveFormsModule, NgIf, FormErrorMessageComponent],
+  imports: [
+    ConfirmModalComponent,
+    ReactiveFormsModule,
+    NgIf,
+    NgFor,
+    FormErrorMessageComponent,
+    NgClass
+  ],
   templateUrl: './advertisement-edit.component.html',
   styleUrl: './advertisement-edit.component.scss',
 })
 export class AdvertisementEditComponent implements OnInit {
   editForm: FormGroup = new FormGroup({});
+  @ViewChild('imageSelectorDialog') imageSelectorDialog?: any;
 
   private backButtonService = inject(TelegramBackButtonService);
   private advertisementService = inject(AdvertisementService);
+  private imageService = inject(ImageService);
   private accountService = inject(AccountService);
+  private modalService = inject(BsModalService);
   private formBuilder = inject(FormBuilder);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+
+  modalRef?: BsModalRef;
+
   titleCounter: number = 0;
   maxTitleLength: number = 30;
   messageCounter: number = 0;
@@ -38,6 +54,7 @@ export class AdvertisementEditComponent implements OnInit {
 
   advertisementId: number = 0;
   advertisement?: Advertisement;
+  userImages: AdImage[] = [];
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
@@ -107,7 +124,30 @@ export class AdvertisementEditComponent implements OnInit {
   }
 
   save() {
-    console.log(this.editForm.invalid);
-    console.log(this.editForm);
+    if (this.advertisement) {
+      this.advertisement.title = this.editForm.controls['title']?.value;
+      this.advertisement.message = this.editForm.controls['message']?.value;
+      this.advertisementService.save(this.advertisement).subscribe({
+        next: (result: Advertisement) => {
+          this.router.navigate(['app-advertisement-preview', result.id]);
+        },
+        error: (err) => {
+          console.error('Error when saving ads:', err);
+        },
+      });
+    }
+  }
+
+  showImageSelector() {
+    this.imageService.getUserImages().subscribe({
+      next: (result: AdImage[]) => {
+        this.userImages = result;
+        console.log(this.userImages);
+      },
+      error: (err) => {
+        console.error('Error when getUserImages :', err);
+      },
+    });
+    this.modalRef = this.modalService.show(this.imageSelectorDialog);
   }
 }

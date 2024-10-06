@@ -8,7 +8,7 @@ import { User } from '../_models/user';
 })
 export class AccountService {
   private http = inject(HttpClient);
-  baseUrl = environment.apiUrl;
+  private baseUrl = environment.apiUrl;
   currentUser = signal<User | null>(null);
 
   login() {

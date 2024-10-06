@@ -74,7 +74,10 @@
   </form>
 
   <div class="d-flex flex-column align-items-start">
-    <button class="btn empty-button ps-0 text-start">
+    <button
+      class="btn empty-button ps-0 text-start"
+      (click)="showImageSelector()"
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         height="48px"
@@ -103,5 +106,29 @@
       <div class="text-muted my-info-text">Кнопка</div>
     </button>
   </div>
+
+  <ng-template #imageSelectorDialog>
+    <div class="modal-header">
+      <h6 class="modal-title pull-left">Выберите изображение</h6>
+      <button
+        type="button"
+        class="btn-close close pull-right"
+        aria-label="Close"
+        (click)="modalRef?.hide()"
+      >
+        <span aria-hidden="true" class="visually-hidden">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div *ngFor="let image of userImages; let first = first">
+        <img
+          [src]="image.url"
+          alt="image"
+          [ngClass]="{ 'mt-1': !first }"
+          class="preview-image"
+        />
+      </div>
+    </div>
+  </ng-template>
 </div>
 }

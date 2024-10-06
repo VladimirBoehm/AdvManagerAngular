@@ -4,7 +4,7 @@ import { Advertisement } from '../_models/advertisement';
 import { environment } from '../../environments/environment';
 import { AdvertisementSearchParams } from '../_framework/constants/advertisementSearchParams';
 import { AdvertisementCacheType } from '../_framework/constants/advertisementCacheType';
-import { of, tap } from 'rxjs';
+import { map, Observable, of, tap } from 'rxjs';
 import { UpdateAdvertisementAdminRequest } from '../_models/updateAdvertisementAdminRequest';
 
 @Injectable({
@@ -26,7 +26,7 @@ export class AdvertisementService {
       }));
 
       const cachedResponse = this.advertisementCache.get(
-        Object.values(this.advertisementSearchParams()).join('-')
+        this.getSearchParamsKey()
       );
       if (cachedResponse) {
         return of(cachedResponse);
@@ -39,10 +39,7 @@ export class AdvertisementService {
       )
       .pipe(
         tap((response) => {
-          this.advertisementCache.set(
-            Object.values(this.advertisementSearchParams()).join('-'),
-            response
-          );
+          this.advertisementCache.set(this.getSearchParamsKey(), response);
         })
       );
   }
@@ -55,7 +52,7 @@ export class AdvertisementService {
       }));
 
       const cachedResponse = this.advertisementCache.get(
-        Object.values(this.advertisementSearchParams()).join('-')
+        this.getSearchParamsKey()
       );
       if (cachedResponse) {
         return of(cachedResponse);
@@ -64,19 +61,15 @@ export class AdvertisementService {
 
     return this.http.get<Advertisement[]>(this.baseUrl + 'advertisement').pipe(
       tap((response) => {
-        this.advertisementCache.set(
-          Object.values(this.advertisementSearchParams()).join('-'),
-          response
-        );
+        this.advertisementCache.set(this.getSearchParamsKey(), response);
       })
     );
   }
 
   getById(id: number) {
-    const searchParamsKey = Object.values(
-      this.advertisementSearchParams()
-    ).join('-');
-    const cachedAdvertisements = this.advertisementCache.get(searchParamsKey);
+    const cachedAdvertisements = this.advertisementCache.get(
+      this.getSearchParamsKey()
+    );
     if (cachedAdvertisements) {
       const result = cachedAdvertisements.find(
         (x: Advertisement) => x.id === id
@@ -88,11 +81,30 @@ export class AdvertisementService {
     return this.http.get<Advertisement>(this.baseUrl + `advertisement/${id}`);
   }
 
+  getSearchParamsKey(): string {
+    return Object.values(this.advertisementSearchParams()).join('-');
+  }
+
+  save(advertisement: Advertisement): Observable<Advertisement> {
+    return this.http
+      .post<Advertisement>(this.baseUrl + 'advertisement/save', advertisement)
+      .pipe(
+        tap((savedAdvertisement: Advertisement) => {
+          const searchParamsKey = this.getSearchParamsKey();
+
+          const cachedAdvertisements =
+            this.advertisementCache.get(searchParamsKey) || [];
+          this.advertisementCache.set(searchParamsKey, [
+            ...cachedAdvertisements,
+            savedAdvertisement,
+          ]);
+        })
+      );
+  }
+
   delete(id: number | undefined) {
     if (!id) return;
-    const searchParamsKey = Object.values(
-      this.advertisementSearchParams()
-    ).join('-');
+    const searchParamsKey = this.getSearchParamsKey();
     const cachedAdvertisements = this.advertisementCache.get(searchParamsKey);
 
     return this.http
