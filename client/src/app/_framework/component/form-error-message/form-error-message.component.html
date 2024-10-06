@@ -1,0 +1,6 @@
+<div *ngIf="control?.invalid && control?.touched" class="errorMessage">
+  <ng-container *ngIf="control?.hasError('required')">
+    Поле обязательно для заполнения
+  </ng-container>
+  <!-- Другие типы ошибок при необходимости -->
+</div>

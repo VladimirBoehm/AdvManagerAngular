@@ -1,5 +1,10 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { FormsModule, NgForm } from '@angular/forms';
+import { Component, inject, OnInit } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ConfirmModalComponent } from '../../_framework/component/confirm-modal/confirm-modal.component';
 import { TelegramBackButtonService } from '../../_framework/telegramBackButtonService';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -7,26 +12,29 @@ import { AdvListStates } from '../../_framework/constants/advListStates';
 import { Advertisement } from '../../_models/advertisement';
 import { AdvertisementService } from '../../_services/advertisement.service';
 import { AccountService } from '../../_services/account.service';
+import { NgIf } from '@angular/common';
+import { FormErrorMessageComponent } from '../../_framework/component/form-error-message/form-error-message.component';
 
 @Component({
   selector: 'app-advertisement-edit',
   standalone: true,
-  imports: [ConfirmModalComponent, FormsModule],
+  imports: [ConfirmModalComponent, ReactiveFormsModule, NgIf, FormErrorMessageComponent],
   templateUrl: './advertisement-edit.component.html',
   styleUrl: './advertisement-edit.component.scss',
 })
 export class AdvertisementEditComponent implements OnInit {
-save() {
-throw new Error('Method not implemented.');
-}
-  @ViewChild('editForm') editForm?: NgForm;
+  editForm: FormGroup = new FormGroup({});
 
   private backButtonService = inject(TelegramBackButtonService);
   private advertisementService = inject(AdvertisementService);
   private accountService = inject(AccountService);
-
+  private formBuilder = inject(FormBuilder);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  titleCounter: number = 0;
+  maxTitleLength: number = 30;
+  messageCounter: number = 0;
+  maxMessageLength: number = 650;
 
   advertisementId: number = 0;
   advertisement?: Advertisement;
@@ -62,5 +70,44 @@ throw new Error('Method not implemented.');
         };
       }
     });
+    this.initializeForm();
+    this.updateTitleCounter();
+    this.updateMessageCounter();
+  }
+
+  initializeForm() {
+    this.editForm = this.formBuilder.group({
+      title: [
+        this.advertisement?.title,
+        [Validators.required, Validators.maxLength(this.maxTitleLength)],
+      ],
+      message: [
+        this.advertisement?.message,
+        [Validators.required, Validators.maxLength(this.maxMessageLength)],
+      ],
+    });
+
+    this.editForm.controls['title'].valueChanges.subscribe(() => {
+      this.updateTitleCounter();
+    });
+
+    this.editForm.controls['message'].valueChanges.subscribe(() => {
+      this.updateMessageCounter();
+    });
+  }
+
+  updateTitleCounter() {
+    const titleValue = this.editForm.controls['title']?.value || '';
+    this.titleCounter = titleValue.length;
+  }
+
+  updateMessageCounter() {
+    const messageValue = this.editForm.controls['message']?.value || '';
+    this.messageCounter = messageValue.length;
+  }
+
+  save() {
+    console.log(this.editForm.invalid);
+    console.log(this.editForm);
   }
 }
