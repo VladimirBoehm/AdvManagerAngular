@@ -12,8 +12,6 @@ export class ImagePreviewModalComponent {
   @Input() imageUrl: string | undefined = '';
   @Input() modalRef?: BsModalRef;
 
-  constructor() {}
-
   closeModal() {
     this.modalRef?.hide();
   }

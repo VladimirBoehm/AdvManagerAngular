@@ -13,11 +13,12 @@ import { Advertisement } from '../../_models/advertisement';
 import { AdvertisementService } from '../../_services/advertisement.service';
 import { AccountService } from '../../_services/account.service';
 import { NgClass, NgFor, NgIf } from '@angular/common';
-import { FormErrorMessageComponent } from '../../_framework/component/form-error-message/form-error-message.component';
+import { FormErrorMessageComponent } from '../../_framework/component/errors/form-error-message/form-error-message.component';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ImageService } from '../../_services/image.service';
 import { AdImage } from '../../_models/adImage';
 import { ImagePreviewModalComponent } from '../../_framework/component/image-preview-modal/image-preview-modal.component';
+import { AddAdvertisementButtonModalComponent } from './add-advertisement-button-modal/add-advertisement-button-modal.component';
 
 @Component({
   selector: 'app-advertisement-edit',
@@ -30,6 +31,7 @@ import { ImagePreviewModalComponent } from '../../_framework/component/image-pre
     FormErrorMessageComponent,
     NgClass,
     ImagePreviewModalComponent,
+    AddAdvertisementButtonModalComponent,
   ],
   templateUrl: './advertisement-edit.component.html',
   styleUrl: './advertisement-edit.component.scss',
@@ -37,6 +39,8 @@ import { ImagePreviewModalComponent } from '../../_framework/component/image-pre
 export class AdvertisementEditComponent implements OnInit {
   editForm: FormGroup = new FormGroup({});
   @ViewChild('imageSelectorDialog') imageSelectorDialog?: any;
+  @ViewChild('modalAddAdvertisementButtonDialog')
+  modalAddAdvertisementButtonDialog?: any;
   @ViewChild('imageShowTemplate') imageShowTemplate?: any;
 
   private backButtonService = inject(TelegramBackButtonService);
@@ -156,6 +160,12 @@ export class AdvertisementEditComponent implements OnInit {
     this.modalRef = this.modalService.show(this.imageSelectorDialog);
   }
 
+  showAddAdvertisementButtonDialog() {
+    this.modalRef = this.modalService.show(
+      this.modalAddAdvertisementButtonDialog
+    );
+  }
+
   deleteImage() {
     this.selectedImage = null;
     if (this.advertisement) {
@@ -179,4 +189,6 @@ export class AdvertisementEditComponent implements OnInit {
   showImage() {
     this.modalRef = this.modalService.show(this.imageShowTemplate);
   }
+
+  // ADD BUTTON DIALOG
 }

@@ -46,3 +46,12 @@ a {
   height: auto;
   object-fit: contain;
 }
+
+.semi-transparent {
+  opacity: 0.7;
+}
+
+input.ng-invalid.ng-touched,
+textarea.ng-invalid.ng-touched {
+  border-color: red;
+}
