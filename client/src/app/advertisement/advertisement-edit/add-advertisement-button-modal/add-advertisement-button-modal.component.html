@@ -64,7 +64,10 @@
         />
         @if (matErrorService.getHasError(editForm.controls['buttonName'])){
         <mat-error>{{
-          matErrorService.getErrorMessage(editForm.controls["buttonName"])
+          matErrorService.getErrorMessage(
+            editForm.controls["buttonName"],
+            maxButtonNameLength
+          )
         }}</mat-error>
         }
         <mat-hint align="end">
@@ -84,7 +87,10 @@
         ></textarea>
         @if (matErrorService.getHasError(editForm.controls['link'])){
         <mat-error>{{
-          matErrorService.getErrorMessage(editForm.controls["link"])
+          matErrorService.getErrorMessage(
+            editForm.controls["link"],
+            maxLinkLength
+          )
         }}</mat-error>
         }
         <mat-hint align="end"> {{ linkCounter }}/{{ maxLinkLength }}</mat-hint>

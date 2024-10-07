@@ -23,6 +23,9 @@ import {
   ButtonLink,
 } from './add-advertisement-button-modal/add-advertisement-button-modal.component';
 import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatErrorService } from '../../_framework/component/errors/mat-error-service';
 
 @Component({
   selector: 'app-advertisement-edit',
@@ -37,6 +40,8 @@ import { MatCardModule } from '@angular/material/card';
     ImagePreviewModalComponent,
     AddAdvertisementButtonModalComponent,
     MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
   ],
   templateUrl: './advertisement-edit.component.html',
   styleUrl: './advertisement-edit.component.scss',
@@ -50,9 +55,10 @@ export class AdvertisementEditComponent implements OnInit {
 
   private backButtonService = inject(TelegramBackButtonService);
   private advertisementService = inject(AdvertisementService);
-  private imageService = inject(ImageService);
   private accountService = inject(AccountService);
   private modalService = inject(BsModalService);
+  private imageService = inject(ImageService);
+  matErrorService = inject(MatErrorService);
   private formBuilder = inject(FormBuilder);
   private route = inject(ActivatedRoute);
   private router = inject(Router);

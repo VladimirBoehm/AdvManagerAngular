@@ -31,46 +31,42 @@
     </div>
     <hr />
 
-    <input
-      required
-      type="text"
-      name="title"
-      class="form-control"
-      [formControl]="$any(editForm.controls['title'])"
-      placeholder="Заголовок"
-    />
-    <div class="d-flex">
-      <div class="col-10">
-        <app-form-error-message
-          [control]="editForm.controls['title']"
-        ></app-form-error-message>
-      </div>
-      <div class="col-2">
-        <div class="text-muted my-info-text text-end">
-          {{ titleCounter }}/{{ maxTitleLength }}
-        </div>
-      </div>
-    </div>
-    <textarea
-      class="form-control mt-2"
-      name="message"
-      [formControl]="$any(editForm.controls['message'])"
-      placeholder="Объявление"
-      rows="6"
-    ></textarea>
+    <mat-form-field class="col-12">
+      <mat-label>Заголовок</mat-label>
+      <input matInput [formControl]="$any(editForm.controls['title'])" />
+      @if (matErrorService.getHasError(editForm.controls['title'])){
+      <mat-error>{{
+        matErrorService.getErrorMessage(
+          editForm.controls["title"],
+          maxTitleLength
+        )
+      }}</mat-error>
+      }
+      <mat-hint align="end"> {{ titleCounter }}/{{ maxTitleLength }}</mat-hint>
+    </mat-form-field>
 
-    <div class="d-flex">
-      <div class="col-10">
-        <app-form-error-message
-          [control]="editForm.controls['message']"
-        ></app-form-error-message>
-      </div>
-      <div class="col-2">
-        <div class="text-muted my-info-text text-end">
-          {{ messageCounter }}/{{ maxMessageLength }}
-        </div>
-      </div>
-    </div>
+    <mat-form-field class="mt-3 col-12">
+      <mat-label>Объявление</mat-label>
+      <textarea
+        matInput
+        required
+        rows="6"
+        type="text"
+        name="message"
+        [formControl]="$any(editForm.controls['message'])"
+      ></textarea>
+      @if (matErrorService.getHasError(editForm.controls['message'])){
+      <mat-error>{{
+        matErrorService.getErrorMessage(
+          editForm.controls["message"],
+          maxMessageLength
+        )
+      }}</mat-error>
+      }
+      <mat-hint align="end">
+        {{ messageCounter }}/{{ maxMessageLength }}</mat-hint
+      >
+    </mat-form-field>
   </form>
 
   <div class="d-flex flex-column align-items-start">
@@ -122,7 +118,7 @@
           [src]="this.advertisement.adImage.url"
           (click)="showImage()"
           alt="Изображение"
-          class="preview-image"
+          class="preview-image rounded"
         />
       </div>
     </div>
