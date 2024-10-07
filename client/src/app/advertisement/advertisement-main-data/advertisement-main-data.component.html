@@ -1,12 +1,16 @@
 <div class="mt-3">
-  <h5>{{ title() }}</h5>
-  <p class="lh-sm">{{ message() }}</p>
+  <div class="card mb-3">
+    <div class="card-body">
+      <h6>{{ title() }}</h6>
+      <p class="lh-sm">{{ message() }}</p>
+    </div>
+  </div>
   <div *ngIf="url()" class="image-container col-4">
     <img
       [src]="url()"
       (click)="showImage()"
       alt="Изображение"
-      class="preview-image"
+      class="preview-image rounded"
     />
   </div>
   <mat-card *ngIf="linkName()" appearance="raised" class="mt-2">
