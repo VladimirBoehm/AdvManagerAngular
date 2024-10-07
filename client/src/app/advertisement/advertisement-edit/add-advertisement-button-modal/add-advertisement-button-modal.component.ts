@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit, output } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import {
   AbstractControl,
@@ -12,6 +12,10 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatErrorService } from '../../../_framework/component/errors/mat-error-service';
+export interface ButtonLink {
+  buttonName: string;
+  link: string;
+}
 
 @Component({
   selector: 'app-add-advertisement-button-modal',
@@ -24,6 +28,7 @@ export class AddAdvertisementButtonModalComponent implements OnInit {
   @Input() modalRef?: BsModalRef;
   @Input() buttonName?: string;
   @Input() link?: string;
+  onSave = output<ButtonLink>();
 
   private formBuilder = inject(FormBuilder);
 
@@ -91,6 +96,9 @@ export class AddAdvertisementButtonModalComponent implements OnInit {
   }
 
   save() {
-    console.log(this.editForm.controls['buttonName']?.value);
+    this.onSave.emit({
+      buttonName: this.editForm.controls['buttonName']?.value,
+      link: this.editForm.controls['link']?.value,
+    } as ButtonLink);
   }
 }

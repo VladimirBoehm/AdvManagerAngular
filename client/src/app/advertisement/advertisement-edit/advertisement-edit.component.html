@@ -220,6 +220,7 @@
       [modalRef]="modalRef"
       [buttonName]="advertisement.linkName"
       [link]="advertisement.linkValue"
+      (onSave)="receiveButtonLink($event)"
     >
     </app-add-advertisement-button-modal>
   </ng-template>

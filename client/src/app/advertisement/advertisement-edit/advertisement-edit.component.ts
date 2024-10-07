@@ -18,7 +18,10 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ImageService } from '../../_services/image.service';
 import { AdImage } from '../../_models/adImage';
 import { ImagePreviewModalComponent } from '../../_framework/component/image-preview-modal/image-preview-modal.component';
-import { AddAdvertisementButtonModalComponent } from './add-advertisement-button-modal/add-advertisement-button-modal.component';
+import {
+  AddAdvertisementButtonModalComponent,
+  ButtonLink,
+} from './add-advertisement-button-modal/add-advertisement-button-modal.component';
 
 @Component({
   selector: 'app-advertisement-edit',
@@ -190,5 +193,11 @@ export class AdvertisementEditComponent implements OnInit {
     this.modalRef = this.modalService.show(this.imageShowTemplate);
   }
 
-  // ADD BUTTON DIALOG
+  receiveButtonLink(event: ButtonLink) {
+    if (this.advertisement) {
+      this.advertisement.linkName = event.buttonName;
+      this.advertisement.linkValue = event.link;
+    }
+    this.modalRef?.hide();
+  }
 }
