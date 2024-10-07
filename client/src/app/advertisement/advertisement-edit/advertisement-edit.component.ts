@@ -22,6 +22,7 @@ import {
   AddAdvertisementButtonModalComponent,
   ButtonLink,
 } from './add-advertisement-button-modal/add-advertisement-button-modal.component';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-advertisement-edit',
@@ -35,6 +36,7 @@ import {
     NgClass,
     ImagePreviewModalComponent,
     AddAdvertisementButtonModalComponent,
+    MatCardModule,
   ],
   templateUrl: './advertisement-edit.component.html',
   styleUrl: './advertisement-edit.component.scss',
@@ -191,6 +193,13 @@ export class AdvertisementEditComponent implements OnInit {
 
   showImage() {
     this.modalRef = this.modalService.show(this.imageShowTemplate);
+  }
+
+  removeAdvertisementButton() {
+    if (this.advertisement) {
+      this.advertisement.linkName = undefined;
+      this.advertisement.linkValue = undefined;
+    }
   }
 
   receiveButtonLink(event: ButtonLink) {
