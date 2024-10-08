@@ -1,6 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
 import { ConfirmModalComponent } from '../../_framework/component/confirm-modal/confirm-modal.component';
 import { Advertisement } from '../../_models/advertisement';
 import { AdvertisementService } from '../../_services/advertisement.service';
@@ -11,6 +10,8 @@ import { NgIf } from '@angular/common';
 import { AdvertisementStatus } from '../../_framework/constants/advertisementStatus';
 import { AccountService } from '../../_services/account.service';
 import { AdvertisementMainDataComponent } from '../advertisement-main-data/advertisement-main-data.component';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { UpdateAdvertisementStatusRequest } from '../../_models/updateAdvertisementStatusRequest';
 
 @Component({
   selector: 'app-advertisement-preview',
@@ -25,13 +26,20 @@ import { AdvertisementMainDataComponent } from '../advertisement-main-data/adver
   styleUrl: './advertisement-preview.component.scss',
 })
 export class AdvertisementPreviewComponent implements OnInit {
-  advertisement?: Advertisement;
-  advertisementStatus = AdvertisementStatus;
+  @ViewChild('modalDialogDelete') modalDialogDelete?: any;
+  @ViewChild('modalDialogValidate') modalDialogValidate?: any;
+  @ViewChild('modalDialogPublicationInfo') modalDialogPublicationInfo?: any;
+
   private backButtonService = inject(TelegramBackButtonService);
   private advertisementService = inject(AdvertisementService);
+  private modalService = inject(BsModalService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   accountService = inject(AccountService);
+
+  modalRef?: BsModalRef;
+  advertisement?: Advertisement;
+  advertisementStatus = AdvertisementStatus;
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
@@ -60,8 +68,24 @@ export class AdvertisementPreviewComponent implements OnInit {
       forceRefresh,
     ]);
   }
+  edit() {
+    this.router.navigate(['/app-advertisement-edit', this.advertisement?.id]);
+  }
 
   delete() {
+    this.modalRef = this.modalService.show(this.modalDialogDelete);
+  }
+
+  publish() {
+    this.modalRef = this.modalService.show(this.modalDialogPublicationInfo);
+  }
+
+  sendToValidate() {
+    this.modalRef = this.modalService.show(this.modalDialogValidate);
+  }
+
+  modalDialogDeleteConfirm() {
+    this.modalRef?.hide();
     this.advertisementService.delete(this.advertisement?.id)?.subscribe({
       next: () => {
         this.back(false);
@@ -72,6 +96,27 @@ export class AdvertisementPreviewComponent implements OnInit {
     });
   }
 
+  modalDialogValidateConfirm() {
+    this.modalRef?.hide();
+
+    this.advertisementService
+      .updateStatus({
+        advertisementId: this.advertisement?.id,
+        advertisementStatus: AdvertisementStatus.pendingValidation,
+      } as UpdateAdvertisementStatusRequest)
+      ?.subscribe({
+        next: () => {
+          this.back(false);
+        },
+        error: (err) => {
+          console.error('Error when updating status pendingValidation:', err);
+        },
+      });
+  }
+  modalDialogPublishConfirm(){
+
+  }
+
   getDayWord(frequency: number): string {
     const lastDigit = frequency % 10;
     const lastTwoDigits = frequency % 100;
@@ -79,15 +124,12 @@ export class AdvertisementPreviewComponent implements OnInit {
     if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
       return 'дней';
     }
-
     if (lastDigit === 1) {
       return 'день';
     }
-
     if (lastDigit >= 2 && lastDigit <= 4) {
       return 'дня';
     }
-
     return 'дней';
   }
 }

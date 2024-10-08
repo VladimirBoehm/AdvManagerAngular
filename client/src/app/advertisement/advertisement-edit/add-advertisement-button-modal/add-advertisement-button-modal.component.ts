@@ -11,7 +11,7 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatErrorService } from '../../../_framework/component/errors/mat-error-service';
-import { CustomValidators } from '../../../_framework/component/errors/validators/customValidators';
+import { CustomValidators } from '../../../_framework/component/validators/customValidators';
 export interface ButtonLink {
   buttonName: string;
   link: string;
@@ -23,12 +23,12 @@ export interface ButtonLink {
   imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule],
   templateUrl: './add-advertisement-button-modal.component.html',
   styleUrl: './add-advertisement-button-modal.component.scss',
-  providers: [MatErrorService]
+  providers: [MatErrorService],
 })
 export class AddAdvertisementButtonModalComponent implements OnInit {
-  matErrorService: MatErrorService
+  matErrorService: MatErrorService;
   constructor(matErrorService: MatErrorService) {
-    this.matErrorService = matErrorService
+    this.matErrorService = matErrorService;
   }
   @Input() modalRef?: BsModalRef;
   @Input() buttonName?: string;
@@ -36,8 +36,6 @@ export class AddAdvertisementButtonModalComponent implements OnInit {
   onSave = output<ButtonLink>();
 
   private formBuilder = inject(FormBuilder);
-
-
 
   editForm: FormGroup = new FormGroup({});
   buttonNameCounter: number = 0;
@@ -75,8 +73,12 @@ export class AddAdvertisementButtonModalComponent implements OnInit {
       this.updateLinkCounter();
     });
 
-    this.matErrorService.addErrorsInfo("buttonName", {maxlength:this.maxButtonNameLength})
-    this.matErrorService.addErrorsInfo("link", {maxlength:this.maxLinkLength})
+    this.matErrorService.addErrorsInfo('buttonName', {
+      maxlength: this.maxButtonNameLength,
+    });
+    this.matErrorService.addErrorsInfo('link', {
+      maxlength: this.maxLinkLength,
+    });
   }
 
   updateButtonNameCounter() {

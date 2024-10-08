@@ -9,6 +9,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class ConfirmModalComponent {
   @Input() title: string = '';
+  @Input() info: string = '';
   @Input() firstButtonLabel: string = '';
   @Input() secondButtonLabel: string = '';
 

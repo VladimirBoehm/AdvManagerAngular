@@ -6,6 +6,7 @@ import { AdvertisementSearchParams } from '../_framework/constants/advertisement
 import { AdvertisementCacheType } from '../_framework/constants/advertisementCacheType';
 import { map, Observable, of, tap } from 'rxjs';
 import { UpdateAdvertisementAdminRequest } from '../_models/updateAdvertisementAdminRequest';
+import { UpdateAdvertisementStatusRequest } from '../_models/updateAdvertisementStatusRequest';
 
 @Injectable({
   providedIn: 'root',
@@ -98,6 +99,51 @@ export class AdvertisementService {
             ...cachedAdvertisements,
             savedAdvertisement,
           ]);
+        })
+      );
+  }
+
+  update(advertisement: Advertisement) {
+    return this.http
+      .put<Advertisement>(this.baseUrl + 'advertisement', advertisement)
+      .pipe(
+        tap(() => {
+          const searchParamsKey = this.getSearchParamsKey();
+          const cachedAdvertisements =
+            this.advertisementCache.get(searchParamsKey) || [];
+          const updatedCache = cachedAdvertisements.map((item) =>
+            item.id === advertisement?.id ? advertisement : item
+          );
+          this.advertisementCache.set(searchParamsKey, updatedCache);
+        })
+      );
+  }
+
+  updateStatus(
+    updateAdvertisementStatusRequest: UpdateAdvertisementStatusRequest
+  ) {
+    return this.http
+      .put<UpdateAdvertisementStatusRequest>(
+        this.baseUrl + 'advertisement/updateStatus',
+        updateAdvertisementStatusRequest
+      )
+      .pipe(
+        tap(() => {
+          const searchParamsKey = this.getSearchParamsKey();
+          const cachedAdvertisements =
+            this.advertisementCache.get(searchParamsKey) || [];
+
+          const updatedCache = cachedAdvertisements.map((item) => {
+            if (item.id === updateAdvertisementStatusRequest.advertisementId) {
+              return {
+                ...item,
+                advertisementStatus:
+                  updateAdvertisementStatusRequest.advertisementStatus,
+              };
+            }
+            return item;
+          });
+          this.advertisementCache.set(searchParamsKey, updatedCache);
         })
       );
   }

@@ -45,12 +45,12 @@ import { MatErrorService } from '../../_framework/component/errors/mat-error-ser
   ],
   templateUrl: './advertisement-edit.component.html',
   styleUrl: './advertisement-edit.component.scss',
-  providers: [MatErrorService]
+  providers: [MatErrorService],
 })
 export class AdvertisementEditComponent implements OnInit {
-  matErrorService: MatErrorService
+  matErrorService: MatErrorService;
   constructor(matErrorService: MatErrorService) {
-    this.matErrorService = matErrorService
+    this.matErrorService = matErrorService;
   }
   editForm: FormGroup = new FormGroup({});
   @ViewChild('imageSelectorDialog') imageSelectorDialog?: any;
@@ -95,6 +95,8 @@ export class AdvertisementEditComponent implements OnInit {
           next: (advertisement: Advertisement) => {
             this.advertisement = advertisement;
             this.selectedImage = advertisement.adImage;
+
+            this.initializeForm();
           },
           error: (err) => {
             console.error('Error when loading ads:', err);
@@ -109,11 +111,9 @@ export class AdvertisementEditComponent implements OnInit {
           statusId: 0,
           adImage: undefined,
         };
+        this.initializeForm();
       }
     });
-    this.initializeForm();
-    this.updateTitleCounter();
-    this.updateMessageCounter();
   }
 
   initializeForm() {
@@ -136,10 +136,15 @@ export class AdvertisementEditComponent implements OnInit {
       this.updateMessageCounter();
     });
 
+    this.matErrorService.addErrorsInfo('title', {
+      maxlength: this.maxTitleLength,
+    });
+    this.matErrorService.addErrorsInfo('message', {
+      maxlength: this.maxMessageLength,
+    });
 
-    this.matErrorService.addErrorsInfo("title", {maxlength: this.maxTitleLength})
-    this.matErrorService.addErrorsInfo("message", {maxlength: this.maxMessageLength})
-
+    this.updateTitleCounter();
+    this.updateMessageCounter();
   }
 
   updateTitleCounter() {
@@ -156,14 +161,28 @@ export class AdvertisementEditComponent implements OnInit {
     if (this.advertisement) {
       this.advertisement.title = this.editForm.controls['title']?.value;
       this.advertisement.message = this.editForm.controls['message']?.value;
-      this.advertisementService.save(this.advertisement).subscribe({
-        next: (result: Advertisement) => {
-          this.router.navigate(['app-advertisement-preview', result.id]);
-        },
-        error: (err) => {
-          console.error('Error when saving ads:', err);
-        },
-      });
+      if (this.advertisement?.id === 0) {
+        this.advertisementService.save(this.advertisement).subscribe({
+          next: (result: Advertisement) => {
+            this.router.navigate(['app-advertisement-preview', result.id]);
+          },
+          error: (err) => {
+            console.error('Error when saving ads:', err);
+          },
+        });
+      } else {
+        this.advertisementService.update(this.advertisement).subscribe({
+          next: () => {   
+            this.router.navigate([
+              'app-advertisement-preview',
+              this.advertisement?.id,
+            ]);
+          },
+          error: (err) => {
+            console.error('Error when updating ads:', err);
+          },
+        });
+      }
     }
   }
 

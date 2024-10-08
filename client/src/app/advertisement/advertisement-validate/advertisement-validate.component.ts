@@ -20,7 +20,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatErrorService } from '../../_framework/component/errors/mat-error-service';
 import { max } from 'rxjs';
-import { CustomValidators } from '../../_framework/component/errors/validators/customValidators';
+import { CustomValidators } from '../../_framework/component/validators/customValidators';
 
 @Component({
   selector: 'app-advertisement-validate',
@@ -37,19 +37,20 @@ import { CustomValidators } from '../../_framework/component/errors/validators/c
   providers: [MatErrorService],
 })
 export class AdvertisementValidateComponent implements OnInit {
-  matErrorService: MatErrorService;
+  @ViewChild('modalDialog') modalDialog?: any;
+  @ViewChild('modalDialogReject') modalDialogReject?: any;
+  
   constructor(matErrorService: MatErrorService) {
     this.matErrorService = matErrorService;
   }
+
   editForm: FormGroup = new FormGroup({});
   editFormModalDialog: FormGroup = new FormGroup({});
-  @ViewChild('modalDialog') modalDialog?: any;
-  @ViewChild('modalDialogReject') modalDialogReject?: any;
+  matErrorService: MatErrorService;
 
   private backButtonService = inject(TelegramBackButtonService);
   private route = inject(ActivatedRoute);
   private modalService = inject(BsModalService);
-
   private formBuilder = inject(FormBuilder);
   private router = inject(Router);
   private advertisementService = inject(AdvertisementService);
@@ -87,7 +88,6 @@ export class AdvertisementValidateComponent implements OnInit {
   confirm() {
     this.modalRef = this.modalService.show(this.modalDialog);
   }
-
 
   initializeForm() {
     this.editFormModalDialog = this.formBuilder.group({
