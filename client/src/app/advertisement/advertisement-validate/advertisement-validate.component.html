@@ -1,90 +1,113 @@
 @if(advertisement){
 <div class="container">
-  <div class="d-flex mt-2">
-    <div class="col-6 d-flex align-items-center justify-content-center">
-      <button class="btn empty-button" (click)="confirm()">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="24px"
-          viewBox="0 -960 960 960"
-          width="24px"
-          fill="#5f6368"
-        >
-          <path
-            d="m422-332 248-248-20-20-228 228-114-114-20 20 134 134Zm58.17 200q-72.17 0-135.73-27.39-63.56-27.39-110.57-74.35-47.02-46.96-74.44-110.43Q132-407.65 132-479.83q0-72.17 27.39-135.73 27.39-63.56 74.35-110.57 46.96-47.02 110.43-74.44Q407.65-828 479.83-828q72.17 0 135.73 27.39 63.56 27.39 110.57 74.35 47.02 46.96 74.44 110.43Q828-552.35 828-480.17q0 72.17-27.39 135.73-27.39 63.56-74.35 110.57-46.96 47.02-110.43 74.44Q552.35-132 480.17-132Zm-.17-28q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"
-          />
-        </svg>
-        <div class="text-muted">Одобрить</div>
-      </button>
-    </div>
-    <div
-      class="col-6 d-flex flex-column align-items-center justify-content-center"
-    >
-      <button class="btn empty-button" (click)="reject()">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="24px"
-          viewBox="0 -960 960 960"
-          width="24px"
-          fill="#5f6368"
-        >
-          <path
-            d="m336-316 144-144 144 144 20-20-144-144 144-144-20-20-144 144-144-144-20 20 144 144-144 144 20 20Zm144.17 184q-72.17 0-135.73-27.39-63.56-27.39-110.57-74.35-47.02-46.96-74.44-110.43Q132-407.65 132-479.83q0-72.17 27.39-135.73 27.39-63.56 74.35-110.57 46.96-47.02 110.43-74.44Q407.65-828 479.83-828q72.17 0 135.73 27.39 63.56 27.39 110.57 74.35 47.02 46.96 74.44 110.43Q828-552.35 828-480.17q0 72.17-27.39 135.73-27.39 63.56-74.35 110.57-46.96 47.02-110.43 74.44Q552.35-132 480.17-132Zm-.17-28q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"
-          />
-        </svg>
-        <div class="text-muted">Отклонить</div>
-      </button>
-    </div>
-  </div>
-  <hr />
-  <app-advertisement-main-data
-    [title]="advertisement.title"
-    [message]="advertisement.message"
-    [url]="advertisement.adImage?.url"
-    [linkName]="advertisement.linkName"
-    [linkValue]="advertisement.linkValue"
-  ></app-advertisement-main-data>
-
   <form
     id="editForm"
-    #editForm="ngForm"
+    [formGroup]="editForm"
     (ngSubmit)="confirm()"
-    class="mt-2 pb-5"
+    autocomplete="off"
   >
-    <textarea
-      class="form-control"
-      placeholder="Комментарий"
-      rows="3"
-      name="adminMessage"
-      maxlength="500"
-      [(ngModel)]="advertisement.adminMessage"
-    ></textarea>
-  </form>
+    <div class="d-flex mt-2">
+      <div class="col-6 d-flex align-items-center justify-content-center">
+        <button
+          class="btn empty-button"
+          type="submit"
+          [disabled]="editForm.invalid"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#5f6368"
+          >
+            <path
+              d="m422-332 248-248-20-20-228 228-114-114-20 20 134 134Zm58.17 200q-72.17 0-135.73-27.39-63.56-27.39-110.57-74.35-47.02-46.96-74.44-110.43Q132-407.65 132-479.83q0-72.17 27.39-135.73 27.39-63.56 74.35-110.57 46.96-47.02 110.43-74.44Q407.65-828 479.83-828q72.17 0 135.73 27.39 63.56 27.39 110.57 74.35 47.02 46.96 74.44 110.43Q828-552.35 828-480.17q0 72.17-27.39 135.73-27.39 63.56-74.35 110.57-46.96 47.02-110.43 74.44Q552.35-132 480.17-132Zm-.17-28q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"
+            />
+          </svg>
+          <div class="text-muted">Одобрить</div>
+        </button>
+      </div>
+      <div
+        class="col-6 d-flex flex-column align-items-center justify-content-center"
+      >
+        <button
+          class="btn empty-button"
+          (click)="reject()"
+          [disabled]="editForm.invalid"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#5f6368"
+          >
+            <path
+              d="m336-316 144-144 144 144 20-20-144-144 144-144-20-20-144 144-144-144-20 20 144 144-144 144 20 20Zm144.17 184q-72.17 0-135.73-27.39-63.56-27.39-110.57-74.35-47.02-46.96-74.44-110.43Q132-407.65 132-479.83q0-72.17 27.39-135.73 27.39-63.56 74.35-110.57 46.96-47.02 110.43-74.44Q407.65-828 479.83-828q72.17 0 135.73 27.39 63.56 27.39 110.57 74.35 47.02 46.96 74.44 110.43Q828-552.35 828-480.17q0 72.17-27.39 135.73-27.39 63.56-74.35 110.57-46.96 47.02-110.43 74.44Q552.35-132 480.17-132Zm-.17-28q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"
+            />
+          </svg>
+          <div class="text-muted">Отклонить</div>
+        </button>
+      </div>
+    </div>
+    <hr />
+    <app-advertisement-main-data
+      [title]="advertisement.title"
+      [message]="advertisement.message"
+      [url]="advertisement.adImage?.url"
+      [linkName]="advertisement.linkName"
+      [linkValue]="advertisement.linkValue"
+    ></app-advertisement-main-data>
 
+    <mat-form-field class="mt-3 col-12">
+      <mat-label>Комментарий</mat-label>
+      <textarea
+        matInput
+        rows="3"
+        name="adminMessage"
+        [formControl]="$any(editForm.controls['adminMessage'])"
+      ></textarea>
+      <mat-error>{{
+        matErrorService.getErrorMessage(
+          editForm.controls["adminMessage"],
+          "adminMessage"
+        )
+      }}</mat-error>
+      <mat-hint align="end">
+        {{ commentCounter }}/{{ maxCommentLength }}</mat-hint
+      >
+    </mat-form-field>
+  </form>
   <ng-template #modalDialog>
     <div class="modal-header">
       <h5 class="modal-title pull-left">Одобрить объявление?</h5>
     </div>
     <div class="modal-body">
       <div>Установите разрешенную периодичность размещения:</div>
-      <div class="input-group mb-3 mt-3">
-        <span class="input-group-text" id="basic-addon1">Дни</span>
+      <mat-form-field floatLabel="always" class="col-12 mt-3">
+        <mat-label>Дни</mat-label>
         <input
+          matInput
           type="number"
-          class="form-control"
           placeholder="Одноразовое размещение"
-          aria-label="Username"
-          aria-describedby="basic-addon1"
           step="1"
-          max="100"
-          [(ngModel)]="frequencyValue"
-          (input)="setMaxValue($event, 100)"
+          min="0"
+          name="frequencyValue"
+          [formControl]="$any(editFormModalDialog.controls['frequencyValue'])"
         />
-      </div>
+        <mat-error>{{
+          matErrorService.getErrorMessage(
+            editFormModalDialog.controls["frequencyValue"],
+            "frequencyValue"
+          )
+        }}</mat-error>
+      </mat-form-field>
+
       <div class="d-flex justify-content-end">
         <button
           class="btn empty-button"
           (click)="modalDialogConfirm(advertisementStatus.validated)"
+          [disabled]="editFormModalDialog.invalid"
         >
           <div>Одобрить</div></button
         ><button class="btn empty-button" (click)="modalRef?.hide()">

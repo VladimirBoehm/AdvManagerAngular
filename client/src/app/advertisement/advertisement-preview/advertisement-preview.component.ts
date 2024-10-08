@@ -43,7 +43,6 @@ export class AdvertisementPreviewComponent implements OnInit {
       if (id) {
         this.advertisementService.getById(Number(id)).subscribe({
           next: (advertisement: Advertisement) => {
-            console.log(advertisement);
             this.advertisement = advertisement;
           },
           error: (err) => {

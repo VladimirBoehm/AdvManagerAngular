@@ -5,13 +5,13 @@ import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
-  ValidationErrors,
   ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatErrorService } from '../../../_framework/component/errors/mat-error-service';
+import { CustomValidators } from '../../../_framework/component/errors/validators/customValidators';
 export interface ButtonLink {
   buttonName: string;
   link: string;
@@ -23,8 +23,13 @@ export interface ButtonLink {
   imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule],
   templateUrl: './add-advertisement-button-modal.component.html',
   styleUrl: './add-advertisement-button-modal.component.scss',
+  providers: [MatErrorService]
 })
 export class AddAdvertisementButtonModalComponent implements OnInit {
+  matErrorService: MatErrorService
+  constructor(matErrorService: MatErrorService) {
+    this.matErrorService = matErrorService
+  }
   @Input() modalRef?: BsModalRef;
   @Input() buttonName?: string;
   @Input() link?: string;
@@ -32,7 +37,7 @@ export class AddAdvertisementButtonModalComponent implements OnInit {
 
   private formBuilder = inject(FormBuilder);
 
-  matErrorService = inject(MatErrorService);
+
 
   editForm: FormGroup = new FormGroup({});
   buttonNameCounter: number = 0;
@@ -57,7 +62,7 @@ export class AddAdvertisementButtonModalComponent implements OnInit {
         [
           Validators.required,
           Validators.maxLength(this.maxLinkLength),
-          this.urlValidator(),
+          CustomValidators.urlValidator(),
         ],
       ],
     });
@@ -69,16 +74,9 @@ export class AddAdvertisementButtonModalComponent implements OnInit {
     this.editForm.controls['link'].valueChanges.subscribe(() => {
       this.updateLinkCounter();
     });
-  }
 
-  urlValidator(): ValidatorFn {
-    const urlRegex = /^(https:\/\/|@)/i;
-    return (control: AbstractControl) => {
-      if (!control.value || urlRegex.test(control.value)) {
-        return null;
-      }
-      return { invalidUrl: true };
-    };
+    this.matErrorService.addErrorsInfo("buttonName", {maxlength:this.maxButtonNameLength})
+    this.matErrorService.addErrorsInfo("link", {maxlength:this.maxLinkLength})
   }
 
   updateButtonNameCounter() {

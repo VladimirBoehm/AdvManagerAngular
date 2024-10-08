@@ -45,8 +45,13 @@ import { MatErrorService } from '../../_framework/component/errors/mat-error-ser
   ],
   templateUrl: './advertisement-edit.component.html',
   styleUrl: './advertisement-edit.component.scss',
+  providers: [MatErrorService]
 })
 export class AdvertisementEditComponent implements OnInit {
+  matErrorService: MatErrorService
+  constructor(matErrorService: MatErrorService) {
+    this.matErrorService = matErrorService
+  }
   editForm: FormGroup = new FormGroup({});
   @ViewChild('imageSelectorDialog') imageSelectorDialog?: any;
   @ViewChild('modalAddAdvertisementButtonDialog')
@@ -58,7 +63,6 @@ export class AdvertisementEditComponent implements OnInit {
   private accountService = inject(AccountService);
   private modalService = inject(BsModalService);
   private imageService = inject(ImageService);
-  matErrorService = inject(MatErrorService);
   private formBuilder = inject(FormBuilder);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -131,6 +135,11 @@ export class AdvertisementEditComponent implements OnInit {
     this.editForm.controls['message'].valueChanges.subscribe(() => {
       this.updateMessageCounter();
     });
+
+
+    this.matErrorService.addErrorsInfo("title", {maxlength: this.maxTitleLength})
+    this.matErrorService.addErrorsInfo("message", {maxlength: this.maxMessageLength})
+
   }
 
   updateTitleCounter() {

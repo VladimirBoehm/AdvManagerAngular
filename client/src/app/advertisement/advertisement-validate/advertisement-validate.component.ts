@@ -4,34 +4,60 @@ import { AdvertisementService } from '../../_services/advertisement.service';
 import { Advertisement } from '../../_models/advertisement';
 import { TelegramBackButtonService } from '../../_framework/telegramBackButtonService';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormsModule, NgForm } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { UpdateAdvertisementAdminRequest } from '../../_models/updateAdvertisementAdminRequest';
 import { AdvertisementStatus } from '../../_framework/constants/advertisementStatus';
 import { AdvListStates } from '../../_framework/constants/advListStates';
 import { ConfirmModalComponent } from '../../_framework/component/confirm-modal/confirm-modal.component';
 import { AdvertisementMainDataComponent } from '../advertisement-main-data/advertisement-main-data.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatErrorService } from '../../_framework/component/errors/mat-error-service';
+import { max } from 'rxjs';
+import { CustomValidators } from '../../_framework/component/errors/validators/customValidators';
 
 @Component({
   selector: 'app-advertisement-validate',
   standalone: true,
-  imports: [AdvertisementMainDataComponent, FormsModule, ConfirmModalComponent],
+  imports: [
+    AdvertisementMainDataComponent,
+    ReactiveFormsModule,
+    ConfirmModalComponent,
+    MatFormFieldModule,
+    MatInputModule,
+  ],
   templateUrl: './advertisement-validate.component.html',
   styleUrl: './advertisement-validate.component.scss',
+  providers: [MatErrorService],
 })
 export class AdvertisementValidateComponent implements OnInit {
-  @ViewChild('editForm') editForm?: NgForm;
+  matErrorService: MatErrorService;
+  constructor(matErrorService: MatErrorService) {
+    this.matErrorService = matErrorService;
+  }
+  editForm: FormGroup = new FormGroup({});
+  editFormModalDialog: FormGroup = new FormGroup({});
   @ViewChild('modalDialog') modalDialog?: any;
   @ViewChild('modalDialogReject') modalDialogReject?: any;
 
   private backButtonService = inject(TelegramBackButtonService);
   private route = inject(ActivatedRoute);
   private modalService = inject(BsModalService);
+
+  private formBuilder = inject(FormBuilder);
   private router = inject(Router);
   private advertisementService = inject(AdvertisementService);
-  
+
   frequencyValue: number = 10;
   advertisementId: number = 0;
+  commentCounter: number = 0;
+  maxCommentLength: number = 500;
   advertisement?: Advertisement;
   advertisementStatus = AdvertisementStatus;
   modalRef?: BsModalRef;
@@ -47,6 +73,8 @@ export class AdvertisementValidateComponent implements OnInit {
         this.advertisementService.getById(Number(id)).subscribe({
           next: (advertisement: Advertisement) => {
             this.advertisement = advertisement;
+            this.initializeForm();
+            this.updateAdminMessageCounter();
           },
           error: (err) => {
             console.error('Error when loading ads:', err);
@@ -60,12 +88,44 @@ export class AdvertisementValidateComponent implements OnInit {
     this.modalRef = this.modalService.show(this.modalDialog);
   }
 
+
+  initializeForm() {
+    this.editFormModalDialog = this.formBuilder.group({
+      frequencyValue: [
+        this.frequencyValue,
+        [Validators.max(100), CustomValidators.numeric()],
+      ],
+    });
+
+    this.editForm = this.formBuilder.group({
+      adminMessage: [
+        this.advertisement?.adminMessage,
+        [Validators.maxLength(this.maxCommentLength)],
+      ],
+      frequencyValue: [this.frequencyValue],
+    });
+
+    this.editForm.controls['adminMessage']?.valueChanges.subscribe(() => {
+      this.updateAdminMessageCounter();
+    });
+
+    this.matErrorService.addErrorsInfo('adminMessage', {
+      maxlength: this.maxCommentLength,
+    });
+    this.matErrorService.addErrorsInfo('frequencyValue', { max: 100 });
+  }
+  updateAdminMessageCounter() {
+    const titleValue = this.editForm.controls['adminMessage']?.value || '';
+    this.commentCounter = titleValue.length;
+  }
+
   modalDialogConfirm(advertisementStatus: AdvertisementStatus) {
     const updateAdvertisementAdminRequest: UpdateAdvertisementAdminRequest = {
       advertisementId: this.advertisement?.id ?? 0,
       advertisementStatus: advertisementStatus,
-      publishFrequency: this.frequencyValue || 0,
-      adminMessage: this.editForm?.form.value.adminMessage,
+      publishFrequency:
+        this.editFormModalDialog.controls['frequencyValue']?.value,
+      adminMessage: this.editForm.controls['adminMessage']?.value,
     };
 
     this.advertisementService
@@ -85,12 +145,5 @@ export class AdvertisementValidateComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.backButtonService.removeBackButtonHandler();
-  }
-
-  setMaxValue(event: any, max: number) {
-    if (event.target.value > max) {
-      event.target.value = max;
-    }
-    this.frequencyValue = event.target.value;
   }
 }

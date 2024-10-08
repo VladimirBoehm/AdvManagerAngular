@@ -38,7 +38,7 @@
       <mat-error>{{
         matErrorService.getErrorMessage(
           editForm.controls["title"],
-          maxTitleLength
+          "title"
         )
       }}</mat-error>
       }
@@ -59,7 +59,7 @@
       <mat-error>{{
         matErrorService.getErrorMessage(
           editForm.controls["message"],
-          maxMessageLength
+          "message"
         )
       }}</mat-error>
       }
