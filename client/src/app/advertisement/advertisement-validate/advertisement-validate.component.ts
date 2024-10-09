@@ -39,7 +39,7 @@ import { CustomValidators } from '../../_framework/component/validators/customVa
 export class AdvertisementValidateComponent implements OnInit {
   @ViewChild('modalDialog') modalDialog?: any;
   @ViewChild('modalDialogReject') modalDialogReject?: any;
-  
+
   constructor(matErrorService: MatErrorService) {
     this.matErrorService = matErrorService;
   }
