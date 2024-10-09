@@ -89,7 +89,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
         return 'Отклонён';
       }
       case AdvertisementStatus.validated: {
-        return 'Одобрен';
+        return 'Подтверждён';
       }
     }
   }

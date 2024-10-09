@@ -7,28 +7,32 @@ import { AdvertisementCacheType } from '../_framework/constants/advertisementCac
 import { map, Observable, of, tap } from 'rxjs';
 import { UpdateAdvertisementAdminRequest } from '../_models/updateAdvertisementAdminRequest';
 import { UpdateAdvertisementStatusRequest } from '../_models/updateAdvertisementStatusRequest';
+import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
+import { AdvertisementCacheService } from './advertisement.cache.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AdvertisementService {
   private http = inject(HttpClient);
-  baseUrl = environment.apiUrl;
+  private baseUrl = environment.apiUrl;
+  private advertisementCacheService = inject(AdvertisementCacheService);
+  
   advertisementCache = new Map<any, Advertisement[]>();
   advertisementSearchParams = signal<AdvertisementSearchParams>(
     new AdvertisementSearchParams()
   );
 
-  getPendingValidationAdvertisements(forceRefresh: boolean = false) {
+  getPendingValidationAdvertisements(
+    forceRefresh: boolean = false
+  ): Observable<Advertisement[]> {
     if (!forceRefresh) {
       this.advertisementSearchParams.update((params) => ({
         ...params,
         cacheType: AdvertisementCacheType.History,
       }));
 
-      const cachedResponse = this.advertisementCache.get(
-        this.getSearchParamsKey()
-      );
+      const cachedResponse = this.advertisementCacheService.getCache();
       if (cachedResponse) {
         return of(cachedResponse);
       }
@@ -40,21 +44,17 @@ export class AdvertisementService {
       )
       .pipe(
         tap((response) => {
-          this.advertisementCache.set(this.getSearchParamsKey(), response);
+          this.advertisementCacheService.setCache(response);
         })
       );
   }
 
   getMyAdvertisements(forceRefresh: boolean = false) {
     if (!forceRefresh) {
-      this.advertisementSearchParams.update((params) => ({
-        ...params,
-        cacheType: AdvertisementCacheType.MyAdvertisements,
-      }));
-
-      const cachedResponse = this.advertisementCache.get(
-        this.getSearchParamsKey()
+      this.advertisementCacheService.setSearchParams(
+        AdvertisementCacheType.MyAdvertisements
       );
+      const cachedResponse = this.advertisementCacheService.getCache();
       if (cachedResponse) {
         return of(cachedResponse);
       }
@@ -62,15 +62,13 @@ export class AdvertisementService {
 
     return this.http.get<Advertisement[]>(this.baseUrl + 'advertisement').pipe(
       tap((response) => {
-        this.advertisementCache.set(this.getSearchParamsKey(), response);
+        this.advertisementCacheService.setCache(response);
       })
     );
   }
 
   getById(id: number) {
-    const cachedAdvertisements = this.advertisementCache.get(
-      this.getSearchParamsKey()
-    );
+    const cachedAdvertisements = this.advertisementCacheService.getCache();
     if (cachedAdvertisements) {
       const result = cachedAdvertisements.find(
         (x: Advertisement) => x.id === id
@@ -82,23 +80,12 @@ export class AdvertisementService {
     return this.http.get<Advertisement>(this.baseUrl + `advertisement/${id}`);
   }
 
-  getSearchParamsKey(): string {
-    return Object.values(this.advertisementSearchParams()).join('-');
-  }
-
   save(advertisement: Advertisement): Observable<Advertisement> {
     return this.http
       .post<Advertisement>(this.baseUrl + 'advertisement/save', advertisement)
       .pipe(
         tap((savedAdvertisement: Advertisement) => {
-          const searchParamsKey = this.getSearchParamsKey();
-
-          const cachedAdvertisements =
-            this.advertisementCache.get(searchParamsKey) || [];
-          this.advertisementCache.set(searchParamsKey, [
-            ...cachedAdvertisements,
-            savedAdvertisement,
-          ]);
+          this.advertisementCacheService.addItem(savedAdvertisement);
         })
       );
   }
@@ -108,20 +95,17 @@ export class AdvertisementService {
       .put<Advertisement>(this.baseUrl + 'advertisement', advertisement)
       .pipe(
         tap(() => {
-          const searchParamsKey = this.getSearchParamsKey();
-          const cachedAdvertisements =
-            this.advertisementCache.get(searchParamsKey) || [];
-          const updatedCache = cachedAdvertisements.map((item) =>
-            item.id === advertisement?.id ? advertisement : item
-          );
-          this.advertisementCache.set(searchParamsKey, updatedCache);
+          this.advertisementCacheService.updateItem(advertisement);
         })
       );
   }
 
-  updateStatus(
-    updateAdvertisementStatusRequest: UpdateAdvertisementStatusRequest
-  ) {
+  updateStatus(advertisement: Advertisement) {
+    let updateAdvertisementStatusRequest = {
+      advertisementId: advertisement.id,
+      advertisementStatus: advertisement.statusId,
+    } as UpdateAdvertisementStatusRequest;
+
     return this.http
       .put<UpdateAdvertisementStatusRequest>(
         this.baseUrl + 'advertisement/updateStatus',
@@ -129,40 +113,19 @@ export class AdvertisementService {
       )
       .pipe(
         tap(() => {
-          const searchParamsKey = this.getSearchParamsKey();
-          const cachedAdvertisements =
-            this.advertisementCache.get(searchParamsKey) || [];
-
-          const updatedCache = cachedAdvertisements.map((item) => {
-            if (item.id === updateAdvertisementStatusRequest.advertisementId) {
-              return {
-                ...item,
-                advertisementStatus:
-                  updateAdvertisementStatusRequest.advertisementStatus,
-              };
-            }
-            return item;
-          });
-          this.advertisementCache.set(searchParamsKey, updatedCache);
+          this.advertisementCacheService.updateItem(advertisement);
         })
       );
   }
 
   delete(id: number | undefined) {
     if (!id) return;
-    const searchParamsKey = this.getSearchParamsKey();
-    const cachedAdvertisements = this.advertisementCache.get(searchParamsKey);
 
     return this.http
       .delete<Advertisement>(this.baseUrl + `advertisement/${id}`)
       .pipe(
         tap(() => {
-          if (cachedAdvertisements) {
-            this.advertisementCache.set(
-              searchParamsKey,
-              cachedAdvertisements.filter((x) => x.id !== id)
-            );
-          }
+          this.advertisementCacheService.deleteItem(id);
         })
       );
   }
@@ -175,5 +138,18 @@ export class AdvertisementService {
       this.baseUrl + 'advertisementAdmin',
       updateAdvertisementAdminRequest
     );
+  }
+
+  сancelPublication(id: number) {
+    return this.http
+      .put(this.baseUrl + `advertisement/cancelPublication/${id}`, null)
+      .pipe(
+        tap(() => {
+          this.advertisementCacheService.updateItemsStatus(
+            AdvertisementStatus.validated,
+            id
+          );
+        })
+      );
   }
 }

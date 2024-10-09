@@ -81,7 +81,7 @@
       <div
         class="col-6 d-flex flex-column align-items-center justify-content-center"
       >
-        <button class="btn empty-button" (click)="publish()">
+        <button class="btn empty-button" (click)="publishDialogShow()">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="24px"
@@ -99,7 +99,7 @@
     </div>
     <hr />
     <div class="alert alert-success" role="alert">
-      <div class="text-center">Одобрено!</div>
+      <div class="text-center">Подтверждено!</div>
 
       <div
         *ngIf="advertisement.publishFrequency; else oneTime"
@@ -120,8 +120,14 @@
     *ngIf="advertisement.statusId === advertisementStatus.pendingPublication"
   >
     <div class="d-flex mt-2">
-      <div class="col-6 d-flex align-items-center justify-content-center">
-        <button class="btn empty-button">
+      <div class="col-6"></div>
+      <div
+        class="col-6 d-flex flex-column align-items-center justify-content-center"
+      >
+        <button
+          class="btn empty-button"
+          (click)="cancelPublicationDialogShow()"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="24px"
@@ -136,28 +142,17 @@
           <div class="text-muted">Отменить</div>
         </button>
       </div>
-      <div
-        class="col-6 d-flex flex-column align-items-center justify-content-center"
-      >
-        <button class="btn empty-button">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#5f6368"
-          >
-            <path
-              d="M700-132q-62 0-105-43t-43-105q0-62 43-105t105-43q62 0 105 43t43 105q0 62-43 105t-105 43Zm66-62 20-20-72-72v-108h-28v120l80 80Zm-534 22q-25 0-42.5-17.5T172-232v-496q0-25 17.5-42.5T232-788h191q4-20 19.5-34t37.5-14q22 0 37.5 14t19.5 34h191q25 0 42.5 17.5T788-728v238q-8-3-14-5.5t-14-4.5v-228q0-12-10-22t-22-10H628v80H332v-80H232q-12 0-22 10t-10 22v496q0 14 9 23t23 9h255q2 8 5 14.5t8 13.5H232Zm248-576q13 0 21.5-8.5T510-778q0-13-8.5-21.5T480-808q-13 0-21.5 8.5T450-778q0 13 8.5 21.5T480-748Z"
-            />
-          </svg>
-          <div class="text-muted">Расписание</div>
-        </button>
-      </div>
     </div>
     <hr />
+
     <div class="alert alert-info text-center" role="alert">
-      Ожидает размещения!
+      <div class="d-flex flex-column">
+        <div>Ожидает размещения!</div>
+        <div>
+          Будет поставлено в очередь:
+          {{ advertisement.nextPublishDate | date : "dd.MM.yyyy" }}
+        </div>
+      </div>
     </div>
   </div>
 
@@ -233,6 +228,7 @@
     [linkName]="advertisement.linkName"
     [linkValue]="advertisement.linkValue"
   ></app-advertisement-main-data>
+
   <div
     *ngIf="advertisement.adminMessage && advertisement.adminMessage.length > 0"
     class="input-group mt-3 pb-4"
@@ -260,6 +256,16 @@
     ></app-confirm-modal>
   </ng-template>
 
+  <ng-template #modalDialogCancelPublication>
+    <app-confirm-modal
+      [title]="'Отменить публикацию?'"
+      [firstButtonLabel]="'Да'"
+      [secondButtonLabel]="'Нет'"
+      (firstButtonAction)="cancelPublication()"
+      (secondButtonAction)="modalRef?.hide()"
+    ></app-confirm-modal>
+  </ng-template>
+
   <ng-template #modalDialogValidate>
     <app-confirm-modal
       [title]="'Отправить на валидацию?'"
@@ -272,12 +278,11 @@
   </ng-template>
 
   <ng-template #modalDialogPublicationInfo>
-    <div class="modal-header">
-      <h5 class="modal-title pull-left">Размещение</h5>
-    </div>
     <div class="modal-body">
-      <div class="text-center mb-2">Объявление будет поставлено в очередь начиная с:</div>
-      <div class="text-center mb-2">ДАТА</div>
+      <div class="text-center mb-2">Объявление будет поставлено в очередь</div>
+      <div class="text-center mb-2">
+        начиная с: {{ nextPublishDate | date : "dd.MM.yyyy" }}
+      </div>
       <div class="text-center text-muted mb-2 my-info-text">
         *Размещение объявлений зависит от активности в группе
       </div>
