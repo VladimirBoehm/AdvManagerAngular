@@ -12,6 +12,7 @@ import { AccountService } from '../../_services/account.service';
 import { AdvertisementMainDataComponent } from '../advertisement-main-data/advertisement-main-data.component';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { PublishService } from '../../_services/publish.service';
+import { AdvertisementHelper } from '../../_framework/component/helpers/advertisementHelper';
 
 @Component({
   selector: 'app-advertisement-preview',
@@ -39,6 +40,8 @@ export class AdvertisementPreviewComponent implements OnInit {
   private route = inject(ActivatedRoute);
   accountService = inject(AccountService);
   publishService = inject(PublishService);
+  advertisementHelper = inject(AdvertisementHelper); 
+
 
   modalRef?: BsModalRef;
   advertisement?: Advertisement;

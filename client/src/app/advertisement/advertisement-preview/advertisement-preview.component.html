@@ -221,6 +221,19 @@
     </div>
   </div>
 
+  <div
+    *ngIf="advertisement.statusId === advertisementStatus.published"
+    class="alert alert-success mt-2"
+    role="alert"
+  >
+    <div class="text-center">
+      Размещено: {{ advertisement.nextPublishDate | date : "dd.MM.yyyy" }}
+    </div>
+    <div class="text-center">
+      Автор: {{ advertisementHelper.getUserDisplayName(advertisement) }}
+    </div>
+  </div>
+
   <app-advertisement-main-data
     [title]="advertisement.title"
     [message]="advertisement.message"
