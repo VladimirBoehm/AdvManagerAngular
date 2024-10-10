@@ -56,11 +56,9 @@ export class AdvertisementPreviewComponent implements OnInit {
       if (status && id) {
         if (Number(status) === AdvertisementStatus.published) {
           console.log(status);
-          this.getAdvertisementHistoryById(Number(id))
+          this.getAdvertisementHistoryById(Number(id));
         } else {
-          
-            this.getAdvertisementById(Number(id));
-          
+          this.getAdvertisementById(Number(id));
         }
       }
     });
@@ -91,11 +89,21 @@ export class AdvertisementPreviewComponent implements OnInit {
   }
 
   private back(forceRefresh: boolean) {
-    this.router.navigate([
-      '/adv-list',
-      AdvListStates.MyAdvertisements,
-      forceRefresh,
-    ]);
+    if (this.advertisement) {
+      if (this.advertisement.statusId === AdvertisementStatus.published) {
+        this.router.navigate([
+          '/adv-list',
+          AdvListStates.AllHistory,
+          forceRefresh,
+        ]);
+      } else {
+        this.router.navigate([
+          '/adv-list',
+          AdvListStates.MyAdvertisements,
+          forceRefresh,
+        ]);
+      }
+    }
   }
 
   edit() {
