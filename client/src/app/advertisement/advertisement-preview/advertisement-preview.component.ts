@@ -40,8 +40,7 @@ export class AdvertisementPreviewComponent implements OnInit {
   private route = inject(ActivatedRoute);
   accountService = inject(AccountService);
   publishService = inject(PublishService);
-  advertisementHelper = inject(AdvertisementHelper); 
-
+  advertisementHelper = inject(AdvertisementHelper);
 
   modalRef?: BsModalRef;
   advertisement?: Advertisement;
@@ -58,7 +57,6 @@ export class AdvertisementPreviewComponent implements OnInit {
       const id = params.get('id');
       if (status && id) {
         if (Number(status) === AdvertisementStatus.published) {
-          console.log(status);
           this.getAdvertisementHistoryById(Number(id));
         } else {
           this.getAdvertisementById(Number(id));
@@ -71,7 +69,6 @@ export class AdvertisementPreviewComponent implements OnInit {
     this.advertisementService.getByIdHistory(id)?.subscribe({
       next: (advertisement: Advertisement) => {
         this.advertisement = advertisement;
-        console.log(advertisement);
       },
       error: (err) => {
         console.error('Error when loading ads:', err);

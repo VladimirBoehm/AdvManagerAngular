@@ -3,6 +3,19 @@
     <ng-container *ngTemplateOutlet="noAdvertisements"></ng-container>
   </div>
 
+  <mat-paginator #paginator
+                style="background-color: white;"
+               class="demo-paginator"
+               (page)="handlePageEvent($event)"
+               [length]="length"
+               [pageSize]="pageSize"
+               [showFirstLastButtons]="false"
+               [hidePageSize]="true"
+               [pageIndex]="pageIndex"
+               aria-label="Select page">
+</mat-paginator>
+
+
   <!-- Pending validation -->
   <div *ngIf="advertisements.length > 0 && state === advListStates.Validate">
     <ul class="list-group list-group-flush">
@@ -122,7 +135,7 @@
   </div>
 </div>
 
-<!-- My advertisements -->
+<!-- AllHistory -->
 <div *ngIf="advertisements.length > 0 && state === advListStates.AllHistory">
   <hr />
   <ul class="list-group list-group-flush">

@@ -7,11 +7,19 @@ import { DatePipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import { TelegramBackButtonService } from '../_framework/telegramBackButtonService';
 import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
 import { PaginationQueryObject } from '../_models/paginationQueryObject';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-adv-list',
   standalone: true,
-  imports: [NgIf, NgFor, RouterLink, NgTemplateOutlet, DatePipe],
+  imports: [
+    NgIf,
+    NgFor,
+    RouterLink,
+    NgTemplateOutlet,
+    DatePipe,
+    MatPaginatorModule,
+  ],
   templateUrl: './adv-list.component.html',
   styleUrl: './adv-list.component.scss',
 })
@@ -25,6 +33,12 @@ export class AdvListComponent implements OnInit, OnDestroy {
   advListStates = AdvListStates;
   state: AdvListStates | undefined;
 
+  //Paging
+  length = 50;
+  pageSize = 10;
+  pageIndex = 0;
+  pageEvent?: PageEvent;
+
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
       this.router.navigate(['']);
@@ -35,6 +49,13 @@ export class AdvListComponent implements OnInit, OnDestroy {
       this.forceRefresh = params.get('forceRefresh') === 'true';
     });
     this.initialize();
+  }
+
+  handlePageEvent(e: PageEvent) {
+    this.pageEvent = e;
+    this.length = e.length;
+    this.pageSize = e.pageSize;
+    this.pageIndex = e.pageIndex;
   }
 
   private initialize() {
