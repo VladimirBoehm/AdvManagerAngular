@@ -1,14 +1,14 @@
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 import { Advertisement } from '../_models/advertisement';
 import { environment } from '../../environments/environment';
-import { AdvertisementSearchParams } from '../_framework/constants/advertisementSearchParams';
 import { AdvertisementCacheType } from '../_framework/constants/advertisementCacheType';
-import { map, Observable, of, tap } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
 import { UpdateAdvertisementAdminRequest } from '../_models/updateAdvertisementAdminRequest';
 import { UpdateAdvertisementStatusRequest } from '../_models/updateAdvertisementStatusRequest';
 import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
 import { AdvertisementCacheService } from './advertisement.cache.service';
+import { PaginationQueryObject } from '../_models/paginationQueryObject';
 
 @Injectable({
   providedIn: 'root',
@@ -17,68 +17,6 @@ export class AdvertisementService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
   private advertisementCacheService = inject(AdvertisementCacheService);
-  
-  advertisementCache = new Map<any, Advertisement[]>();
-  advertisementSearchParams = signal<AdvertisementSearchParams>(
-    new AdvertisementSearchParams()
-  );
-
-  getPendingValidationAdvertisements(
-    forceRefresh: boolean = false
-  ): Observable<Advertisement[]> {
-    if (!forceRefresh) {
-      this.advertisementSearchParams.update((params) => ({
-        ...params,
-        cacheType: AdvertisementCacheType.History,
-      }));
-
-      const cachedResponse = this.advertisementCacheService.getCache();
-      if (cachedResponse) {
-        return of(cachedResponse);
-      }
-    }
-
-    return this.http
-      .get<Advertisement[]>(
-        this.baseUrl + 'advertisementAdmin/getPendingAdvertisements'
-      )
-      .pipe(
-        tap((response) => {
-          this.advertisementCacheService.setCache(response);
-        })
-      );
-  }
-
-  getMyAdvertisements(forceRefresh: boolean = false) {
-    if (!forceRefresh) {
-      this.advertisementCacheService.setSearchParams(
-        AdvertisementCacheType.MyAdvertisements
-      );
-      const cachedResponse = this.advertisementCacheService.getCache();
-      if (cachedResponse) {
-        return of(cachedResponse);
-      }
-    }
-
-    return this.http.get<Advertisement[]>(this.baseUrl + 'advertisement').pipe(
-      tap((response) => {
-        this.advertisementCacheService.setCache(response);
-      })
-    );
-  }
-
-  getById(id: number) {
-    const cachedAdvertisements = this.advertisementCacheService.getCache();
-    if (cachedAdvertisements) {
-      const result = cachedAdvertisements.find(
-        (x: Advertisement) => x.id === id
-      );
-      if (result) {
-        return of(result);
-      }
-    }
-    return this.http.get<Advertisement>(this.baseUrl + `advertisement/${id}`);
-  }
 
   save(advertisement: Advertisement): Observable<Advertisement> {
     return this.http
@@ -130,6 +68,84 @@ export class AdvertisementService {
       );
   }
 
+  сancelPublication(id: number) {
+    return this.http
+      .put(this.baseUrl + `advertisement/cancelPublication/${id}`, null)
+      .pipe(
+        tap(() => {
+          this.advertisementCacheService.updateItemsStatus(
+            AdvertisementStatus.validated,
+            id
+          );
+        })
+      );
+  }
+
+  // MY ADVERTISEMENTS
+
+  getMyAdvertisements(forceRefresh: boolean = false) {
+    if (!forceRefresh) {
+      const cachedResponse = this.advertisementCacheService.getCache(
+        AdvertisementCacheType.MyAdvertisements
+      );
+      if (cachedResponse) {
+        return of(cachedResponse);
+      }
+    }
+
+    return this.http.get<Advertisement[]>(this.baseUrl + 'advertisement').pipe(
+      tap((response) => {
+        this.advertisementCacheService.setCache(response);
+      })
+    );
+  }
+
+  getById(id: number) {
+    const cachedAdvertisements = this.advertisementCacheService.getCache(
+      AdvertisementCacheType.MyAdvertisements
+    );
+    if (cachedAdvertisements) {
+      const result = cachedAdvertisements.find(
+        (x: Advertisement) => x.id === id
+      );
+      if (result) {
+        return of(result);
+      }
+    }
+    return this.http.get<Advertisement>(this.baseUrl + `advertisement/${id}`);
+  }
+
+  // ADMIN
+
+  getPendingValidationAdvertisementsCount(): Observable<number> {
+    return this.http.get<number>(
+      this.baseUrl + 'advertisementAdmin/getPendingAdvertisementsCount'
+    );
+  }
+
+  getPendingValidationAdvertisements(
+    forceRefresh: boolean = false
+  ): Observable<Advertisement[]> {
+    if (!forceRefresh) {
+      const cachedResponse = this.advertisementCacheService.getCache(
+        AdvertisementCacheType.PendingValidation
+      );
+      if (cachedResponse) {
+        return of(cachedResponse);
+      }
+    }
+
+    return this.http
+      .get<Advertisement[]>(
+        this.baseUrl + 'advertisementAdmin/getPendingAdvertisements'
+      )
+      .pipe(
+        tap((response) => {
+          this.advertisementCacheService.setCache(response);
+        })
+      );
+  }
+
   //TODO обновлять cache
   updateAdvertisementAdmin(
     updateAdvertisementAdminRequest: UpdateAdvertisementAdminRequest
@@ -140,15 +156,47 @@ export class AdvertisementService {
     );
   }
 
-  сancelPublication(id: number) {
+  // ALL_HISTORY
+
+  getByIdHistory(id: number) {
+    const cachedAdvertisements = this.advertisementCacheService.getCache(
+      AdvertisementCacheType.AllHistory
+    );
+    if (cachedAdvertisements) {
+      const result = cachedAdvertisements.find(
+        (x: Advertisement) => x.id === id
+      );
+      if (result) {
+        return of(result);
+      }
+    }
+    return null;
+  }
+
+ //TODO учитывать в кэше paginationQueryObject
+  getAllAdvertisementHistory(
+    paginationQueryObject: PaginationQueryObject,
+    forceRefresh: boolean = false
+  ): Observable<Advertisement[]> {
+    if (!forceRefresh) {
+      const cachedResponse = this.advertisementCacheService.getCache(
+        AdvertisementCacheType.AllHistory
+      );
+
+      if (cachedResponse) {
+        return of(cachedResponse);
+      }
+    }
+
+    const params = new HttpParams()
+      .set('PageNumber', paginationQueryObject.pageNumber.toString())
+      .set('PageSize', paginationQueryObject.pageSize.toString());
+
     return this.http
-      .put(this.baseUrl + `advertisement/cancelPublication/${id}`, null)
+      .get<Advertisement[]>(this.baseUrl + 'advertisementHistory', { params })
       .pipe(
-        tap(() => {
-          this.advertisementCacheService.updateItemsStatus(
-            AdvertisementStatus.validated,
-            id
-          );
+        tap((response) => {
+          this.advertisementCacheService.setCache(response);
         })
       );
   }

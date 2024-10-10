@@ -3,14 +3,15 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AdvListStates } from '../_framework/constants/advListStates';
 import { AdvertisementService } from '../_services/advertisement.service';
 import { Advertisement } from '../_models/advertisement';
-import { NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
+import { DatePipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import { TelegramBackButtonService } from '../_framework/telegramBackButtonService';
 import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
+import { PaginationQueryObject } from '../_models/paginationQueryObject';
 
 @Component({
   selector: 'app-adv-list',
   standalone: true,
-  imports: [NgIf, NgFor, RouterLink, NgTemplateOutlet],
+  imports: [NgIf, NgFor, RouterLink, NgTemplateOutlet, DatePipe],
   templateUrl: './adv-list.component.html',
   styleUrl: './adv-list.component.scss',
 })
@@ -50,7 +51,27 @@ export class AdvListComponent implements OnInit, OnDestroy {
           });
         break;
       }
-      case AdvListStates.History: {
+      case AdvListStates.AllHistory: {
+        let paginationQueryObject = {
+          pageNumber: 1,
+          pageSize: 10,
+        } as PaginationQueryObject;
+
+        this.advertisementService
+          .getAllAdvertisementHistory(paginationQueryObject, this.forceRefresh)
+          .subscribe({
+            next: (advertisements: Advertisement[]) => {
+              this.advertisements = advertisements;
+              console.log(advertisements);
+            },
+            error: (err) => {
+              console.error('Error when loading ads:', err);
+            },
+          });
+
+        break;
+      }
+      case AdvListStates.PrivateHistory: {
         break;
       }
       case AdvListStates.MyAdvertisements: {
@@ -90,6 +111,9 @@ export class AdvListComponent implements OnInit, OnDestroy {
       }
       case AdvertisementStatus.validated: {
         return 'Подтверждён';
+      }
+      case AdvertisementStatus.published: {
+        return 'Размещён';
       }
     }
   }

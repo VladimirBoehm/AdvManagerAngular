@@ -94,7 +94,7 @@
       <li
         *ngFor="let advertisement of advertisements"
         class="list-group-item"
-        [routerLink]="['/app-advertisement-preview', advertisement.id]"
+        [routerLink]="['/app-advertisement-preview', advertisement.id, advertisement.statusId]"
       >
         <div class="d-flex">
           <div class="d-flex flex-column col-11">
@@ -121,6 +121,44 @@
     </ul>
   </div>
 </div>
+
+<!-- My advertisements -->
+<div *ngIf="advertisements.length > 0 && state === advListStates.AllHistory">
+  <hr />
+  <ul class="list-group list-group-flush">
+    <li
+      *ngFor="let advertisement of advertisements"
+      class="list-group-item"
+      [routerLink]="['/app-advertisement-preview', advertisement.id, advertisement.statusId]"
+    >
+      <div class="d-flex">
+        <div class="d-flex flex-column col-11">
+          <h6>{{ advertisement.title }}</h6>
+          <div class="fw-normal text-muted">
+            Размещено: {{ advertisement.nextPublishDate | date : "dd.MM.yyyy" }}
+          </div>
+          <div class="fw-normal text-muted">
+            {{ getUserDisplayName(advertisement) }}
+          </div>
+        </div>
+        <div
+          class="d-flex fw-normal col-1 align-items-center justify-content-end"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#5f6368"
+          >
+            <path d="m320-116-34-34 330-330-330-330 34-34 364 364-364 364Z" />
+          </svg>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
+
 <ng-template #noAdvertisements>
   <p>Нет объявлений для отображения.</p>
 </ng-template>

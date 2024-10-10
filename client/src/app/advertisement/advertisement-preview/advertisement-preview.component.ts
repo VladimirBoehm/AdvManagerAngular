@@ -11,7 +11,6 @@ import { AdvertisementStatus } from '../../_framework/constants/advertisementSta
 import { AccountService } from '../../_services/account.service';
 import { AdvertisementMainDataComponent } from '../advertisement-main-data/advertisement-main-data.component';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { UpdateAdvertisementStatusRequest } from '../../_models/updateAdvertisementStatusRequest';
 import { PublishService } from '../../_services/publish.service';
 
 @Component({
@@ -52,10 +51,30 @@ export class AdvertisementPreviewComponent implements OnInit {
     });
 
     this.route.paramMap.subscribe((params) => {
+      const status = params.get('status');
       const id = params.get('id');
-      if (id) {
-        this.getAdvertisementById(Number(id));
+      if (status && id) {
+        if (Number(status) === AdvertisementStatus.published) {
+          console.log(status);
+          this.getAdvertisementHistoryById(Number(id))
+        } else {
+          
+            this.getAdvertisementById(Number(id));
+          
+        }
       }
+    });
+  }
+
+  private getAdvertisementHistoryById(id: number) {
+    this.advertisementService.getByIdHistory(id)?.subscribe({
+      next: (advertisement: Advertisement) => {
+        this.advertisement = advertisement;
+        console.log(advertisement);
+      },
+      error: (err) => {
+        console.error('Error when loading ads:', err);
+      },
     });
   }
 
@@ -78,6 +97,7 @@ export class AdvertisementPreviewComponent implements OnInit {
       forceRefresh,
     ]);
   }
+
   edit() {
     this.router.navigate(['/app-advertisement-edit', this.advertisement?.id]);
   }

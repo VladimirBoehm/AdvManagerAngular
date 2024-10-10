@@ -17,14 +17,18 @@ export class AdvertisementCacheService {
     return Object.values(this.advertisementSearchParams()).join('-');
   }
 
-  setSearchParams(advertisementCacheType: AdvertisementCacheType) {
+  private setSearchParams(advertisementCacheType: AdvertisementCacheType) {
     this.advertisementSearchParams.update((params) => ({
       ...params,
       cacheType: advertisementCacheType,
     }));
   }
 
-  getCache(): Advertisement[] | undefined {
+  getCache(
+    advertisementCacheType: AdvertisementCacheType
+  ): Advertisement[] | undefined {
+    this.setSearchParams(advertisementCacheType);
+
     return this.advertisementCache.get(this.getSearchParamsKey());
   }
 
@@ -55,7 +59,7 @@ export class AdvertisementCacheService {
 
   updateItemsStatus(
     advertisementStatus: AdvertisementStatus,
-    advertisementId: number,
+    advertisementId: number
   ) {
     const searchParamsKey = this.getSearchParamsKey();
     const cachedAdvertisements =

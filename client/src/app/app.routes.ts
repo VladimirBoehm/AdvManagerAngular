@@ -21,7 +21,7 @@ export const routes: Routes = [
     component: AdvertisementValidateComponent,
   },
   {
-    path: 'app-advertisement-preview/:id',
+    path: 'app-advertisement-preview/:id/:status',
     component: AdvertisementPreviewComponent,
   },
   {

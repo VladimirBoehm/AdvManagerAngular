@@ -4,4 +4,5 @@ export enum AdvertisementStatus {
   pendingValidation = 2,
   pendingPublication = 3,
   rejected = 4,
+  published = 5,
 }
