@@ -1,39 +1,86 @@
 import { Injectable, signal } from '@angular/core';
 import { Advertisement } from '../_models/advertisement';
 import { AdvertisementSearchParams } from '../_framework/constants/advertisementSearchParams';
-import { AdvertisementCacheType } from '../_framework/constants/advertisementCacheType';
+import { AdvertisementSearchType } from '../_framework/constants/advertisementSearchType';
 import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
+import { PaginatedResult } from '../_models/pagination';
+import { PaginationParams } from '../_models/paginationParams';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AdvertisementCacheService {
   private advertisementCache = new Map<any, Advertisement[]>();
+  //TEST
+  private advertisementCacheTest = new Map<
+    any,
+    PaginatedResult<Advertisement[]>
+  >();
+
   advertisementSearchParams = signal<AdvertisementSearchParams>(
     new AdvertisementSearchParams()
   );
 
   private getSearchParamsKey(): string {
-    return Object.values(this.advertisementSearchParams()).join('-');
+    const flattenObject = (obj: any): any => {
+      const flattened: any = {};
+
+      for (const key in obj) {
+        if (obj[key] && typeof obj[key] === 'object') {
+          Object.assign(flattened, flattenObject(obj[key]));
+        } else {
+          flattened[key] = obj[key];
+        }
+      }
+      return flattened;
+    };
+
+    const flattenedParams = flattenObject(this.advertisementSearchParams());
+    return Object.values(flattenedParams).join('-');
   }
 
-  private setSearchParams(advertisementCacheType: AdvertisementCacheType) {
+  private setSearchParams(advertisementCacheType: AdvertisementSearchType) {
     this.advertisementSearchParams.update((params) => ({
       ...params,
       cacheType: advertisementCacheType,
     }));
   }
 
+  //TEST
+  private setSearchParamsTest(
+    advertisementCacheType: AdvertisementSearchType,
+    paginationParams: PaginationParams
+  ) {
+    this.advertisementSearchParams.update((params) => ({
+      ...params,
+      cacheType: advertisementCacheType,
+      paginationParams,
+    }));
+  }
+
   getCache(
-    advertisementCacheType: AdvertisementCacheType
+    advertisementCacheType: AdvertisementSearchType
   ): Advertisement[] | undefined {
     this.setSearchParams(advertisementCacheType);
 
     return this.advertisementCache.get(this.getSearchParamsKey());
   }
+  //TEST
+  getCacheTest(
+    advertisementCacheType: AdvertisementSearchType,
+    paginationParams: PaginationParams
+  ): PaginatedResult<Advertisement[]> | undefined {
+    this.setSearchParamsTest(advertisementCacheType, paginationParams);
+    return this.advertisementCacheTest.get(this.getSearchParamsKey());
+  }
 
   setCache(advertisements: Advertisement[]) {
     this.advertisementCache.set(this.getSearchParamsKey(), advertisements);
+  }
+
+  //TEST
+  setCacheTest(advertisements: PaginatedResult<Advertisement[]>) {
+    this.advertisementCacheTest.set(this.getSearchParamsKey(), advertisements);
   }
 
   addItem(advertisement: Advertisement) {

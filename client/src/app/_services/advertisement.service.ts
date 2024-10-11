@@ -2,13 +2,15 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Advertisement } from '../_models/advertisement';
 import { environment } from '../../environments/environment';
-import { AdvertisementCacheType } from '../_framework/constants/advertisementCacheType';
-import { Observable, of, tap } from 'rxjs';
+import { AdvertisementSearchType } from '../_framework/constants/advertisementSearchType';
+import { map, Observable, of, tap } from 'rxjs';
 import { UpdateAdvertisementAdminRequest } from '../_models/updateAdvertisementAdminRequest';
 import { UpdateAdvertisementStatusRequest } from '../_models/updateAdvertisementStatusRequest';
 import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
 import { AdvertisementCacheService } from './advertisement.cache.service';
-import { PaginationQueryObject } from '../_models/paginationQueryObject';
+import { PaginationParams } from '../_models/paginationParams';
+import { PaginatedResult } from '../_models/pagination';
+import { setPaginationHeaders } from './paginationHelper';
 
 @Injectable({
   providedIn: 'root',
@@ -86,7 +88,7 @@ export class AdvertisementService {
   getMyAdvertisements(forceRefresh: boolean = false) {
     if (!forceRefresh) {
       const cachedResponse = this.advertisementCacheService.getCache(
-        AdvertisementCacheType.MyAdvertisements
+        AdvertisementSearchType.MyAdvertisements
       );
       if (cachedResponse) {
         return of(cachedResponse);
@@ -102,7 +104,7 @@ export class AdvertisementService {
 
   getById(id: number) {
     const cachedAdvertisements = this.advertisementCacheService.getCache(
-      AdvertisementCacheType.MyAdvertisements
+      AdvertisementSearchType.MyAdvertisements
     );
     if (cachedAdvertisements) {
       const result = cachedAdvertisements.find(
@@ -128,7 +130,7 @@ export class AdvertisementService {
   ): Observable<Advertisement[]> {
     if (!forceRefresh) {
       const cachedResponse = this.advertisementCacheService.getCache(
-        AdvertisementCacheType.PendingValidation
+        AdvertisementSearchType.PendingValidation
       );
       if (cachedResponse) {
         return of(cachedResponse);
@@ -160,7 +162,7 @@ export class AdvertisementService {
 
   getByIdHistory(id: number) {
     const cachedAdvertisements = this.advertisementCacheService.getCache(
-      AdvertisementCacheType.AllHistory
+      AdvertisementSearchType.AllHistory
     );
     if (cachedAdvertisements) {
       const result = cachedAdvertisements.find(
@@ -173,30 +175,40 @@ export class AdvertisementService {
     return null;
   }
 
- //TODO учитывать в кэше paginationQueryObject
   getAllAdvertisementHistory(
-    paginationQueryObject: PaginationQueryObject,
+    paginationParams: PaginationParams,
     forceRefresh: boolean = false
-  ): Observable<Advertisement[]> {
+  ): Observable<PaginatedResult<Advertisement[]>> {
     if (!forceRefresh) {
-      const cachedResponse = this.advertisementCacheService.getCache(
-        AdvertisementCacheType.AllHistory
+      const cachedResponse = this.advertisementCacheService.getCacheTest(
+        AdvertisementSearchType.AllHistory,
+        paginationParams
       );
 
       if (cachedResponse) {
+        console.log('Cache returned');
         return of(cachedResponse);
       }
     }
 
-    const params = new HttpParams()
-      .set('PageNumber', paginationQueryObject.pageNumber.toString())
-      .set('PageSize', paginationQueryObject.pageSize.toString());
+    const params = setPaginationHeaders(
+      paginationParams.pageNumber,
+      paginationParams.pageSize
+    );
 
     return this.http
-      .get<Advertisement[]>(this.baseUrl + 'advertisementHistory', { params })
+      .get<Advertisement[]>(this.baseUrl + 'advertisementHistory', {
+        observe: 'response',
+        params,
+      })
       .pipe(
-        tap((response) => {
-          this.advertisementCacheService.setCache(response);
+        map((response) => {
+          const result = new PaginatedResult<Advertisement[]>();
+          result.items = response.body as Advertisement[];
+          result.pagination = JSON.parse(response.headers.get('Pagination')!);
+
+          this.advertisementCacheService.setCacheTest(result);
+          return result;
         })
       );
   }

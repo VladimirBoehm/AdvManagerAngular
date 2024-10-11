@@ -3,18 +3,19 @@
     <ng-container *ngTemplateOutlet="noAdvertisements"></ng-container>
   </div>
 
-  <mat-paginator #paginator
-                style="background-color: white;"
-               class="demo-paginator"
-               (page)="handlePageEvent($event)"
-               [length]="length"
-               [pageSize]="pageSize"
-               [showFirstLastButtons]="false"
-               [hidePageSize]="true"
-               [pageIndex]="pageIndex"
-               aria-label="Select page">
-</mat-paginator>
-
+  <mat-paginator
+    #paginator
+    style="background-color: white"
+    class="demo-paginator"
+    (page)="handlePageEvent($event)"
+    [length]="length"
+    [pageSize]="pageSize"
+    [showFirstLastButtons]="false"
+    [hidePageSize]="true"
+    [pageIndex]="pageIndex"
+    aria-label="Select page"
+  >
+  </mat-paginator>
 
   <!-- Pending validation -->
   <div *ngIf="advertisements.length > 0 && state === advListStates.Validate">
@@ -107,7 +108,11 @@
       <li
         *ngFor="let advertisement of advertisements"
         class="list-group-item"
-        [routerLink]="['/app-advertisement-preview', advertisement.id, advertisement.statusId]"
+        [routerLink]="[
+          '/app-advertisement-preview',
+          advertisement.id,
+          advertisement.statusId
+        ]"
       >
         <div class="d-flex">
           <div class="d-flex flex-column col-11">
@@ -136,13 +141,25 @@
 </div>
 
 <!-- AllHistory -->
-<div *ngIf="advertisements.length > 0 && state === advListStates.AllHistory">
+
+<div
+  *ngIf="
+    paginatedAdvertisements &&
+    paginatedAdvertisements.items &&
+    paginatedAdvertisements.items.length > 0 &&
+    state === advListStates.AllHistory
+  "
+>
   <hr />
   <ul class="list-group list-group-flush">
     <li
-      *ngFor="let advertisement of advertisements"
+      *ngFor="let advertisement of paginatedAdvertisements.items"
       class="list-group-item"
-      [routerLink]="['/app-advertisement-preview', advertisement.id, advertisement.statusId]"
+      [routerLink]="[
+        '/app-advertisement-preview',
+        advertisement.id,
+        advertisement.statusId
+      ]"
     >
       <div class="d-flex">
         <div class="d-flex flex-column col-11">

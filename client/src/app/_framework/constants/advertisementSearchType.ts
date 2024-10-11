@@ -1,6 +1,6 @@
-export enum AdvertisementCacheType {
+export enum AdvertisementSearchType {
   PendingValidation = 'PENDING_VALIDATION',
-  AllHistory = 'HISTORY',
+  AllHistory = 'ALL_HISTORY',
   PendingPublication = 'PENDING_PUBLICATION',
   MyAdvertisements = 'MY_ADVERTISEMENTS',
 }

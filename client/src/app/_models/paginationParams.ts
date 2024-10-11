@@ -1,4 +1,4 @@
-export interface PaginationQueryObject {
+export interface PaginationParams {
   pageNumber: number;
   pageSize: number;
   searchValue?: string;

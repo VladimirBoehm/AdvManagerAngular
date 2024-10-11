@@ -1,11 +1,7 @@
-import { AdvertisementCacheType } from './advertisementCacheType';
+import { PaginationParams } from '../../_models/paginationParams';
+import { AdvertisementSearchType as AdvertisementSearchType } from './advertisementSearchType';
 
 export class AdvertisementSearchParams {
-  cacheType: AdvertisementCacheType | undefined;
-  pageNumber = 1;
-  pageSize = 5;
- // orderBy = 'username'; TODO сортировка по пользователю, по дате публикации, по username и тд
+  cacheType: AdvertisementSearchType | undefined;
+  paginationParams: PaginationParams | undefined;
 }
-
-
-

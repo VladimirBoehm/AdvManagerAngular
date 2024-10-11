@@ -6,8 +6,10 @@ import { Advertisement } from '../_models/advertisement';
 import { DatePipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import { TelegramBackButtonService } from '../_framework/telegramBackButtonService';
 import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
-import { PaginationQueryObject } from '../_models/paginationQueryObject';
+import { PaginationParams } from '../_models/paginationParams';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { PaginatedResult } from '../_models/pagination';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-adv-list',
@@ -30,14 +32,13 @@ export class AdvListComponent implements OnInit, OnDestroy {
   private forceRefresh: boolean = false;
   private router = inject(Router);
   advertisements: Advertisement[] = [];
+  paginatedAdvertisements?: PaginatedResult<Advertisement[]>;
   advListStates = AdvListStates;
   state: AdvListStates | undefined;
-
   //Paging
-  length = 50;
-  pageSize = 10;
+  length = 0;
+  pageSize = 5;
   pageIndex = 0;
-  pageEvent?: PageEvent;
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
@@ -52,10 +53,10 @@ export class AdvListComponent implements OnInit, OnDestroy {
   }
 
   handlePageEvent(e: PageEvent) {
-    this.pageEvent = e;
-    this.length = e.length;
     this.pageSize = e.pageSize;
     this.pageIndex = e.pageIndex;
+
+    this.initialize();
   }
 
   private initialize() {
@@ -74,15 +75,19 @@ export class AdvListComponent implements OnInit, OnDestroy {
       }
       case AdvListStates.AllHistory: {
         let paginationQueryObject = {
-          pageNumber: 1,
-          pageSize: 10,
-        } as PaginationQueryObject;
-
+          pageNumber: this.pageIndex,
+          pageSize: this.pageSize,
+        } as PaginationParams;
         this.advertisementService
+
           .getAllAdvertisementHistory(paginationQueryObject, this.forceRefresh)
           .subscribe({
-            next: (advertisements: Advertisement[]) => {
-              this.advertisements = advertisements;
+            next: (advertisements: PaginatedResult<Advertisement[]>) => {
+              this.paginatedAdvertisements = advertisements;
+              this.length = advertisements.pagination?.totalItems ?? 0;
+              this.pageSize = advertisements.pagination?.itemsPerPage ?? 1;
+              this.pageIndex = advertisements.pagination?.currentPage ?? 0;
+
               console.log(advertisements);
             },
             error: (err) => {
