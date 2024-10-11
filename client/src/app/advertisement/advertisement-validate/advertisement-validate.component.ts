@@ -71,7 +71,7 @@ export class AdvertisementValidateComponent implements OnInit {
     this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       if (id) {
-        this.advertisementService.getById(Number(id)).subscribe({
+        this.advertisementService.getById(Number(id))?.subscribe({
           next: (advertisement: Advertisement) => {
             this.advertisement = advertisement;
             this.initializeForm();

@@ -11,6 +11,7 @@ import { PaginationParams } from '../_models/paginationParams';
 })
 export class AdvertisementCacheService {
   private advertisementCache = new Map<any, Advertisement[]>();
+
   //TEST
   private advertisementCacheTest = new Map<
     any,
@@ -39,43 +40,21 @@ export class AdvertisementCacheService {
     return Object.values(flattenedParams).join('-');
   }
 
-  private setSearchParams(advertisementCacheType: AdvertisementSearchType) {
-    this.advertisementSearchParams.update((params) => ({
-      ...params,
-      cacheType: advertisementCacheType,
-    }));
-  }
-
   //TEST
-  private setSearchParamsTest(
-    advertisementCacheType: AdvertisementSearchType,
-    paginationParams: PaginationParams
-  ) {
+  private setSearchParamsTest(paginationParams: PaginationParams) {
     this.advertisementSearchParams.update((params) => ({
       ...params,
-      cacheType: advertisementCacheType,
+      cacheType: paginationParams.advertisementSearchType,
       paginationParams,
     }));
   }
 
-  getCache(
-    advertisementCacheType: AdvertisementSearchType
-  ): Advertisement[] | undefined {
-    this.setSearchParams(advertisementCacheType);
-
-    return this.advertisementCache.get(this.getSearchParamsKey());
-  }
   //TEST
   getCacheTest(
-    advertisementCacheType: AdvertisementSearchType,
-    paginationParams: PaginationParams
+    paginationParams: PaginationParams | undefined
   ): PaginatedResult<Advertisement[]> | undefined {
-    this.setSearchParamsTest(advertisementCacheType, paginationParams);
+    if (paginationParams) this.setSearchParamsTest(paginationParams);
     return this.advertisementCacheTest.get(this.getSearchParamsKey());
-  }
-
-  setCache(advertisements: Advertisement[]) {
-    this.advertisementCache.set(this.getSearchParamsKey(), advertisements);
   }
 
   //TEST
@@ -83,6 +62,7 @@ export class AdvertisementCacheService {
     this.advertisementCacheTest.set(this.getSearchParamsKey(), advertisements);
   }
 
+  //TODO Update Test
   addItem(advertisement: Advertisement) {
     const searchParamsKey = this.getSearchParamsKey();
 
@@ -94,16 +74,32 @@ export class AdvertisementCacheService {
     ]);
   }
 
+  addItemTest(advertisement: Advertisement) {
+    const searchParamsKey = this.getSearchParamsKey();
+
+    const cachedAdvertisements =
+      this.advertisementCache.get(searchParamsKey) || [];
+    this.advertisementCache.set(searchParamsKey, [
+      ...cachedAdvertisements,
+      advertisement,
+    ]);
+  }
+
+  
   updateItem(advertisement: Advertisement) {
     const searchParamsKey = this.getSearchParamsKey();
     const cachedAdvertisements =
-      this.advertisementCache.get(searchParamsKey) || [];
-    const updatedCache = cachedAdvertisements.map((item) =>
-      item.id === advertisement?.id ? advertisement : item
-    );
-    this.advertisementCache.set(searchParamsKey, updatedCache);
+      this.advertisementCacheTest.get(searchParamsKey);
+
+    if (cachedAdvertisements?.items) {
+      const updatedCache = cachedAdvertisements.items.map((item) =>
+        item.id === advertisement?.id ? advertisement : item
+      );
+      this.advertisementCache.set(searchParamsKey, updatedCache);
+    }
   }
 
+  //TODO Update Test
   updateItemsStatus(
     advertisementStatus: AdvertisementStatus,
     advertisementId: number
@@ -124,6 +120,7 @@ export class AdvertisementCacheService {
     this.advertisementCache.set(searchParamsKey, updatedCache);
   }
 
+  //TODO Update Test
   deleteItem(advertisementId: number) {
     const searchParamsKey = this.getSearchParamsKey();
     const cachedAdvertisements = this.advertisementCache.get(searchParamsKey);

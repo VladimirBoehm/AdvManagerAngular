@@ -11,7 +11,7 @@ export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'home', component: HomeComponent },
   { path: 'test', component: TestComponent },
-  { path: 'adv-list/:state/:forceRefresh', component: AdvListComponent },
+  { path: 'adv-list/:state', component: AdvListComponent },
   {
     path: 'app-advertisement-main-data',
     component: AdvertisementMainDataComponent,
@@ -21,7 +21,7 @@ export const routes: Routes = [
     component: AdvertisementValidateComponent,
   },
   {
-    path: 'app-advertisement-preview/:id/:status',
+    path: 'app-advertisement-preview/:id',
     component: AdvertisementPreviewComponent,
   },
   {

@@ -19,6 +19,7 @@ export class AdvertisementService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
   private advertisementCacheService = inject(AdvertisementCacheService);
+  private lastPaginationParams?: PaginationParams;
 
   save(advertisement: Advertisement): Observable<Advertisement> {
     return this.http
@@ -83,89 +84,13 @@ export class AdvertisementService {
       );
   }
 
-  // MY ADVERTISEMENTS
-
-  getMyAdvertisements(forceRefresh: boolean = false) {
-    if (!forceRefresh) {
-      const cachedResponse = this.advertisementCacheService.getCache(
-        AdvertisementSearchType.MyAdvertisements
-      );
-      if (cachedResponse) {
-        return of(cachedResponse);
-      }
-    }
-
-    return this.http.get<Advertisement[]>(this.baseUrl + 'advertisement').pipe(
-      tap((response) => {
-        this.advertisementCacheService.setCache(response);
-      })
-    );
-  }
-
   getById(id: number) {
-    const cachedAdvertisements = this.advertisementCacheService.getCache(
-      AdvertisementSearchType.MyAdvertisements
+    const cachedAdvertisements = this.advertisementCacheService.getCacheTest(
+      this.lastPaginationParams
     );
+
     if (cachedAdvertisements) {
-      const result = cachedAdvertisements.find(
-        (x: Advertisement) => x.id === id
-      );
-      if (result) {
-        return of(result);
-      }
-    }
-    return this.http.get<Advertisement>(this.baseUrl + `advertisement/${id}`);
-  }
-
-  // ADMIN
-
-  getPendingValidationAdvertisementsCount(): Observable<number> {
-    return this.http.get<number>(
-      this.baseUrl + 'advertisementAdmin/getPendingAdvertisementsCount'
-    );
-  }
-
-  getPendingValidationAdvertisements(
-    forceRefresh: boolean = false
-  ): Observable<Advertisement[]> {
-    if (!forceRefresh) {
-      const cachedResponse = this.advertisementCacheService.getCache(
-        AdvertisementSearchType.PendingValidation
-      );
-      if (cachedResponse) {
-        return of(cachedResponse);
-      }
-    }
-
-    return this.http
-      .get<Advertisement[]>(
-        this.baseUrl + 'advertisementAdmin/getPendingAdvertisements'
-      )
-      .pipe(
-        tap((response) => {
-          this.advertisementCacheService.setCache(response);
-        })
-      );
-  }
-
-  //TODO обновлять cache
-  updateAdvertisementAdmin(
-    updateAdvertisementAdminRequest: UpdateAdvertisementAdminRequest
-  ) {
-    return this.http.post(
-      this.baseUrl + 'advertisementAdmin',
-      updateAdvertisementAdminRequest
-    );
-  }
-
-  // ALL_HISTORY
-
-  getByIdHistory(id: number) {
-    const cachedAdvertisements = this.advertisementCacheService.getCache(
-      AdvertisementSearchType.AllHistory
-    );
-    if (cachedAdvertisements) {
-      const result = cachedAdvertisements.find(
+      const result = cachedAdvertisements.items?.find(
         (x: Advertisement) => x.id === id
       );
       if (result) {
@@ -175,20 +100,55 @@ export class AdvertisementService {
     return null;
   }
 
-  getAllAdvertisementHistory(
-    paginationParams: PaginationParams,
-    forceRefresh: boolean = false
-  ): Observable<PaginatedResult<Advertisement[]>> {
-    if (!forceRefresh) {
-      const cachedResponse = this.advertisementCacheService.getCacheTest(
-        AdvertisementSearchType.AllHistory,
-        paginationParams
-      );
+  // MY ADVERTISEMENTS
+  getMyAdvertisements() {
+    const paginationParams = {
+      pageNumber: 0,
+      pageSize: 10,
+    } as PaginationParams;
+    this.lastPaginationParams = paginationParams;
 
-      if (cachedResponse) {
-        console.log('Cache returned');
-        return of(cachedResponse);
-      }
+    const cachedResponse =
+      this.advertisementCacheService.getCacheTest(paginationParams);
+    if (cachedResponse) {
+      console.log('Cache returned');
+      return of(cachedResponse);
+    }
+
+    const params = setPaginationHeaders(
+      paginationParams.pageNumber,
+      paginationParams.pageSize
+    );
+
+    return this.http
+      .get<Advertisement[]>(this.baseUrl + 'advertisement', {
+        observe: 'response',
+        params,
+      })
+      .pipe(
+        map((response) => {
+          const result = new PaginatedResult<Advertisement[]>();
+          result.items = response.body as Advertisement[];
+          result.pagination = JSON.parse(response.headers.get('Pagination')!);
+
+          this.advertisementCacheService.setCacheTest(result);
+          return result;
+        })
+      );
+  }
+
+  // ALL_HISTORY
+
+  getAllAdvertisementHistory(
+    paginationParams: PaginationParams
+  ): Observable<PaginatedResult<Advertisement[]>> {
+    this.lastPaginationParams = paginationParams;
+
+    const cachedResponse =
+      this.advertisementCacheService.getCacheTest(paginationParams);
+    if (cachedResponse) {
+      console.log('Cache returned');
+      return of(cachedResponse);
     }
 
     const params = setPaginationHeaders(
@@ -211,5 +171,59 @@ export class AdvertisementService {
           return result;
         })
       );
+  }
+
+  // ADMIN
+  getPendingValidationAdvertisements(
+    paginationParams: PaginationParams
+  ): Observable<PaginatedResult<Advertisement[]>> {
+    this.lastPaginationParams = paginationParams;
+
+    const cachedResponse =
+      this.advertisementCacheService.getCacheTest(paginationParams);
+    if (cachedResponse) {
+      console.log('Cache returned');
+      return of(cachedResponse);
+    }
+
+    const params = setPaginationHeaders(
+      paginationParams.pageNumber,
+      paginationParams.pageSize
+    );
+
+    return this.http
+      .get<Advertisement[]>(
+        this.baseUrl + 'advertisementAdmin/getPendingAdvertisements',
+        {
+          observe: 'response',
+          params,
+        }
+      )
+      .pipe(
+        map((response) => {
+          const result = new PaginatedResult<Advertisement[]>();
+          result.items = response.body as Advertisement[];
+          result.pagination = JSON.parse(response.headers.get('Pagination')!);
+
+          this.advertisementCacheService.setCacheTest(result);
+          return result;
+        })
+      );
+  }
+
+  getPendingValidationAdvertisementsCount(): Observable<number> {
+    return this.http.get<number>(
+      this.baseUrl + 'advertisementAdmin/getPendingAdvertisementsCount'
+    );
+  }
+
+  //TODO обновлять cache
+  updateAdvertisementAdmin(
+    updateAdvertisementAdminRequest: UpdateAdvertisementAdminRequest
+  ) {
+    return this.http.post(
+      this.baseUrl + 'advertisementAdmin',
+      updateAdvertisementAdminRequest
+    );
   }
 }

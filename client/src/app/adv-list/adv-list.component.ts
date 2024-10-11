@@ -9,7 +9,7 @@ import { AdvertisementStatus } from '../_framework/constants/advertisementStatus
 import { PaginationParams } from '../_models/paginationParams';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { PaginatedResult } from '../_models/pagination';
-import { Observable } from 'rxjs';
+import { AdvertisementSearchType } from '../_framework/constants/advertisementSearchType';
 
 @Component({
   selector: 'app-adv-list',
@@ -29,14 +29,17 @@ export class AdvListComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private advertisementService = inject(AdvertisementService);
   private backButtonService = inject(TelegramBackButtonService);
-  private forceRefresh: boolean = false;
+
   private router = inject(Router);
+  //TODO delete advertisements
   advertisements: Advertisement[] = [];
+
   paginatedAdvertisements?: PaginatedResult<Advertisement[]>;
   advListStates = AdvListStates;
   state: AdvListStates | undefined;
+
   //Paging
-  length = 0;
+  length = 0; // all items
   pageSize = 5;
   pageIndex = 0;
 
@@ -47,7 +50,6 @@ export class AdvListComponent implements OnInit, OnDestroy {
 
     this.route.paramMap.subscribe((params) => {
       this.state = params.get('state') as AdvListStates;
-      this.forceRefresh = params.get('forceRefresh') === 'true';
     });
     this.initialize();
   }
@@ -60,13 +62,26 @@ export class AdvListComponent implements OnInit, OnDestroy {
   }
 
   private initialize() {
+    const paginationQueryObject = {
+      pageNumber: this.pageIndex,
+      pageSize: this.pageSize,
+    } as PaginationParams;
+
     switch (this.state) {
       case AdvListStates.Validate: {
+        paginationQueryObject.advertisementSearchType =
+          AdvertisementSearchType.PendingValidation;
         this.advertisementService
-          .getPendingValidationAdvertisements(this.forceRefresh)
+          .getPendingValidationAdvertisements(paginationQueryObject)
           .subscribe({
-            next: (advertisements: Advertisement[]) =>
-              (this.advertisements = advertisements),
+            next: (advertisements: PaginatedResult<Advertisement[]>) => {
+              this.paginatedAdvertisements = advertisements;
+              this.length = advertisements.pagination?.totalItems ?? 0;
+              this.pageSize = advertisements.pagination?.itemsPerPage ?? 1;
+              this.pageIndex = advertisements.pagination?.currentPage ?? 0;
+
+              console.log(advertisements);
+            },
             error: (err) => {
               console.error('Error when loading ads:', err);
             },
@@ -74,13 +89,10 @@ export class AdvListComponent implements OnInit, OnDestroy {
         break;
       }
       case AdvListStates.AllHistory: {
-        let paginationQueryObject = {
-          pageNumber: this.pageIndex,
-          pageSize: this.pageSize,
-        } as PaginationParams;
+        paginationQueryObject.advertisementSearchType =
+          AdvertisementSearchType.AllHistory;
         this.advertisementService
-
-          .getAllAdvertisementHistory(paginationQueryObject, this.forceRefresh)
+          .getAllAdvertisementHistory(paginationQueryObject)
           .subscribe({
             next: (advertisements: PaginatedResult<Advertisement[]>) => {
               this.paginatedAdvertisements = advertisements;
@@ -101,15 +113,14 @@ export class AdvListComponent implements OnInit, OnDestroy {
         break;
       }
       case AdvListStates.MyAdvertisements: {
-        this.advertisementService
-          .getMyAdvertisements(this.forceRefresh)
-          .subscribe({
-            next: (advertisements: Advertisement[]) =>
-              (this.advertisements = advertisements),
-            error: (err) => {
-              console.error('Error when loading ads:', err);
-            },
-          });
+        this.advertisementService.getMyAdvertisements().subscribe({
+          next: (result: PaginatedResult<Advertisement[]>) => {
+            if (result.items) this.advertisements = result.items;
+          },
+          error: (err) => {
+            console.error('Error when loading ads:', err);
+          },
+        });
         break;
       }
       case AdvListStates.Publishing: {

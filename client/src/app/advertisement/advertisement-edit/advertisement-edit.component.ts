@@ -91,7 +91,7 @@ export class AdvertisementEditComponent implements OnInit {
     this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       if (id && Number(id) > 0) {
-        this.advertisementService.getById(Number(id)).subscribe({
+        this.advertisementService.getById(Number(id))?.subscribe({
           next: (advertisement: Advertisement) => {
             this.advertisement = advertisement;
             this.selectedImage = advertisement.adImage;
@@ -172,7 +172,7 @@ export class AdvertisementEditComponent implements OnInit {
         });
       } else {
         this.advertisementService.update(this.advertisement).subscribe({
-          next: () => {   
+          next: () => {
             this.router.navigate([
               'app-advertisement-preview',
               this.advertisement?.id,
