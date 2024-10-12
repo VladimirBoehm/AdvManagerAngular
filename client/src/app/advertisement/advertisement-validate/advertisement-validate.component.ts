@@ -65,7 +65,7 @@ export class AdvertisementValidateComponent implements OnInit {
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
-      this.router.navigate(['/adv-list', AdvListStates.Validate, false]);
+      this.router.navigate(['/adv-list', AdvListStates.Validate]);
     });
 
     this.route.paramMap.subscribe((params) => {
@@ -133,7 +133,7 @@ export class AdvertisementValidateComponent implements OnInit {
       .subscribe({
         next: () => {
           this.modalRef?.hide();
-          this.router.navigate(['/adv-list', AdvListStates.Validate, true]);
+          this.router.navigate(['/adv-list', AdvListStates.Validate]);
         },
         error: (error: any) => console.log(error),
       });

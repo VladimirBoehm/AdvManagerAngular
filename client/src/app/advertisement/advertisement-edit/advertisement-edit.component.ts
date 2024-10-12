@@ -83,8 +83,7 @@ export class AdvertisementEditComponent implements OnInit {
     this.backButtonService.setBackButtonHandler(() => {
       this.router.navigate([
         '/adv-list',
-        AdvListStates.MyAdvertisements,
-        false,
+        AdvListStates.MyAdvertisements
       ]);
     });
 

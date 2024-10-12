@@ -50,7 +50,7 @@ export class AdvertisementPreviewComponent implements OnInit {
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
-      this.back(false);
+      this.back();
     });
 
     this.route.paramMap.subscribe((params) => {
@@ -73,19 +73,17 @@ export class AdvertisementPreviewComponent implements OnInit {
     });
   }
 
-  private back(forceRefresh: boolean) {
+  private back() {
     if (this.advertisement) {
       if (this.advertisement.statusId === AdvertisementStatus.published) {
         this.router.navigate([
           '/adv-list',
-          AdvListStates.AllHistory,
-          forceRefresh,
+          AdvListStates.AllHistory
         ]);
       } else {
         this.router.navigate([
           '/adv-list',
-          AdvListStates.MyAdvertisements,
-          forceRefresh,
+          AdvListStates.MyAdvertisements
         ]);
       }
     }
@@ -122,7 +120,7 @@ export class AdvertisementPreviewComponent implements OnInit {
     this.modalRef?.hide();
     this.advertisementService.delete(this.advertisement?.id)?.subscribe({
       next: () => {
-        this.back(false);
+        this.back();
       },
       error: (err) => {
         console.error('Error when deleting ads:', err);
@@ -155,7 +153,7 @@ export class AdvertisementPreviewComponent implements OnInit {
 
       this.advertisementService.updateStatus(this.advertisement)?.subscribe({
         next: () => {
-          this.back(false);
+          this.back();
         },
         error: (err) => {
           console.error('Error when updating status pendingValidation:', err);
