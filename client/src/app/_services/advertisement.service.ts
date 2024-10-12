@@ -104,8 +104,6 @@ export class AdvertisementService {
     return null;
   }
 
-  getSearchType() {}
-
   // MY ADVERTISEMENTS
   getMyAdvertisements() {
     const paginationParams = {
@@ -256,18 +254,34 @@ export class AdvertisementService {
   }
 
   getPendingValidationAdvertisementsCount(): Observable<number> {
-    return this.http.get<number>(
-      this.baseUrl + 'advertisementAdmin/getPendingAdvertisementsCount'
-    );
+    return this.http
+      .get<number>(
+        this.baseUrl + 'advertisementAdmin/getPendingAdvertisementsCount'
+      )
+      .pipe(
+        tap((result) => {
+          this.advertisementCacheService.checkResetPendingAdverisementsCache(
+            result
+          );
+        })
+      );
   }
 
   //TODO обновлять cache
   updateAdvertisementAdmin(
     updateAdvertisementAdminRequest: UpdateAdvertisementAdminRequest
   ) {
-    return this.http.post(
-      this.baseUrl + 'advertisementAdmin',
-      updateAdvertisementAdminRequest
-    );
+    return this.http
+      .post(
+        this.baseUrl + 'advertisementAdmin',
+        updateAdvertisementAdminRequest
+      )
+      .pipe(
+        tap(() => {
+          this.advertisementCacheService.resetCache(
+            SearchType.PendingValidation
+          );
+        })
+      );
   }
 }

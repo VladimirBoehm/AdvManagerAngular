@@ -4,14 +4,39 @@ import { Advertisement } from '../_models/advertisement';
 import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
 import { PaginatedResult } from '../_models/pagination';
 import { PaginationParams } from '../_models/paginationParams';
+import { SearchType } from '../_framework/constants/searchType';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AdvertisementCacheService {
   private advertisementCache = new Map<any, PaginatedResult<Advertisement[]>>();
+  private pendingAdverisementsCache: number = 0;
 
   private paginationParams?: PaginationParams;
+
+  checkResetPendingAdverisementsCache(counter: number) {
+    if (this.pendingAdverisementsCache !== counter) {
+      this.pendingAdverisementsCache = counter;
+      this.resetCache(SearchType.PendingValidation);
+    }
+  }
+
+  resetCache(searchType: SearchType): void {
+    const keysToReset: string[] = [];
+  
+    this.advertisementCache.forEach((value, key) => {
+      if (key.includes(searchType)) {
+        keysToReset.push(key);
+      }
+    });
+  
+    keysToReset.forEach((key) => {
+      this.advertisementCache.delete(key);
+    });
+  
+    console.log(`Cache reset for keys containing: '${searchType}'`);
+  }
 
   getPaginationParams() {
     return this.paginationParams;
