@@ -47,15 +47,17 @@ export class AdvListComponent implements OnInit, OnDestroy {
     this.route.paramMap.subscribe((params) => {
       this.state = params.get('state') as AdvListStates;
     });
-    
+
     this.backButtonService.setBackButtonHandler(() => {
       if (this.state === AdvListStates.PrivateHistory) {
-        this.router.navigate(['/adv-list', AdvListStates.MyAdvertisements]);
+        this.state = AdvListStates.MyAdvertisements;
+        this.initialize();
       } else this.router.navigate(['']);
     });
 
     this.initialize();
   }
+
 
   handlePageEvent(e: PageEvent) {
     this.pageSize = e.pageSize;

@@ -145,8 +145,8 @@
 <div
   *ngIf="
     paginatedAdvertisements.items.length > 0 &&
-      state === advListStates.AllHistory ||
-    state === advListStates.PrivateHistory
+    (state === advListStates.AllHistory ||
+      state === advListStates.PrivateHistory)
   "
 >
   <hr />
