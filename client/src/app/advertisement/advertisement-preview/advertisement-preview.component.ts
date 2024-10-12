@@ -13,7 +13,7 @@ import { AdvertisementMainDataComponent } from '../advertisement-main-data/adver
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { PublishService } from '../../_services/publish.service';
 import { AdvertisementHelper } from '../../_framework/component/helpers/advertisementHelper';
-import { AdvertisementSearchType } from '../../_framework/constants/advertisementSearchType';
+import { SearchType } from '../../_framework/constants/searchType';
 
 @Component({
   selector: 'app-advertisement-preview',
@@ -76,15 +76,9 @@ export class AdvertisementPreviewComponent implements OnInit {
   private back() {
     if (this.advertisement) {
       if (this.advertisement.statusId === AdvertisementStatus.published) {
-        this.router.navigate([
-          '/adv-list',
-          AdvListStates.AllHistory
-        ]);
+        this.router.navigate(['/adv-list', AdvListStates.AllHistory]);
       } else {
-        this.router.navigate([
-          '/adv-list',
-          AdvListStates.MyAdvertisements
-        ]);
+        this.router.navigate(['/adv-list', AdvListStates.MyAdvertisements]);
       }
     }
   }

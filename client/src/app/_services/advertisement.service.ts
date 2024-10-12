@@ -1,8 +1,7 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Advertisement } from '../_models/advertisement';
 import { environment } from '../../environments/environment';
-import { AdvertisementSearchType } from '../_framework/constants/advertisementSearchType';
 import { map, Observable, of, tap } from 'rxjs';
 import { UpdateAdvertisementAdminRequest } from '../_models/updateAdvertisementAdminRequest';
 import { UpdateAdvertisementStatusRequest } from '../_models/updateAdvertisementStatusRequest';
@@ -11,6 +10,7 @@ import { AdvertisementCacheService } from './advertisement.cache.service';
 import { PaginationParams } from '../_models/paginationParams';
 import { PaginatedResult } from '../_models/pagination';
 import { setPaginationHeaders } from './paginationHelper';
+import { SearchType } from '../_framework/constants/searchType';
 
 @Injectable({
   providedIn: 'root',
@@ -105,6 +105,7 @@ export class AdvertisementService {
     const paginationParams = {
       pageNumber: 0,
       pageSize: 10,
+      searchType: SearchType.MyAdvertisements,
     } as PaginationParams;
     this.lastPaginationParams = paginationParams;
 

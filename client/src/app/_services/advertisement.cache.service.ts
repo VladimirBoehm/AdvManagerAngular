@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { Advertisement } from '../_models/advertisement';
-import { AdvertisementSearchParams } from '../_framework/constants/advertisementSearchParams';
+import { SearchParams } from '../_framework/constants/searchParams';
 import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
 import { PaginatedResult } from '../_models/pagination';
 import { PaginationParams } from '../_models/paginationParams';
@@ -11,9 +11,7 @@ import { PaginationParams } from '../_models/paginationParams';
 export class AdvertisementCacheService {
   private advertisementCache = new Map<any, PaginatedResult<Advertisement[]>>();
 
-  advertisementSearchParams = signal<AdvertisementSearchParams>(
-    new AdvertisementSearchParams()
-  );
+  private searchParams = signal<SearchParams>(new SearchParams());
 
   private getSearchParamsKey(): string {
     const flattenObject = (obj: any): any => {
@@ -29,12 +27,12 @@ export class AdvertisementCacheService {
       return flattened;
     };
 
-    const flattenedParams = flattenObject(this.advertisementSearchParams());
+    const flattenedParams = flattenObject(this.searchParams());
     return Object.values(flattenedParams).join('-');
   }
 
   private setSearchParams(paginationParams: PaginationParams) {
-    this.advertisementSearchParams.update((params) => ({
+    this.searchParams.update((params) => ({
       ...params,
       paginationParams,
     }));

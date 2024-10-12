@@ -1,27 +1,29 @@
+@if ( paginatedAdvertisements && paginatedAdvertisements.items) {
 <div class="container">
-  <div *ngIf="advertisements.length === 0">
+  <div *ngIf="paginatedAdvertisements.items.length === 0">
     <ng-container *ngTemplateOutlet="noAdvertisements"></ng-container>
   </div>
-  <!-- TODO background-color -->
-  <mat-paginator
+
+  @if(paginatedAdvertisements.pagination){
+
+  <paginator-localization
+    *ngIf="
+      state !== advListStates.MyAdvertisements ||
+      paginatedAdvertisements.pagination.totalItems >
+        paginatedAdvertisements.pagination.itemsPerPage
+    "
     #paginator
-    style="background-color: white"
     class="demo-paginator"
     (page)="handlePageEvent($event)"
     [length]="length"
     [pageSize]="pageSize"
-    [showFirstLastButtons]="false"
-    [hidePageSize]="true"
     [pageIndex]="pageIndex"
-    aria-label="Select page"
   >
-  </mat-paginator>
-
+  </paginator-localization>
+  }
   <!-- Pending validation -->
   <div
     *ngIf="
-      paginatedAdvertisements &&
-      paginatedAdvertisements.items &&
       paginatedAdvertisements.items.length > 0 &&
       state === advListStates.Validate
     "
@@ -82,7 +84,7 @@
         <button
           class="btn empty-button"
           (click)="create()"
-          [disabled]="advertisements.length > 2"
+          [disabled]="paginatedAdvertisements.items.length > 2"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -98,7 +100,7 @@
 
           <div class="text-muted">Создать</div>
           <div
-            *ngIf="advertisements.length > 2"
+            *ngIf="paginatedAdvertisements.items.length > 2"
             class="my-info-text text-danger"
           >
             Максимум 3 объявления
@@ -109,7 +111,7 @@
     <hr />
     <ul class="list-group list-group-flush">
       <li
-        *ngFor="let advertisement of advertisements"
+        *ngFor="let advertisement of paginatedAdvertisements.items"
         class="list-group-item"
         [routerLink]="['/app-advertisement-preview', advertisement.id]"
       >
@@ -143,8 +145,6 @@
 
 <div
   *ngIf="
-    paginatedAdvertisements &&
-    paginatedAdvertisements.items &&
     paginatedAdvertisements.items.length > 0 &&
     state === advListStates.AllHistory
   "
@@ -187,3 +187,4 @@
 <ng-template #noAdvertisements>
   <p>Нет объявлений для отображения.</p>
 </ng-template>
+}

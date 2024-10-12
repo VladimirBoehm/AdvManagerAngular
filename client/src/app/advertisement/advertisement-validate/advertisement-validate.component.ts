@@ -19,7 +19,6 @@ import { AdvertisementMainDataComponent } from '../advertisement-main-data/adver
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatErrorService } from '../../_framework/component/errors/mat-error-service';
-import { max } from 'rxjs';
 import { CustomValidators } from '../../_framework/component/validators/customValidators';
 
 @Component({

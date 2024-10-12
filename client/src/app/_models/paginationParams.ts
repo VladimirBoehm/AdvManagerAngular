@@ -1,8 +1,8 @@
-import { AdvertisementSearchType } from '../_framework/constants/advertisementSearchType';
+import { SearchType } from '../_framework/constants/searchType';
 
 export interface PaginationParams {
   pageNumber: number;
   pageSize: number;
   searchValue?: string;
-  advertisementSearchType: AdvertisementSearchType;
+  searchType: SearchType;
 }

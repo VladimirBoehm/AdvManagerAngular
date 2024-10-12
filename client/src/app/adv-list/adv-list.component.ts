@@ -9,7 +9,8 @@ import { AdvertisementStatus } from '../_framework/constants/advertisementStatus
 import { PaginationParams } from '../_models/paginationParams';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { PaginatedResult } from '../_models/pagination';
-import { AdvertisementSearchType } from '../_framework/constants/advertisementSearchType';
+import { SearchType } from '../_framework/constants/searchType';
+import { PaginatorLocalization } from '../_framework/component/paginator/paginator-localization';
 
 @Component({
   selector: 'app-adv-list',
@@ -21,6 +22,7 @@ import { AdvertisementSearchType } from '../_framework/constants/advertisementSe
     NgTemplateOutlet,
     DatePipe,
     MatPaginatorModule,
+    PaginatorLocalization,
   ],
   templateUrl: './adv-list.component.html',
   styleUrl: './adv-list.component.scss',
@@ -31,15 +33,13 @@ export class AdvListComponent implements OnInit, OnDestroy {
   private backButtonService = inject(TelegramBackButtonService);
 
   private router = inject(Router);
-  //TODO delete advertisements
-  advertisements: Advertisement[] = [];
 
   paginatedAdvertisements?: PaginatedResult<Advertisement[]>;
   advListStates = AdvListStates;
   state: AdvListStates | undefined;
 
   //Paging
-  length = 0; // all items
+  length = 0; // items count
   pageSize = 5;
   pageIndex = 0;
 
@@ -69,18 +69,12 @@ export class AdvListComponent implements OnInit, OnDestroy {
 
     switch (this.state) {
       case AdvListStates.Validate: {
-        paginationQueryObject.advertisementSearchType =
-          AdvertisementSearchType.PendingValidation;
+        paginationQueryObject.searchType = SearchType.PendingValidation;
         this.advertisementService
           .getPendingValidationAdvertisements(paginationQueryObject)
           .subscribe({
             next: (advertisements: PaginatedResult<Advertisement[]>) => {
-              this.paginatedAdvertisements = advertisements;
-              this.length = advertisements.pagination?.totalItems ?? 0;
-              this.pageSize = advertisements.pagination?.itemsPerPage ?? 1;
-              this.pageIndex = advertisements.pagination?.currentPage ?? 0;
-
-              console.log(advertisements);
+              this.setPaginatedResult(advertisements);
             },
             error: (err) => {
               console.error('Error when loading ads:', err);
@@ -89,18 +83,12 @@ export class AdvListComponent implements OnInit, OnDestroy {
         break;
       }
       case AdvListStates.AllHistory: {
-        paginationQueryObject.advertisementSearchType =
-          AdvertisementSearchType.AllHistory;
+        paginationQueryObject.searchType = SearchType.AllHistory;
         this.advertisementService
           .getAllAdvertisementHistory(paginationQueryObject)
           .subscribe({
             next: (advertisements: PaginatedResult<Advertisement[]>) => {
-              this.paginatedAdvertisements = advertisements;
-              this.length = advertisements.pagination?.totalItems ?? 0;
-              this.pageSize = advertisements.pagination?.itemsPerPage ?? 1;
-              this.pageIndex = advertisements.pagination?.currentPage ?? 0;
-
-              console.log(advertisements);
+              this.setPaginatedResult(advertisements);
             },
             error: (err) => {
               console.error('Error when loading ads:', err);
@@ -114,8 +102,8 @@ export class AdvListComponent implements OnInit, OnDestroy {
       }
       case AdvListStates.MyAdvertisements: {
         this.advertisementService.getMyAdvertisements().subscribe({
-          next: (result: PaginatedResult<Advertisement[]>) => {
-            if (result.items) this.advertisements = result.items;
+          next: (advertisements: PaginatedResult<Advertisement[]>) => {
+            this.setPaginatedResult(advertisements);
           },
           error: (err) => {
             console.error('Error when loading ads:', err);
@@ -130,6 +118,13 @@ export class AdvListComponent implements OnInit, OnDestroy {
         break;
       }
     }
+  }
+
+  private setPaginatedResult(advertisements: PaginatedResult<Advertisement[]>) {
+    this.paginatedAdvertisements = advertisements;
+    this.length = advertisements.pagination?.totalItems ?? 0;
+    this.pageSize = advertisements.pagination?.itemsPerPage ?? 1;
+    this.pageIndex = advertisements.pagination?.currentPage ?? 0;
   }
 
   getStatus(advertisement: Advertisement): string {
