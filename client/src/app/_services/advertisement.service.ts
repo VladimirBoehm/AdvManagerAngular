@@ -21,6 +21,10 @@ export class AdvertisementService {
   private advertisementCacheService = inject(AdvertisementCacheService);
   private lastPaginationParams?: PaginationParams;
 
+  getPaginationParams() {
+    return this.advertisementCacheService.getPaginationParams();
+  }
+
   save(advertisement: Advertisement): Observable<Advertisement> {
     return this.http
       .post<Advertisement>(this.baseUrl + 'advertisement/save', advertisement)
@@ -100,6 +104,8 @@ export class AdvertisementService {
     return null;
   }
 
+  getSearchType() {}
+
   // MY ADVERTISEMENTS
   getMyAdvertisements() {
     const paginationParams = {
@@ -139,7 +145,6 @@ export class AdvertisementService {
   }
 
   // ALL_HISTORY
-
   getAllAdvertisementHistory(
     paginationParams: PaginationParams
   ): Observable<PaginatedResult<Advertisement[]>> {
@@ -162,6 +167,44 @@ export class AdvertisementService {
         observe: 'response',
         params,
       })
+      .pipe(
+        map((response) => {
+          const result = new PaginatedResult<Advertisement[]>();
+          result.items = response.body as Advertisement[];
+          result.pagination = JSON.parse(response.headers.get('Pagination')!);
+
+          this.advertisementCacheService.setCache(result);
+          return result;
+        })
+      );
+  }
+
+  // PRIVATE_HISTORY
+  getPrivateAdvertisementHistory(
+    paginationParams: PaginationParams
+  ): Observable<PaginatedResult<Advertisement[]>> {
+    this.lastPaginationParams = paginationParams;
+
+    const cachedResponse =
+      this.advertisementCacheService.getCache(paginationParams);
+    if (cachedResponse) {
+      console.log('Cache returned');
+      return of(cachedResponse);
+    }
+
+    const params = setPaginationHeaders(
+      paginationParams.pageNumber,
+      paginationParams.pageSize
+    );
+
+    return this.http
+      .get<Advertisement[]>(
+        this.baseUrl + 'advertisementHistory/getUserSpecific',
+        {
+          observe: 'response',
+          params,
+        }
+      )
       .pipe(
         map((response) => {
           const result = new PaginatedResult<Advertisement[]>();

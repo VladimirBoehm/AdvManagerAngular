@@ -98,6 +98,18 @@ export class AdvListComponent implements OnInit, OnDestroy {
         break;
       }
       case AdvListStates.PrivateHistory: {
+        paginationQueryObject.searchType = SearchType.PrivateHistory;
+        this.advertisementService
+          .getPrivateAdvertisementHistory(paginationQueryObject)
+          .subscribe({
+            next: (advertisements: PaginatedResult<Advertisement[]>) => {
+              this.setPaginatedResult(advertisements);
+            },
+            error: (err) => {
+              console.error('Error when loading ads:', err);
+            },
+          });
+
         break;
       }
       case AdvListStates.MyAdvertisements: {
@@ -120,11 +132,18 @@ export class AdvListComponent implements OnInit, OnDestroy {
     }
   }
 
-  private setPaginatedResult(advertisements: PaginatedResult<Advertisement[]>) {
-    this.paginatedAdvertisements = advertisements;
-    this.length = advertisements.pagination?.totalItems ?? 0;
-    this.pageSize = advertisements.pagination?.itemsPerPage ?? 1;
-    this.pageIndex = advertisements.pagination?.currentPage ?? 0;
+  openPrivateHistory() {
+    this.state = AdvListStates.PrivateHistory;
+    this.initialize();
+  }
+
+  private setPaginatedResult(
+    paginatedResult: PaginatedResult<Advertisement[]>
+  ) {
+    this.paginatedAdvertisements = paginatedResult;
+    this.length = paginatedResult.pagination?.totalItems ?? 0;
+    this.pageSize = paginatedResult.pagination?.itemsPerPage ?? 1;
+    this.pageIndex = paginatedResult.pagination?.currentPage ?? 0;
   }
 
   getStatus(advertisement: Advertisement): string {

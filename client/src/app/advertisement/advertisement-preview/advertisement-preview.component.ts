@@ -78,7 +78,13 @@ export class AdvertisementPreviewComponent implements OnInit {
       if (this.advertisement.statusId === AdvertisementStatus.published) {
         this.router.navigate(['/adv-list', AdvListStates.AllHistory]);
       } else {
-        this.router.navigate(['/adv-list', AdvListStates.MyAdvertisements]);
+        if (
+          this.advertisementService.getPaginationParams()?.searchType ===
+          SearchType.PrivateHistory
+        )
+          this.router.navigate(['/adv-list', AdvListStates.PrivateHistory]);
+        else
+          this.router.navigate(['/adv-list', AdvListStates.MyAdvertisements]);
       }
     }
   }
