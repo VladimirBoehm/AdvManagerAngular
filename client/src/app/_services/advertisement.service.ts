@@ -104,6 +104,43 @@ export class AdvertisementService {
     return null;
   }
 
+  getPendingPublicationAdvertisements(
+    paginationParams: PaginationParams
+  ): Observable<PaginatedResult<Advertisement[]>> {
+    this.lastPaginationParams = paginationParams;
+
+    const cachedResponse =
+      this.advertisementCacheService.getCache(paginationParams);
+    if (cachedResponse) {
+      console.log('Cache returned');
+      return of(cachedResponse);
+    }
+
+    const params = setPaginationHeaders(
+      paginationParams.pageNumber,
+      paginationParams.pageSize
+    );
+
+    return this.http
+      .get<Advertisement[]>(
+        this.baseUrl + 'advertisement/getPendingPublicationAdvertisements',
+        {
+          observe: 'response',
+          params,
+        }
+      )
+      .pipe(
+        map((response) => {
+          const result = new PaginatedResult<Advertisement[]>();
+          result.items = response.body as Advertisement[];
+          result.pagination = JSON.parse(response.headers.get('Pagination')!);
+
+          this.advertisementCacheService.setCache(result);
+          return result;
+        })
+      );
+  }
+
   // MY ADVERTISEMENTS
   getMyAdvertisements() {
     const paginationParams = {

@@ -129,6 +129,17 @@ export class AdvListComponent implements OnInit, OnDestroy {
         break;
       }
       case AdvListStates.Publishing: {
+        paginationQueryObject.searchType = SearchType.PendingPublication;
+        this.advertisementService
+          .getPendingPublicationAdvertisements(paginationQueryObject)
+          .subscribe({
+            next: (advertisements: PaginatedResult<Advertisement[]>) => {
+              this.setPaginatedResult(advertisements);
+            },
+            error: (err) => {
+              console.error('Error when loading ads:', err);
+            },
+          });
         break;
       }
       default: {

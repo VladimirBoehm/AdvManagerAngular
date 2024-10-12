@@ -141,12 +141,12 @@
 </div>
 
 <!-- AllHistory || PrivateHistory-->
-
 <div
   *ngIf="
     paginatedAdvertisements.items.length > 0 &&
     (state === advListStates.AllHistory ||
-      state === advListStates.PrivateHistory)
+      state === advListStates.PrivateHistory ||
+      advListStates.Publishing)
   "
 >
   <hr />
@@ -160,7 +160,15 @@
         <div class="d-flex flex-column col-11">
           <h6>{{ advertisement.title }}</h6>
           <div class="fw-normal text-muted">
-            Размещено: {{ advertisement.nextPublishDate | date : "dd.MM.yyyy" }}
+            <span
+              *ngIf="
+                state === advListStates.AllHistory ||
+                  state === advListStates.PrivateHistory;
+                else nextPublishInfo
+              "
+              >Размещено:
+            </span>
+            {{ advertisement.nextPublishDate | date : "dd.MM.yyyy" }}
           </div>
           <div class="fw-normal text-muted">
             {{ getUserDisplayName(advertisement) }}
@@ -183,6 +191,10 @@
     </li>
   </ul>
 </div>
+
+<ng-template #nextPublishInfo>
+  <span>Следующее размещение: </span>
+</ng-template>
 
 <ng-template #noAdvertisements>
   <p>Нет объявлений для отображения.</p>
