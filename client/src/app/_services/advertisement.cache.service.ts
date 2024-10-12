@@ -1,7 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { Advertisement } from '../_models/advertisement';
 import { AdvertisementSearchParams } from '../_framework/constants/advertisementSearchParams';
-import { AdvertisementSearchType } from '../_framework/constants/advertisementSearchType';
 import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
 import { PaginatedResult } from '../_models/pagination';
 import { PaginationParams } from '../_models/paginationParams';
@@ -10,10 +9,8 @@ import { PaginationParams } from '../_models/paginationParams';
   providedIn: 'root',
 })
 export class AdvertisementCacheService {
-  private advertisementCache = new Map<any, Advertisement[]>();
 
-  //TEST
-  private advertisementCacheTest = new Map<
+  private advertisementCache = new Map<
     any,
     PaginatedResult<Advertisement[]>
   >();
@@ -40,8 +37,8 @@ export class AdvertisementCacheService {
     return Object.values(flattenedParams).join('-');
   }
 
-  //TEST
-  private setSearchParamsTest(paginationParams: PaginationParams) {
+
+  private setSearchParams(paginationParams: PaginationParams) {
     this.advertisementSearchParams.update((params) => ({
       ...params,
       cacheType: paginationParams.advertisementSearchType,
@@ -49,85 +46,86 @@ export class AdvertisementCacheService {
     }));
   }
 
-  //TEST
-  getCacheTest(
+  getCache(
     paginationParams: PaginationParams | undefined
   ): PaginatedResult<Advertisement[]> | undefined {
-    if (paginationParams) this.setSearchParamsTest(paginationParams);
-    return this.advertisementCacheTest.get(this.getSearchParamsKey());
+    if (paginationParams) this.setSearchParams(paginationParams);
+    return this.advertisementCache.get(this.getSearchParamsKey());
   }
 
-  //TEST
-  setCacheTest(advertisements: PaginatedResult<Advertisement[]>) {
-    this.advertisementCacheTest.set(this.getSearchParamsKey(), advertisements);
+  setCache(advertisements: PaginatedResult<Advertisement[]>) {
+    this.advertisementCache.set(this.getSearchParamsKey(), advertisements);
   }
 
-  //TODO Update Test
+  //TEST -- протестировать добавление перевого элемента в список
   addItem(advertisement: Advertisement) {
     const searchParamsKey = this.getSearchParamsKey();
 
     const cachedAdvertisements =
-      this.advertisementCache.get(searchParamsKey) || [];
-    this.advertisementCache.set(searchParamsKey, [
-      ...cachedAdvertisements,
-      advertisement,
-    ]);
-  }
+      this.advertisementCache.get(searchParamsKey);
+    if (cachedAdvertisements) {
+      const updatedItems = cachedAdvertisements.items
+        ? [...cachedAdvertisements.items, advertisement]
+        : [advertisement];
 
-  addItemTest(advertisement: Advertisement) {
-    const searchParamsKey = this.getSearchParamsKey();
+      cachedAdvertisements.items = updatedItems;
 
-    const cachedAdvertisements =
-      this.advertisementCache.get(searchParamsKey) || [];
-    this.advertisementCache.set(searchParamsKey, [
-      ...cachedAdvertisements,
-      advertisement,
-    ]);
-  }
-
-  
-  updateItem(advertisement: Advertisement) {
-    const searchParamsKey = this.getSearchParamsKey();
-    const cachedAdvertisements =
-      this.advertisementCacheTest.get(searchParamsKey);
-
-    if (cachedAdvertisements?.items) {
-      const updatedCache = cachedAdvertisements.items.map((item) =>
-        item.id === advertisement?.id ? advertisement : item
-      );
-      this.advertisementCache.set(searchParamsKey, updatedCache);
+      this.advertisementCache.set(searchParamsKey, cachedAdvertisements);
+    } else {
+      this.advertisementCache.set(searchParamsKey, {
+        items: [advertisement],
+        pagination: undefined,
+      });
     }
   }
 
-  //TODO Update Test
+  updateItem(advertisement: Advertisement) {
+    const searchParamsKey = this.getSearchParamsKey();
+    const cachedAdvertisements =
+      this.advertisementCache.get(searchParamsKey);
+
+    if (cachedAdvertisements?.items) {
+      const updatedItems = cachedAdvertisements.items.map((item) =>
+        item.id === advertisement.id ? advertisement : item
+      );
+      cachedAdvertisements.items = updatedItems;
+      this.advertisementCache.set(searchParamsKey, cachedAdvertisements);
+    }
+  }
+
   updateItemsStatus(
     advertisementStatus: AdvertisementStatus,
     advertisementId: number
   ) {
     const searchParamsKey = this.getSearchParamsKey();
     const cachedAdvertisements =
-      this.advertisementCache.get(searchParamsKey) || [];
+      this.advertisementCache.get(searchParamsKey);
 
-    const updatedCache = cachedAdvertisements.map((item) => {
-      if (item.id === advertisementId) {
-        return {
-          ...item,
-          statusId: advertisementStatus,
-        } as Advertisement;
-      }
-      return item;
-    });
-    this.advertisementCache.set(searchParamsKey, updatedCache);
+    if (cachedAdvertisements?.items) {
+      const updatedItems = cachedAdvertisements.items.map((item) => {
+        if (item.id === advertisementId) {
+          return {
+            ...item,
+            statusId: advertisementStatus,
+          } as Advertisement;
+        }
+        return item;
+      });
+      cachedAdvertisements.items = updatedItems;
+      this.advertisementCache.set(searchParamsKey, cachedAdvertisements);
+    }
   }
 
-  //TODO Update Test
   deleteItem(advertisementId: number) {
     const searchParamsKey = this.getSearchParamsKey();
-    const cachedAdvertisements = this.advertisementCache.get(searchParamsKey);
-    if (cachedAdvertisements)
-      this.advertisementCache.set(
-        searchParamsKey,
-        cachedAdvertisements.filter((x) => x.id !== advertisementId)
+    const cachedAdvertisements =
+      this.advertisementCache.get(searchParamsKey);
+    if (cachedAdvertisements?.items) {
+      const updatedItems = cachedAdvertisements.items.filter(
+        (x) => x.id !== advertisementId
       );
+      cachedAdvertisements.items = updatedItems;
+      this.advertisementCache.set(searchParamsKey, cachedAdvertisements);
+    }
   }
 }

@@ -85,7 +85,7 @@ export class AdvertisementService {
   }
 
   getById(id: number) {
-    const cachedAdvertisements = this.advertisementCacheService.getCacheTest(
+    const cachedAdvertisements = this.advertisementCacheService.getCache(
       this.lastPaginationParams
     );
 
@@ -109,7 +109,7 @@ export class AdvertisementService {
     this.lastPaginationParams = paginationParams;
 
     const cachedResponse =
-      this.advertisementCacheService.getCacheTest(paginationParams);
+      this.advertisementCacheService.getCache(paginationParams);
     if (cachedResponse) {
       console.log('Cache returned');
       return of(cachedResponse);
@@ -131,7 +131,7 @@ export class AdvertisementService {
           result.items = response.body as Advertisement[];
           result.pagination = JSON.parse(response.headers.get('Pagination')!);
 
-          this.advertisementCacheService.setCacheTest(result);
+          this.advertisementCacheService.setCache(result);
           return result;
         })
       );
@@ -145,7 +145,7 @@ export class AdvertisementService {
     this.lastPaginationParams = paginationParams;
 
     const cachedResponse =
-      this.advertisementCacheService.getCacheTest(paginationParams);
+      this.advertisementCacheService.getCache(paginationParams);
     if (cachedResponse) {
       console.log('Cache returned');
       return of(cachedResponse);
@@ -167,7 +167,7 @@ export class AdvertisementService {
           result.items = response.body as Advertisement[];
           result.pagination = JSON.parse(response.headers.get('Pagination')!);
 
-          this.advertisementCacheService.setCacheTest(result);
+          this.advertisementCacheService.setCache(result);
           return result;
         })
       );
@@ -180,7 +180,7 @@ export class AdvertisementService {
     this.lastPaginationParams = paginationParams;
 
     const cachedResponse =
-      this.advertisementCacheService.getCacheTest(paginationParams);
+      this.advertisementCacheService.getCache(paginationParams);
     if (cachedResponse) {
       console.log('Cache returned');
       return of(cachedResponse);
@@ -205,7 +205,7 @@ export class AdvertisementService {
           result.items = response.body as Advertisement[];
           result.pagination = JSON.parse(response.headers.get('Pagination')!);
 
-          this.advertisementCacheService.setCacheTest(result);
+          this.advertisementCacheService.setCache(result);
           return result;
         })
       );

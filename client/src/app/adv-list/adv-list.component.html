@@ -58,11 +58,7 @@
   </div>
 
   <!-- My advertisements -->
-  <div
-    *ngIf="
-      advertisements.length > 0 && state === advListStates.MyAdvertisements
-    "
-  >
+  <div *ngIf="state === advListStates.MyAdvertisements">
     <div class="d-flex mt-2">
       <div class="col-6 d-flex align-items-center justify-content-center">
         <button class="btn empty-button">
