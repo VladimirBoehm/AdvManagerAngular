@@ -9,11 +9,7 @@ import { PaginationParams } from '../_models/paginationParams';
   providedIn: 'root',
 })
 export class AdvertisementCacheService {
-
-  private advertisementCache = new Map<
-    any,
-    PaginatedResult<Advertisement[]>
-  >();
+  private advertisementCache = new Map<any, PaginatedResult<Advertisement[]>>();
 
   advertisementSearchParams = signal<AdvertisementSearchParams>(
     new AdvertisementSearchParams()
@@ -37,11 +33,9 @@ export class AdvertisementCacheService {
     return Object.values(flattenedParams).join('-');
   }
 
-
   private setSearchParams(paginationParams: PaginationParams) {
     this.advertisementSearchParams.update((params) => ({
       ...params,
-      cacheType: paginationParams.advertisementSearchType,
       paginationParams,
     }));
   }
@@ -50,6 +44,7 @@ export class AdvertisementCacheService {
     paginationParams: PaginationParams | undefined
   ): PaginatedResult<Advertisement[]> | undefined {
     if (paginationParams) this.setSearchParams(paginationParams);
+    console.log('getCache: ' + this.getSearchParamsKey());
     return this.advertisementCache.get(this.getSearchParamsKey());
   }
 
@@ -57,12 +52,11 @@ export class AdvertisementCacheService {
     this.advertisementCache.set(this.getSearchParamsKey(), advertisements);
   }
 
-  //TEST -- протестировать добавление перевого элемента в список
   addItem(advertisement: Advertisement) {
     const searchParamsKey = this.getSearchParamsKey();
+    console.log('addItem: ' + searchParamsKey);
 
-    const cachedAdvertisements =
-      this.advertisementCache.get(searchParamsKey);
+    const cachedAdvertisements = this.advertisementCache.get(searchParamsKey);
     if (cachedAdvertisements) {
       const updatedItems = cachedAdvertisements.items
         ? [...cachedAdvertisements.items, advertisement]
@@ -81,8 +75,8 @@ export class AdvertisementCacheService {
 
   updateItem(advertisement: Advertisement) {
     const searchParamsKey = this.getSearchParamsKey();
-    const cachedAdvertisements =
-      this.advertisementCache.get(searchParamsKey);
+    console.log('updateItem: ' + searchParamsKey);
+    const cachedAdvertisements = this.advertisementCache.get(searchParamsKey);
 
     if (cachedAdvertisements?.items) {
       const updatedItems = cachedAdvertisements.items.map((item) =>
@@ -98,8 +92,8 @@ export class AdvertisementCacheService {
     advertisementId: number
   ) {
     const searchParamsKey = this.getSearchParamsKey();
-    const cachedAdvertisements =
-      this.advertisementCache.get(searchParamsKey);
+    const cachedAdvertisements = this.advertisementCache.get(searchParamsKey);
+    console.log('updateItemsStatus: ' + searchParamsKey);
 
     if (cachedAdvertisements?.items) {
       const updatedItems = cachedAdvertisements.items.map((item) => {
@@ -118,8 +112,8 @@ export class AdvertisementCacheService {
 
   deleteItem(advertisementId: number) {
     const searchParamsKey = this.getSearchParamsKey();
-    const cachedAdvertisements =
-      this.advertisementCache.get(searchParamsKey);
+    console.log('deleteItem: ' + searchParamsKey);
+    const cachedAdvertisements = this.advertisementCache.get(searchParamsKey);
     if (cachedAdvertisements?.items) {
       const updatedItems = cachedAdvertisements.items.filter(
         (x) => x.id !== advertisementId
