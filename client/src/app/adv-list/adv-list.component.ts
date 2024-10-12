@@ -45,7 +45,9 @@ export class AdvListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
-      this.router.navigate(['']);
+      if (this.state === AdvListStates.PrivateHistory) {
+        this.router.navigate(['/adv-list', AdvListStates.MyAdvertisements]);
+      } else this.router.navigate(['']);
     });
 
     this.route.paramMap.subscribe((params) => {
