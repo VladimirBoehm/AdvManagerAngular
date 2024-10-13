@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Advertisement } from '../_models/advertisement';
 
 import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
@@ -11,30 +11,69 @@ import { SearchType } from '../_framework/constants/searchType';
 })
 export class AdvertisementCacheService {
   private advertisementCache = new Map<any, PaginatedResult<Advertisement[]>>();
-  private pendingAdverisementsCache: number = 0;
-
+  private pendingAdvertisementsCache: number = 0;
   private paginationParams?: PaginationParams;
 
-  checkResetPendingAdverisementsCache(counter: number) {
-    if (this.pendingAdverisementsCache !== counter) {
-      this.pendingAdverisementsCache = counter;
+  checkResetPendingAdvertisementsCache(counter: number) {
+    if (this.pendingAdvertisementsCache !== counter) {
+      this.pendingAdvertisementsCache = counter;
       this.resetCache(SearchType.PendingValidation);
     }
   }
 
+  updateItemInAllCaches(advertisement: Advertisement) {
+    this.advertisementCache.forEach((cachedAdvertisements, key) => {
+      if (cachedAdvertisements?.items) {
+        const updatedItems = cachedAdvertisements.items.map((item) =>
+          item.id === advertisement.id ? advertisement : item
+        );
+        cachedAdvertisements.items = updatedItems;
+        this.advertisementCache.set(key, cachedAdvertisements);
+      }
+    });
+
+    console.log(
+      'advertisement was updated in all caches. Id: ' + advertisement.id
+    );
+  }
+
+  deleteItemFromCachesBySearchType(
+    advertisementId: number,
+    searchType: SearchType
+  ) {
+    this.advertisementCache.forEach((cachedAdvertisements, key) => {
+      if (key.includes(searchType)) {
+        if (cachedAdvertisements?.items) {
+          const updatedItems = cachedAdvertisements.items.filter(
+            (item) => item.id !== advertisementId
+          );
+          if (updatedItems.length > 0) {
+            cachedAdvertisements.items = updatedItems;
+            this.advertisementCache.set(key, cachedAdvertisements);
+          } else {
+            this.advertisementCache.delete(key);
+          }
+        }
+      }
+    });
+    console.log(
+      `Advertisement with id ${advertisementId} deleted from caches with keys containing '${searchType}'.`
+    );
+  }
+
   resetCache(searchType: SearchType): void {
     const keysToReset: string[] = [];
-  
+
     this.advertisementCache.forEach((value, key) => {
       if (key.includes(searchType)) {
         keysToReset.push(key);
       }
     });
-  
+
     keysToReset.forEach((key) => {
       this.advertisementCache.delete(key);
     });
-  
+
     console.log(`Cache reset for keys containing: '${searchType}'`);
   }
 
@@ -90,27 +129,12 @@ export class AdvertisementCacheService {
         : [advertisement];
 
       cachedAdvertisements.items = updatedItems;
-
       this.advertisementCache.set(searchParamsKey, cachedAdvertisements);
     } else {
       this.advertisementCache.set(searchParamsKey, {
         items: [advertisement],
         pagination: undefined,
       });
-    }
-  }
-
-  updateItem(advertisement: Advertisement) {
-    const searchParamsKey = this.getSearchParamsKey();
-    console.log('updateItem: ' + searchParamsKey);
-    const cachedAdvertisements = this.advertisementCache.get(searchParamsKey);
-
-    if (cachedAdvertisements?.items) {
-      const updatedItems = cachedAdvertisements.items.map((item) =>
-        item.id === advertisement.id ? advertisement : item
-      );
-      cachedAdvertisements.items = updatedItems;
-      this.advertisementCache.set(searchParamsKey, cachedAdvertisements);
     }
   }
 

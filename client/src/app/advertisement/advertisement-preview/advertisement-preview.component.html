@@ -40,7 +40,7 @@
       <div
         class="col-4 d-flex flex-column align-items-center justify-content-center"
       >
-        <button class="btn empty-button" (click)="sendToValidate()">
+        <button class="btn empty-button" (click)="sendToValidateDialogShow()">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="24px"
@@ -124,9 +124,13 @@
         class="col-6 d-flex flex-column align-items-center justify-content-center"
       >
         <button
-          *ngIf="accountService.currentUser()?.isAdmin"
+          *ngIf="
+            accountService.currentUser()?.isAdmin &&
+            advertisementService.getActualSearchType() ===
+              searchType.PendingPublication
+          "
           class="btn empty-button"
-  
+          (click)="forcePublicationDialogShow()"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -200,7 +204,7 @@
       <div
         class="col-6 d-flex flex-column align-items-center justify-content-center"
       >
-        <button class="btn empty-button">
+        <button class="btn empty-button" (click)="edit()">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="24px"
@@ -299,6 +303,77 @@
       (firstButtonAction)="cancelPublication()"
       (secondButtonAction)="modalRef?.hide()"
     ></app-confirm-modal>
+  </ng-template>
+
+  <ng-template #modalDialogCancelPublicationAdmin>
+    <div class="modal-header">
+      <h6 class="modal-title pull-left">Отменить публикацию?</h6>
+    </div>
+    <div class="modal-body">
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          [(ngModel)]="shouldRejectValidation"
+          id="blockAdv"
+        />
+        <label class="form-check-label" for="blockAdv">
+          Заблокировать объявление?
+        </label>
+      </div>
+      <div *ngIf="shouldRejectValidation" class="text-muted my-info-text">
+        Валидация будет отозвана
+      </div>
+      <mat-form-field class="mt-3 col-12">
+        <mat-label>Комментарий</mat-label>
+        <textarea
+          matInput
+          rows="3"
+          name="adminMessage"
+          maxlength="200"
+          [(ngModel)]="adminComment"
+        ></textarea>
+      </mat-form-field>
+
+      <div class="d-flex justify-content-end">
+        <button
+          class="btn empty-button me-4"
+          (click)="cancelPublicationAdmin()"
+        >
+          <div>Да</div>
+        </button>
+        <button class="btn empty-button" (click)="modalRef?.hide()">
+          <div>Нет</div>
+        </button>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #modalDialogForcePublicationAdmin>
+    <div class="modal-header">
+      <h6 class="modal-title pull-left">Разместить объявление мгновенно?</h6>
+    </div>
+    <div class="modal-body">
+      <mat-form-field class="mt-3 col-12">
+        <mat-label>Комментарий</mat-label>
+        <textarea
+          matInput
+          rows="3"
+          name="adminMessage"
+          maxlength="200"
+          [(ngModel)]="adminComment"
+        ></textarea>
+      </mat-form-field>
+
+      <div class="d-flex justify-content-end">
+        <button class="btn empty-button me-4" (click)="forcePublication()">
+          <div>Да</div>
+        </button>
+        <button class="btn empty-button" (click)="modalRef?.hide()">
+          <div>Нет</div>
+        </button>
+      </div>
+    </div>
   </ng-template>
 
   <ng-template #modalDialogValidate>

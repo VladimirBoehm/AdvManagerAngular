@@ -14,6 +14,10 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { PublishService } from '../../_services/publish.service';
 import { AdvertisementHelper } from '../../_framework/component/helpers/advertisementHelper';
 import { SearchType } from '../../_framework/constants/searchType';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { ManagePublish } from '../../_models/managePublish';
+import { PaginationParams } from '../../_models/paginationParams';
 
 @Component({
   selector: 'app-advertisement-preview',
@@ -24,6 +28,8 @@ import { SearchType } from '../../_framework/constants/searchType';
     ConfirmModalComponent,
     NgIf,
     DatePipe,
+    MatFormFieldModule,
+    MatInputModule,
   ],
   templateUrl: './advertisement-preview.component.html',
   styleUrl: './advertisement-preview.component.scss',
@@ -33,9 +39,15 @@ export class AdvertisementPreviewComponent implements OnInit {
   @ViewChild('modalDialogValidate') modalDialogValidate?: any;
   @ViewChild('modalDialogPublicationInfo') modalDialogPublicationInfo?: any;
   @ViewChild('modalDialogCancelPublication') modalDialogCancelPublication?: any;
+  @ViewChild('modalDialogForcePublicationAdmin')
+  modalDialogForcePublicationAdmin?: any;
+  @ViewChild('modalDialogCancelPublicationAdmin')
+  modalDialogCancelPublicationAdmin?: any;
+  shouldRejectValidation: boolean = false;
+  adminComment: string | undefined;
 
   private backButtonService = inject(TelegramBackButtonService);
-  private advertisementService = inject(AdvertisementService);
+  advertisementService = inject(AdvertisementService);
   private modalService = inject(BsModalService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
@@ -43,9 +55,11 @@ export class AdvertisementPreviewComponent implements OnInit {
   publishService = inject(PublishService);
   advertisementHelper = inject(AdvertisementHelper);
 
+  advertisementStatus = AdvertisementStatus;
+  searchType = SearchType;
+
   modalRef?: BsModalRef;
   advertisement?: Advertisement;
-  advertisementStatus = AdvertisementStatus;
   nextPublishDate?: Date;
 
   ngOnInit(): void {
@@ -72,7 +86,6 @@ export class AdvertisementPreviewComponent implements OnInit {
     this.advertisementService.getById(Number(id))?.subscribe({
       next: (advertisement: Advertisement) => {
         this.advertisement = advertisement;
-        console.log(advertisement);
       },
       error: (err) => {
         console.error('Error when loading ads:', err);
@@ -86,7 +99,7 @@ export class AdvertisementPreviewComponent implements OnInit {
         this.router.navigate(['/adv-list', AdvListStates.AllHistory]);
       } else {
         if (
-          this.advertisementService.getPaginationParams()?.searchType ===
+          this.advertisementService.getActualSearchType() ===
           SearchType.PrivateHistory
         )
           this.router.navigate(['/adv-list', AdvListStates.PrivateHistory]);
@@ -119,7 +132,69 @@ export class AdvertisementPreviewComponent implements OnInit {
     this.modalRef = this.modalService.show(this.modalDialogPublicationInfo);
   }
 
-  sendToValidate() {
+  cancelPublicationAdmin() {
+    if (!this.advertisement) return;
+
+    const managePublish = {
+      advertisementId: this.advertisement?.id,
+      comment: this.adminComment,
+      shouldRejectValidation: this.shouldRejectValidation,
+      publishId: this.advertisement?.nextPublishId,
+    } as ManagePublish;
+
+    this.advertisement.nextPublishDate = undefined;
+    if (this.shouldRejectValidation) {
+      this.advertisement.statusId = AdvertisementStatus.rejected;
+    } else {
+      this.advertisement.statusId = AdvertisementStatus.validated;
+    }
+
+    this.advertisementService
+      .cancelPublicationAdmin(managePublish, this.advertisement)
+      ?.subscribe({
+        next: () => {
+          this.modalRef?.hide();
+          this.router.navigate(['/adv-list', AdvListStates.Publishing]);
+        },
+        error: (err) => {
+          console.error('Error when cancelPublicationAdmin:', err);
+        },
+      });
+  }
+
+  forcePublication() {
+    if (!this.advertisement) return;
+
+    const managePublish = {
+      advertisementId: this.advertisement.id,
+      comment: this.adminComment,
+      publishId: this.advertisement?.nextPublishId,
+      shouldRejectValidation: false,
+    } as ManagePublish;
+
+    this.advertisement.nextPublishDate = undefined;
+    this.advertisement.statusId = AdvertisementStatus.validated;
+
+    this.advertisementService
+      .forcePublicationAdmin(managePublish, this.advertisement)
+      ?.subscribe({
+        next: () => {
+          this.modalRef?.hide();
+          this.router.navigate(['/adv-list', AdvListStates.Publishing]);
+        },
+        error: (err) => {
+          console.error('Error when forcePublication:', err);
+        },
+      });
+  }
+
+  forcePublicationDialogShow() {
+    this.modalRef = this.modalService.show(
+      this.modalDialogForcePublicationAdmin
+    );
+  }
+
+  sendToValidateDialogShow() {
     this.modalRef = this.modalService.show(this.modalDialogValidate);
   }
 
@@ -136,8 +211,12 @@ export class AdvertisementPreviewComponent implements OnInit {
   }
 
   cancelPublication() {
+    if (!this.advertisement) return;
+    this.advertisement.nextPublishDate = undefined;
+    this.advertisement.nextPublishId = 0;
+    this.advertisement.statusId = AdvertisementStatus.validated
     this.advertisementService
-      .сancelPublication(this.advertisement?.id ?? 0)
+      .cancelPublication(this.advertisement)
       .subscribe({
         next: () => {
           this.modalRef?.hide();
@@ -150,7 +229,20 @@ export class AdvertisementPreviewComponent implements OnInit {
   }
 
   cancelPublicationDialogShow() {
-    this.modalRef = this.modalService.show(this.modalDialogCancelPublication);
+    console.log(this.advertisementService.getActualSearchType());
+    if (
+      this.accountService.currentUser()?.userId === this.advertisement?.userId
+    ) {
+      this.modalRef = this.modalService.show(this.modalDialogCancelPublication);
+      return;
+    } else if (
+      this.accountService.currentUser()?.isAdmin &&
+      this.advertisementService.getActualSearchType() ===
+        SearchType.PendingPublication
+    )
+      this.modalRef = this.modalService.show(
+        this.modalDialogCancelPublicationAdmin
+      );
   }
 
   modalDialogValidateConfirm() {
@@ -160,7 +252,7 @@ export class AdvertisementPreviewComponent implements OnInit {
 
       this.advertisementService.updateStatus(this.advertisement)?.subscribe({
         next: () => {
-          this.back();
+          this.getAdvertisementById(this.advertisement?.id ?? 0);
         },
         error: (err) => {
           console.error('Error when updating status pendingValidation:', err);
@@ -170,37 +262,19 @@ export class AdvertisementPreviewComponent implements OnInit {
   }
 
   modalDialogPublishConfirm() {
-    this.publishService
-      .saveRegularPublishDate(this.advertisement?.id ?? 0)
-      .subscribe({
-        next: () => {
-          if (this.advertisement) {
-            this.advertisement.statusId =
-              AdvertisementStatus.pendingPublication;
-            this.advertisement.nextPublishDate = this.nextPublishDate;
+    if (!this.advertisement) return;
+    this.advertisement.statusId = AdvertisementStatus.pendingPublication;
+    this.advertisement.nextPublishDate = this.nextPublishDate;
 
-            this.advertisementService
-              .updateStatus(this.advertisement)
-              ?.subscribe({
-                next: () => {
-                  this.modalRef?.hide();
-                  this.getAdvertisementById(this.advertisement?.id ?? 0);
-                  if (this.advertisement)
-                    this.advertisement.nextPublishDate = this.nextPublishDate;
-                },
-                error: (err) => {
-                  console.error(
-                    'Error when updating status pendingValidation:',
-                    err
-                  );
-                },
-              });
-          }
-        },
-        error: (err) => {
-          console.error('Error when updating status pendingValidation:', err);
-        },
-      });
+    this.publishService.unblockNextPublishDate(this.advertisement).subscribe({
+      next: () => {
+        this.modalRef?.hide();
+        this.getAdvertisementById(this.advertisement?.id ?? 0);
+      },
+      error: (err) => {
+        console.error('Error when updating status pendingValidation:', err);
+      },
+    });
   }
 
   getDayWord(frequency: number): string {

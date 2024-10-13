@@ -24,7 +24,7 @@ export class MatErrorService {
     if (control.hasError('required')) {
       return 'Поле обязательно для заполнения';
     } else if (control.hasError('invalidUrl')) {
-      return "Ссылка должна начинаться или с 'https://' или с '@'";
+      return "Ссылка должна начинаться с 'https://'";
     } else if (control.hasError('maxlength') && errorVariables?.maxlength) {
       return `Превышено допустимое количество символов: ${errorVariables.maxlength}`;
     } else if (control.hasError('max') && errorVariables?.max) {

@@ -26,6 +26,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatErrorService } from '../../_framework/component/errors/mat-error-service';
+import { AdvertisementStatus } from '../../_framework/constants/advertisementStatus';
 
 @Component({
   selector: 'app-advertisement-edit',
@@ -81,10 +82,7 @@ export class AdvertisementEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
-      this.router.navigate([
-        '/adv-list',
-        AdvListStates.MyAdvertisements
-      ]);
+      this.router.navigate(['/adv-list', AdvListStates.MyAdvertisements]);
     });
 
     this.route.paramMap.subscribe((params) => {
@@ -160,6 +158,7 @@ export class AdvertisementEditComponent implements OnInit {
     if (this.advertisement) {
       this.advertisement.title = this.editForm.controls['title']?.value;
       this.advertisement.message = this.editForm.controls['message']?.value;
+      this.advertisement.statusId = AdvertisementStatus.new;
       if (this.advertisement?.id === 0) {
         this.advertisementService.save(this.advertisement).subscribe({
           next: (result: Advertisement) => {

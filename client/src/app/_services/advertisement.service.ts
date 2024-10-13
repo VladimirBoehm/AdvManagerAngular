@@ -5,12 +5,12 @@ import { environment } from '../../environments/environment';
 import { map, Observable, of, tap } from 'rxjs';
 import { UpdateAdvertisementAdminRequest } from '../_models/updateAdvertisementAdminRequest';
 import { UpdateAdvertisementStatusRequest } from '../_models/updateAdvertisementStatusRequest';
-import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
 import { AdvertisementCacheService } from './advertisement.cache.service';
 import { PaginationParams } from '../_models/paginationParams';
 import { PaginatedResult } from '../_models/pagination';
 import { setPaginationHeaders } from './paginationHelper';
 import { SearchType } from '../_framework/constants/searchType';
+import { ManagePublish } from '../_models/managePublish';
 
 @Injectable({
   providedIn: 'root',
@@ -21,8 +21,8 @@ export class AdvertisementService {
   private advertisementCacheService = inject(AdvertisementCacheService);
   private lastPaginationParams?: PaginationParams;
 
-  getPaginationParams() {
-    return this.advertisementCacheService.getPaginationParams();
+  getActualSearchType(): SearchType | undefined {
+    return this.advertisementCacheService.getPaginationParams()?.searchType;
   }
 
   save(advertisement: Advertisement): Observable<Advertisement> {
@@ -40,7 +40,7 @@ export class AdvertisementService {
       .put<Advertisement>(this.baseUrl + 'advertisement', advertisement)
       .pipe(
         tap(() => {
-          this.advertisementCacheService.updateItem(advertisement);
+          this.advertisementCacheService.updateItemInAllCaches(advertisement);
         })
       );
   }
@@ -58,7 +58,7 @@ export class AdvertisementService {
       )
       .pipe(
         tap(() => {
-          this.advertisementCacheService.updateItem(advertisement);
+          this.advertisementCacheService.updateItemInAllCaches(advertisement);
         })
       );
   }
@@ -75,14 +75,18 @@ export class AdvertisementService {
       );
   }
 
-  сancelPublication(id: number) {
+  cancelPublication(advertisement: Advertisement) {
     return this.http
-      .put(this.baseUrl + `advertisement/cancelPublication/${id}`, null)
+      .put(
+        this.baseUrl + `advertisement/cancelPublication/${advertisement.id}`,
+        null
+      )
       .pipe(
         tap(() => {
-          this.advertisementCacheService.updateItemsStatus(
-            AdvertisementStatus.validated,
-            id
+          this.advertisementCacheService.updateItemInAllCaches(advertisement);
+          this.advertisementCacheService.deleteItemFromCachesBySearchType(
+            advertisement.id,
+            SearchType.PendingPublication
           );
         })
       );
@@ -100,6 +104,9 @@ export class AdvertisementService {
       if (result) {
         return of(result);
       }
+    } else {
+      console.log('Loaded from DB: id-' + id);
+      return this.http.get<Advertisement>(this.baseUrl + `advertisement/${id}`);
     }
     return null;
   }
@@ -253,6 +260,40 @@ export class AdvertisementService {
   }
 
   // ADMIN
+  cancelPublicationAdmin(
+    managePublish: ManagePublish,
+    advertisement: Advertisement
+  ) {
+    return this.http
+      .put(this.baseUrl + 'advertisementAdmin/cancelPublication', managePublish)
+      .pipe(
+        tap(() => {
+          this.advertisementCacheService.updateItemInAllCaches(advertisement);
+          this.advertisementCacheService.deleteItemFromCachesBySearchType(
+            advertisement.id,
+            SearchType.PendingPublication
+          );
+        })
+      );
+  }
+
+  forcePublicationAdmin(
+    managePublish: ManagePublish,
+    advertisement: Advertisement
+  ) {
+    return this.http
+      .put(this.baseUrl + 'advertisementAdmin/forcePublication', managePublish)
+      .pipe(
+        tap(() => {
+          this.advertisementCacheService.updateItemInAllCaches(advertisement);
+          this.advertisementCacheService.deleteItemFromCachesBySearchType(
+            advertisement.id,
+            SearchType.PendingPublication
+          );
+        })
+      );
+  }
+
   getPendingValidationAdvertisements(
     paginationParams: PaginationParams
   ): Observable<PaginatedResult<Advertisement[]>> {
@@ -297,7 +338,7 @@ export class AdvertisementService {
       )
       .pipe(
         tap((result) => {
-          this.advertisementCacheService.checkResetPendingAdverisementsCache(
+          this.advertisementCacheService.checkResetPendingAdvertisementsCache(
             result
           );
         })

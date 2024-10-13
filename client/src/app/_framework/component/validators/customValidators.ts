@@ -2,7 +2,7 @@ import { AbstractControl, ValidatorFn } from '@angular/forms';
 
 export class CustomValidators {
   static urlValidator(): ValidatorFn {
-    const urlRegex = /^(https:\/\/|@)/i;
+    const urlRegex = /^(https:\/\/)/i;
     return (control: AbstractControl) => {
       if (!control.value || urlRegex.test(control.value)) {
         return null;
