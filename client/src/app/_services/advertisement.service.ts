@@ -318,6 +318,9 @@ export class AdvertisementService {
           this.advertisementCacheService.resetCache(
             SearchType.PendingValidation
           );
+          this.advertisementCacheService.resetCache(
+            SearchType.MyAdvertisements
+          );
         })
       );
   }

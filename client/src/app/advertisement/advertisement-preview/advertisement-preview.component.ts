@@ -61,6 +61,13 @@ export class AdvertisementPreviewComponent implements OnInit {
     });
   }
 
+  isCancelButtonShown(): boolean {
+    return (
+      this.accountService.currentUser()?.isAdmin ||
+      this.accountService.currentUser()?.userId === this.advertisement?.userId
+    );
+  }
+
   private getAdvertisementById(id: number) {
     this.advertisementService.getById(Number(id))?.subscribe({
       next: (advertisement: Advertisement) => {

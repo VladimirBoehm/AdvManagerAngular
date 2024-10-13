@@ -125,6 +125,7 @@
         class="col-6 d-flex flex-column align-items-center justify-content-center"
       >
         <button
+          *ngIf="isCancelButtonShown()"
           class="btn empty-button"
           (click)="cancelPublicationDialogShow()"
         >

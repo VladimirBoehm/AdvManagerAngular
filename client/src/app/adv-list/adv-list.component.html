@@ -7,9 +7,9 @@
   @if(paginatedAdvertisements.pagination){
   <paginator-localization
     *ngIf="
-      state !== advListStates.MyAdvertisements ||
-      paginatedAdvertisements.pagination.totalItems >
-        paginatedAdvertisements.pagination.itemsPerPage
+      paginatedAdvertisements.pagination.totalItems > 0 &&
+      (paginatedAdvertisements.pagination.totalItems >
+          paginatedAdvertisements.pagination.itemsPerPage)
     "
     #paginator
     class="demo-paginator"
@@ -146,7 +146,7 @@
     paginatedAdvertisements.items.length > 0 &&
     (state === advListStates.AllHistory ||
       state === advListStates.PrivateHistory ||
-      advListStates.Publishing)
+      state === advListStates.Publishing)
   "
 >
   <hr />
