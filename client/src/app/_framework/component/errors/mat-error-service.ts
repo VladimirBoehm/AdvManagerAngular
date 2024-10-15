@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 
 export interface ErrorVariables {
-  maxlength?: number;
+  maxLength?: number;
+  minLength?: number;
   max?: number;
 }
 
@@ -19,14 +20,16 @@ export class MatErrorService {
   getErrorMessage(control: AbstractControl, controlName: string): string {
     if (!control) return '';
 
-    const errorVariables = this.controlErrors[controlName];
+    const errorVariables: ErrorVariables = this.controlErrors[controlName];
 
     if (control.hasError('required')) {
       return 'Поле обязательно для заполнения';
     } else if (control.hasError('invalidUrl')) {
       return "Ссылка должна начинаться с 'https://'";
-    } else if (control.hasError('maxlength') && errorVariables?.maxlength) {
-      return `Превышено допустимое количество символов: ${errorVariables.maxlength}`;
+    } else if (control.hasError('maxlength') && errorVariables?.maxLength) {
+      return `Превышено допустимое количество символов: ${errorVariables.maxLength}`;
+    } else if (control.hasError('minlength') && errorVariables?.minLength) {
+      return `Минимум ${errorVariables.minLength} символа`;
     } else if (control.hasError('max') && errorVariables?.max) {
       return `Значение не должно превышать: ${errorVariables.max}`;
     } else if (control.hasError('notNumeric')) {

@@ -49,11 +49,6 @@ import { AdvertisementStatus } from '../../_framework/constants/advertisementSta
   providers: [MatErrorService],
 })
 export class AdvertisementEditComponent implements OnInit {
-  matErrorService: MatErrorService;
-  constructor(matErrorService: MatErrorService) {
-    this.matErrorService = matErrorService;
-  }
-  editForm: FormGroup = new FormGroup({});
   @ViewChild('imageSelectorDialog') imageSelectorDialog?: any;
   @ViewChild('modalAddAdvertisementButtonDialog')
   modalAddAdvertisementButtonDialog?: any;
@@ -69,7 +64,8 @@ export class AdvertisementEditComponent implements OnInit {
   private router = inject(Router);
 
   modalRef?: BsModalRef;
-
+  editForm: FormGroup = new FormGroup({});
+  matErrorService = inject(MatErrorService);
   titleCounter: number = 0;
   maxTitleLength: number = 30;
   messageCounter: number = 0;
@@ -134,10 +130,10 @@ export class AdvertisementEditComponent implements OnInit {
     });
 
     this.matErrorService.addErrorsInfo('title', {
-      maxlength: this.maxTitleLength,
+      maxLength: this.maxTitleLength,
     });
     this.matErrorService.addErrorsInfo('message', {
-      maxlength: this.maxMessageLength,
+      maxLength: this.maxMessageLength,
     });
 
     this.updateTitleCounter();

@@ -26,17 +26,14 @@ export interface ButtonLink {
   providers: [MatErrorService],
 })
 export class AddAdvertisementButtonModalComponent implements OnInit {
-  matErrorService: MatErrorService;
-  constructor(matErrorService: MatErrorService) {
-    this.matErrorService = matErrorService;
-  }
+
   @Input() modalRef?: BsModalRef;
   @Input() buttonName?: string;
   @Input() link?: string;
   onSave = output<ButtonLink>();
 
   private formBuilder = inject(FormBuilder);
-
+  matErrorService = inject(MatErrorService);
   editForm: FormGroup = new FormGroup({});
   buttonNameCounter: number = 0;
   maxButtonNameLength: number = 20;
@@ -74,10 +71,10 @@ export class AddAdvertisementButtonModalComponent implements OnInit {
     });
 
     this.matErrorService.addErrorsInfo('buttonName', {
-      maxlength: this.maxButtonNameLength,
+      maxLength: this.maxButtonNameLength,
     });
     this.matErrorService.addErrorsInfo('link', {
-      maxlength: this.maxLinkLength,
+      maxLength: this.maxLinkLength,
     });
   }
 

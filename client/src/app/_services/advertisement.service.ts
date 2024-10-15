@@ -102,6 +102,7 @@ export class AdvertisementService {
         (x: Advertisement) => x.id === id
       );
       if (result) {
+        console.log('Loaded from cache:' + JSON.stringify(result));
         return of(result);
       }
     } else {

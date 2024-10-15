@@ -1,0 +1,89 @@
+<div class="container">
+  <form
+    *ngIf="!isSend"
+    id="editForm"
+    [formGroup]="editForm"
+    (ngSubmit)="onSendClick()"
+    autocomplete="off"
+  >
+    <div class="d-flex mt-2">
+      <div class="col-6"></div>
+      <div
+        class="col-6 d-flex flex-column align-items-center justify-content-center"
+      >
+        <button
+          class="btn empty-button"
+          type="button"
+          (click)="onSendClick()"
+          [disabled]="editForm.invalid"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#5f6368"
+          >
+            <path
+              d="M172-238v-484l574 242-574 242Zm28-42 474-200-474-200v160l180 40-180 40v160Zm0 0v-400 400Z"
+            />
+          </svg>
+          <div class="text-muted">Отправить</div>
+        </button>
+      </div>
+    </div>
+    <hr />
+
+    <mat-form-field class="mt-3 col-12">
+      <mat-label>Обратная связь</mat-label>
+      <textarea
+        matInput
+        rows="3"
+        name="feedback"
+        [formControl]="$any(editForm.controls['feedback'])"
+      ></textarea>
+      <mat-error>{{
+        matErrorService.getErrorMessage(
+          editForm.controls["feedback"],
+          "feedback"
+        )
+      }}</mat-error>
+      <mat-hint align="end">
+        {{ feedbackCounter }}/{{ maxFeedbackLength }}</mat-hint
+      >
+    </mat-form-field>
+    <div class="text-muted my-info-text">
+      Сообщения об ошибках, обращения, пожелания
+    </div>
+  </form>
+
+  <ng-template [ngIf]="isSend">
+    <div class="alert alert-success mt-2" role="alert">
+      <div class="d-flex col-12 justify-content-center text-muted">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="24px"
+          viewBox="0 -960 960 960"
+          width="24px"
+          fill="#5f6368"
+          class="me-1"
+        >
+          <path
+            d="M268-276 78-466l20-20 170 170 36-36 20 20-56 56Zm226 0L304-466l20-20 170 170 368-368 20 20-388 388Zm-36-190-20-20 198-198 20 20-198 198Z"
+          />
+        </svg>
+        Отправлено
+      </div>
+    </div>
+  </ng-template>
+</div>
+
+<ng-template #modalDialog>
+  <app-confirm-modal
+    [title]="'Отправить отзыв?'"
+    [firstButtonLabel]="'Да'"
+    [secondButtonLabel]="'Нет'"
+    (firstButtonAction)="send()"
+    (secondButtonAction)="modalRef?.hide()"
+  ></app-confirm-modal>
+</ng-template>

@@ -39,20 +39,16 @@ export class AdvertisementValidateComponent implements OnInit {
   @ViewChild('modalDialog') modalDialog?: any;
   @ViewChild('modalDialogReject') modalDialogReject?: any;
 
-  constructor(matErrorService: MatErrorService) {
-    this.matErrorService = matErrorService;
-  }
-
-  editForm: FormGroup = new FormGroup({});
-  editFormModalDialog: FormGroup = new FormGroup({});
-  matErrorService: MatErrorService;
-
   private backButtonService = inject(TelegramBackButtonService);
   private route = inject(ActivatedRoute);
   private modalService = inject(BsModalService);
   private formBuilder = inject(FormBuilder);
   private router = inject(Router);
   private advertisementService = inject(AdvertisementService);
+  matErrorService = inject(MatErrorService);
+
+  editForm: FormGroup = new FormGroup({});
+  editFormModalDialog: FormGroup = new FormGroup({});
 
   frequencyValue: number = 10;
   advertisementId: number = 0;
@@ -109,7 +105,7 @@ export class AdvertisementValidateComponent implements OnInit {
     });
 
     this.matErrorService.addErrorsInfo('adminMessage', {
-      maxlength: this.maxCommentLength,
+      maxLength: this.maxCommentLength,
     });
     this.matErrorService.addErrorsInfo('frequencyValue', { max: 100 });
   }

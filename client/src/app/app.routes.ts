@@ -6,6 +6,8 @@ import { AdvertisementMainDataComponent } from './advertisement/advertisement-ma
 import { AdvertisementValidateComponent } from './advertisement/advertisement-validate/advertisement-validate.component';
 import { AdvertisementPreviewComponent } from './advertisement/advertisement-preview/advertisement-preview.component';
 import { AdvertisementEditComponent } from './advertisement/advertisement-edit/advertisement-edit.component';
+import { ChatFilterComponent } from './chat-filter/chat-filter.component';
+import { FeedbackComponent } from './feedback/feedback.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -27,5 +29,13 @@ export const routes: Routes = [
   {
     path: 'app-advertisement-edit/:id',
     component: AdvertisementEditComponent,
+  },
+  {
+    path: 'app-chat-filter',
+    component: ChatFilterComponent,
+  },
+  {
+    path: 'app-feedback',
+    component: FeedbackComponent,
   },
 ];

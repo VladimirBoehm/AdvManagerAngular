@@ -31,7 +31,6 @@ export class AdvListComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private advertisementService = inject(AdvertisementService);
   private backButtonService = inject(TelegramBackButtonService);
-
   private router = inject(Router);
 
   paginatedAdvertisements?: PaginatedResult<Advertisement[]>;
