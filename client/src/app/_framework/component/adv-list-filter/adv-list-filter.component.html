@@ -1,0 +1,77 @@
+<a
+  (click)="onFilterClick()"
+  class="btn btn-hover-light rounded-2 d-flex align-items-start gap-2 py-2 px-3 lh-sm text-start"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    height="24px"
+    viewBox="0 -960 960 960"
+    width="24px"
+    fill="#5f6368"
+  >
+    <path
+      d="M429-292v-28h101v28H429ZM282-466v-28h395v28H282ZM172-640v-28h616v28H172Z"
+    />
+  </svg>
+  <div>
+    <div class="d-block text-muted">Сортировать</div>
+    <div class="my-info-text text-muted">По дате, по возрастанию</div>
+  </div>
+</a>
+
+<ng-template #modalDialog>
+  <div class="modal-header">
+    <h6 class="modal-title pull-left">Сортировать</h6>
+  </div>
+  <div class="modal-body ms-5">
+    <section class="d-flex flex-column">
+      <mat-radio-group [(ngModel)]="labelPosition">
+        <mat-radio-button value="date" style="display: block">
+          <div class="input-group">
+            <span class="input-group-text">По дате</span>
+            <select class="form-select" [(ngModel)]="selectedSortDate">
+              <option value="asc">по возрастанию</option>
+              <option value="desc">по убыванию</option>
+            </select>
+          </div>
+        </mat-radio-button>
+        <mat-radio-button value="title" style="display: block">
+          <div class="input-group">
+            <span class="input-group-text">По заголовку</span>
+            <select class="form-select" [(ngModel)]="selectedSortTitle">
+              <option value="asc">по возрастанию</option>
+              <option value="desc">по убыванию</option>
+            </select>
+          </div>
+        </mat-radio-button>
+        <mat-radio-button value="username" style="display: block">
+          <div class="input-group">
+            <span class="input-group-text">По username</span>
+            <select class="form-select" [(ngModel)]="selectedSortUsername">
+              <option value="asc">по возрастанию</option>
+              <option value="desc">по убыванию</option>
+            </select>
+          </div>
+        </mat-radio-button>
+        <mat-radio-button value="name" style="display: block">
+          <div class="input-group">
+            <span class="input-group-text">По имени</span>
+            <select class="form-select" [(ngModel)]="selectedSortName">
+              <option value="asc">по возрастанию</option>
+              <option value="desc">по убыванию</option>
+            </select>
+          </div>
+        </mat-radio-button>
+      </mat-radio-group>
+    </section>
+
+    <div class="d-flex justify-content-end mt-3">
+      <button class="btn empty-button me-4" (click)="save()">
+        <div>Выбрать</div>
+      </button>
+      <button class="btn empty-button" (click)="modalRef?.hide()">
+        <div>Назад</div>
+      </button>
+    </div>
+  </div>
+</ng-template>

@@ -11,6 +11,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { PaginatedResult } from '../_models/pagination';
 import { SearchType } from '../_framework/constants/searchType';
 import { PaginatorLocalization } from '../_framework/component/paginator/paginator-localization';
+import { AdvListFilterComponent } from '../_framework/component/adv-list-filter/adv-list-filter.component';
 
 @Component({
   selector: 'app-adv-list',
@@ -23,6 +24,7 @@ import { PaginatorLocalization } from '../_framework/component/paginator/paginat
     DatePipe,
     MatPaginatorModule,
     PaginatorLocalization,
+    AdvListFilterComponent,
   ],
   templateUrl: './adv-list.component.html',
   styleUrl: './adv-list.component.scss',
@@ -56,7 +58,6 @@ export class AdvListComponent implements OnInit, OnDestroy {
 
     this.initialize();
   }
-
 
   handlePageEvent(e: PageEvent) {
     this.pageSize = e.pageSize;

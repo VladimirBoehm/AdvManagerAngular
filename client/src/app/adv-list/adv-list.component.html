@@ -5,21 +5,29 @@
   </div>
 
   @if(paginatedAdvertisements.pagination){
-  <paginator-localization
-    *ngIf="
-      paginatedAdvertisements.pagination.totalItems > 0 &&
-      (paginatedAdvertisements.pagination.totalItems >
-          paginatedAdvertisements.pagination.itemsPerPage)
-    "
-    #paginator
-    class="demo-paginator"
-    (page)="handlePageEvent($event)"
-    [length]="length"
-    [pageSize]="pageSize"
-    [pageIndex]="pageIndex"
-  >
-  </paginator-localization>
+  <div class="d-flex">
+    <div class="col-6">
+      <app-adv-list-filter />
+    </div>
+    <div class="col-6">
+      <paginator-localization
+        *ngIf="
+          paginatedAdvertisements.pagination.totalItems > 0 &&
+          paginatedAdvertisements.pagination.totalItems >
+            paginatedAdvertisements.pagination.itemsPerPage
+        "
+        #paginator
+        class="demo-paginator"
+        (page)="handlePageEvent($event)"
+        [length]="length"
+        [pageSize]="pageSize"
+        [pageIndex]="pageIndex"
+      >
+      </paginator-localization>
+    </div>
+  </div>
   }
+
   <!-- Pending validation -->
   <div
     *ngIf="
@@ -149,7 +157,6 @@
       state === advListStates.Publishing)
   "
 >
-
   <ul class="list-group list-group-flush">
     <li
       *ngFor="let advertisement of paginatedAdvertisements.items"
