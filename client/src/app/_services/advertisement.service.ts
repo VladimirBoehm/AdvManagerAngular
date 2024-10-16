@@ -312,7 +312,7 @@ export class AdvertisementService {
     const cachedResponse =
       this.advertisementCacheService.getCache(paginationParams);
     if (cachedResponse) {
-      console.log('Cache returned');
+      console.log('Cache returned!');
       return of(cachedResponse);
     }
 
