@@ -2,7 +2,6 @@ import {
   Component,
   EventEmitter,
   inject,
-  model,
   Output,
   ViewChild,
 } from '@angular/core';
@@ -10,13 +9,23 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
-import { FormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { SortOption } from '../../../_models/sortOption';
 
 @Component({
   selector: 'app-adv-list-filter',
   standalone: true,
-  imports: [MatCardModule, MatCheckboxModule, MatRadioModule, FormsModule],
+  imports: [
+    MatCardModule,
+    MatCheckboxModule,
+    MatRadioModule,
+    ReactiveFormsModule,
+  ],
   templateUrl: './adv-list-filter.component.html',
   styleUrl: './adv-list-filter.component.scss',
 })
@@ -27,21 +36,51 @@ export class AdvListFilterComponent {
 
   modalRef?: BsModalRef;
   private modalService = inject(BsModalService);
+  private formBuilder = inject(FormBuilder);
 
-  readonly labelPosition = model<'date' | 'title' | 'username' | 'name'>(
-    'date'
-  );
-  readonly selectedSortDate = model<'asc' | 'desc'>('desc');
-  readonly selectedSortTitle = model<'asc' | 'desc'>('desc');
-  readonly selectedSortUsername = model<'asc' | 'desc'>('desc');
-  readonly selectedSortName = model<'asc' | 'desc'>('desc');
+  sortForm: FormGroup = new FormGroup({});
+  currentSortOption: SortOption = {
+    field: 'date',
+    order: 'desc',
+  };
+
+  constructor() {
+    this.sortForm = this.formBuilder.group({
+      labelPosition: ['date', Validators.required],
+      selectedSortDate: ['desc', Validators.required],
+      selectedSortTitle: ['desc', Validators.required],
+      selectedSortUsername: ['desc', Validators.required],
+      selectedSortName: ['desc', Validators.required],
+    });
+  }
 
   onFilterClick() {
+    // Reset the form values to currentSortOption
+    this.sortForm.patchValue({
+      labelPosition: this.currentSortOption.field,
+      selectedSortDate:
+        this.currentSortOption.field === 'date'
+          ? this.currentSortOption.order
+          : 'desc',
+      selectedSortTitle:
+        this.currentSortOption.field === 'title'
+          ? this.currentSortOption.order
+          : 'desc',
+      selectedSortUsername:
+        this.currentSortOption.field === 'username'
+          ? this.currentSortOption.order
+          : 'desc',
+      selectedSortName:
+        this.currentSortOption.field === 'name'
+          ? this.currentSortOption.order
+          : 'desc',
+    });
+
     this.modalRef = this.modalService.show(this.modalDialog);
   }
 
   getLabelText() {
-    const sortOption = this.getSelectedSortOption();
+    const sortOption = this.currentSortOption;
     let fieldTranslation = '';
     let orderTranslation =
       sortOption.order === 'asc' ? 'по возрастанию' : 'по убыванию';
@@ -64,21 +103,21 @@ export class AdvListFilterComponent {
   }
 
   getSelectedSortOption(): SortOption {
-    const field = this.labelPosition();
+    const field = this.sortForm.get('labelPosition')?.value;
     let order: 'asc' | 'desc';
 
     switch (field) {
       case 'date':
-        order = this.selectedSortDate();
+        order = this.sortForm.get('selectedSortDate')?.value;
         break;
       case 'title':
-        order = this.selectedSortTitle();
+        order = this.sortForm.get('selectedSortTitle')?.value;
         break;
       case 'username':
-        order = this.selectedSortUsername();
+        order = this.sortForm.get('selectedSortUsername')?.value;
         break;
       case 'name':
-        order = this.selectedSortName();
+        order = this.sortForm.get('selectedSortName')?.value;
         break;
       default:
         order = 'desc';
@@ -93,7 +132,8 @@ export class AdvListFilterComponent {
   }
 
   save() {
-    this.onChanged.emit(this.getSelectedSortOption());
+    this.currentSortOption = this.getSelectedSortOption();
+    this.onChanged.emit(this.currentSortOption);
     this.modalRef?.hide();
   }
 }

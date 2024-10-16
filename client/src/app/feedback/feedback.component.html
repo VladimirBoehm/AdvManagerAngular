@@ -40,7 +40,7 @@
         matInput
         rows="3"
         name="feedback"
-        [formControl]="$any(editForm.controls['feedback'])"
+        formControlName="feedback"
       ></textarea>
       <mat-error>{{
         matErrorService.getErrorMessage(

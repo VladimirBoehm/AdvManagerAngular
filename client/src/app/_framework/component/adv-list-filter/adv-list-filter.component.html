@@ -24,54 +24,56 @@
     <h6 class="modal-title pull-left">Сортировать</h6>
   </div>
   <div class="modal-body ms-5">
-    <section class="d-flex flex-column">
-      <mat-radio-group [(ngModel)]="labelPosition">
-        <mat-radio-button value="date" class="d-block">
-          <div class="input-group">
-            <span class="input-group-text">По дате</span>
-            <select class="form-select" [(ngModel)]="selectedSortDate">
-              <option value="asc">по возрастанию</option>
-              <option value="desc">по убыванию</option>
-            </select>
-          </div>
-        </mat-radio-button>
-        <mat-radio-button value="title" class="mt-1 d-block">
-          <div class="input-group">
-            <span class="input-group-text">По заголовку</span>
-            <select class="form-select" [(ngModel)]="selectedSortTitle">
-              <option value="asc">по возрастанию</option>
-              <option value="desc">по убыванию</option>
-            </select>
-          </div>
-        </mat-radio-button>
-        <mat-radio-button value="username" class="mt-1 d-block">
-          <div class="input-group">
-            <span class="input-group-text">По username</span>
-            <select class="form-select" [(ngModel)]="selectedSortUsername">
-              <option value="asc">по возрастанию</option>
-              <option value="desc">по убыванию</option>
-            </select>
-          </div>
-        </mat-radio-button>
-        <mat-radio-button value="name" class="mt-1 d-block">
-          <div class="input-group">
-            <span class="input-group-text">По имени</span>
-            <select class="form-select" [(ngModel)]="selectedSortName">
-              <option value="asc">по возрастанию</option>
-              <option value="desc">по убыванию</option>
-            </select>
-          </div>
-        </mat-radio-button>
-      </mat-radio-group>
-    </section>
+    <form [formGroup]="sortForm">
+      <section class="d-flex flex-column">
+        <mat-radio-group formControlName="labelPosition">
+          <mat-radio-button value="date" class="d-block">
+            <div class="input-group">
+              <span class="input-group-text">По дате</span>
+              <select class="form-select" formControlName="selectedSortDate">
+                <option value="asc">по возрастанию</option>
+                <option value="desc">по убыванию</option>
+              </select>
+            </div>
+          </mat-radio-button>
+          <mat-radio-button value="title" class="mt-1 d-block">
+            <div class="input-group">
+              <span class="input-group-text">По заголовку</span>
+              <select class="form-select" formControlName="selectedSortTitle">
+                <option value="asc">по возрастанию</option>
+                <option value="desc">по убыванию</option>
+              </select>
+            </div>
+          </mat-radio-button>
+          <mat-radio-button value="username" class="mt-1 d-block">
+            <div class="input-group">
+              <span class="input-group-text">По username</span>
+              <select class="form-select" formControlName="selectedSortUsername">
+                <option value="asc">по возрастанию</option>
+                <option value="desc">по убыванию</option>
+              </select>
+            </div>
+          </mat-radio-button>
+          <mat-radio-button value="name" class="mt-1 d-block">
+            <div class="input-group">
+              <span class="input-group-text">По имени</span>
+              <select class="form-select" formControlName="selectedSortName">
+                <option value="asc">по возрастанию</option>
+                <option value="desc">по убыванию</option>
+              </select>
+            </div>
+          </mat-radio-button>
+        </mat-radio-group>
+      </section>
 
-    <div class="d-flex justify-content-end mt-3">
-      <button class="btn empty-button me-4" (click)="save()">
-        <div>Выбрать</div>
-      </button>
-      <button class="btn empty-button" (click)="modalRef?.hide()">
-        <div>Назад</div>
-      </button>
-    </div>
+      <div class="d-flex justify-content-end mt-3">
+        <button class="btn empty-button me-4" (click)="save()">
+          <div>Выбрать</div>
+        </button>
+        <button class="btn empty-button" (click)="modalRef?.hide()">
+          <div>Назад</div>
+        </button>
+      </div>
+    </form>
   </div>
 </ng-template>

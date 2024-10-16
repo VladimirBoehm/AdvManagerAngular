@@ -33,13 +33,10 @@
 
     <mat-form-field class="col-12">
       <mat-label>Заголовок</mat-label>
-      <input matInput [formControl]="$any(editForm.controls['title'])" />
+      <input matInput formControlName="title" />
       @if (matErrorService.getHasError(editForm.controls['title'])){
       <mat-error>{{
-        matErrorService.getErrorMessage(
-          editForm.controls["title"],
-          "title"
-        )
+        matErrorService.getErrorMessage(editForm.controls["title"], "title")
       }}</mat-error>
       }
       <mat-hint align="end"> {{ titleCounter }}/{{ maxTitleLength }}</mat-hint>
@@ -53,14 +50,11 @@
         rows="6"
         type="text"
         name="message"
-        [formControl]="$any(editForm.controls['message'])"
+        formControlName="message"
       ></textarea>
       @if (matErrorService.getHasError(editForm.controls['message'])){
       <mat-error>{{
-        matErrorService.getErrorMessage(
-          editForm.controls["message"],
-          "message"
-        )
+        matErrorService.getErrorMessage(editForm.controls["message"], "message")
       }}</mat-error>
       }
       <mat-hint align="end">

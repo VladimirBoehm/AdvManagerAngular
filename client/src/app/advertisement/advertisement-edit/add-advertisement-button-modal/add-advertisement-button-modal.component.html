@@ -57,11 +57,7 @@
     <div class="d-flex flex-column">
       <mat-form-field>
         <mat-label>Имя кнопки</mat-label>
-        <input
-          matInput
-          required
-          [formControl]="$any(editForm.controls['buttonName'])"
-        />
+        <input matInput required formControlName="buttonName" />
         @if (matErrorService.getHasError(editForm.controls['buttonName'])){
         <mat-error>{{
           matErrorService.getErrorMessage(
@@ -82,15 +78,12 @@
           required
           type="text"
           name="link"
-          [formControl]="$any(editForm.controls['link'])"
+          formControlName="link"
           id="floatingLink"
         ></textarea>
         @if (matErrorService.getHasError(editForm.controls['link'])){
         <mat-error>{{
-          matErrorService.getErrorMessage(
-            editForm.controls["link"],
-            "link"
-          )
+          matErrorService.getErrorMessage(editForm.controls["link"], "link")
         }}</mat-error>
         }
         <mat-hint align="end"> {{ linkCounter }}/{{ maxLinkLength }}</mat-hint>
