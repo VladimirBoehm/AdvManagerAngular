@@ -7,7 +7,7 @@
   @if(paginatedAdvertisements.pagination){
   <div class="d-flex">
     <div class="col-6">
-      <app-adv-list-filter />
+      <app-adv-list-filter (onChanged)="sortChanged($event)" />
     </div>
     <div class="col-6">
       <paginator-localization

@@ -12,6 +12,7 @@ import { PaginatedResult } from '../_models/pagination';
 import { SearchType } from '../_framework/constants/searchType';
 import { PaginatorLocalization } from '../_framework/component/paginator/paginator-localization';
 import { AdvListFilterComponent } from '../_framework/component/adv-list-filter/adv-list-filter.component';
+import { SortOption } from '../_models/sortOption';
 
 @Component({
   selector: 'app-adv-list',
@@ -195,6 +196,10 @@ export class AdvListComponent implements OnInit, OnDestroy {
 
   create() {
     this.router.navigate(['/app-advertisement-edit', 0]);
+  }
+
+  sortChanged($event: SortOption) {
+    console.log($event);
   }
 
   ngOnDestroy(): void {

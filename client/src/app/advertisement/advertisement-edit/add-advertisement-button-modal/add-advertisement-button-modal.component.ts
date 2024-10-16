@@ -1,11 +1,9 @@
-import { Component, inject, Input, OnInit, output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import {
-  AbstractControl,
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
-  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -26,11 +24,10 @@ export interface ButtonLink {
   providers: [MatErrorService],
 })
 export class AddAdvertisementButtonModalComponent implements OnInit {
-
   @Input() modalRef?: BsModalRef;
   @Input() buttonName?: string;
   @Input() link?: string;
-  onSave = output<ButtonLink>();
+  @Output() onSave = new EventEmitter<ButtonLink>();
 
   private formBuilder = inject(FormBuilder);
   matErrorService = inject(MatErrorService);
