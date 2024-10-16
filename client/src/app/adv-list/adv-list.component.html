@@ -20,8 +20,8 @@
         class="demo-paginator"
         (page)="handlePageEvent($event)"
         [length]="length"
-        [pageSize]="pageSize"
-        [pageIndex]="pageIndex"
+        [pageSize]="paginationQueryObject.pageSize"
+        [pageIndex]="paginationQueryObject.pageNumber"
       >
       </paginator-localization>
     </div>

@@ -40,10 +40,16 @@ export class AdvListComponent implements OnInit, OnDestroy {
   advListStates = AdvListStates;
   state: AdvListStates | undefined;
 
-  //Paging
+  paginationQueryObject: PaginationParams;
   length = 0; // items count
-  pageSize = 5;
-  pageIndex = 0;
+
+  constructor() {
+    this.paginationQueryObject = {
+      pageNumber: 0,
+      pageSize: 5,
+      sortOption: { field: 'date', order: 'desc' },
+    } as PaginationParams;
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
@@ -61,23 +67,17 @@ export class AdvListComponent implements OnInit, OnDestroy {
   }
 
   handlePageEvent(e: PageEvent) {
-    this.pageSize = e.pageSize;
-    this.pageIndex = e.pageIndex;
-
+    this.paginationQueryObject.pageSize = e.pageSize;
+    this.paginationQueryObject.pageNumber = e.pageIndex;
     this.initialize();
   }
 
   private initialize() {
-    const paginationQueryObject = {
-      pageNumber: this.pageIndex,
-      pageSize: this.pageSize,
-    } as PaginationParams;
-
     switch (this.state) {
       case AdvListStates.Validate: {
-        paginationQueryObject.searchType = SearchType.PendingValidation;
+        this.paginationQueryObject.searchType = SearchType.PendingValidation;
         this.advertisementService
-          .getPendingValidationAdvertisements(paginationQueryObject)
+          .getPendingValidationAdvertisements(this.paginationQueryObject)
           .subscribe({
             next: (advertisements: PaginatedResult<Advertisement[]>) => {
               this.setPaginatedResult(advertisements);
@@ -89,9 +89,9 @@ export class AdvListComponent implements OnInit, OnDestroy {
         break;
       }
       case AdvListStates.AllHistory: {
-        paginationQueryObject.searchType = SearchType.AllHistory;
+        this.paginationQueryObject.searchType = SearchType.AllHistory;
         this.advertisementService
-          .getAllAdvertisementHistory(paginationQueryObject)
+          .getAllAdvertisementHistory(this.paginationQueryObject)
           .subscribe({
             next: (advertisements: PaginatedResult<Advertisement[]>) => {
               this.setPaginatedResult(advertisements);
@@ -104,9 +104,9 @@ export class AdvListComponent implements OnInit, OnDestroy {
         break;
       }
       case AdvListStates.PrivateHistory: {
-        paginationQueryObject.searchType = SearchType.PrivateHistory;
+        this.paginationQueryObject.searchType = SearchType.PrivateHistory;
         this.advertisementService
-          .getPrivateAdvertisementHistory(paginationQueryObject)
+          .getPrivateAdvertisementHistory(this.paginationQueryObject)
           .subscribe({
             next: (advertisements: PaginatedResult<Advertisement[]>) => {
               this.setPaginatedResult(advertisements);
@@ -130,9 +130,9 @@ export class AdvListComponent implements OnInit, OnDestroy {
         break;
       }
       case AdvListStates.Publishing: {
-        paginationQueryObject.searchType = SearchType.PendingPublication;
+        this.paginationQueryObject.searchType = SearchType.PendingPublication;
         this.advertisementService
-          .getPendingPublicationAdvertisements(paginationQueryObject)
+          .getPendingPublicationAdvertisements(this.paginationQueryObject)
           .subscribe({
             next: (advertisements: PaginatedResult<Advertisement[]>) => {
               this.setPaginatedResult(advertisements);
@@ -159,8 +159,10 @@ export class AdvListComponent implements OnInit, OnDestroy {
   ) {
     this.paginatedAdvertisements = paginatedResult;
     this.length = paginatedResult.pagination?.totalItems ?? 0;
-    this.pageSize = paginatedResult.pagination?.itemsPerPage ?? 1;
-    this.pageIndex = paginatedResult.pagination?.currentPage ?? 0;
+    this.paginationQueryObject.pageSize =
+      paginatedResult.pagination?.itemsPerPage ?? 1;
+    this.paginationQueryObject.pageNumber =
+      paginatedResult.pagination?.currentPage ?? 0;
   }
 
   getStatus(advertisement: Advertisement): string {
@@ -199,7 +201,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
   }
 
   sortChanged($event: SortOption) {
-    console.log($event);
+    this.paginationQueryObject.sortOption = $event;
   }
 
   ngOnDestroy(): void {

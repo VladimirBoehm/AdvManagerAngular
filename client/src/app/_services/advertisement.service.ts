@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Advertisement } from '../_models/advertisement';
 import { environment } from '../../environments/environment';
@@ -11,6 +11,7 @@ import { PaginatedResult } from '../_models/pagination';
 import { setPaginationHeaders } from './paginationHelper';
 import { SearchType } from '../_framework/constants/searchType';
 import { ManagePublish } from '../_models/managePublish';
+import { SortOption } from '../_models/sortOption';
 
 @Injectable({
   providedIn: 'root',
@@ -126,7 +127,8 @@ export class AdvertisementService {
 
     const params = setPaginationHeaders(
       paginationParams.pageNumber,
-      paginationParams.pageSize
+      paginationParams.pageSize,
+      paginationParams.sortOption
     );
 
     return this.http
@@ -155,6 +157,10 @@ export class AdvertisementService {
       pageNumber: 0,
       pageSize: 10,
       searchType: SearchType.MyAdvertisements,
+      sortOption: {
+        field: 'date',
+        order: 'desc',
+      } as SortOption,
     } as PaginationParams;
     this.lastPaginationParams = paginationParams;
 
@@ -165,9 +171,10 @@ export class AdvertisementService {
       return of(cachedResponse);
     }
 
-    const params = setPaginationHeaders(
+    const params: HttpParams = setPaginationHeaders(
       paginationParams.pageNumber,
-      paginationParams.pageSize
+      paginationParams.pageSize,
+      paginationParams.sortOption
     );
 
     return this.http
@@ -202,7 +209,8 @@ export class AdvertisementService {
 
     const params = setPaginationHeaders(
       paginationParams.pageNumber,
-      paginationParams.pageSize
+      paginationParams.pageSize,
+      paginationParams.sortOption
     );
 
     return this.http
@@ -237,7 +245,8 @@ export class AdvertisementService {
 
     const params = setPaginationHeaders(
       paginationParams.pageNumber,
-      paginationParams.pageSize
+      paginationParams.pageSize,
+      paginationParams.sortOption
     );
 
     return this.http
@@ -309,7 +318,8 @@ export class AdvertisementService {
 
     const params = setPaginationHeaders(
       paginationParams.pageNumber,
-      paginationParams.pageSize
+      paginationParams.pageSize,
+      paginationParams.sortOption
     );
 
     return this.http
