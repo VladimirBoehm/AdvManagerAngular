@@ -82,8 +82,6 @@ export class AdvListFilterComponent {
   getLabelText() {
     const sortOption = this.currentSortOption;
     let fieldTranslation = '';
-    let orderTranslation =
-      sortOption.order === 'asc' ? 'по возрастанию' : 'по убыванию';
 
     switch (sortOption.field) {
       case 'date':
@@ -99,7 +97,7 @@ export class AdvListFilterComponent {
         fieldTranslation = 'имени';
         break;
     }
-    return `по ${fieldTranslation}, ${orderTranslation}`;
+    return `по ${fieldTranslation}`;
   }
 
   getSelectedSortOption(): SortOption {

@@ -15,7 +15,10 @@
   </svg>
   <div>
     <div class="d-block text-muted">Сортировать</div>
-    <div class="my-info-text text-muted">{{ getLabelText() }}</div>
+    <div class="my-info-text text-muted">{{ getLabelText() }},</div>
+    <div class="my-info-text text-muted">
+      {{ currentSortOption.order === "asc" ? "по возрастанию" : "по убыванию" }}
+    </div>
   </div>
 </a>
 
@@ -23,7 +26,7 @@
   <div class="modal-header">
     <h6 class="modal-title pull-left">Сортировать</h6>
   </div>
-  <div class="modal-body ms-5">
+  <div class="modal-body ms-1">
     <form [formGroup]="sortForm">
       <section class="d-flex flex-column">
         <mat-radio-group formControlName="labelPosition">
@@ -48,7 +51,10 @@
           <mat-radio-button value="username" class="mt-1 d-block">
             <div class="input-group">
               <span class="input-group-text">По username</span>
-              <select class="form-select" formControlName="selectedSortUsername">
+              <select
+                class="form-select"
+                formControlName="selectedSortUsername"
+              >
                 <option value="asc">по возрастанию</option>
                 <option value="desc">по убыванию</option>
               </select>
