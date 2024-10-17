@@ -28,7 +28,6 @@ export class MyPaginatorLocalization implements MatPaginatorIntl {
 @Component({
   selector: 'paginator-localization',
   templateUrl: 'paginator-localization.html',
-  styleUrls: ['paginator-localization.scss'], // Use this to add your styles.
   standalone: true,
   imports: [MatPaginatorModule],
   providers: [{ provide: MatPaginatorIntl, useClass: MyPaginatorLocalization }],
