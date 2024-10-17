@@ -10,7 +10,7 @@ export function setPaginationHeaders(
   {
     params = params.append('pageNumber', pageNumber);
     params = params.append('pageSize', pageSize);
-    params = params.append('field', sortOption.field);
+    params = params.append('orderField', sortOption.field);
     params = params.append('order', sortOption.order);
   }
   return params;

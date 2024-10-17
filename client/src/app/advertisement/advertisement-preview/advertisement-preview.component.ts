@@ -18,6 +18,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ManagePublish } from '../../_models/managePublish';
 import { PaginationParams } from '../../_models/paginationParams';
+import { DateHelper } from '../../_framework/component/helpers/dateHelper';
 
 @Component({
   selector: 'app-advertisement-preview',
@@ -57,10 +58,11 @@ export class AdvertisementPreviewComponent implements OnInit {
 
   advertisementStatus = AdvertisementStatus;
   searchType = SearchType;
-
+  dateHelper = DateHelper;
   modalRef?: BsModalRef;
   advertisement?: Advertisement;
   nextPublishDate?: Date;
+  timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
@@ -214,18 +216,16 @@ export class AdvertisementPreviewComponent implements OnInit {
     if (!this.advertisement) return;
     this.advertisement.nextPublishDate = undefined;
     this.advertisement.nextPublishId = 0;
-    this.advertisement.statusId = AdvertisementStatus.validated
-    this.advertisementService
-      .cancelPublication(this.advertisement)
-      .subscribe({
-        next: () => {
-          this.modalRef?.hide();
-          this.getAdvertisementById(this.advertisement?.id ?? 0);
-        },
-        error: (err) => {
-          console.error('Error when canceling Publication ', err);
-        },
-      });
+    this.advertisement.statusId = AdvertisementStatus.validated;
+    this.advertisementService.cancelPublication(this.advertisement).subscribe({
+      next: () => {
+        this.modalRef?.hide();
+        this.getAdvertisementById(this.advertisement?.id ?? 0);
+      },
+      error: (err) => {
+        console.error('Error when canceling Publication ', err);
+      },
+    });
   }
 
   cancelPublicationDialogShow() {

@@ -31,9 +31,17 @@ export class AdvertisementService {
       .post<Advertisement>(this.baseUrl + 'advertisement/save', advertisement)
       .pipe(
         tap((savedAdvertisement: Advertisement) => {
+          advertisement.updated = this.getUTCTime();
           this.advertisementCacheService.addItem(savedAdvertisement);
         })
       );
+  }
+
+  getUTCTime(): Date {
+    let date = new Date();
+    date.setDate(date.getUTCDate());
+    date.setHours(date.getUTCHours());
+    return date;
   }
 
   update(advertisement: Advertisement) {
@@ -41,6 +49,7 @@ export class AdvertisementService {
       .put<Advertisement>(this.baseUrl + 'advertisement', advertisement)
       .pipe(
         tap(() => {
+          advertisement.updated = this.getUTCTime();
           this.advertisementCacheService.updateItemInAllCaches(advertisement);
         })
       );
@@ -59,6 +68,7 @@ export class AdvertisementService {
       )
       .pipe(
         tap(() => {
+          advertisement.updated = this.getUTCTime();
           this.advertisementCacheService.updateItemInAllCaches(advertisement);
         })
       );
@@ -84,6 +94,7 @@ export class AdvertisementService {
       )
       .pipe(
         tap(() => {
+          advertisement.updated = this.getUTCTime();
           this.advertisementCacheService.updateItemInAllCaches(advertisement);
           this.advertisementCacheService.deleteItemFromCachesBySearchType(
             advertisement.id,
@@ -103,7 +114,7 @@ export class AdvertisementService {
         (x: Advertisement) => x.id === id
       );
       if (result) {
-        console.log('Loaded from cache:' + JSON.stringify(result));
+        console.log('Loaded from cache');
         return of(result);
       }
     } else {
@@ -121,7 +132,7 @@ export class AdvertisementService {
     const cachedResponse =
       this.advertisementCacheService.getCache(paginationParams);
     if (cachedResponse) {
-      console.log('Cache returned');
+      console.log('Cache returned:', JSON.stringify(paginationParams));
       return of(cachedResponse);
     }
 
@@ -146,28 +157,21 @@ export class AdvertisementService {
           result.pagination = JSON.parse(response.headers.get('Pagination')!);
 
           this.advertisementCacheService.setCache(result);
+
+          console.log('Loaded from DB');
           return result;
         })
       );
   }
 
   // MY ADVERTISEMENTS
-  getMyAdvertisements() {
-    const paginationParams = {
-      pageNumber: 0,
-      pageSize: 10,
-      searchType: SearchType.MyAdvertisements,
-      sortOption: {
-        field: 'date',
-        order: 'desc',
-      } as SortOption,
-    } as PaginationParams;
+  getMyAdvertisements(paginationParams: PaginationParams) {
     this.lastPaginationParams = paginationParams;
 
     const cachedResponse =
       this.advertisementCacheService.getCache(paginationParams);
     if (cachedResponse) {
-      console.log('Cache returned');
+      console.log('Cache returned:', JSON.stringify(paginationParams));
       return of(cachedResponse);
     }
 
@@ -189,6 +193,7 @@ export class AdvertisementService {
           result.pagination = JSON.parse(response.headers.get('Pagination')!);
 
           this.advertisementCacheService.setCache(result);
+          console.log('Loaded from DB');
           return result;
         })
       );
@@ -203,7 +208,7 @@ export class AdvertisementService {
     const cachedResponse =
       this.advertisementCacheService.getCache(paginationParams);
     if (cachedResponse) {
-      console.log('Cache returned');
+      console.log('Cache returned:', JSON.stringify(paginationParams));
       return of(cachedResponse);
     }
 
@@ -225,6 +230,7 @@ export class AdvertisementService {
           result.pagination = JSON.parse(response.headers.get('Pagination')!);
 
           this.advertisementCacheService.setCache(result);
+          console.log('Loaded from DB');
           return result;
         })
       );
@@ -239,7 +245,7 @@ export class AdvertisementService {
     const cachedResponse =
       this.advertisementCacheService.getCache(paginationParams);
     if (cachedResponse) {
-      console.log('Cache returned');
+      console.log('Cache returned:', JSON.stringify(paginationParams));
       return of(cachedResponse);
     }
 
@@ -264,6 +270,7 @@ export class AdvertisementService {
           result.pagination = JSON.parse(response.headers.get('Pagination')!);
 
           this.advertisementCacheService.setCache(result);
+          console.log('Loaded from DB');
           return result;
         })
       );
@@ -278,6 +285,7 @@ export class AdvertisementService {
       .put(this.baseUrl + 'advertisementAdmin/cancelPublication', managePublish)
       .pipe(
         tap(() => {
+          advertisement.updated = this.getUTCTime();
           this.advertisementCacheService.updateItemInAllCaches(advertisement);
           this.advertisementCacheService.deleteItemFromCachesBySearchType(
             advertisement.id,
@@ -295,6 +303,7 @@ export class AdvertisementService {
       .put(this.baseUrl + 'advertisementAdmin/forcePublication', managePublish)
       .pipe(
         tap(() => {
+          advertisement.updated = this.getUTCTime();
           this.advertisementCacheService.updateItemInAllCaches(advertisement);
           this.advertisementCacheService.deleteItemFromCachesBySearchType(
             advertisement.id,
@@ -312,7 +321,7 @@ export class AdvertisementService {
     const cachedResponse =
       this.advertisementCacheService.getCache(paginationParams);
     if (cachedResponse) {
-      console.log('Cache returned!');
+      console.log('Cache returned:', JSON.stringify(paginationParams));
       return of(cachedResponse);
     }
 
@@ -337,6 +346,7 @@ export class AdvertisementService {
           result.pagination = JSON.parse(response.headers.get('Pagination')!);
 
           this.advertisementCacheService.setCache(result);
+          console.log('Loaded from DB');
           return result;
         })
       );

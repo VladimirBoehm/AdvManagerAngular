@@ -268,6 +268,23 @@
     [linkValue]="advertisement.linkValue"
   ></app-advertisement-main-data>
 
+  <div class="d-flex">
+    <div *ngIf="advertisement.created" class="text-muted my-info-text me-4">
+      Создан:
+      {{
+        dateHelper.getLocalTime(advertisement.created)
+          | date : "dd.MM.yyyy HH:mm"
+      }}
+    </div>
+    <div *ngIf="advertisement.updated" class="text-muted my-info-text">
+      Обновлён:
+      {{
+        dateHelper.getLocalTime(advertisement.updated)
+          | date : "dd.MM.yyyy HH:mm"
+      }}
+    </div>
+  </div>
+
   <div
     *ngIf="advertisement.adminMessage && advertisement.adminMessage.length > 0"
     class="input-group mt-3 pb-4"

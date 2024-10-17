@@ -13,6 +13,7 @@ import { SearchType } from '../_framework/constants/searchType';
 import { PaginatorLocalization } from '../_framework/component/paginator/paginator-localization';
 import { AdvListFilterComponent } from '../_framework/component/adv-list-filter/adv-list-filter.component';
 import { SortOption } from '../_models/sortOption';
+import { DateHelper } from '../_framework/component/helpers/dateHelper';
 
 @Component({
   selector: 'app-adv-list',
@@ -38,8 +39,9 @@ export class AdvListComponent implements OnInit, OnDestroy {
 
   paginatedAdvertisements?: PaginatedResult<Advertisement[]>;
   advListStates = AdvListStates;
-  state: AdvListStates | undefined;
+  dateHelper = DateHelper;
 
+  state: AdvListStates | undefined;
   paginationQueryObject: PaginationParams;
   length = 0; // items count
 
@@ -119,14 +121,17 @@ export class AdvListComponent implements OnInit, OnDestroy {
         break;
       }
       case AdvListStates.MyAdvertisements: {
-        this.advertisementService.getMyAdvertisements().subscribe({
-          next: (advertisements: PaginatedResult<Advertisement[]>) => {
-            this.setPaginatedResult(advertisements);
-          },
-          error: (err) => {
-            console.error('Error when loading ads:', err);
-          },
-        });
+        this.paginationQueryObject.searchType = SearchType.MyAdvertisements;
+        this.advertisementService
+          .getMyAdvertisements(this.paginationQueryObject)
+          .subscribe({
+            next: (advertisements: PaginatedResult<Advertisement[]>) => {
+              this.setPaginatedResult(advertisements);
+            },
+            error: (err) => {
+              console.error('Error when loading ads:', err);
+            },
+          });
         break;
       }
       case AdvListStates.Publishing: {
@@ -202,6 +207,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
 
   sortChanged($event: SortOption) {
     this.paginationQueryObject.sortOption = $event;
+    this.initialize();
   }
 
   ngOnDestroy(): void {

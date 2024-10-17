@@ -20,4 +20,6 @@ export interface Advertisement {
   nextPublishId?: number;
   linkName?: string;
   linkValue?: string;
+  created?: Date;
+  updated?: Date;
 }

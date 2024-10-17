@@ -110,12 +110,14 @@ export class AdvertisementCacheService {
     paginationParams: PaginationParams | undefined
   ): PaginatedResult<Advertisement[]> | undefined {
     if (paginationParams) this.setSearchParams(paginationParams);
-    console.log('getCache: ' + this.getSearchParamsKey());
+    console.log('cache requested: ' + this.getSearchParamsKey());
     return this.advertisementCache.get(this.getSearchParamsKey());
   }
 
   setCache(advertisements: PaginatedResult<Advertisement[]>) {
-    this.advertisementCache.set(this.getSearchParamsKey(), advertisements);
+    const key = this.getSearchParamsKey();
+    console.log('Cache set: ' + key);
+    this.advertisementCache.set(key, advertisements);
   }
 
   addItem(advertisement: Advertisement) {

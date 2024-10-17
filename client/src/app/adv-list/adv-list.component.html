@@ -5,25 +5,28 @@
   </div>
 
   @if(paginatedAdvertisements.pagination){
-  <div class="d-flex">
-    <div class="col-6">
-      <app-adv-list-filter (onChanged)="sortChanged($event)" />
-    </div>
-    <div class="col-6">
-      <paginator-localization
-        *ngIf="
-          paginatedAdvertisements.pagination.totalItems > 0 &&
-          paginatedAdvertisements.pagination.totalItems >
-            paginatedAdvertisements.pagination.itemsPerPage
-        "
-        #paginator
-        class="demo-paginator"
-        (page)="handlePageEvent($event)"
-        [length]="length"
-        [pageSize]="paginationQueryObject.pageSize"
-        [pageIndex]="paginationQueryObject.pageNumber"
-      >
-      </paginator-localization>
+  <div
+    *ngIf="
+      paginatedAdvertisements.pagination.totalItems > 0 &&
+      paginatedAdvertisements.pagination.totalItems >
+        paginatedAdvertisements.pagination.itemsPerPage
+    "
+  >
+    <div class="d-flex">
+      <div class="col-6">
+        <app-adv-list-filter (onChanged)="sortChanged($event)" />
+      </div>
+      <div class="col-6">
+        <paginator-localization
+          #paginator
+          class="demo-paginator"
+          (page)="handlePageEvent($event)"
+          [length]="length"
+          [pageSize]="paginationQueryObject.pageSize"
+          [pageIndex]="paginationQueryObject.pageNumber"
+        >
+        </paginator-localization>
+      </div>
     </div>
   </div>
   }
@@ -43,9 +46,16 @@
       >
         <div class="d-flex">
           <div class="d-flex flex-column col-11">
-            <h6>{{ advertisement.title }}</h6>
+            <h6 class="mb-0">{{ advertisement.title }}</h6>
             <div class="fw-normal">
               {{ getUserDisplayName(advertisement) }}
+            </div>
+            <div class="text-muted my-info-text">
+              Поступил:
+              {{
+                dateHelper.getLocalTime(advertisement.updated)
+                  | date : "dd.MM.yyyy HH:mm"
+              }}
             </div>
           </div>
           <div
@@ -124,9 +134,16 @@
       >
         <div class="d-flex">
           <div class="d-flex flex-column col-11">
-            <h6>{{ advertisement.title }}</h6>
+            <h6 class="mb-0">{{ advertisement.title }}</h6>
             <div class="fw-normal text-muted">
               {{ getStatus(advertisement) }}
+            </div>
+            <div class="text-muted my-info-text">
+              Создан:
+              {{
+                dateHelper.getLocalTime(advertisement.created)
+                  | date : "dd.MM.yyyy HH:mm"
+              }}
             </div>
           </div>
           <div
@@ -165,19 +182,20 @@
     >
       <div class="d-flex">
         <div class="d-flex flex-column col-11">
-          <h6>{{ advertisement.title }}</h6>
-          <div class="fw-normal text-muted">
+          <h6  class="mb-0">{{ advertisement.title }}</h6>
+          <div class="fw-normal text-muted my-info-text">
             <span
               *ngIf="
                 state === advListStates.AllHistory ||
                   state === advListStates.PrivateHistory;
                 else nextPublishInfo
               "
+              class="my-info-text"
               >Размещено:
             </span>
             {{ advertisement.nextPublishDate | date : "dd.MM.yyyy" }}
           </div>
-          <div class="fw-normal text-muted">
+          <div class="text-muted my-info-text">
             {{ getUserDisplayName(advertisement) }}
           </div>
         </div>
@@ -200,7 +218,7 @@
 </div>
 
 <ng-template #nextPublishInfo>
-  <span>Следующее размещение: </span>
+  <span class="my-info-text">Следующее размещение: </span>
 </ng-template>
 
 <ng-template #noAdvertisements>

@@ -94,7 +94,7 @@
           step="1"
           min="0"
           name="frequencyValue"
-          formControlName="frequencyValue"
+          [formControl]="$any(editForm.controls['frequencyValue'])"
         />
         <mat-error>{{
           matErrorService.getErrorMessage(
