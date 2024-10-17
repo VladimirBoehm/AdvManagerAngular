@@ -1,5 +1,5 @@
 @if ( paginatedAdvertisements && paginatedAdvertisements.items) {
-<div class="container">
+<div class="container-fluid">
   <div *ngIf="paginatedAdvertisements.items.length === 0">
     <ng-container *ngTemplateOutlet="noAdvertisements"></ng-container>
   </div>
@@ -12,11 +12,14 @@
         paginatedAdvertisements.pagination.itemsPerPage
     "
   >
-    <div class="d-flex">
-      <div class="col-6">
-        <app-adv-list-filter (onChanged)="sortChanged($event)" />
+    <div class="row">
+      <div class="col-6 d-flex justify-content-start ps-0">
+        <app-adv-list-filter
+          (onChanged)="sortChanged($event)"
+        ></app-adv-list-filter>
       </div>
-      <div class="col-6">
+
+      <div class="col-6 d-flex justify-content-end">
         <paginator-localization
           #paginator
           class="demo-paginator"
@@ -24,8 +27,7 @@
           [length]="length"
           [pageSize]="paginationQueryObject.pageSize"
           [pageIndex]="paginationQueryObject.pageNumber"
-        >
-        </paginator-localization>
+        ></paginator-localization>
       </div>
     </div>
   </div>
@@ -182,7 +184,7 @@
     >
       <div class="d-flex">
         <div class="d-flex flex-column col-11">
-          <h6  class="mb-0">{{ advertisement.title }}</h6>
+          <h6 class="mb-0">{{ advertisement.title }}</h6>
           <div class="fw-normal text-muted my-info-text">
             <span
               *ngIf="

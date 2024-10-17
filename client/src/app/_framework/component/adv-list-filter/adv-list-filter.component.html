@@ -10,7 +10,7 @@
     fill="#5f6368"
   >
     <path
-      d="M429-292v-28h101v28H429ZM282-466v-28h395v28H282ZM172-640v-28h616v28H172Z"
+      d="M778-164 528-414q-30 26-69 40t-77 14q-92.23 0-156.12-63.84-63.88-63.83-63.88-156Q162-672 225.84-736q63.83-64 156-64Q474-800 538-736.12q64 63.89 64 156.12 0 41-15 80t-39 66l250 250-20 20ZM382-388q81 0 136.5-55.5T574-580q0-81-55.5-136.5T382-772q-81 0-136.5 55.5T190-580q0 81 55.5 136.5T382-388Z"
     />
   </svg>
   <div>
@@ -71,6 +71,32 @@
           </mat-radio-button>
         </mat-radio-group>
       </section>
+      <hr />
+      <div class="d-flex mb-3 align-items-center">
+        <input
+          type="text"
+          class="form-control flex-grow-1"
+          placeholder="Поиск"
+          aria-label="Text input with dropdown button"
+        />
+        <select class="form-select ms-2" style="width: auto;">
+          <option selected>по тестовому</option>
+          <option value="date">по дате размещения</option>
+          <option value="title">по заголовку</option>
+          <option value="content">по содержанию</option>
+          <option value="link">по ссылке</option>
+        </select>
+      </div>
+
+      <!-- <div class="d-flex w-100 align-items-center">
+
+        <select class="form-select w-50" aria-label="Default select example">
+          <option value="date">по дате размещения</option>
+          <option value="title">по заголовку</option>
+          <option value="content">по содержанию</option>
+          <option value="link">по ссылке</option>
+        </select>
+      </div> -->
 
       <div class="d-flex justify-content-end mt-3">
         <button class="btn empty-button me-4" (click)="save()">

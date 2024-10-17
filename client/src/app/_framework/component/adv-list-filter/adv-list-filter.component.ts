@@ -16,6 +16,9 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { SortOption } from '../../../_models/sortOption';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-adv-list-filter',
@@ -24,7 +27,7 @@ import { SortOption } from '../../../_models/sortOption';
     MatCardModule,
     MatCheckboxModule,
     MatRadioModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule
   ],
   templateUrl: './adv-list-filter.component.html',
   styleUrl: './adv-list-filter.component.scss',

@@ -14,6 +14,7 @@ import { PaginatorLocalization } from '../_framework/component/paginator/paginat
 import { AdvListFilterComponent } from '../_framework/component/adv-list-filter/adv-list-filter.component';
 import { SortOption } from '../_models/sortOption';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
+import { SearchComponent } from '../_framework/component/search/search.component';
 
 @Component({
   selector: 'app-adv-list',
@@ -27,6 +28,7 @@ import { DateHelper } from '../_framework/component/helpers/dateHelper';
     MatPaginatorModule,
     PaginatorLocalization,
     AdvListFilterComponent,
+    SearchComponent
   ],
   templateUrl: './adv-list.component.html',
   styleUrl: './adv-list.component.scss',
