@@ -206,6 +206,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
 
   sortChanged($event: SortOption) {
     this.paginationParams.sortOption = $event;
+    this.paginationParams.pageNumber = 0;
     this.initialize();
   }
 

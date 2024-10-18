@@ -23,57 +23,9 @@
 </a>
 
 <ng-template #modalDialog>
-  <div class="modal-header">
-    <h6 class="modal-title pull-left">Сортировать</h6>
-  </div>
-  <div class="modal-body ms-1">
-    <form [formGroup]="sortForm">
-      <section class="d-flex flex-column">
-        <mat-radio-group formControlName="selectedSortType">
-          <mat-radio-button value="date" class="d-block">
-            <div class="input-group">
-              <span class="input-group-text">По дате</span>
-              <select class="form-select" formControlName="selectedSortDate">
-                <option value="asc">по возрастанию</option>
-                <option value="desc">по убыванию</option>
-              </select>
-            </div>
-          </mat-radio-button>
-          <mat-radio-button value="title" class="mt-1 d-block">
-            <div class="input-group">
-              <span class="input-group-text">По заголовку</span>
-              <select class="form-select" formControlName="selectedSortTitle">
-                <option value="asc">по возрастанию</option>
-                <option value="desc">по убыванию</option>
-              </select>
-            </div>
-          </mat-radio-button>
-          <mat-radio-button value="username" class="mt-1 d-block">
-            <div class="input-group">
-              <span class="input-group-text">По username</span>
-              <select
-                class="form-select"
-                formControlName="selectedSortUsername"
-              >
-                <option value="asc">по возрастанию</option>
-                <option value="desc">по убыванию</option>
-              </select>
-            </div>
-          </mat-radio-button>
-          <mat-radio-button value="name" class="mt-1 d-block">
-            <div class="input-group">
-              <span class="input-group-text">По имени</span>
-              <select class="form-select" formControlName="selectedSortName">
-                <option value="asc">по возрастанию</option>
-                <option value="desc">по убыванию</option>
-              </select>
-            </div>
-          </mat-radio-button>
-        </mat-radio-group>
-      </section>
-      <hr />
-
-      <div class="d-flex mb-4 align-items-start">
+  <form [formGroup]="sortForm">
+    <div class="modal-header">
+      <div class="d-flex align-items-start">
         <div class="d-flex flex-column">
           <div class="input-group mb-3">
             <input
@@ -124,6 +76,54 @@
           <option value="link">по ссылке</option>
         </select>
       </div>
+    </div>
+    <div class="modal-body ms-1">
+      <h6 class="text-muted">Сортировать</h6>
+      <section class="d-flex flex-column">
+        <mat-radio-group formControlName="selectedSortType">
+          <mat-radio-button value="date" class="d-block">
+            <div class="input-group">
+              <span class="input-group-text">По дате</span>
+              <select class="form-select" formControlName="selectedSortDate">
+                <option value="asc">по возрастанию</option>
+                <option value="desc">по убыванию</option>
+              </select>
+            </div>
+          </mat-radio-button>
+          <mat-radio-button value="title" class="mt-1 d-block">
+            <div class="input-group">
+              <span class="input-group-text">По заголовку</span>
+              <select class="form-select" formControlName="selectedSortTitle">
+                <option value="asc">по возрастанию</option>
+                <option value="desc">по убыванию</option>
+              </select>
+            </div>
+          </mat-radio-button>
+          <mat-radio-button value="username" class="mt-1 d-block">
+            <div class="input-group">
+              <span class="input-group-text">По username</span>
+              <select
+                class="form-select"
+                formControlName="selectedSortUsername"
+              >
+                <option value="asc">по возрастанию</option>
+                <option value="desc">по убыванию</option>
+              </select>
+            </div>
+          </mat-radio-button>
+          <mat-radio-button value="name" class="mt-1 d-block">
+            <div class="input-group">
+              <span class="input-group-text">По имени</span>
+              <select class="form-select" formControlName="selectedSortName">
+                <option value="asc">по возрастанию</option>
+                <option value="desc">по убыванию</option>
+              </select>
+            </div>
+          </mat-radio-button>
+        </mat-radio-group>
+      </section>
+      <hr />
+
       <div class="d-flex justify-content-end mt-3">
         <button
           class="btn empty-button me-4"
@@ -136,6 +136,6 @@
           <div>Назад</div>
         </button>
       </div>
-    </form>
-  </div>
+    </div>
+  </form>
 </ng-template>
