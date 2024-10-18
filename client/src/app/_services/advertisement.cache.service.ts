@@ -4,7 +4,7 @@ import { Advertisement } from '../_models/advertisement';
 import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
 import { PaginatedResult } from '../_models/pagination';
 import { PaginationParams } from '../_models/paginationParams';
-import { SearchType } from '../_framework/constants/searchType';
+import { AdvListType } from '../_framework/constants/advListType';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +17,7 @@ export class AdvertisementCacheService {
   checkResetPendingAdvertisementsCache(counter: number) {
     if (this.pendingAdvertisementsCache !== counter) {
       this.pendingAdvertisementsCache = counter;
-      this.resetCache(SearchType.PendingValidation);
+      this.resetCache(AdvListType.PendingValidation);
     }
   }
 
@@ -37,12 +37,12 @@ export class AdvertisementCacheService {
     );
   }
 
-  deleteItemFromCachesBySearchType(
+  deleteItemFromCachesByAdvListType(
     advertisementId: number,
-    searchType: SearchType
+    advListType: AdvListType
   ) {
     this.advertisementCache.forEach((cachedAdvertisements, key) => {
-      if (key.includes(searchType)) {
+      if (key.includes(advListType)) {
         if (cachedAdvertisements?.items) {
           const updatedItems = cachedAdvertisements.items.filter(
             (item) => item.id !== advertisementId
@@ -57,15 +57,15 @@ export class AdvertisementCacheService {
       }
     });
     console.log(
-      `Advertisement with id ${advertisementId} deleted from caches with keys containing '${searchType}'.`
+      `Advertisement with id ${advertisementId} deleted from caches with keys containing '${advListType}'.`
     );
   }
 
-  resetCache(searchType: SearchType): void {
+  resetCache(advListType: AdvListType): void {
     const keysToReset: string[] = [];
 
     this.advertisementCache.forEach((value, key) => {
-      if (key.includes(searchType)) {
+      if (key.includes(advListType)) {
         keysToReset.push(key);
       }
     });
@@ -74,7 +74,7 @@ export class AdvertisementCacheService {
       this.advertisementCache.delete(key);
     });
 
-    console.log(`Cache reset for keys containing: '${searchType}'`);
+    console.log(`Cache reset for keys containing: '${advListType}'`);
   }
 
   getPaginationParams() {

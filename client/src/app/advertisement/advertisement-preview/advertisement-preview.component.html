@@ -127,7 +127,7 @@
           *ngIf="
             accountService.currentUser()?.isAdmin &&
             advertisementService.getActualSearchType() ===
-              searchType.PendingPublication
+              advListType.PendingPublication
           "
           class="btn empty-button"
           (click)="forcePublicationDialogShow()"

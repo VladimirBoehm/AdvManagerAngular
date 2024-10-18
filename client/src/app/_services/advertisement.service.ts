@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Advertisement } from '../_models/advertisement';
 import { environment } from '../../environments/environment';
@@ -9,9 +9,8 @@ import { AdvertisementCacheService } from './advertisement.cache.service';
 import { PaginationParams } from '../_models/paginationParams';
 import { PaginatedResult } from '../_models/pagination';
 import { setPaginationHeaders } from './paginationHelper';
-import { SearchType } from '../_framework/constants/searchType';
+import { AdvListType } from '../_framework/constants/advListType';
 import { ManagePublish } from '../_models/managePublish';
-import { SortOption } from '../_models/sortOption';
 
 @Injectable({
   providedIn: 'root',
@@ -22,8 +21,8 @@ export class AdvertisementService {
   private advertisementCacheService = inject(AdvertisementCacheService);
   private lastPaginationParams?: PaginationParams;
 
-  getActualSearchType(): SearchType | undefined {
-    return this.advertisementCacheService.getPaginationParams()?.searchType;
+  getActualSearchType(): AdvListType | undefined {
+    return this.advertisementCacheService.getPaginationParams()?.advListType;
   }
 
   save(advertisement: Advertisement): Observable<Advertisement> {
@@ -96,9 +95,9 @@ export class AdvertisementService {
         tap(() => {
           advertisement.updated = this.getUTCTime();
           this.advertisementCacheService.updateItemInAllCaches(advertisement);
-          this.advertisementCacheService.deleteItemFromCachesBySearchType(
+          this.advertisementCacheService.deleteItemFromCachesByAdvListType(
             advertisement.id,
-            SearchType.PendingPublication
+            AdvListType.PendingPublication
           );
         })
       );
@@ -136,11 +135,7 @@ export class AdvertisementService {
       return of(cachedResponse);
     }
 
-    const params = setPaginationHeaders(
-      paginationParams.pageNumber,
-      paginationParams.pageSize,
-      paginationParams.sortOption
-    );
+    const params = setPaginationHeaders(paginationParams);
 
     return this.http
       .get<Advertisement[]>(
@@ -175,11 +170,7 @@ export class AdvertisementService {
       return of(cachedResponse);
     }
 
-    const params: HttpParams = setPaginationHeaders(
-      paginationParams.pageNumber,
-      paginationParams.pageSize,
-      paginationParams.sortOption
-    );
+    const params = setPaginationHeaders(paginationParams);
 
     return this.http
       .get<Advertisement[]>(this.baseUrl + 'advertisement', {
@@ -208,15 +199,10 @@ export class AdvertisementService {
     const cachedResponse =
       this.advertisementCacheService.getCache(paginationParams);
     if (cachedResponse) {
-      console.log('Cache returned:', JSON.stringify(paginationParams));
       return of(cachedResponse);
     }
 
-    const params = setPaginationHeaders(
-      paginationParams.pageNumber,
-      paginationParams.pageSize,
-      paginationParams.sortOption
-    );
+    const params = setPaginationHeaders(paginationParams);
 
     return this.http
       .get<Advertisement[]>(this.baseUrl + 'advertisementHistory', {
@@ -249,11 +235,7 @@ export class AdvertisementService {
       return of(cachedResponse);
     }
 
-    const params = setPaginationHeaders(
-      paginationParams.pageNumber,
-      paginationParams.pageSize,
-      paginationParams.sortOption
-    );
+    const params = setPaginationHeaders(paginationParams);
 
     return this.http
       .get<Advertisement[]>(
@@ -287,9 +269,9 @@ export class AdvertisementService {
         tap(() => {
           advertisement.updated = this.getUTCTime();
           this.advertisementCacheService.updateItemInAllCaches(advertisement);
-          this.advertisementCacheService.deleteItemFromCachesBySearchType(
+          this.advertisementCacheService.deleteItemFromCachesByAdvListType(
             advertisement.id,
-            SearchType.PendingPublication
+            AdvListType.PendingPublication
           );
         })
       );
@@ -305,9 +287,9 @@ export class AdvertisementService {
         tap(() => {
           advertisement.updated = this.getUTCTime();
           this.advertisementCacheService.updateItemInAllCaches(advertisement);
-          this.advertisementCacheService.deleteItemFromCachesBySearchType(
+          this.advertisementCacheService.deleteItemFromCachesByAdvListType(
             advertisement.id,
-            SearchType.PendingPublication
+            AdvListType.PendingPublication
           );
         })
       );
@@ -325,11 +307,7 @@ export class AdvertisementService {
       return of(cachedResponse);
     }
 
-    const params = setPaginationHeaders(
-      paginationParams.pageNumber,
-      paginationParams.pageSize,
-      paginationParams.sortOption
-    );
+    const params = setPaginationHeaders(paginationParams);
 
     return this.http
       .get<Advertisement[]>(
@@ -378,10 +356,10 @@ export class AdvertisementService {
       .pipe(
         tap(() => {
           this.advertisementCacheService.resetCache(
-            SearchType.PendingValidation
+            AdvListType.PendingValidation
           );
           this.advertisementCacheService.resetCache(
-            SearchType.MyAdvertisements
+            AdvListType.MyAdvertisements
           );
         })
       );

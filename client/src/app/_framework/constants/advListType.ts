@@ -1,4 +1,4 @@
-export enum SearchType {
+export enum AdvListType {
   PendingValidation = 'PENDING_VALIDATION',
   AllHistory = 'ALL_HISTORY',
   PrivateHistory = 'PRIVATE_HISTORY',

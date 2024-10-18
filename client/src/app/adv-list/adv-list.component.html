@@ -4,34 +4,33 @@
     <ng-container *ngTemplateOutlet="noAdvertisements"></ng-container>
   </div>
 
-  @if(paginatedAdvertisements.pagination){
-  <div
-    *ngIf="
-      paginatedAdvertisements.pagination.totalItems > 0 &&
-      paginatedAdvertisements.pagination.totalItems >
-        paginatedAdvertisements.pagination.itemsPerPage
-    "
-  >
-    <div class="row">
-      <div class="col-6 d-flex justify-content-start ps-0">
-        <app-adv-list-filter
-          (onChanged)="sortChanged($event)"
-        ></app-adv-list-filter>
-      </div>
+  <div class="row">
+    <div class="col-6 d-flex justify-content-start ps-0">
+      <app-adv-list-filter
+        (onChanged)="sortChanged($event)"
+      ></app-adv-list-filter>
+    </div>
 
-      <div class="col-6 d-flex justify-content-end">
+    <div class="col-6 d-flex justify-content-end">
+      <div
+        *ngIf="
+          paginatedAdvertisements.pagination &&
+          paginatedAdvertisements.pagination.totalItems > 0 &&
+          paginatedAdvertisements.pagination.totalItems >
+            paginatedAdvertisements.pagination.itemsPerPage
+        "
+      >
         <paginator-localization
           #paginator
           class="demo-paginator"
           (page)="handlePageEvent($event)"
           [length]="length"
-          [pageSize]="paginationQueryObject.pageSize"
-          [pageIndex]="paginationQueryObject.pageNumber"
+          [pageSize]="paginationParams.pageSize"
+          [pageIndex]="paginationParams.pageNumber"
         ></paginator-localization>
       </div>
     </div>
   </div>
-  }
 
   <!-- Pending validation -->
   <div

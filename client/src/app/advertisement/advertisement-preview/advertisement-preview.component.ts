@@ -13,7 +13,7 @@ import { AdvertisementMainDataComponent } from '../advertisement-main-data/adver
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { PublishService } from '../../_services/publish.service';
 import { AdvertisementHelper } from '../../_framework/component/helpers/advertisementHelper';
-import { SearchType } from '../../_framework/constants/searchType';
+import { AdvListType } from '../../_framework/constants/advListType';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ManagePublish } from '../../_models/managePublish';
@@ -57,7 +57,7 @@ export class AdvertisementPreviewComponent implements OnInit {
   advertisementHelper = inject(AdvertisementHelper);
 
   advertisementStatus = AdvertisementStatus;
-  searchType = SearchType;
+  advListType = AdvListType;
   dateHelper = DateHelper;
   modalRef?: BsModalRef;
   advertisement?: Advertisement;
@@ -102,7 +102,7 @@ export class AdvertisementPreviewComponent implements OnInit {
       } else {
         if (
           this.advertisementService.getActualSearchType() ===
-          SearchType.PrivateHistory
+          AdvListType.PrivateHistory
         )
           this.router.navigate(['/adv-list', AdvListStates.PrivateHistory]);
         else
@@ -238,7 +238,7 @@ export class AdvertisementPreviewComponent implements OnInit {
     } else if (
       this.accountService.currentUser()?.isAdmin &&
       this.advertisementService.getActualSearchType() ===
-        SearchType.PendingPublication
+        AdvListType.PendingPublication
     )
       this.modalRef = this.modalService.show(
         this.modalDialogCancelPublicationAdmin

@@ -16,6 +16,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { SortOption } from '../../../_models/sortOption';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-adv-list-filter',
@@ -25,6 +26,7 @@ import { SortOption } from '../../../_models/sortOption';
     MatCheckboxModule,
     MatRadioModule,
     ReactiveFormsModule,
+    NgIf,
   ],
   templateUrl: './adv-list-filter.component.html',
   styleUrl: './adv-list-filter.component.scss',
@@ -42,6 +44,7 @@ export class AdvListFilterComponent {
     field: 'date',
     order: 'desc',
     searchType: 'title',
+    searchValue: '',
   };
 
   constructor() {
@@ -54,6 +57,10 @@ export class AdvListFilterComponent {
       selectedSearchType: [
         this.currentSortOption.searchType,
         Validators.required,
+      ],
+      searchValue: [
+        this.currentSortOption.searchValue,
+        Validators.maxLength(200),
       ],
     });
   }
@@ -127,11 +134,19 @@ export class AdvListFilterComponent {
 
     this.currentSortOption.field = field;
     this.currentSortOption.order = order;
+    this.currentSortOption.searchType =
+      this.sortForm.get('selectedSearchType')?.value;
+    this.currentSortOption.searchValue =
+      this.sortForm.get('searchValue')?.value;
   }
 
   save() {
     this.updateCurrentSortOption();
     this.onChanged.emit(this.currentSortOption);
     this.modalRef?.hide();
+  }
+  clearSearch(){
+    this.sortForm.get('searchValue')?.setValue('');
+    this.currentSortOption.searchValue = '';
   }
 }

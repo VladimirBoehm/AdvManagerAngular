@@ -72,16 +72,50 @@
         </mat-radio-group>
       </section>
       <hr />
-      <div class="d-flex mb-4 align-items-center">
-        <input
-          type="text"
-          class="form-control flex-grow-1"
-          placeholder="Поиск"
-          aria-label="Text input with dropdown button"
-        />
+
+      <div class="d-flex mb-4 align-items-start">
+        <div class="d-flex flex-column">
+          <div class="input-group mb-3">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Поиск"
+              aria-label="Text input with dropdown button"
+              formControlName="searchValue"
+            />
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              (click)="clearSearch()"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#5f6368"
+              >
+                <path
+                  d="m256-236-20-20 224-224-224-224 20-20 224 224 224-224 20 20-224 224 224 224-20 20-224-224-224 224Z"
+                />
+              </svg>
+            </button>
+          </div>
+          <div
+            *ngIf="sortForm.controls['searchValue'].errors"
+            class="text-danger my-info-text"
+          >
+            Максимум
+            {{
+              sortForm.controls["searchValue"].errors["maxlength"]
+                .requiredLength
+            }}
+            символов
+          </div>
+        </div>
         <select
-          class="form-select ms-2"
           style="width: auto"
+          class="form-select ms-2"
           formControlName="selectedSearchType"
         >
           <option value="title">по заголовку</option>
@@ -90,9 +124,12 @@
           <option value="link">по ссылке</option>
         </select>
       </div>
-
       <div class="d-flex justify-content-end mt-3">
-        <button class="btn empty-button me-4" (click)="save()">
+        <button
+          class="btn empty-button me-4"
+          (click)="save()"
+          [disabled]="sortForm.invalid"
+        >
           <div>Выбрать</div>
         </button>
         <button class="btn empty-button" (click)="modalRef?.hide()">
