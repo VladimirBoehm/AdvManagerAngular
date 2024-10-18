@@ -16,9 +16,6 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { SortOption } from '../../../_models/sortOption';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-adv-list-filter',
@@ -27,14 +24,13 @@ import { MatSelectModule } from '@angular/material/select';
     MatCardModule,
     MatCheckboxModule,
     MatRadioModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   templateUrl: './adv-list-filter.component.html',
   styleUrl: './adv-list-filter.component.scss',
 })
 export class AdvListFilterComponent {
   @ViewChild('modalDialog') modalDialog?: any;
-
   @Output() onChanged = new EventEmitter<SortOption>();
 
   modalRef?: BsModalRef;
@@ -45,22 +41,27 @@ export class AdvListFilterComponent {
   currentSortOption: SortOption = {
     field: 'date',
     order: 'desc',
+    searchType: 'title',
   };
 
   constructor() {
     this.sortForm = this.formBuilder.group({
-      labelPosition: ['date', Validators.required],
+      selectedSortType: [this.currentSortOption.field, Validators.required],
       selectedSortDate: ['desc', Validators.required],
       selectedSortTitle: ['desc', Validators.required],
       selectedSortUsername: ['desc', Validators.required],
       selectedSortName: ['desc', Validators.required],
+      selectedSearchType: [
+        this.currentSortOption.searchType,
+        Validators.required,
+      ],
     });
   }
 
   onFilterClick() {
     // Reset the form values to currentSortOption
     this.sortForm.patchValue({
-      labelPosition: this.currentSortOption.field,
+      selectedSortType: this.currentSortOption.field,
       selectedSortDate:
         this.currentSortOption.field === 'date'
           ? this.currentSortOption.order
@@ -103,8 +104,8 @@ export class AdvListFilterComponent {
     return `по ${fieldTranslation}`;
   }
 
-  getSelectedSortOption(): SortOption {
-    const field = this.sortForm.get('labelPosition')?.value;
+  updateCurrentSortOption(): void {
+    const field = this.sortForm.get('selectedSortType')?.value;
     let order: 'asc' | 'desc';
 
     switch (field) {
@@ -124,16 +125,12 @@ export class AdvListFilterComponent {
         order = 'desc';
     }
 
-    const sortOption: SortOption = {
-      field: field,
-      order: order,
-    };
-
-    return sortOption;
+    this.currentSortOption.field = field;
+    this.currentSortOption.order = order;
   }
 
   save() {
-    this.currentSortOption = this.getSelectedSortOption();
+    this.updateCurrentSortOption();
     this.onChanged.emit(this.currentSortOption);
     this.modalRef?.hide();
   }

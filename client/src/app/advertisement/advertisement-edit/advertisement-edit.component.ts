@@ -74,7 +74,7 @@ export class AdvertisementEditComponent implements OnInit {
   advertisementId: number = 0;
   advertisement?: Advertisement;
   userImages: AdImage[] = [];
-  selectedImage: AdImage | null | undefined = null;
+  selectedImage?: AdImage | null = null;
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {

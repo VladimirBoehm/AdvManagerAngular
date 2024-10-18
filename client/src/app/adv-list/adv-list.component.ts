@@ -14,8 +14,6 @@ import { PaginatorLocalization } from '../_framework/component/paginator/paginat
 import { AdvListFilterComponent } from '../_framework/component/adv-list-filter/adv-list-filter.component';
 import { SortOption } from '../_models/sortOption';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
-import { SearchComponent } from '../_framework/component/search/search.component';
-
 @Component({
   selector: 'app-adv-list',
   standalone: true,
@@ -27,8 +25,7 @@ import { SearchComponent } from '../_framework/component/search/search.component
     DatePipe,
     MatPaginatorModule,
     PaginatorLocalization,
-    AdvListFilterComponent,
-    SearchComponent
+    AdvListFilterComponent
   ],
   templateUrl: './adv-list.component.html',
   styleUrl: './adv-list.component.scss',
@@ -43,7 +40,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
   advListStates = AdvListStates;
   dateHelper = DateHelper;
 
-  state: AdvListStates | undefined;
+  state?: AdvListStates;
   paginationQueryObject: PaginationParams;
   length = 0; // items count
 

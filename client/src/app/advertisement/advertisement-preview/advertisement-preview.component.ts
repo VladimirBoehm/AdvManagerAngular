@@ -45,7 +45,7 @@ export class AdvertisementPreviewComponent implements OnInit {
   @ViewChild('modalDialogCancelPublicationAdmin')
   modalDialogCancelPublicationAdmin?: any;
   shouldRejectValidation: boolean = false;
-  adminComment: string | undefined;
+  adminComment?: string;
 
   private backButtonService = inject(TelegramBackButtonService);
   advertisementService = inject(AdvertisementService);

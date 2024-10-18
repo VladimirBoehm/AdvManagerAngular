@@ -16,9 +16,9 @@ export class AdvertisementMainDataComponent {
   private modalService = inject(BsModalService);
   title = input.required<string | undefined>();
   message = input.required<string | undefined>();
-  url = input.required<string | undefined>();
-  linkName = input.required<string | undefined>();
-  linkValue = input.required<string | undefined>();
+  url = input<string | undefined>();
+  linkName = input<string | undefined>();
+  linkValue = input<string | undefined>();
   modalRef?: BsModalRef;
 
   showImage() {

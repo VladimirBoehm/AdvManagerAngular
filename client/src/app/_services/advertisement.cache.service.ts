@@ -107,7 +107,7 @@ export class AdvertisementCacheService {
   }
 
   getCache(
-    paginationParams: PaginationParams | undefined
+    paginationParams?: PaginationParams
   ): PaginatedResult<Advertisement[]> | undefined {
     if (paginationParams) this.setSearchParams(paginationParams);
     console.log('cache requested: ' + this.getSearchParamsKey());
