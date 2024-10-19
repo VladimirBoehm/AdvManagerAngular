@@ -1,5 +1,5 @@
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { Advertisement } from '../_models/advertisement';
 import { environment } from '../../environments/environment';
 import { map, Observable, of, tap } from 'rxjs';
@@ -11,6 +11,7 @@ import { PaginatedResult } from '../_models/pagination';
 import { setPaginationHeaders } from './paginationHelper';
 import { AdvListType } from '../_framework/constants/advListType';
 import { ManagePublish } from '../_models/managePublish';
+import { SortOption } from '../_models/sortOption';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +20,35 @@ export class AdvertisementService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
   private advertisementCacheService = inject(AdvertisementCacheService);
-  private lastPaginationParams?: PaginationParams;
+  advertisements = signal<PaginatedResult<Advertisement[]>>(
+    new PaginatedResult<Advertisement[]>()
+  );
+  paginationParams: WritableSignal<PaginationParams>;
+
+  constructor() {
+    this.paginationParams = signal<PaginationParams>({
+      pageNumber: 0,
+      pageSize: 5,
+      itemsCount: 0,
+      sortOption: { field: 'date', order: 'desc' },
+    } as PaginationParams);
+  }
+  updatePaginationParams(
+    pageSize?: number,
+    pageNumber?: number,
+    itemsCount?: number,
+    advListType?: AdvListType,
+    sortOption?: SortOption
+  ) {
+    this.paginationParams.update((params) => ({
+      ...params,
+      pageSize: pageSize !== undefined ? pageSize : params.pageSize,
+      pageNumber: pageNumber !== undefined ? pageNumber : params.pageNumber,
+      itemsCount: itemsCount !== undefined ? itemsCount : params.itemsCount,
+      advListType: advListType !== undefined ? advListType : params.advListType,
+      sortOption: sortOption !== undefined ? sortOption : params.sortOption,
+    }));
+  }
 
   getActualSearchType(): AdvListType | undefined {
     return this.advertisementCacheService.getPaginationParams()?.advListType;
@@ -105,7 +134,7 @@ export class AdvertisementService {
 
   getById(id: number) {
     const cachedAdvertisements = this.advertisementCacheService.getCache(
-      this.lastPaginationParams
+      this.paginationParams()
     );
 
     if (cachedAdvertisements) {
@@ -123,19 +152,11 @@ export class AdvertisementService {
     return null;
   }
 
-  getPendingPublicationAdvertisements(
-    paginationParams: PaginationParams
-  ): Observable<PaginatedResult<Advertisement[]>> {
-    this.lastPaginationParams = paginationParams;
+  // PUBLICATION
+  getPendingPublicationAdvertisements() {
+    if (this.getCache(AdvListType.PendingPublication)) return;
 
-    const cachedResponse =
-      this.advertisementCacheService.getCache(paginationParams);
-    if (cachedResponse) {
-      console.log('Cache returned:', JSON.stringify(paginationParams));
-      return of(cachedResponse);
-    }
-
-    const params = setPaginationHeaders(paginationParams);
+    const params = setPaginationHeaders(this.paginationParams());
 
     return this.http
       .get<Advertisement[]>(
@@ -145,97 +166,71 @@ export class AdvertisementService {
           params,
         }
       )
-      .pipe(
-        map((response) => {
-          const result = new PaginatedResult<Advertisement[]>();
-          result.items = response.body as Advertisement[];
-          result.pagination = JSON.parse(response.headers.get('Pagination')!);
+      .pipe(map((response) => this.handleAdvertisementResponse(response)))
+      .subscribe({
+        error: (err) => {
+          console.error('Error when loading pending publication ads:', err);
+        },
+      });
+  }
 
-          this.advertisementCacheService.setCache(result);
+  getCache(advListType: AdvListType): boolean {
+    this.updatePaginationParams(undefined, undefined, undefined, advListType);
 
-          console.log('Loaded from DB');
-          return result;
-        })
-      );
+    const cachedResponse = this.advertisementCacheService.getCache(
+      this.paginationParams()
+    );
+    if (cachedResponse) {
+      console.log('Cache returned:', JSON.stringify(this.paginationParams()));
+      this.advertisements.set(cachedResponse);
+      return true;
+    }
+    return false;
   }
 
   // MY ADVERTISEMENTS
-  getMyAdvertisements(paginationParams: PaginationParams) {
-    this.lastPaginationParams = paginationParams;
+  getMyAdvertisements() {
+    if (this.getCache(AdvListType.MyAdvertisements)) return;
 
-    const cachedResponse =
-      this.advertisementCacheService.getCache(paginationParams);
-    if (cachedResponse) {
-      console.log('Cache returned:', JSON.stringify(paginationParams));
-      return of(cachedResponse);
-    }
-
-    const params = setPaginationHeaders(paginationParams);
+    const params = setPaginationHeaders(this.paginationParams());
 
     return this.http
       .get<Advertisement[]>(this.baseUrl + 'advertisement', {
         observe: 'response',
         params,
       })
-      .pipe(
-        map((response) => {
-          const result = new PaginatedResult<Advertisement[]>();
-          result.items = response.body as Advertisement[];
-          result.pagination = JSON.parse(response.headers.get('Pagination')!);
-
-          this.advertisementCacheService.setCache(result);
-          console.log('Loaded from DB');
-          return result;
-        })
-      );
+      .pipe(map((response) => this.handleAdvertisementResponse(response)))
+      .subscribe({
+        error: (err) => {
+          console.error('Error when loading ads:', err);
+        },
+      });
   }
 
   // ALL_HISTORY
-  getAllAdvertisementHistory(
-    paginationParams: PaginationParams
-  ): Observable<PaginatedResult<Advertisement[]>> {
-    this.lastPaginationParams = paginationParams;
+  getAllAdvertisementHistory() {
+    if (this.getCache(AdvListType.AllHistory)) return;
 
-    const cachedResponse =
-      this.advertisementCacheService.getCache(paginationParams);
-    if (cachedResponse) {
-      return of(cachedResponse);
-    }
+    const params = setPaginationHeaders(this.paginationParams());
 
-    const params = setPaginationHeaders(paginationParams);
-
-    return this.http
+    this.http
       .get<Advertisement[]>(this.baseUrl + 'advertisementHistory', {
         observe: 'response',
         params,
       })
-      .pipe(
-        map((response) => {
-          const result = new PaginatedResult<Advertisement[]>();
-          result.items = response.body as Advertisement[];
-          result.pagination = JSON.parse(response.headers.get('Pagination')!);
-
-          this.advertisementCacheService.setCache(result);
-          console.log('Loaded from DB');
-          return result;
-        })
-      );
+      .pipe(map((response) => this.handleAdvertisementResponse(response)))
+      .subscribe({
+        error: (err) => {
+          console.error('Error when loading advertisement history:', err);
+        },
+      });
   }
 
   // PRIVATE_HISTORY
-  getPrivateAdvertisementHistory(
-    paginationParams: PaginationParams
-  ): Observable<PaginatedResult<Advertisement[]>> {
-    this.lastPaginationParams = paginationParams;
+  getPrivateAdvertisementHistory() {
+    if (this.getCache(AdvListType.PrivateHistory)) return;
 
-    const cachedResponse =
-      this.advertisementCacheService.getCache(paginationParams);
-    if (cachedResponse) {
-      console.log('Cache returned:', JSON.stringify(paginationParams));
-      return of(cachedResponse);
-    }
-
-    const params = setPaginationHeaders(paginationParams);
+    const params = setPaginationHeaders(this.paginationParams());
 
     return this.http
       .get<Advertisement[]>(
@@ -245,17 +240,15 @@ export class AdvertisementService {
           params,
         }
       )
-      .pipe(
-        map((response) => {
-          const result = new PaginatedResult<Advertisement[]>();
-          result.items = response.body as Advertisement[];
-          result.pagination = JSON.parse(response.headers.get('Pagination')!);
-
-          this.advertisementCacheService.setCache(result);
-          console.log('Loaded from DB');
-          return result;
-        })
-      );
+      .pipe(map((response) => this.handleAdvertisementResponse(response)))
+      .subscribe({
+        error: (err) => {
+          console.error(
+            'Error when loading private advertisement history:',
+            err
+          );
+        },
+      });
   }
 
   // ADMIN
@@ -295,21 +288,13 @@ export class AdvertisementService {
       );
   }
 
-  getPendingValidationAdvertisements(
-    paginationParams: PaginationParams
-  ): Observable<PaginatedResult<Advertisement[]>> {
-    this.lastPaginationParams = paginationParams;
+  // VALIDATION
+  getPendingValidationAdvertisements() {
+    if (this.getCache(AdvListType.PendingValidation)) return;
 
-    const cachedResponse =
-      this.advertisementCacheService.getCache(paginationParams);
-    if (cachedResponse) {
-      console.log('Cache returned:', JSON.stringify(paginationParams));
-      return of(cachedResponse);
-    }
+    const params = setPaginationHeaders(this.paginationParams());
 
-    const params = setPaginationHeaders(paginationParams);
-
-    return this.http
+    this.http
       .get<Advertisement[]>(
         this.baseUrl + 'advertisementAdmin/getPendingAdvertisements',
         {
@@ -317,17 +302,12 @@ export class AdvertisementService {
           params,
         }
       )
-      .pipe(
-        map((response) => {
-          const result = new PaginatedResult<Advertisement[]>();
-          result.items = response.body as Advertisement[];
-          result.pagination = JSON.parse(response.headers.get('Pagination')!);
-
-          this.advertisementCacheService.setCache(result);
-          console.log('Loaded from DB');
-          return result;
-        })
-      );
+      .pipe(map((response) => this.handleAdvertisementResponse(response)))
+      .subscribe({
+        error: (err) => {
+          console.error('Error when loading pending validation ads:', err);
+        },
+      });
   }
 
   getPendingValidationAdvertisementsCount(): Observable<number> {
@@ -363,5 +343,23 @@ export class AdvertisementService {
           );
         })
       );
+  }
+
+  private handleAdvertisementResponse(response: HttpResponse<Advertisement[]>) {
+    const result = new PaginatedResult<Advertisement[]>();
+    result.items = response.body as Advertisement[];
+    result.pagination = JSON.parse(response.headers.get('Pagination')!);
+
+    this.advertisementCacheService.setCache(result);
+    console.log('Loaded from DB');
+    this.advertisements.set(result);
+
+    this.updatePaginationParams(
+      result.pagination?.itemsPerPage,
+      result.pagination?.currentPage,
+      result.pagination?.totalItems
+    );
+
+    return result;
   }
 }

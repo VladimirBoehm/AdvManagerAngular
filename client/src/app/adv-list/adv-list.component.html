@@ -1,6 +1,7 @@
-@if ( paginatedAdvertisements && paginatedAdvertisements.items) {
+@if ( advertisementService.advertisements() &&
+advertisementService.advertisements().items) {
 <div class="container-fluid">
-  <div *ngIf="paginatedAdvertisements.items.length === 0">
+  <div *ngIf="advertisementService.advertisements().items!.length === 0">
     <ng-container *ngTemplateOutlet="noAdvertisements"></ng-container>
   </div>
 
@@ -14,19 +15,19 @@
     <div class="col-6 d-flex justify-content-end">
       <div
         *ngIf="
-          paginatedAdvertisements.pagination &&
-          paginatedAdvertisements.pagination.totalItems > 0 &&
-          paginatedAdvertisements.pagination.totalItems >
-            paginatedAdvertisements.pagination.itemsPerPage
+          advertisementService.advertisements().pagination &&
+          advertisementService.advertisements().pagination!.totalItems > 0 &&
+          advertisementService.advertisements().pagination!.totalItems >
+            advertisementService.advertisements().pagination!.itemsPerPage
         "
       >
         <paginator-localization
           #paginator
           class="demo-paginator"
           (page)="handlePageEvent($event)"
-          [length]="length"
-          [pageSize]="paginationParams.pageSize"
-          [pageIndex]="paginationParams.pageNumber"
+          [length]="advertisementService.paginationParams().itemsCount"
+          [pageSize]="advertisementService.paginationParams().pageSize"
+          [pageIndex]="advertisementService.paginationParams().pageNumber"
         ></paginator-localization>
       </div>
     </div>
@@ -35,13 +36,16 @@
   <!-- Pending validation -->
   <div
     *ngIf="
-      paginatedAdvertisements.items.length > 0 &&
+      advertisementService.advertisements().items &&
+      advertisementService.advertisements().items!.length > 0 &&
       state === advListStates.Validate
     "
   >
     <ul class="list-group list-group-flush">
       <li
-        *ngFor="let advertisement of paginatedAdvertisements.items"
+        *ngFor="
+          let advertisement of advertisementService.advertisements().items
+        "
         class="list-group-item"
         [routerLink]="['/app-advertisement-validate', advertisement.id]"
       >
@@ -102,7 +106,7 @@
         <button
           class="btn empty-button"
           (click)="create()"
-          [disabled]="paginatedAdvertisements.items.length > 2"
+          [disabled]="advertisementService.advertisements().items!.length > 2"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -118,7 +122,7 @@
 
           <div class="text-muted">Создать</div>
           <div
-            *ngIf="paginatedAdvertisements.items.length > 2"
+            *ngIf="advertisementService.advertisements().items!.length > 2"
             class="my-info-text text-danger"
           >
             Максимум 3 объявления
@@ -129,7 +133,9 @@
     <hr />
     <ul class="list-group list-group-flush">
       <li
-        *ngFor="let advertisement of paginatedAdvertisements.items"
+        *ngFor="
+          let advertisement of advertisementService.advertisements().items
+        "
         class="list-group-item"
         [routerLink]="['/app-advertisement-preview', advertisement.id]"
       >
@@ -167,7 +173,7 @@
   <!-- AllHistory || PrivateHistory-->
   <div
     *ngIf="
-      paginatedAdvertisements.items.length > 0 &&
+      advertisementService.advertisements().items!.length > 0 &&
       (state === advListStates.AllHistory ||
         state === advListStates.PrivateHistory ||
         state === advListStates.Publishing)
@@ -175,7 +181,9 @@
   >
     <ul class="list-group list-group-flush">
       <li
-        *ngFor="let advertisement of paginatedAdvertisements.items"
+        *ngFor="
+          let advertisement of advertisementService.advertisements().items
+        "
         class="list-group-item"
         [routerLink]="['/app-advertisement-preview', advertisement.id]"
       >

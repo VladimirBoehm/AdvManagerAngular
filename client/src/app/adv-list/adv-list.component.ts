@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AdvListStates } from '../_framework/constants/advListStates';
 import { AdvertisementService } from '../_services/advertisement.service';
@@ -6,14 +6,12 @@ import { Advertisement } from '../_models/advertisement';
 import { DatePipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import { TelegramBackButtonService } from '../_framework/telegramBackButtonService';
 import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
-import { PaginationParams } from '../_models/paginationParams';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { PaginatedResult } from '../_models/pagination';
-import { AdvListType } from '../_framework/constants/advListType';
 import { PaginatorLocalization } from '../_framework/component/paginator/paginator-localization';
 import { AdvListFilterComponent } from '../_framework/component/adv-list-filter/adv-list-filter.component';
 import { SortOption } from '../_models/sortOption';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
+
 @Component({
   selector: 'app-adv-list',
   standalone: true,
@@ -32,25 +30,12 @@ import { DateHelper } from '../_framework/component/helpers/dateHelper';
 })
 export class AdvListComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
-  private advertisementService = inject(AdvertisementService);
   private backButtonService = inject(TelegramBackButtonService);
   private router = inject(Router);
-
-  paginatedAdvertisements?: PaginatedResult<Advertisement[]>;
+  advertisementService = inject(AdvertisementService);
   advListStates = AdvListStates;
   dateHelper = DateHelper;
-
   state?: AdvListStates;
-  paginationParams: PaginationParams;
-  length = 0; // items count
-
-  constructor() {
-    this.paginationParams = {
-      pageNumber: 0,
-      pageSize: 5,
-      sortOption: { field: 'date', order: 'desc' },
-    } as PaginationParams;
-  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
@@ -68,83 +53,30 @@ export class AdvListComponent implements OnInit, OnDestroy {
   }
 
   handlePageEvent(e: PageEvent) {
-    this.paginationParams.pageSize = e.pageSize;
-    this.paginationParams.pageNumber = e.pageIndex;
+    this.advertisementService.updatePaginationParams(e.pageSize, e.pageIndex);
     this.initialize();
   }
 
   private initialize() {
     switch (this.state) {
       case AdvListStates.Validate: {
-        this.paginationParams.advListType = AdvListType.PendingValidation;
-        this.advertisementService
-          .getPendingValidationAdvertisements(this.paginationParams)
-          .subscribe({
-            next: (advertisements: PaginatedResult<Advertisement[]>) => {
-              this.setPaginatedResult(advertisements);
-            },
-            error: (err) => {
-              console.error('Error when loading ads:', err);
-            },
-          });
+        this.advertisementService.getPendingValidationAdvertisements();
         break;
       }
       case AdvListStates.AllHistory: {
-        this.paginationParams.advListType = AdvListType.AllHistory;
-        this.advertisementService
-          .getAllAdvertisementHistory(this.paginationParams)
-          .subscribe({
-            next: (advertisements: PaginatedResult<Advertisement[]>) => {
-              this.setPaginatedResult(advertisements);
-            },
-            error: (err) => {
-              console.error('Error when loading ads:', err);
-            },
-          });
-
+        this.advertisementService.getAllAdvertisementHistory();
         break;
       }
       case AdvListStates.PrivateHistory: {
-        this.paginationParams.advListType = AdvListType.PrivateHistory;
-        this.advertisementService
-          .getPrivateAdvertisementHistory(this.paginationParams)
-          .subscribe({
-            next: (advertisements: PaginatedResult<Advertisement[]>) => {
-              this.setPaginatedResult(advertisements);
-            },
-            error: (err) => {
-              console.error('Error when loading ads:', err);
-            },
-          });
-
+        this.advertisementService.getPrivateAdvertisementHistory();
         break;
       }
       case AdvListStates.MyAdvertisements: {
-        this.paginationParams.advListType = AdvListType.MyAdvertisements;
-        this.advertisementService
-          .getMyAdvertisements(this.paginationParams)
-          .subscribe({
-            next: (advertisements: PaginatedResult<Advertisement[]>) => {
-              this.setPaginatedResult(advertisements);
-            },
-            error: (err) => {
-              console.error('Error when loading ads:', err);
-            },
-          });
+        this.advertisementService.getMyAdvertisements();
         break;
       }
       case AdvListStates.Publishing: {
-        this.paginationParams.advListType = AdvListType.PendingPublication;
-        this.advertisementService
-          .getPendingPublicationAdvertisements(this.paginationParams)
-          .subscribe({
-            next: (advertisements: PaginatedResult<Advertisement[]>) => {
-              this.setPaginatedResult(advertisements);
-            },
-            error: (err) => {
-              console.error('Error when loading ads:', err);
-            },
-          });
+        this.advertisementService.getPendingPublicationAdvertisements();
         break;
       }
       default: {
@@ -156,17 +88,6 @@ export class AdvListComponent implements OnInit, OnDestroy {
   openPrivateHistory() {
     this.state = AdvListStates.PrivateHistory;
     this.initialize();
-  }
-
-  private setPaginatedResult(
-    paginatedResult: PaginatedResult<Advertisement[]>
-  ) {
-    this.paginatedAdvertisements = paginatedResult;
-    this.length = paginatedResult.pagination?.totalItems ?? 0;
-    this.paginationParams.pageSize =
-      paginatedResult.pagination?.itemsPerPage ?? 1;
-    this.paginationParams.pageNumber =
-      paginatedResult.pagination?.currentPage ?? 0;
   }
 
   getStatus(advertisement: Advertisement): string {
@@ -205,8 +126,13 @@ export class AdvListComponent implements OnInit, OnDestroy {
   }
 
   sortChanged($event: SortOption) {
-    this.paginationParams.sortOption = $event;
-    this.paginationParams.pageNumber = 0;
+    this.advertisementService.updatePaginationParams(
+      undefined,
+      0,
+      undefined,
+      undefined,
+      $event
+    );
     this.initialize();
   }
 
