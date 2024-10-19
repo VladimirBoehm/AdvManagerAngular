@@ -36,7 +36,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
   advertisementService = inject(AdvertisementService);
   advListType = AdvListType;
   dateHelper = DateHelper;
-  selectedListType!: AdvListType ;
+  selectedListType!: AdvListType;
 
   constructor() {
     this.route.paramMap.subscribe((params) => {
@@ -46,6 +46,19 @@ export class AdvListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
+      this.advertisementService.updatePaginationParams(
+        this.selectedListType,
+        undefined,
+        0,
+        undefined,
+        {
+          field: 'date',
+          order: 'desc',
+          searchType: 'title',
+          searchValue: undefined,
+        } as SortOption
+      );
+
       if (this.selectedListType === AdvListType.PrivateHistory) {
         this.selectedListType = AdvListType.MyAdvertisements;
         this.initialize();
