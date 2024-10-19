@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Advertisement } from '../_models/advertisement';
-
 import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
 import { PaginatedResult } from '../_models/pagination';
 import { PaginationParams } from '../_models/paginationParams';
@@ -12,9 +11,10 @@ import { AdvListType } from '../_framework/constants/advListType';
 export class AdvertisementCacheService {
   private advertisementCache = new Map<any, PaginatedResult<Advertisement[]>>();
   private pendingAdvertisementsCache: number = 0;
+  private selectedAdvListType?: AdvListType;
   private paginationParams?: PaginationParams;
 
-  checkResetPendingAdvertisementsCache(counter: number) {
+  resetPendingAdvertisementsCache(counter: number) {
     if (this.pendingAdvertisementsCache !== counter) {
       this.pendingAdvertisementsCache = counter;
       this.resetCache(AdvListType.PendingValidation);
@@ -81,7 +81,8 @@ export class AdvertisementCacheService {
     return this.paginationParams;
   }
 
-  private getSearchParamsKey(): string {
+  private getSearchParamsKey(advListType?: AdvListType): string {
+    if (!advListType) console.error('advListType is undefined');
     const flattenObject = (obj: any): any => {
       const flattened: any = {};
 
@@ -96,10 +97,10 @@ export class AdvertisementCacheService {
     };
 
     const flattenedParams = flattenObject(this.paginationParams);
-    return Object.values(flattenedParams).join('-');
+    return Object.values(flattenedParams).join('-') + '-' + advListType;
   }
 
-  private setSearchParams(paginationParams: PaginationParams) {
+  private setPaginationParams(paginationParams: PaginationParams) {
     this.paginationParams = {
       ...this.paginationParams,
       ...paginationParams,
@@ -107,21 +108,31 @@ export class AdvertisementCacheService {
   }
 
   getCache(
+    advListType: AdvListType,
     paginationParams?: PaginationParams
   ): PaginatedResult<Advertisement[]> | undefined {
-    if (paginationParams) this.setSearchParams(paginationParams);
-    console.log('cache requested: ' + this.getSearchParamsKey());
-    return this.advertisementCache.get(this.getSearchParamsKey());
+    this.selectedAdvListType = advListType;
+    if (paginationParams) this.setPaginationParams(paginationParams);
+    console.log(
+      'cache requested: ' + this.getSearchParamsKey(this.selectedAdvListType)
+    );
+    return this.advertisementCache.get(
+      this.getSearchParamsKey(this.selectedAdvListType)
+    );
   }
 
-  setCache(advertisements: PaginatedResult<Advertisement[]>) {
-    const key = this.getSearchParamsKey();
+  setCache(
+    advListType: AdvListType,
+    advertisements: PaginatedResult<Advertisement[]>
+  ) {
+    this.selectedAdvListType = advListType;
+    const key = this.getSearchParamsKey(this.selectedAdvListType);
     console.log('Cache set: ' + key);
     this.advertisementCache.set(key, advertisements);
   }
 
   addItem(advertisement: Advertisement) {
-    const searchParamsKey = this.getSearchParamsKey();
+    const searchParamsKey = this.getSearchParamsKey(this.selectedAdvListType);
     console.log('addItem: ' + searchParamsKey);
 
     const cachedAdvertisements = this.advertisementCache.get(searchParamsKey);
@@ -144,7 +155,7 @@ export class AdvertisementCacheService {
     advertisementStatus: AdvertisementStatus,
     advertisementId: number
   ) {
-    const searchParamsKey = this.getSearchParamsKey();
+    const searchParamsKey = this.getSearchParamsKey(this.selectedAdvListType);
     const cachedAdvertisements = this.advertisementCache.get(searchParamsKey);
     console.log('updateItemsStatus: ' + searchParamsKey);
 

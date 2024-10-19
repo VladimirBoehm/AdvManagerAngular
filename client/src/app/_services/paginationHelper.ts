@@ -1,8 +1,9 @@
 import { HttpParams } from '@angular/common/http';
 import { PaginationParams } from '../_models/paginationParams';
 
-export function setPaginationHeaders(paginationParams: PaginationParams) {
+export function setPaginationHeaders(paginationParams?: PaginationParams) {
   let params = new HttpParams();
+  if (!paginationParams) return params;
   {
     params = params.append('pageNumber', paginationParams.pageNumber);
     params = params.append('pageSize', paginationParams.pageSize);

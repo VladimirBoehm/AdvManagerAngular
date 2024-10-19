@@ -5,7 +5,6 @@ import { Advertisement } from '../../_models/advertisement';
 import { AdvertisementService } from '../../_services/advertisement.service';
 import { TelegramBackButtonService } from '../../_framework/telegramBackButtonService';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AdvListStates } from '../../_framework/constants/advListStates';
 import { DatePipe, NgIf } from '@angular/common';
 import { AdvertisementStatus } from '../../_framework/constants/advertisementStatus';
 import { AccountService } from '../../_services/account.service';
@@ -17,7 +16,6 @@ import { AdvListType } from '../../_framework/constants/advListType';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ManagePublish } from '../../_models/managePublish';
-import { PaginationParams } from '../../_models/paginationParams';
 import { DateHelper } from '../../_framework/component/helpers/dateHelper';
 
 @Component({
@@ -84,29 +82,31 @@ export class AdvertisementPreviewComponent implements OnInit {
     );
   }
 
+  //TODO передавать state из AdvList
   private getAdvertisementById(id: number) {
-    this.advertisementService.getById(Number(id))?.subscribe({
-      next: (advertisement: Advertisement) => {
-        this.advertisement = advertisement;
-      },
-      error: (err) => {
-        console.error('Error when loading ads:', err);
-      },
-    });
+    this.advertisementService
+      .getById(Number(id))
+      ?.subscribe({
+        next: (advertisement: Advertisement) => {
+          this.advertisement = advertisement;
+        },
+        error: (err) => {
+          console.error('Error when loading ads:', err);
+        },
+      });
   }
 
   private back() {
     if (this.advertisement) {
       if (this.advertisement.statusId === AdvertisementStatus.published) {
-        this.router.navigate(['/adv-list', AdvListStates.AllHistory]);
+        this.router.navigate(['/adv-list', AdvListType.AllHistory]);
       } else {
         if (
           this.advertisementService.getActualSearchType() ===
           AdvListType.PrivateHistory
         )
-          this.router.navigate(['/adv-list', AdvListStates.PrivateHistory]);
-        else
-          this.router.navigate(['/adv-list', AdvListStates.MyAdvertisements]);
+          this.router.navigate(['/adv-list', AdvListType.PrivateHistory]);
+        else this.router.navigate(['/adv-list', AdvListType.MyAdvertisements]);
       }
     }
   }
@@ -156,7 +156,7 @@ export class AdvertisementPreviewComponent implements OnInit {
       ?.subscribe({
         next: () => {
           this.modalRef?.hide();
-          this.router.navigate(['/adv-list', AdvListStates.Publishing]);
+          this.router.navigate(['/adv-list', AdvListType.PendingPublication]);
         },
         error: (err) => {
           console.error('Error when cancelPublicationAdmin:', err);
@@ -182,7 +182,7 @@ export class AdvertisementPreviewComponent implements OnInit {
       ?.subscribe({
         next: () => {
           this.modalRef?.hide();
-          this.router.navigate(['/adv-list', AdvListStates.Publishing]);
+          this.router.navigate(['/adv-list', AdvListType.PendingPublication]);
         },
         error: (err) => {
           console.error('Error when forcePublication:', err);

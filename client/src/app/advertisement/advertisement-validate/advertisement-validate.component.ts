@@ -13,13 +13,13 @@ import {
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { UpdateAdvertisementAdminRequest } from '../../_models/updateAdvertisementAdminRequest';
 import { AdvertisementStatus } from '../../_framework/constants/advertisementStatus';
-import { AdvListStates } from '../../_framework/constants/advListStates';
 import { ConfirmModalComponent } from '../../_framework/component/confirm-modal/confirm-modal.component';
 import { AdvertisementMainDataComponent } from '../advertisement-main-data/advertisement-main-data.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatErrorService } from '../../_framework/component/errors/mat-error-service';
 import { CustomValidators } from '../../_framework/component/validators/customValidators';
+import { AdvListType } from '../../_framework/constants/advListType';
 
 @Component({
   selector: 'app-advertisement-validate',
@@ -60,7 +60,8 @@ export class AdvertisementValidateComponent implements OnInit {
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
-      this.router.navigate(['/adv-list', AdvListStates.Validate]);
+      this.router.navigate(['/adv-list', AdvListType.PendingValidation
+      ]);
     });
 
     this.route.paramMap.subscribe((params) => {
@@ -128,7 +129,7 @@ export class AdvertisementValidateComponent implements OnInit {
       .subscribe({
         next: () => {
           this.modalRef?.hide();
-          this.router.navigate(['/adv-list', AdvListStates.Validate]);
+          this.router.navigate(['/adv-list', AdvListType.PendingValidation]);
         },
         error: (error: any) => console.log(error),
       });

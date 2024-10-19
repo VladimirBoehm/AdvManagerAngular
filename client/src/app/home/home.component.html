@@ -2,7 +2,7 @@
   <ul class="list-group list-group-flush">
     <li class="list-group-item">
       <a
-        [routerLink]="['/adv-list', advListStates.Validate]"
+        [routerLink]="['/adv-list', advListType.PendingValidation]"
         class="list-group-item list-group-item-action"
         style="border: 0; padding: 0"
         ><div class="d-flex">
@@ -75,7 +75,7 @@
     </li>
     <li class="list-group-item">
       <a
-        [routerLink]="['/adv-list', advListStates.MyAdvertisements]"
+        [routerLink]="['/adv-list', advListType.MyAdvertisements]"
         class="list-group-item list-group-item-action"
         style="border: 0; padding: 0"
         ><div class="d-flex">
@@ -108,7 +108,7 @@
     </li>
     <li class="list-group-item">
       <a
-        [routerLink]="['/adv-list', advListStates.Publishing]"
+        [routerLink]="['/adv-list', advListType.PendingPublication]"
         class="list-group-item list-group-item-action"
         style="border: 0; padding: 0"
         ><div class="d-flex">
@@ -141,7 +141,7 @@
     </li>
     <li class="list-group-item">
       <a
-        [routerLink]="['/adv-list', advListStates.AllHistory]"
+        [routerLink]="['/adv-list', advListType.AllHistory]"
         class="list-group-item list-group-item-action"
         style="border: 0; padding: 0"
         ><div class="d-flex">

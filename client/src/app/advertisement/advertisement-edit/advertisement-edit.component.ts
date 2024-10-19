@@ -8,7 +8,6 @@ import {
 import { ConfirmModalComponent } from '../../_framework/component/confirm-modal/confirm-modal.component';
 import { TelegramBackButtonService } from '../../_framework/telegramBackButtonService';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AdvListStates } from '../../_framework/constants/advListStates';
 import { Advertisement } from '../../_models/advertisement';
 import { AdvertisementService } from '../../_services/advertisement.service';
 import { AccountService } from '../../_services/account.service';
@@ -27,6 +26,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatErrorService } from '../../_framework/component/errors/mat-error-service';
 import { AdvertisementStatus } from '../../_framework/constants/advertisementStatus';
+import { AdvListType } from '../../_framework/constants/advListType';
 
 @Component({
   selector: 'app-advertisement-edit',
@@ -78,7 +78,7 @@ export class AdvertisementEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
-      this.router.navigate(['/adv-list', AdvListStates.MyAdvertisements]);
+      this.router.navigate(['/adv-list', AdvListType.MyAdvertisements]);
     });
 
     this.route.paramMap.subscribe((params) => {

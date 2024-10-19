@@ -20,34 +20,56 @@ export class AdvertisementService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
   private advertisementCacheService = inject(AdvertisementCacheService);
+
+  private selectedAdvListType?: AdvListType;
   advertisements = signal<PaginatedResult<Advertisement[]>>(
     new PaginatedResult<Advertisement[]>()
   );
-  paginationParams: WritableSignal<PaginationParams>;
+  paginationParamsState: WritableSignal<Map<AdvListType, PaginationParams>>;
 
   constructor() {
-    this.paginationParams = signal<PaginationParams>({
+    const defaultPaginationParams: PaginationParams = {
       pageNumber: 0,
       pageSize: 5,
       itemsCount: 0,
-      sortOption: { field: 'date', order: 'desc' },
-    } as PaginationParams);
+      sortOption: { field: 'date', order: 'desc', searchType: 'title' },
+    };
+
+    const paginationState = new Map<AdvListType, PaginationParams>();
+
+    Object.values(AdvListType).forEach((advListType) => {
+      paginationState.set(advListType, { ...defaultPaginationParams });
+    });
+
+    this.paginationParamsState = signal(paginationState);
   }
+
   updatePaginationParams(
+    advListType?: AdvListType,
     pageSize?: number,
     pageNumber?: number,
     itemsCount?: number,
-    advListType?: AdvListType,
     sortOption?: SortOption
   ) {
-    this.paginationParams.update((params) => ({
-      ...params,
-      pageSize: pageSize !== undefined ? pageSize : params.pageSize,
-      pageNumber: pageNumber !== undefined ? pageNumber : params.pageNumber,
-      itemsCount: itemsCount !== undefined ? itemsCount : params.itemsCount,
-      advListType: advListType !== undefined ? advListType : params.advListType,
-      sortOption: sortOption !== undefined ? sortOption : params.sortOption,
-    }));
+    if (!advListType) return;
+    const currentParams = this.paginationParamsState().get(advListType);
+    if (currentParams) {
+      const updatedParams: PaginationParams = {
+        ...currentParams,
+        pageSize: pageSize !== undefined ? pageSize : currentParams.pageSize,
+        pageNumber:
+          pageNumber !== undefined ? pageNumber : currentParams.pageNumber,
+        itemsCount:
+          itemsCount !== undefined ? itemsCount : currentParams.itemsCount,
+        sortOption:
+          sortOption !== undefined ? sortOption : currentParams.sortOption,
+      };
+
+      this.paginationParamsState.update((state) => {
+        state.set(advListType, updatedParams);
+        return state;
+      });
+    }
   }
 
   getActualSearchType(): AdvListType | undefined {
@@ -133,8 +155,13 @@ export class AdvertisementService {
   }
 
   getById(id: number) {
+    if (!this.selectedAdvListType) {
+      console.error('getById: selectedAdvListType is undefined');
+      return null;
+    }
     const cachedAdvertisements = this.advertisementCacheService.getCache(
-      this.paginationParams()
+      this.selectedAdvListType,
+      this.paginationParamsState().get(this.selectedAdvListType)
     );
 
     if (cachedAdvertisements) {
@@ -156,7 +183,9 @@ export class AdvertisementService {
   getPendingPublicationAdvertisements() {
     if (this.getCache(AdvListType.PendingPublication)) return;
 
-    const params = setPaginationHeaders(this.paginationParams());
+    const params = setPaginationHeaders(
+      this.paginationParamsState().get(AdvListType.PendingPublication)
+    );
 
     return this.http
       .get<Advertisement[]>(
@@ -175,13 +204,16 @@ export class AdvertisementService {
   }
 
   getCache(advListType: AdvListType): boolean {
-    this.updatePaginationParams(undefined, undefined, undefined, advListType);
-
+    this.selectedAdvListType = advListType;
     const cachedResponse = this.advertisementCacheService.getCache(
-      this.paginationParams()
+      advListType,
+      this.paginationParamsState().get(advListType)
     );
     if (cachedResponse) {
-      console.log('Cache returned:', JSON.stringify(this.paginationParams()));
+      console.log(
+        'Cache returned:',
+        JSON.stringify(this.paginationParamsState().get(advListType))
+      );
       this.advertisements.set(cachedResponse);
       return true;
     }
@@ -192,7 +224,9 @@ export class AdvertisementService {
   getMyAdvertisements() {
     if (this.getCache(AdvListType.MyAdvertisements)) return;
 
-    const params = setPaginationHeaders(this.paginationParams());
+    const params = setPaginationHeaders(
+      this.paginationParamsState().get(AdvListType.MyAdvertisements)
+    );
 
     return this.http
       .get<Advertisement[]>(this.baseUrl + 'advertisement', {
@@ -211,7 +245,9 @@ export class AdvertisementService {
   getAllAdvertisementHistory() {
     if (this.getCache(AdvListType.AllHistory)) return;
 
-    const params = setPaginationHeaders(this.paginationParams());
+    const params = setPaginationHeaders(
+      this.paginationParamsState().get(AdvListType.AllHistory)
+    );
 
     this.http
       .get<Advertisement[]>(this.baseUrl + 'advertisementHistory', {
@@ -230,7 +266,9 @@ export class AdvertisementService {
   getPrivateAdvertisementHistory() {
     if (this.getCache(AdvListType.PrivateHistory)) return;
 
-    const params = setPaginationHeaders(this.paginationParams());
+    const params = setPaginationHeaders(
+      this.paginationParamsState().get(AdvListType.PrivateHistory)
+    );
 
     return this.http
       .get<Advertisement[]>(
@@ -292,7 +330,9 @@ export class AdvertisementService {
   getPendingValidationAdvertisements() {
     if (this.getCache(AdvListType.PendingValidation)) return;
 
-    const params = setPaginationHeaders(this.paginationParams());
+    const params = setPaginationHeaders(
+      this.paginationParamsState().get(AdvListType.PendingValidation)
+    );
 
     this.http
       .get<Advertisement[]>(
@@ -317,7 +357,7 @@ export class AdvertisementService {
       )
       .pipe(
         tap((result) => {
-          this.advertisementCacheService.checkResetPendingAdvertisementsCache(
+          this.advertisementCacheService.resetPendingAdvertisementsCache(
             result
           );
         })
@@ -347,14 +387,20 @@ export class AdvertisementService {
 
   private handleAdvertisementResponse(response: HttpResponse<Advertisement[]>) {
     const result = new PaginatedResult<Advertisement[]>();
+    if (!this.selectedAdvListType) {
+      console.error('advListType is undefined');
+      return result;
+    }
+
     result.items = response.body as Advertisement[];
     result.pagination = JSON.parse(response.headers.get('Pagination')!);
 
-    this.advertisementCacheService.setCache(result);
+    this.advertisementCacheService.setCache(this.selectedAdvListType, result);
     console.log('Loaded from DB');
     this.advertisements.set(result);
 
     this.updatePaginationParams(
+      this.selectedAdvListType,
       result.pagination?.itemsPerPage,
       result.pagination?.currentPage,
       result.pagination?.totalItems

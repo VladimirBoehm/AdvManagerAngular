@@ -1,9 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { AdvListStates } from '../_framework/constants/advListStates';
+
 import { AdvertisementService } from '../_services/advertisement.service';
 import { NgIf } from '@angular/common';
+import { AdvListType } from '../_framework/constants/advListType';
 
 @Component({
   selector: 'app-home',
@@ -13,7 +14,7 @@ import { NgIf } from '@angular/common';
   styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit {
-  advListStates = AdvListStates;
+  advListType = AdvListType;
   advertisementService = inject(AdvertisementService);
   advertisementsToValidateCount: number = 0;
 

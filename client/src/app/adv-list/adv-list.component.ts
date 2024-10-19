@@ -1,6 +1,5 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { AdvListStates } from '../_framework/constants/advListStates';
 import { AdvertisementService } from '../_services/advertisement.service';
 import { Advertisement } from '../_models/advertisement';
 import { DatePipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
@@ -11,6 +10,8 @@ import { PaginatorLocalization } from '../_framework/component/paginator/paginat
 import { AdvListFilterComponent } from '../_framework/component/adv-list-filter/adv-list-filter.component';
 import { SortOption } from '../_models/sortOption';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
+import { PaginatedResult } from '../_models/pagination';
+import { AdvListType } from '../_framework/constants/advListType';
 
 @Component({
   selector: 'app-adv-list',
@@ -33,18 +34,20 @@ export class AdvListComponent implements OnInit, OnDestroy {
   private backButtonService = inject(TelegramBackButtonService);
   private router = inject(Router);
   advertisementService = inject(AdvertisementService);
-  advListStates = AdvListStates;
+  advListType = AdvListType;
   dateHelper = DateHelper;
-  state?: AdvListStates;
+  selectedListType!: AdvListType ;
+
+  constructor() {
+    this.route.paramMap.subscribe((params) => {
+      this.selectedListType = params.get('state') as AdvListType;
+    });
+  }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
-      this.state = params.get('state') as AdvListStates;
-    });
-
     this.backButtonService.setBackButtonHandler(() => {
-      if (this.state === AdvListStates.PrivateHistory) {
-        this.state = AdvListStates.MyAdvertisements;
+      if (this.selectedListType === AdvListType.PrivateHistory) {
+        this.selectedListType = AdvListType.MyAdvertisements;
         this.initialize();
       } else this.router.navigate(['']);
     });
@@ -53,29 +56,36 @@ export class AdvListComponent implements OnInit, OnDestroy {
   }
 
   handlePageEvent(e: PageEvent) {
-    this.advertisementService.updatePaginationParams(e.pageSize, e.pageIndex);
+    this.advertisementService.updatePaginationParams(
+      this.selectedListType,
+      e.pageSize,
+      e.pageIndex
+    );
     this.initialize();
   }
 
   private initialize() {
-    switch (this.state) {
-      case AdvListStates.Validate: {
+    this.advertisementService.advertisements.set(
+      new PaginatedResult<Advertisement[]>()
+    );
+    switch (this.selectedListType) {
+      case AdvListType.PendingValidation: {
         this.advertisementService.getPendingValidationAdvertisements();
         break;
       }
-      case AdvListStates.AllHistory: {
+      case AdvListType.AllHistory: {
         this.advertisementService.getAllAdvertisementHistory();
         break;
       }
-      case AdvListStates.PrivateHistory: {
+      case AdvListType.PrivateHistory: {
         this.advertisementService.getPrivateAdvertisementHistory();
         break;
       }
-      case AdvListStates.MyAdvertisements: {
+      case AdvListType.MyAdvertisements: {
         this.advertisementService.getMyAdvertisements();
         break;
       }
-      case AdvListStates.Publishing: {
+      case AdvListType.PendingPublication: {
         this.advertisementService.getPendingPublicationAdvertisements();
         break;
       }
@@ -86,7 +96,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
   }
 
   openPrivateHistory() {
-    this.state = AdvListStates.PrivateHistory;
+    this.selectedListType = AdvListType.PrivateHistory;
     this.initialize();
   }
 
@@ -126,10 +136,11 @@ export class AdvListComponent implements OnInit, OnDestroy {
   }
 
   sortChanged($event: SortOption) {
+    //reset page number
     this.advertisementService.updatePaginationParams(
+      this.selectedListType,
       undefined,
       0,
-      undefined,
       undefined,
       $event
     );
