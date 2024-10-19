@@ -44,6 +44,22 @@ export class AdvertisementService {
     this.paginationParamsState = signal(paginationState);
   }
 
+  resetPaginationParams(advListType: AdvListType) {
+
+    this.updatePaginationParams(
+      advListType,
+      undefined, // Keep pageSize unchanged
+      0, // Reset pageNumber to 0
+      undefined, // Keep itemsCount unchanged
+      {
+        field: 'date', // Sort by date
+        order: 'desc', // In descending order
+        searchType: 'title', // Search by title
+        searchValue: undefined, // No specific search value
+      } as SortOption
+    );
+  }
+
   updatePaginationParams(
     advListType?: AdvListType,
     pageSize?: number,
