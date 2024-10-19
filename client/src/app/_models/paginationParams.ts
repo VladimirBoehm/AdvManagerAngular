@@ -5,6 +5,5 @@ export interface PaginationParams {
   pageNumber: number;
   pageSize: number;
   itemsCount: number
-  advListType?: AdvListType; //TODO delete
   sortOption: SortOption;
 }

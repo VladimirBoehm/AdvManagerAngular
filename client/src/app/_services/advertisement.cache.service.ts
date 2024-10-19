@@ -96,7 +96,13 @@ export class AdvertisementCacheService {
       return flattened;
     };
 
-    const flattenedParams = flattenObject(this.paginationParams);
+    let deepClone: PaginationParams = JSON.parse(
+      JSON.stringify(this.paginationParams)
+    );
+    deepClone.itemsCount = 0;
+    deepClone.pageSize = 0;
+
+    const flattenedParams = flattenObject(deepClone);
     return Object.values(flattenedParams).join('-') + '-' + advListType;
   }
 
@@ -133,7 +139,7 @@ export class AdvertisementCacheService {
 
   addItem(advertisement: Advertisement) {
     const searchParamsKey = this.getSearchParamsKey(this.selectedAdvListType);
-    console.log('addItem: ' + searchParamsKey);
+    console.log('Cache: addItem: ' + searchParamsKey);
 
     const cachedAdvertisements = this.advertisementCache.get(searchParamsKey);
     if (cachedAdvertisements) {
@@ -157,7 +163,7 @@ export class AdvertisementCacheService {
   ) {
     const searchParamsKey = this.getSearchParamsKey(this.selectedAdvListType);
     const cachedAdvertisements = this.advertisementCache.get(searchParamsKey);
-    console.log('updateItemsStatus: ' + searchParamsKey);
+    console.log('Cache: updateItemsStatus: ' + searchParamsKey);
 
     if (cachedAdvertisements?.items) {
       const updatedItems = cachedAdvertisements.items.map((item) => {
@@ -176,7 +182,7 @@ export class AdvertisementCacheService {
 
   deleteItem(advertisementId: number) {
     const searchParamsKey = this.getSearchParamsKey();
-    console.log('deleteItem: ' + searchParamsKey);
+    console.log('Cache: deleteItem: ' + searchParamsKey);
     const cachedAdvertisements = this.advertisementCache.get(searchParamsKey);
     if (cachedAdvertisements?.items) {
       const updatedItems = cachedAdvertisements.items.filter(

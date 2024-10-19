@@ -73,7 +73,7 @@ export class AdvertisementService {
   }
 
   getActualSearchType(): AdvListType | undefined {
-    return this.advertisementCacheService.getPaginationParams()?.advListType;
+    return this.selectedAdvListType;
   }
 
   save(advertisement: Advertisement): Observable<Advertisement> {
