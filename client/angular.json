@@ -33,7 +33,6 @@
               "@angular/material/prebuilt-themes/azure-blue.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/font-awesome/css/font-awesome.min.css",
-              "src/assets/styles/bs-datepicker.css",
               "src/styles.scss"
             ],
             "scripts": []

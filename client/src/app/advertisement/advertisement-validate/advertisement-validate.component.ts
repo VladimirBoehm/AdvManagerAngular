@@ -20,6 +20,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatErrorService } from '../../_framework/component/errors/mat-error-service';
 import { CustomValidators } from '../../_framework/component/validators/customValidators';
 import { AdvListType } from '../../_framework/constants/advListType';
+import {
+  ConfirmDialogData,
+  MatConfirmModalComponent,
+} from '../../_framework/component/mat-confirm-modal/mat-confirm-modal.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-advertisement-validate',
@@ -45,6 +50,7 @@ export class AdvertisementValidateComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
   private router = inject(Router);
   private advertisementService = inject(AdvertisementService);
+  private dialog = inject(MatDialog);
   matErrorService = inject(MatErrorService);
 
   editForm: FormGroup = new FormGroup({});
@@ -60,8 +66,7 @@ export class AdvertisementValidateComponent implements OnInit {
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
-      this.router.navigate(['/adv-list', AdvListType.PendingValidation
-      ]);
+      this.router.navigate(['/adv-list', AdvListType.PendingValidation]);
     });
 
     this.route.paramMap.subscribe((params) => {
@@ -135,8 +140,30 @@ export class AdvertisementValidateComponent implements OnInit {
       });
   }
 
+  openConfirmDialog(): void {}
   reject() {
-    this.modalRef = this.modalService.show(this.modalDialogReject);
+    //this.modalRef = this.modalService.show(this.modalDialogReject);
+
+    const dialogData: ConfirmDialogData = {
+      title: 'Отклонить объявление?',
+      firstButtonLabel: 'Да',
+      secondButtonLabel: 'Нет',
+    };
+
+    const dialogRef = this.dialog.open(MatConfirmModalComponent, {
+      data: dialogData,
+      position: { top: '0px' },
+      width: '95%',
+      panelClass: 'custom-dialog-container'
+
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === 'first') {
+        this.modalDialogConfirm(AdvertisementStatus.rejected);
+      }
+    });
+
   }
 
   ngOnDestroy(): void {
