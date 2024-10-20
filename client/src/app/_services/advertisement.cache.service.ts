@@ -81,8 +81,7 @@ export class AdvertisementCacheService {
     return this.paginationParams;
   }
 
-  private getSearchParamsKey(advListType?: AdvListType): string {
-    if (!advListType) console.error('advListType is undefined');
+  private getSearchParamsKey(advListType: AdvListType): string {
     const flattenObject = (obj: any): any => {
       const flattened: any = {};
 
@@ -138,6 +137,10 @@ export class AdvertisementCacheService {
   }
 
   addItem(advertisement: Advertisement) {
+    if (!this.selectedAdvListType) {
+      console.error('advListType is undefined');
+      return;
+    }
     const searchParamsKey = this.getSearchParamsKey(this.selectedAdvListType);
     console.log('Cache: addItem: ' + searchParamsKey);
 
@@ -161,6 +164,10 @@ export class AdvertisementCacheService {
     advertisementStatus: AdvertisementStatus,
     advertisementId: number
   ) {
+    if (!this.selectedAdvListType) {
+      console.error('advListType is undefined');
+      return;
+    }
     const searchParamsKey = this.getSearchParamsKey(this.selectedAdvListType);
     const cachedAdvertisements = this.advertisementCache.get(searchParamsKey);
     console.log('Cache: updateItemsStatus: ' + searchParamsKey);
@@ -181,7 +188,11 @@ export class AdvertisementCacheService {
   }
 
   deleteItem(advertisementId: number) {
-    const searchParamsKey = this.getSearchParamsKey();
+    if (!this.selectedAdvListType) {
+      console.error('advListType is undefined');
+      return;
+    }
+    const searchParamsKey = this.getSearchParamsKey(this.selectedAdvListType);
     console.log('Cache: deleteItem: ' + searchParamsKey);
     const cachedAdvertisements = this.advertisementCache.get(searchParamsKey);
     if (cachedAdvertisements?.items) {
