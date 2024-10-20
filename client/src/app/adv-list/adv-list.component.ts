@@ -85,7 +85,6 @@ selectedDate = model<Date | null>(null);
 
 openDialog() {
   const dialogRef = this.dialog.open(TestMatDialogComponent, {
-    minWidth: '500px',
     data: {selectedDate: this.selectedDate()},
   });
 
