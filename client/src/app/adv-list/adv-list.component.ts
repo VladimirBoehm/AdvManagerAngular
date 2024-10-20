@@ -1,4 +1,11 @@
-import { Component, inject, model, OnDestroy, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  inject,
+  model,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import {
   ActivatedRoute,
   NavigationStart,
@@ -34,7 +41,7 @@ import { TestMatDialogComponent } from '../_framework/component/test-mat-dialog/
     MatPaginatorModule,
     PaginatorLocalization,
     AdvListFilterComponent,
-    MatButtonModule
+    MatButtonModule,
   ],
 
   templateUrl: './adv-list.component.html',
@@ -76,35 +83,24 @@ export class AdvListComponent implements OnInit, OnDestroy {
     this.initialize();
   }
 
-
   //////////////////////////////////////////////////////////////////////////
 
-dialog = inject(MatDialog);
+  dialog = inject(MatDialog);
 
-selectedDate = model<Date | null>(null);
+  selectedDate = model<Date | null>(null);
 
-openDialog() {
-  const dialogRef = this.dialog.open(TestMatDialogComponent, {
-    data: {selectedDate: this.selectedDate()},
-  });
+  openDialog() {
+    const dialogRef = this.dialog.open(TestMatDialogComponent, {
+      data: { selectedDate: this.selectedDate() },
+      position: { top: '0px' }, // Указываем позицию в верхней части экрана
+    });
 
-  dialogRef.afterClosed().subscribe(result => {
-    this.selectedDate.set(result);
-  });
-}
+    dialogRef.afterClosed().subscribe((result) => {
+      this.selectedDate.set(result);
+    });
+  }
 
-
-
-
-
-
-
-
-
-
-//////////////////////////////////////////////////////////////////////////
-
-
+  //////////////////////////////////////////////////////////////////////////
 
   handlePageEvent(e: PageEvent) {
     this.advertisementService.updatePaginationParams(
