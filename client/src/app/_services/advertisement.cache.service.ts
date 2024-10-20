@@ -98,9 +98,7 @@ export class AdvertisementCacheService {
     let deepClone: PaginationParams = JSON.parse(
       JSON.stringify(this.paginationParams)
     );
-    deepClone.itemsCount = 0;
     deepClone.pageSize = 0;
-
     const flattenedParams = flattenObject(deepClone);
     return Object.values(flattenedParams).join('-') + '-' + advListType;
   }
@@ -112,6 +110,7 @@ export class AdvertisementCacheService {
     };
   }
 
+  //First step
   getCache(
     advListType: AdvListType,
     paginationParams?: PaginationParams
@@ -125,12 +124,13 @@ export class AdvertisementCacheService {
       this.getSearchParamsKey(this.selectedAdvListType)
     );
   }
-
-  setCache(
-    advListType: AdvListType,
-    advertisements: PaginatedResult<Advertisement[]>
-  ) {
-    this.selectedAdvListType = advListType;
+  
+  //Second step
+  setCache(advertisements: PaginatedResult<Advertisement[]>) {
+    if (!this.selectedAdvListType) {
+      console.error('selectedAdvListType is undefined');
+      return;
+    }
     const key = this.getSearchParamsKey(this.selectedAdvListType);
     console.log('Cache set: ' + key);
     this.advertisementCache.set(key, advertisements);

@@ -11,6 +11,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
+
 import {
   FormBuilder,
   FormGroup,
@@ -20,6 +21,7 @@ import {
 import { SortOption } from '../../../_models/sortOption';
 import { NgIf } from '@angular/common';
 import { AdvertisementService } from '../../../_services/advertisement.service';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 @Component({
   selector: 'app-adv-list-filter',
@@ -30,6 +32,7 @@ import { AdvertisementService } from '../../../_services/advertisement.service';
     MatRadioModule,
     ReactiveFormsModule,
     NgIf,
+    BsDatepickerModule,
   ],
   templateUrl: './adv-list-filter.component.html',
   styleUrl: './adv-list-filter.component.scss',

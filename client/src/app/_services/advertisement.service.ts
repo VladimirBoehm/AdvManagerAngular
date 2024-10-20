@@ -31,7 +31,6 @@ export class AdvertisementService {
     const defaultPaginationParams: PaginationParams = {
       pageNumber: 0,
       pageSize: 5,
-      itemsCount: 0,
       sortOption: { field: 'date', order: 'desc', searchType: 'title' },
     };
 
@@ -83,8 +82,6 @@ export class AdvertisementService {
         pageSize: pageSize !== undefined ? pageSize : currentParams.pageSize,
         pageNumber:
           pageNumber !== undefined ? pageNumber : currentParams.pageNumber,
-        itemsCount:
-          itemsCount !== undefined ? itemsCount : currentParams.itemsCount,
         sortOption:
           sortOption !== undefined ? sortOption : currentParams.sortOption,
       };
@@ -419,7 +416,7 @@ export class AdvertisementService {
     result.items = response.body as Advertisement[];
     result.pagination = JSON.parse(response.headers.get('Pagination')!);
 
-    this.advertisementCacheService.setCache(this.selectedAdvListType, result);
+    this.advertisementCacheService.setCache(result);
     console.log('Loaded from DB');
     this.advertisements.set(result);
 

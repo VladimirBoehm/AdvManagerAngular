@@ -1,3 +1,4 @@
+//To get a response
 export interface Pagination {
   currentPage: number;
   totalPages: number;

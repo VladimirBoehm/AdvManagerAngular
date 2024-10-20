@@ -1,9 +1,8 @@
-import { AdvListType } from '../_framework/constants/advListType';
 import { SortOption } from './sortOption';
 
+//To make a request
 export interface PaginationParams {
   pageNumber: number;
   pageSize: number;
-  itemsCount: number
   sortOption: SortOption;
 }

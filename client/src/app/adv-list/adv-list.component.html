@@ -26,16 +26,13 @@ advertisementService.advertisements().items) {
           class="demo-paginator"
           (page)="handlePageEvent($event)"
           [length]="
-            advertisementService.paginationParamsState().get(selectedListType)
-              ?.itemsCount ?? 0
+            advertisementService.advertisements().pagination?.totalItems ?? 0
           "
           [pageSize]="
-            advertisementService.paginationParamsState().get(selectedListType)
-              ?.pageSize ?? 0
+            advertisementService.advertisements().pagination?.itemsPerPage ?? 0
           "
           [pageIndex]="
-            advertisementService.paginationParamsState().get(selectedListType)
-              ?.pageNumber ?? 0
+            advertisementService.advertisements().pagination?.currentPage ?? 0
           "
         ></paginator-localization>
       </div>

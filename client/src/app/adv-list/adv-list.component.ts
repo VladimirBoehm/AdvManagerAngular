@@ -19,6 +19,7 @@ import { PaginatedResult } from '../_models/pagination';
 import { AdvListType } from '../_framework/constants/advListType';
 import { Subscription } from 'rxjs';
 
+
 @Component({
   selector: 'app-adv-list',
   standalone: true,
@@ -30,7 +31,7 @@ import { Subscription } from 'rxjs';
     DatePipe,
     MatPaginatorModule,
     PaginatorLocalization,
-    AdvListFilterComponent,
+    AdvListFilterComponent
   ],
   templateUrl: './adv-list.component.html',
   styleUrl: './adv-list.component.scss',
