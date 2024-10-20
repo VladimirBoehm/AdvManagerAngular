@@ -2,7 +2,9 @@ import {
   Component,
   EventEmitter,
   inject,
+  OnInit,
   Output,
+  signal,
   ViewChild,
 } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
@@ -17,6 +19,7 @@ import {
 } from '@angular/forms';
 import { SortOption } from '../../../_models/sortOption';
 import { NgIf } from '@angular/common';
+import { AdvertisementService } from '../../../_services/advertisement.service';
 
 @Component({
   selector: 'app-adv-list-filter',
@@ -31,35 +34,41 @@ import { NgIf } from '@angular/common';
   templateUrl: './adv-list-filter.component.html',
   styleUrl: './adv-list-filter.component.scss',
 })
-export class AdvListFilterComponent {
+export class AdvListFilterComponent implements OnInit {
   @ViewChild('modalDialog') modalDialog?: any;
   @Output() onChanged = new EventEmitter<SortOption>();
 
   modalRef?: BsModalRef;
   private modalService = inject(BsModalService);
   private formBuilder = inject(FormBuilder);
+  private advertisementService = inject(AdvertisementService);
 
   sortForm: FormGroup = new FormGroup({});
-  currentSortOption: SortOption = {
+
+  currentSortOption = signal<SortOption>({
     field: 'date',
     order: 'desc',
     searchType: 'title',
     searchValue: '',
-  };
+  } as SortOption);
 
-  constructor() {
+  ngOnInit(): void {
+    const currentSortOptions =
+      this.advertisementService.getCurrentSortOptions();
+    if (currentSortOptions) this.currentSortOption.set(currentSortOptions);
+
     this.sortForm = this.formBuilder.group({
-      selectedSortType: [this.currentSortOption.field, Validators.required],
+      selectedSortType: [this.currentSortOption().field, Validators.required],
       selectedSortDate: ['desc', Validators.required],
       selectedSortTitle: ['desc', Validators.required],
       selectedSortUsername: ['desc', Validators.required],
       selectedSortName: ['desc', Validators.required],
       selectedSearchType: [
-        this.currentSortOption.searchType,
+        this.currentSortOption().searchType,
         Validators.required,
       ],
       searchValue: [
-        this.currentSortOption.searchValue,
+        this.currentSortOption().searchValue,
         Validators.maxLength(200),
       ],
     });
@@ -68,22 +77,22 @@ export class AdvListFilterComponent {
   onFilterClick() {
     // Reset the form values to currentSortOption
     this.sortForm.patchValue({
-      selectedSortType: this.currentSortOption.field,
+      selectedSortType: this.currentSortOption().field,
       selectedSortDate:
-        this.currentSortOption.field === 'date'
-          ? this.currentSortOption.order
+        this.currentSortOption().field === 'date'
+          ? this.currentSortOption().order
           : 'desc',
       selectedSortTitle:
-        this.currentSortOption.field === 'title'
-          ? this.currentSortOption.order
+        this.currentSortOption().field === 'title'
+          ? this.currentSortOption().order
           : 'desc',
       selectedSortUsername:
-        this.currentSortOption.field === 'username'
-          ? this.currentSortOption.order
+        this.currentSortOption().field === 'username'
+          ? this.currentSortOption().order
           : 'desc',
       selectedSortName:
-        this.currentSortOption.field === 'name'
-          ? this.currentSortOption.order
+        this.currentSortOption().field === 'name'
+          ? this.currentSortOption().order
           : 'desc',
     });
 
@@ -91,10 +100,9 @@ export class AdvListFilterComponent {
   }
 
   getLabelText() {
-    const sortOption = this.currentSortOption;
     let fieldTranslation = '';
 
-    switch (sortOption.field) {
+    switch (this.currentSortOption().field) {
       case 'date':
         fieldTranslation = 'дате';
         break;
@@ -132,21 +140,21 @@ export class AdvListFilterComponent {
         order = 'desc';
     }
 
-    this.currentSortOption.field = field;
-    this.currentSortOption.order = order;
-    this.currentSortOption.searchType =
+    this.currentSortOption().field = field;
+    this.currentSortOption().order = order;
+    this.currentSortOption().searchType =
       this.sortForm.get('selectedSearchType')?.value;
-    this.currentSortOption.searchValue =
+    this.currentSortOption().searchValue =
       this.sortForm.get('searchValue')?.value;
   }
 
   save() {
     this.updateCurrentSortOption();
-    this.onChanged.emit(this.currentSortOption);
+    this.onChanged.emit(this.currentSortOption());
     this.modalRef?.hide();
   }
-  clearSearch(){
+  clearSearch() {
     this.sortForm.get('searchValue')?.setValue('');
-    this.currentSortOption.searchValue = '';
+    this.currentSortOption().searchValue = '';
   }
 }

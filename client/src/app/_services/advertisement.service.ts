@@ -44,8 +44,16 @@ export class AdvertisementService {
     this.paginationParamsState = signal(paginationState);
   }
 
-  resetPaginationParams(advListType: AdvListType) {
+  getCurrentSortOptions() {
+    if (!this.selectedAdvListType) {
+      console.error('selectedAdvListType is undefined');
+      return;
+    }
+    return this.paginationParamsState().get(this.selectedAdvListType)
+      ?.sortOption;
+  }
 
+  resetPaginationParams(advListType: AdvListType) {
     this.updatePaginationParams(
       advListType,
       undefined, // Keep pageSize unchanged
