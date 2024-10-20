@@ -30,13 +30,25 @@
       <div class="d-flex align-items-start">
         <div class="d-flex flex-column">
           <div class="col-12">
-            <input
+            <mat-form-field class="example-full-width">
+              <mat-label>Choose a date</mat-label>
+              <input matInput [matDatepicker]="picker" />
+              <mat-hint>MM/DD/YYYY</mat-hint>
+              <mat-datepicker-toggle
+                matIconSuffix
+                [for]="picker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker touchUi #picker></mat-datepicker>
+            </mat-form-field>
+
+            <!-- <input
               type="text"
               placeholder="Datepicker"
               class="form-control"
               bsDatepicker
-            />
+            />-->
           </div>
+
           <!-- <div class="input-group mb-3">
             <input
               type="text"

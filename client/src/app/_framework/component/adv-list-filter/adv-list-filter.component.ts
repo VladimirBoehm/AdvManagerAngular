@@ -22,6 +22,10 @@ import { SortOption } from '../../../_models/sortOption';
 import { NgIf } from '@angular/common';
 import { AdvertisementService } from '../../../_services/advertisement.service';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-adv-list-filter',
@@ -33,8 +37,12 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
     ReactiveFormsModule,
     NgIf,
     BsDatepickerModule,
+    MatFormFieldModule,
+    MatDatepickerModule,
+    MatInputModule
   ],
   templateUrl: './adv-list-filter.component.html',
+  providers: [provideNativeDateAdapter()],
   styleUrl: './adv-list-filter.component.scss',
 })
 export class AdvListFilterComponent implements OnInit {

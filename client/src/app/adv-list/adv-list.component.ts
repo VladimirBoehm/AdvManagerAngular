@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, inject, model, OnDestroy, OnInit, signal } from '@angular/core';
 import {
   ActivatedRoute,
   NavigationStart,
@@ -18,7 +18,9 @@ import { DateHelper } from '../_framework/component/helpers/dateHelper';
 import { PaginatedResult } from '../_models/pagination';
 import { AdvListType } from '../_framework/constants/advListType';
 import { Subscription } from 'rxjs';
-
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { TestMatDialogComponent } from '../_framework/component/test-mat-dialog/test-mat-dialog.component';
 
 @Component({
   selector: 'app-adv-list',
@@ -31,8 +33,10 @@ import { Subscription } from 'rxjs';
     DatePipe,
     MatPaginatorModule,
     PaginatorLocalization,
-    AdvListFilterComponent
+    AdvListFilterComponent,
+    MatButtonModule
   ],
+
   templateUrl: './adv-list.component.html',
   styleUrl: './adv-list.component.scss',
 })
@@ -45,7 +49,6 @@ export class AdvListComponent implements OnInit, OnDestroy {
   dateHelper = DateHelper;
   selectedListType!: AdvListType;
   private routerSubscription!: Subscription;
-
   ngOnInit(): void {
     this.routerSubscription = this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
@@ -72,6 +75,37 @@ export class AdvListComponent implements OnInit, OnDestroy {
 
     this.initialize();
   }
+
+
+  //////////////////////////////////////////////////////////////////////////
+
+dialog = inject(MatDialog);
+
+selectedDate = model<Date | null>(null);
+
+openDialog() {
+  const dialogRef = this.dialog.open(TestMatDialogComponent, {
+    minWidth: '500px',
+    data: {selectedDate: this.selectedDate()},
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    this.selectedDate.set(result);
+  });
+}
+
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////
+
+
 
   handlePageEvent(e: PageEvent) {
     this.advertisementService.updatePaginationParams(
