@@ -1,7 +1,11 @@
+:root {
+  --input-width: 180px; 
+}
+
 .scaled-form-field {
   transform-origin: top left;
   height: 50px;
-  width: 220px;
+  width: var(--input-width); 
 }
 
 .scaled-form-field input {
@@ -14,7 +18,7 @@
 }
 
 .searchInput {
-  width: 220px;
+  width: var(--input-width);
 }
 
 .search-container {
