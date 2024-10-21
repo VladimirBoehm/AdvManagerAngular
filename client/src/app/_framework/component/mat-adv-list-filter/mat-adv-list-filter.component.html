@@ -1,22 +1,27 @@
-<div class="container mt-3">
+<div class="container">
   <form [formGroup]="sortForm" (ngSubmit)="save()">
+    <div class="d-flex align-items-end mb-2 search-container">
+      <div class="d-flex">
+        <mat-form-field
+          *ngIf="sortForm.get('selectedSearchType')?.value === 'date'"
+          class="scaled-form-field"
+        >
+          <mat-label>Диапазон</mat-label>
+          <mat-date-range-input [rangePicker]="picker">
+            <input matStartDate />
+            <input matEndDate />
+          </mat-date-range-input>
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
 
-    <mat-form-field>
-        <mat-label>Enter a date range</mat-label>
-        <mat-date-range-input [rangePicker]="picker">
-          <input matStartDate placeholder="Start date">
-          <input matEndDate placeholder="End date">
-        </mat-date-range-input>
-        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
-        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-date-range-picker #picker></mat-date-range-picker>
-      </mat-form-field>
-      
-    <!-- <div class="d-flex align-items-start mb-2">
-        <div class="d-flex flex-column flex-grow-1">
+        <div *ngIf="sortForm.get('selectedSearchType')?.value !== 'date'">
           <input
             type="text"
-            class="form-control"
+            class="form-control searchInput"
             placeholder="Поиск"
             aria-label="Text input with dropdown button"
             formControlName="searchValue"
@@ -27,30 +32,31 @@
           >
             Максимум
             {{
-              sortForm.controls["searchValue"].errors["maxlength"].requiredLength
+              sortForm.controls["searchValue"].errors["maxlength"]
+                .requiredLength
             }}
             символов
           </div>
         </div>
-        <select
-          class="form-select ms-1"
-          style="width: 10rem"
-          formControlName="selectedSearchType"
-        >
-          <option value="title">по заголовку</option>
-          <option value="content">по содержанию</option>
-          <option value="date">по дате</option>
-          <option value="link">по ссылке</option>
-        </select>
-      </div> -->
-
+      </div>
+      <select
+        class="form-select ms-1"
+        style="width: 11rem"
+        formControlName="selectedSearchType"
+      >
+        <option value="title">по заголовку</option>
+        <option value="content">по содержанию</option>
+        <option value="date">по дате</option>
+        <option value="link">по ссылке</option>
+      </select>
+    </div>
 
     <h6 class="text-muted">Сортировать</h6>
     <section class="d-flex flex-column">
       <mat-radio-group formControlName="selectedSortType">
         <mat-radio-button value="date" class="d-block">
           <div class="d-flex align-items-center">
-            <span class="input-group-text me-1" style="width: 12rem"
+            <span class="input-group-text me-1" style="min-width: 8rem"
               >По дате</span
             >
             <select class="form-select" formControlName="selectedSortDate">
@@ -61,7 +67,7 @@
         </mat-radio-button>
         <mat-radio-button value="title" class="mt-1 d-block">
           <div class="d-flex align-items-center">
-            <span class="input-group-text me-1" style="width: 12rem"
+            <span class="input-group-text me-1" style="min-width: 8rem"
               >По заголовку</span
             >
             <select class="form-select" formControlName="selectedSortTitle">
@@ -72,7 +78,7 @@
         </mat-radio-button>
         <mat-radio-button value="username" class="mt-1 d-block">
           <div class="d-flex align-items-center">
-            <span class="input-group-text me-1" style="width: 12rem"
+            <span class="input-group-text me-1" style="min-width: 8rem"
               >По username</span
             >
             <select class="form-select" formControlName="selectedSortUsername">
@@ -83,7 +89,7 @@
         </mat-radio-button>
         <mat-radio-button value="name" class="mt-1 d-block">
           <div class="d-flex align-items-center">
-            <span class="input-group-text me-1" style="width: 12rem"
+            <span class="input-group-text me-1" style="min-width: 8rem"
               >По имени</span
             >
             <select class="form-select" formControlName="selectedSortName">

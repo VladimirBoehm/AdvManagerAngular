@@ -1,0 +1,22 @@
+.scaled-form-field {
+  transform-origin: top left;
+  height: 50px;
+  width: 220px;
+}
+
+.scaled-form-field input {
+  font-size: 0.8rem;
+}
+
+.scaled-form-field
+  .mat-mdc-form-field-subscript-wrapper.mat-mdc-form-field-bottom-align {
+  display: none;
+}
+
+.searchInput {
+  width: 220px;
+}
+
+.search-container{
+    height: 60px;
+}

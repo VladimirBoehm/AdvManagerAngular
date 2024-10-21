@@ -11,7 +11,7 @@ import { inject, signal } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
-import {provideNativeDateAdapter} from '@angular/material/core';
+import { MAT_DATE_LOCALE, provideNativeDateAdapter} from '@angular/material/core';
 import {
   FormBuilder,
   FormGroup,
@@ -24,6 +24,7 @@ import { AdvertisementService } from '../../../_services/advertisement.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
+
 
 @Component({
   selector: 'app-mat-adv-list-filter',
@@ -42,12 +43,12 @@ import { MatInputModule } from '@angular/material/input';
     MatFormFieldModule,
     MatDatepickerModule,
     MatInputModule,
-
+    NgIf
   ],
   templateUrl: './mat-adv-list-filter.component.html',
   styleUrl: './mat-adv-list-filter.component.scss',
   encapsulation: ViewEncapsulation.None,
-  providers: [provideNativeDateAdapter()],
+  providers: [provideNativeDateAdapter(), { provide: MAT_DATE_LOCALE, useValue: 'ru-RU'},],
 })
 export class MatAdvListFilterComponent {
   private formBuilder = inject(FormBuilder);
