@@ -8,6 +8,7 @@ import {
   MatDialogActions,
 } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { ConfirmDialogData } from '../../../_models/confirm-dialog-data';
 
 @Component({
   selector: 'app-mat-confirm-modal',
@@ -29,18 +30,6 @@ export class MatConfirmModalComponent {
     @Inject(MAT_DIALOG_DATA) public data: ConfirmDialogData
   ) {}
 
-  onFirstButtonClick(): void {
-    this.dialogRef.close('first');
-  }
-
-  onSecondButtonClick(): void {
-    this.dialogRef.close('second');
-  }
 }
 
-export interface ConfirmDialogData {
-  title: string;
-  info?: string;
-  firstButtonLabel: string;
-  secondButtonLabel: string;
-}
+

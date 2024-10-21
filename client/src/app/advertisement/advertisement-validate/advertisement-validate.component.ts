@@ -13,18 +13,13 @@ import {
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { UpdateAdvertisementAdminRequest } from '../../_models/updateAdvertisementAdminRequest';
 import { AdvertisementStatus } from '../../_framework/constants/advertisementStatus';
-import { ConfirmModalComponent } from '../../_framework/component/confirm-modal/confirm-modal.component';
 import { AdvertisementMainDataComponent } from '../advertisement-main-data/advertisement-main-data.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatErrorService } from '../../_framework/component/errors/mat-error-service';
 import { CustomValidators } from '../../_framework/component/validators/customValidators';
 import { AdvListType } from '../../_framework/constants/advListType';
-import {
-  ConfirmDialogData,
-  MatConfirmModalComponent,
-} from '../../_framework/component/mat-confirm-modal/mat-confirm-modal.component';
-import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationMatDialogService } from '../../_services/confirmation-mat-dialog.service';
 
 @Component({
   selector: 'app-advertisement-validate',
@@ -32,7 +27,6 @@ import { MatDialog } from '@angular/material/dialog';
   imports: [
     AdvertisementMainDataComponent,
     ReactiveFormsModule,
-    ConfirmModalComponent,
     MatFormFieldModule,
     MatInputModule,
   ],
@@ -50,8 +44,8 @@ export class AdvertisementValidateComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
   private router = inject(Router);
   private advertisementService = inject(AdvertisementService);
-  private dialog = inject(MatDialog);
   matErrorService = inject(MatErrorService);
+  confirmationService = inject(ConfirmationMatDialogService);
 
   editForm: FormGroup = new FormGroup({});
   editFormModalDialog: FormGroup = new FormGroup({});
@@ -140,30 +134,18 @@ export class AdvertisementValidateComponent implements OnInit {
       });
   }
 
-  openConfirmDialog(): void {}
   reject() {
-    //this.modalRef = this.modalService.show(this.modalDialogReject);
-
-    const dialogData: ConfirmDialogData = {
-      title: 'Отклонить объявление?',
-      firstButtonLabel: 'Да',
-      secondButtonLabel: 'Нет',
-    };
-
-    const dialogRef = this.dialog.open(MatConfirmModalComponent, {
-      data: dialogData,
-      position: { top: '0px' },
-      width: '95%',
-      panelClass: 'custom-dialog-container'
-
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result === 'first') {
-        this.modalDialogConfirm(AdvertisementStatus.rejected);
-      }
-    });
-
+    this.confirmationService
+      .confirmDialog({
+        title: 'Отклонить объявление?',
+        confirmText: 'Да',
+        cancelText: 'Нет',
+      })
+      .subscribe((result) => {
+        if (result === true) {
+          this.modalDialogConfirm(AdvertisementStatus.rejected);
+        }
+      });
   }
 
   ngOnDestroy(): void {

@@ -5,7 +5,6 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ConfirmModalComponent } from '../../_framework/component/confirm-modal/confirm-modal.component';
 import { TelegramBackButtonService } from '../../_framework/telegramBackButtonService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Advertisement } from '../../_models/advertisement';
@@ -32,7 +31,6 @@ import { AdvListType } from '../../_framework/constants/advListType';
   selector: 'app-advertisement-edit',
   standalone: true,
   imports: [
-    ConfirmModalComponent,
     ReactiveFormsModule,
     NgIf,
     NgFor,

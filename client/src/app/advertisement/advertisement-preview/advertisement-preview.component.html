@@ -302,25 +302,9 @@
     ></textarea>
   </div>
 
-  <ng-template #modalDialogDelete>
-    <app-confirm-modal
-      [title]="'Удалить объявление?'"
-      [firstButtonLabel]="'Да'"
-      [secondButtonLabel]="'Нет'"
-      (firstButtonAction)="modalDialogDeleteConfirm()"
-      (secondButtonAction)="modalRef?.hide()"
-    ></app-confirm-modal>
-  </ng-template>
 
-  <ng-template #modalDialogCancelPublication>
-    <app-confirm-modal
-      [title]="'Отменить публикацию?'"
-      [firstButtonLabel]="'Да'"
-      [secondButtonLabel]="'Нет'"
-      (firstButtonAction)="cancelPublication()"
-      (secondButtonAction)="modalRef?.hide()"
-    ></app-confirm-modal>
-  </ng-template>
+
+
 
   <ng-template #modalDialogCancelPublicationAdmin>
     <div class="modal-header">
@@ -391,17 +375,6 @@
         </button>
       </div>
     </div>
-  </ng-template>
-
-  <ng-template #modalDialogValidate>
-    <app-confirm-modal
-      [title]="'Отправить на валидацию?'"
-      [info]="'Объявление будет отправлено администратору для подтверждения!'"
-      [firstButtonLabel]="'Да'"
-      [secondButtonLabel]="'Нет'"
-      (firstButtonAction)="modalDialogValidateConfirm()"
-      (secondButtonAction)="modalRef?.hide()"
-    ></app-confirm-modal>
   </ng-template>
 
   <ng-template #modalDialogPublicationInfo>

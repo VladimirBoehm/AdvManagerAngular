@@ -9,37 +9,29 @@ import {
 import { MatErrorService } from '../_framework/component/errors/mat-error-service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ConfirmModalComponent } from '../_framework/component/confirm-modal/confirm-modal.component';
 import { TelegramBackButtonService } from '../_framework/telegramBackButtonService';
 import { Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Feedback } from '../_models/feedback';
 import { NgIf } from '@angular/common';
+import { ConfirmationMatDialogService } from '../_services/confirmation-mat-dialog.service';
 
 @Component({
   selector: 'app-feedback',
   standalone: true,
-  imports: [
-    MatFormFieldModule,
-    MatInputModule,
-    ConfirmModalComponent,
-    ReactiveFormsModule,
-    NgIf,
-  ],
+  imports: [MatFormFieldModule, MatInputModule, ReactiveFormsModule, NgIf],
   templateUrl: './feedback.component.html',
   styleUrl: './feedback.component.scss',
   providers: [MatErrorService],
 })
 export class FeedbackComponent implements OnInit {
-  @ViewChild('modalDialog') modalDialog?: any;
-
   private backButtonService = inject(TelegramBackButtonService);
   private feedbackService = inject(FeedbackService);
   private formBuilder = inject(FormBuilder);
   private router = inject(Router);
   private modalService = inject(BsModalService);
   matErrorService = inject(MatErrorService);
-
+  confirmationService = inject(ConfirmationMatDialogService);
   isSend: boolean = false;
   editForm: FormGroup = new FormGroup({});
   modalRef?: BsModalRef;
@@ -75,7 +67,17 @@ export class FeedbackComponent implements OnInit {
   }
 
   onSendClick() {
-    this.modalRef = this.modalService.show(this.modalDialog);
+    this.confirmationService
+      .confirmDialog({
+        title: 'Отклонить объявление?',
+        confirmText: 'Да',
+        cancelText: 'Нет',
+      })
+      .subscribe((result) => {
+        if (result === true) {
+          this.send();
+        }
+      });
   }
 
   send() {

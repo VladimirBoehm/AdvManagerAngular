@@ -48,7 +48,7 @@
           "feedback"
         )
       }}</mat-error>
-      <mat-hint align="end">
+      <mat-hint [align]="'end'">
         {{ feedbackCounter }}/{{ maxFeedbackLength }}</mat-hint
       >
     </mat-form-field>
@@ -78,12 +78,3 @@
   </ng-template>
 </div>
 
-<ng-template #modalDialog>
-  <app-confirm-modal
-    [title]="'Отправить отзыв?'"
-    [firstButtonLabel]="'Да'"
-    [secondButtonLabel]="'Нет'"
-    (firstButtonAction)="send()"
-    (secondButtonAction)="modalRef?.hide()"
-  ></app-confirm-modal>
-</ng-template>

@@ -1,6 +1,5 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ConfirmModalComponent } from '../../_framework/component/confirm-modal/confirm-modal.component';
 import { Advertisement } from '../../_models/advertisement';
 import { AdvertisementService } from '../../_services/advertisement.service';
 import { TelegramBackButtonService } from '../../_framework/telegramBackButtonService';
@@ -17,6 +16,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ManagePublish } from '../../_models/managePublish';
 import { DateHelper } from '../../_framework/component/helpers/dateHelper';
+import { ConfirmationMatDialogService } from '../../_services/confirmation-mat-dialog.service';
 
 @Component({
   selector: 'app-advertisement-preview',
@@ -24,7 +24,6 @@ import { DateHelper } from '../../_framework/component/helpers/dateHelper';
   imports: [
     AdvertisementMainDataComponent,
     FormsModule,
-    ConfirmModalComponent,
     NgIf,
     DatePipe,
     MatFormFieldModule,
@@ -34,10 +33,7 @@ import { DateHelper } from '../../_framework/component/helpers/dateHelper';
   styleUrl: './advertisement-preview.component.scss',
 })
 export class AdvertisementPreviewComponent implements OnInit {
-  @ViewChild('modalDialogDelete') modalDialogDelete?: any;
-  @ViewChild('modalDialogValidate') modalDialogValidate?: any;
   @ViewChild('modalDialogPublicationInfo') modalDialogPublicationInfo?: any;
-  @ViewChild('modalDialogCancelPublication') modalDialogCancelPublication?: any;
   @ViewChild('modalDialogForcePublicationAdmin')
   modalDialogForcePublicationAdmin?: any;
   @ViewChild('modalDialogCancelPublicationAdmin')
@@ -46,13 +42,14 @@ export class AdvertisementPreviewComponent implements OnInit {
   adminComment?: string;
 
   private backButtonService = inject(TelegramBackButtonService);
-  advertisementService = inject(AdvertisementService);
   private modalService = inject(BsModalService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   accountService = inject(AccountService);
   publishService = inject(PublishService);
   advertisementHelper = inject(AdvertisementHelper);
+  confirmationService = inject(ConfirmationMatDialogService);
+  advertisementService = inject(AdvertisementService);
 
   advertisementStatus = AdvertisementStatus;
   advListType = AdvListType;
@@ -116,7 +113,17 @@ export class AdvertisementPreviewComponent implements OnInit {
   }
 
   delete() {
-    this.modalRef = this.modalService.show(this.modalDialogDelete);
+    this.confirmationService
+    .confirmDialog({
+      title: 'Удалить объявление?',
+      confirmText: 'Да',
+      cancelText: 'Нет',
+    })
+    .subscribe((result) => {
+      if (result === true) {
+        this.modalDialogDeleteConfirm();
+      }
+    });
   }
 
   publishDialogShow() {
@@ -197,7 +204,18 @@ export class AdvertisementPreviewComponent implements OnInit {
   }
 
   sendToValidateDialogShow() {
-    this.modalRef = this.modalService.show(this.modalDialogValidate);
+    this.confirmationService
+    .confirmDialog({
+      title: 'Отправить на валидацию?',
+      message: 'Объявление будет отправлено администратору для подтверждения!',
+      confirmText: 'Да',
+      cancelText: 'Нет',
+    })
+    .subscribe((result) => {
+      if (result === true) {
+        this.modalDialogValidateConfirm();
+      }
+    });
   }
 
   modalDialogDeleteConfirm() {
@@ -233,7 +251,17 @@ export class AdvertisementPreviewComponent implements OnInit {
     if (
       this.accountService.currentUser()?.userId === this.advertisement?.userId
     ) {
-      this.modalRef = this.modalService.show(this.modalDialogCancelPublication);
+      this.confirmationService
+      .confirmDialog({
+        title: 'Отменить публикацию?',
+        confirmText: 'Да',
+        cancelText: 'Нет',
+      })
+      .subscribe((result) => {
+        if (result === true) {
+          this.cancelPublication();
+        }
+      });
       return;
     } else if (
       this.accountService.currentUser()?.isAdmin &&

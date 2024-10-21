@@ -39,7 +39,7 @@
         matErrorService.getErrorMessage(editForm.controls["title"], "title")
       }}</mat-error>
       }
-      <mat-hint align="end"> {{ titleCounter }}/{{ maxTitleLength }}</mat-hint>
+      <mat-hint [align]="'end'"> {{ titleCounter }}/{{ maxTitleLength }}</mat-hint>
     </mat-form-field>
 
     <mat-form-field class="mt-3 col-12">
