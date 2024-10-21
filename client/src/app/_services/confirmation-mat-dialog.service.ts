@@ -15,6 +15,7 @@ export class ConfirmationMatDialogService {
       .open(MatConfirmModalComponent, {
         data,
         position: { top: '10px' },
+        panelClass: 'custom-dialog-container',
       })
       .afterClosed();
   }

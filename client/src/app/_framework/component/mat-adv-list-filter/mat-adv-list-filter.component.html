@@ -1,0 +1,112 @@
+<div class="container mt-3">
+  <form [formGroup]="sortForm" (ngSubmit)="save()">
+
+    <mat-form-field>
+        <mat-label>Enter a date range</mat-label>
+        <mat-date-range-input [rangePicker]="picker">
+          <input matStartDate placeholder="Start date">
+          <input matEndDate placeholder="End date">
+        </mat-date-range-input>
+        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+      
+    <!-- <div class="d-flex align-items-start mb-2">
+        <div class="d-flex flex-column flex-grow-1">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Поиск"
+            aria-label="Text input with dropdown button"
+            formControlName="searchValue"
+          />
+          <div
+            *ngIf="sortForm.controls['searchValue'].errors"
+            class="text-danger my-info-text"
+          >
+            Максимум
+            {{
+              sortForm.controls["searchValue"].errors["maxlength"].requiredLength
+            }}
+            символов
+          </div>
+        </div>
+        <select
+          class="form-select ms-1"
+          style="width: 10rem"
+          formControlName="selectedSearchType"
+        >
+          <option value="title">по заголовку</option>
+          <option value="content">по содержанию</option>
+          <option value="date">по дате</option>
+          <option value="link">по ссылке</option>
+        </select>
+      </div> -->
+
+
+    <h6 class="text-muted">Сортировать</h6>
+    <section class="d-flex flex-column">
+      <mat-radio-group formControlName="selectedSortType">
+        <mat-radio-button value="date" class="d-block">
+          <div class="d-flex align-items-center">
+            <span class="input-group-text me-1" style="width: 12rem"
+              >По дате</span
+            >
+            <select class="form-select" formControlName="selectedSortDate">
+              <option value="asc">по возрастанию</option>
+              <option value="desc">по убыванию</option>
+            </select>
+          </div>
+        </mat-radio-button>
+        <mat-radio-button value="title" class="mt-1 d-block">
+          <div class="d-flex align-items-center">
+            <span class="input-group-text me-1" style="width: 12rem"
+              >По заголовку</span
+            >
+            <select class="form-select" formControlName="selectedSortTitle">
+              <option value="asc">по возрастанию</option>
+              <option value="desc">по убыванию</option>
+            </select>
+          </div>
+        </mat-radio-button>
+        <mat-radio-button value="username" class="mt-1 d-block">
+          <div class="d-flex align-items-center">
+            <span class="input-group-text me-1" style="width: 12rem"
+              >По username</span
+            >
+            <select class="form-select" formControlName="selectedSortUsername">
+              <option value="asc">по возрастанию</option>
+              <option value="desc">по убыванию</option>
+            </select>
+          </div>
+        </mat-radio-button>
+        <mat-radio-button value="name" class="mt-1 d-block">
+          <div class="d-flex align-items-center">
+            <span class="input-group-text me-1" style="width: 12rem"
+              >По имени</span
+            >
+            <select class="form-select" formControlName="selectedSortName">
+              <option value="asc">по возрастанию</option>
+              <option value="desc">по убыванию</option>
+            </select>
+          </div>
+        </mat-radio-button>
+      </mat-radio-group>
+    </section>
+    <hr />
+
+    <mat-dialog-actions [align]="'end'">
+      <button
+        class="btn empty-button"
+        type="submit"
+        [disabled]="sortForm.invalid"
+      >
+        <div>Выбрать</div>
+      </button>
+      <button class="btn empty-button" mat-dialog-close>
+        <div>Назад</div>
+      </button>
+    </mat-dialog-actions>
+  </form>
+</div>
