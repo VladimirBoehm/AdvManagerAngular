@@ -57,7 +57,6 @@ export class AdvertisementService {
       advListType,
       undefined, // Keep pageSize unchanged
       0, // Reset pageNumber to 0
-      undefined, // Keep itemsCount unchanged
       {
         field: 'date', // Sort by date
         order: 'desc', // In descending order
@@ -71,7 +70,6 @@ export class AdvertisementService {
     advListType?: AdvListType,
     pageSize?: number,
     pageNumber?: number,
-    itemsCount?: number,
     sortOption?: SortOption
   ) {
     if (!advListType) return;
@@ -424,7 +422,6 @@ export class AdvertisementService {
       this.selectedAdvListType,
       result.pagination?.itemsPerPage,
       result.pagination?.currentPage,
-      result.pagination?.totalItems
     );
 
     return result;

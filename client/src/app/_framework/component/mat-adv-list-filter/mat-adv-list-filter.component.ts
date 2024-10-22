@@ -11,7 +11,7 @@ import { inject, signal } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
-import { MAT_DATE_LOCALE, provideNativeDateAdapter} from '@angular/material/core';
+
 import {
   FormBuilder,
   FormGroup,
@@ -24,8 +24,19 @@ import { AdvertisementService } from '../../../_services/advertisement.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
+import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
 
-
+export const MY_DATE_FORMATS = {
+  parse: {
+    dateInput: 'DD.MM.YY',
+  },
+  display: {
+    dateInput: 'DD.MM.YY',
+    monthYearLabel: 'MMM YY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'MMMM YY',
+  },
+};
 @Component({
   selector: 'app-mat-adv-list-filter',
   standalone: true,
@@ -43,12 +54,12 @@ import { MatInputModule } from '@angular/material/input';
     MatFormFieldModule,
     MatDatepickerModule,
     MatInputModule,
-    NgIf
+    NgIf,
   ],
   templateUrl: './mat-adv-list-filter.component.html',
   styleUrl: './mat-adv-list-filter.component.scss',
   encapsulation: ViewEncapsulation.None,
-  providers: [provideNativeDateAdapter(), { provide: MAT_DATE_LOCALE, useValue: 'ru-RU'},],
+  providers: [provideMomentDateAdapter(MY_DATE_FORMATS)],
 })
 export class MatAdvListFilterComponent {
   private formBuilder = inject(FormBuilder);
@@ -83,6 +94,10 @@ export class MatAdvListFilterComponent {
         this.currentSortOption().searchValue,
         Validators.maxLength(200),
       ],
+      dateRange: this.formBuilder.group({
+        start: [this.currentSortOption().dateRange?.start || null],
+        end: [this.currentSortOption().dateRange?.end || null],
+      }),
     });
   }
 
@@ -134,12 +149,26 @@ export class MatAdvListFilterComponent {
     this.currentSortOption().order = order;
     this.currentSortOption().searchType =
       this.sortForm.get('selectedSearchType')?.value;
-    this.currentSortOption().searchValue =
-      this.sortForm.get('searchValue')?.value;
+
+    if (this.currentSortOption().searchType === 'date') {
+      const dateRange = this.sortForm.get('dateRange')?.value;
+      this.currentSortOption().dateRange = {
+        start: dateRange.start,
+        end: dateRange.end,
+      };
+      // Clear searchValue when searchType is 'date'
+      this.currentSortOption().searchValue = undefined;
+    } else {
+      this.currentSortOption().searchValue =
+        this.sortForm.get('searchValue')?.value;
+      // Clear dateRange when searchType is not 'date'
+      this.currentSortOption().dateRange = undefined;
+    }
   }
 
   save() {
     this.updateCurrentSortOption();
+    console.log(this.sortForm);
     this.dialogRef.close(this.currentSortOption());
   }
 }

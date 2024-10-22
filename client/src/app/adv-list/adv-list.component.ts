@@ -25,8 +25,6 @@ import { DateHelper } from '../_framework/component/helpers/dateHelper';
 import { PaginatedResult } from '../_models/pagination';
 import { AdvListType } from '../_framework/constants/advListType';
 import { Subscription } from 'rxjs';
-import { MatButtonModule } from '@angular/material/button';
-
 
 @Component({
   selector: 'app-adv-list',
@@ -167,7 +165,6 @@ export class AdvListComponent implements OnInit, OnDestroy {
       this.selectedListType,
       undefined,
       0,
-      undefined,
       $event
     );
     this.initialize();

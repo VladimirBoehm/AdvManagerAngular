@@ -1,5 +1,4 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-
 import { AdvertisementService } from '../../_services/advertisement.service';
 import { Advertisement } from '../../_models/advertisement';
 import { TelegramBackButtonService } from '../../_framework/telegramBackButtonService';

@@ -7,9 +7,9 @@
           class="scaled-form-field"
         >
           <mat-label>Диапазон</mat-label>
-          <mat-date-range-input [rangePicker]="picker">
-            <input matStartDate />
-            <input matEndDate />
+          <mat-date-range-input [rangePicker]="picker" formGroupName="dateRange">
+            <input matStartDate formControlName="start"/>
+            <input matEndDate formControlName="end" />
           </mat-date-range-input>
           <mat-datepicker-toggle
             matSuffix

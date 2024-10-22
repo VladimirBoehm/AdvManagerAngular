@@ -74,7 +74,7 @@
           "adminMessage"
         )
       }}</mat-error>
-      <mat-hint align="end">
+      <mat-hint [align]="'end'">
         {{ commentCounter }}/{{ maxCommentLength }}</mat-hint
       >
     </mat-form-field>
@@ -94,7 +94,7 @@
           step="1"
           min="0"
           name="frequencyValue"
-          [formControl]="$any(editForm.controls['frequencyValue'])"
+          [formControl]="$any(editFormModalDialog.controls['frequencyValue'])"
         />
         <mat-error>{{
           matErrorService.getErrorMessage(
@@ -117,6 +117,5 @@
       </div>
     </div>
   </ng-template>
-
 </div>
 }

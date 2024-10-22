@@ -3,4 +3,5 @@ export interface SortOption {
   order: 'asc' | 'desc';
   searchType: 'title' | 'content' | 'date' | 'link';
   searchValue?: string;
+  dateRange?: { start: Date; end: Date };
 }

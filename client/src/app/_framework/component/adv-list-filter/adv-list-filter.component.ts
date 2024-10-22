@@ -46,7 +46,6 @@ export class AdvListFilterComponent {
       .subscribe((result: SortOption | null) => {
         if (result) {
           this.onChanged.emit(result);
-          console.log('Диалог вернул данные:', result);
         }
       });
   }

@@ -1,5 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { PaginationParams } from '../_models/paginationParams';
+import moment from 'moment';
 
 export function setPaginationHeaders(paginationParams?: PaginationParams) {
   let params = new HttpParams();
@@ -17,6 +18,25 @@ export function setPaginationHeaders(paginationParams?: PaginationParams) {
       'searchType',
       paginationParams.sortOption.searchType ?? ''
     );
+
+    if (paginationParams.sortOption.dateRange?.start) {
+      params = params.append(
+        'startDate',
+        moment(paginationParams.sortOption.dateRange.start)
+          .utcOffset(0, true)
+          .format() // Outputs YYYY-MM-DD
+      );
+    }
+
+    if (paginationParams.sortOption.dateRange?.end) {
+      params = params.append(
+        'endDate',
+        //paginationParams.sortOption.dateRange.end.toLocaleDateString('en-CA') // Outputs YYYY-MM-DD
+        moment(paginationParams.sortOption.dateRange.end)
+          .utcOffset(0, true)
+          .format()
+      );
+    }
   }
   return params;
 }
