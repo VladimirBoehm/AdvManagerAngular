@@ -1,10 +1,8 @@
 import {
   Component,
   inject,
-  model,
   OnDestroy,
   OnInit,
-  signal,
 } from '@angular/core';
 import {
   ActivatedRoute,
