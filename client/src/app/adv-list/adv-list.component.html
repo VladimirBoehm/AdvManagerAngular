@@ -15,6 +15,7 @@
     <div class="row">
       <div class="col-6 d-flex justify-content-start ps-0">
         <app-adv-list-filter
+          *ngIf="advertisementService.advertisements().items!.length !== 0"
           (onChanged)="sortChanged($event)"
         ></app-adv-list-filter>
       </div>
@@ -30,7 +31,6 @@
         >
           <paginator-localization
             #paginator
-            class="demo-paginator"
             (page)="handlePageEvent($event)"
             [length]="
               advertisementService.advertisements().pagination?.totalItems ?? 0
@@ -249,7 +249,16 @@
     </ng-template>
 
     <ng-template #noAdvertisements>
-      <p>Нет объявлений для отображения.</p>
+      <div class="d-flex flex-column justify-content-center align-items-center">
+      <img
+        src="https://chatcontrolstorage.blob.core.windows.net/icons/empty.png"
+        alt="Icon"
+        width="150"
+        height="150"
+      />
+
+      <div class="text-muted">Список пуст</div>
+    </div>
     </ng-template>
     }
   </ng-template>

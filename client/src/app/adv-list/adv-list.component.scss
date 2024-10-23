@@ -1,4 +1,12 @@
-.list-group-item{
-    padding-left: 0;
-    padding-right: 0;
+.list-group-item {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.centered-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
