@@ -44,9 +44,7 @@ export class ChatFilterComponent implements OnInit {
     this.backButtonService.setBackButtonHandler(() => {
       this.router.navigate(['']);
     });
-
     this.chatFilterService.getAll();
-
     this.initializeForm();
   }
 

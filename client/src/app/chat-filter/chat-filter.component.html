@@ -1,6 +1,6 @@
 <div class="container-fluid">
   <ng-template
-    [skeleton]="(isLoading$ | async) || false"
+    [skeleton]="!chatFilterService.isLoaded() || false"
     [skeletonRepeat]="5"
     [skeletonClassName]="'mb-1'"
     [skeletonHeight]="'4rem'"
