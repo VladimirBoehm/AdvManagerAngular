@@ -24,14 +24,14 @@ export function setPaginationHeaders(paginationParams?: PaginationParams) {
         'startDate',
         moment(paginationParams.sortOption.dateRange.start)
           .utcOffset(0, true)
-          .format() // Outputs YYYY-MM-DD
+          .format()
       );
     }
 
     if (paginationParams.sortOption.dateRange?.end) {
       params = params.append(
         'endDate',
-        //paginationParams.sortOption.dateRange.end.toLocaleDateString('en-CA') // Outputs YYYY-MM-DD
+
         moment(paginationParams.sortOption.dateRange.end)
           .utcOffset(0, true)
           .format()

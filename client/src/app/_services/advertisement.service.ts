@@ -30,7 +30,7 @@ export class AdvertisementService {
   constructor() {
     const defaultPaginationParams: PaginationParams = {
       pageNumber: 0,
-      pageSize: 5,
+      pageSize: 6,
       sortOption: { field: 'date', order: 'desc', searchType: 'title' },
     };
 
