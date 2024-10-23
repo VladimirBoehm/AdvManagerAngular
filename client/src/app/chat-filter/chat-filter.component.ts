@@ -1,31 +1,19 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { ChatFilterService } from '../_services/chat-filter.service';
 import { ChatFilter } from '../_models/chatFilter';
-import { NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatErrorService } from '../_framework/component/errors/mat-error-service';
 import { TelegramBackButtonService } from '../_framework/telegramBackButtonService';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { BusyService } from '../_services/busy.service';
+import { SharedModule } from '../_framework/modules/sharedModule';
 
 @Component({
   selector: 'app-chat-filter',
   standalone: true,
-  imports: [
-    NgIf,
-    NgFor,
-    NgTemplateOutlet,
-    MatFormFieldModule,
-    MatInputModule,
-    ReactiveFormsModule,
-  ],
+  imports: [SharedModule],
   templateUrl: './chat-filter.component.html',
   styleUrl: './chat-filter.component.scss',
   providers: [MatErrorService],
@@ -46,6 +34,11 @@ export class ChatFilterComponent implements OnInit {
   maxItemLength: number = 50;
   minItemLength: number = 3;
   itemLengthCounter: number = 0;
+  isLoading$: Observable<boolean>;
+
+  constructor(private busyService: BusyService) {
+    this.isLoading$ = this.busyService.isLoading$;
+  }
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {

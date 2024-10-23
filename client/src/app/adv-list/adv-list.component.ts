@@ -1,43 +1,23 @@
-import {
-  Component,
-  inject,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
-import {
-  ActivatedRoute,
-  NavigationStart,
-  Router,
-  RouterLink,
-} from '@angular/router';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { AdvertisementService } from '../_services/advertisement.service';
 import { Advertisement } from '../_models/advertisement';
-import { DatePipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import { TelegramBackButtonService } from '../_framework/telegramBackButtonService';
 import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { PaginatorLocalization } from '../_framework/component/paginator/paginator-localization';
-import { AdvListFilterComponent } from '../_framework/component/adv-list-filter/adv-list-filter.component';
 import { SortOption } from '../_models/sortOption';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
 import { PaginatedResult } from '../_models/pagination';
 import { AdvListType } from '../_framework/constants/advListType';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import { BusyService } from '../_services/busy.service';
+import { SharedModule } from '../_framework/modules/sharedModule';
+import { PageEvent } from '@angular/material/paginator';
+import { AdvListFilterComponent } from '../_framework/component/adv-list-filter/adv-list-filter.component';
 
 @Component({
   selector: 'app-adv-list',
   standalone: true,
-  imports: [
-    NgIf,
-    NgFor,
-    RouterLink,
-    NgTemplateOutlet,
-    DatePipe,
-    MatPaginatorModule,
-    PaginatorLocalization,
-    AdvListFilterComponent,
-  ],
-
+  imports: [SharedModule, AdvListFilterComponent],
   templateUrl: './adv-list.component.html',
   styleUrl: './adv-list.component.scss',
 })
@@ -45,11 +25,18 @@ export class AdvListComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private backButtonService = inject(TelegramBackButtonService);
   private router = inject(Router);
+  private routerSubscription!: Subscription;
+
   advertisementService = inject(AdvertisementService);
   advListType = AdvListType;
   dateHelper = DateHelper;
   selectedListType!: AdvListType;
-  private routerSubscription!: Subscription;
+  isLoading$: Observable<boolean>;
+
+  constructor(private busyService: BusyService) {
+    this.isLoading$ = this.busyService.isLoading$;
+  }
+
   ngOnInit(): void {
     this.routerSubscription = this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {

@@ -3,13 +3,11 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 import {
   FormBuilder,
   FormGroup,
-  ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatErrorService } from '../../../_framework/component/errors/mat-error-service';
 import { CustomValidators } from '../../../_framework/component/validators/customValidators';
+import { SharedModule } from '../../../_framework/modules/sharedModule';
 export interface ButtonLink {
   buttonName: string;
   link: string;
@@ -18,7 +16,7 @@ export interface ButtonLink {
 @Component({
   selector: 'app-add-advertisement-button-modal',
   standalone: true,
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule],
+  imports: [SharedModule],
   templateUrl: './add-advertisement-button-modal.component.html',
   styleUrl: './add-advertisement-button-modal.component.scss',
   providers: [MatErrorService],

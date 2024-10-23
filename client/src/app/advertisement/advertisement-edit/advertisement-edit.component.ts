@@ -1,46 +1,30 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TelegramBackButtonService } from '../../_framework/telegramBackButtonService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Advertisement } from '../../_models/advertisement';
 import { AdvertisementService } from '../../_services/advertisement.service';
 import { AccountService } from '../../_services/account.service';
-import { NgClass, NgFor, NgIf } from '@angular/common';
-import { FormErrorMessageComponent } from '../../_framework/component/errors/form-error-message/form-error-message.component';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ImageService } from '../../_services/image.service';
 import { AdImage } from '../../_models/adImage';
-import { ImagePreviewModalComponent } from '../../_framework/component/image-preview-modal/image-preview-modal.component';
 import {
   AddAdvertisementButtonModalComponent,
   ButtonLink,
 } from './add-advertisement-button-modal/add-advertisement-button-modal.component';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatErrorService } from '../../_framework/component/errors/mat-error-service';
 import { AdvertisementStatus } from '../../_framework/constants/advertisementStatus';
 import { AdvListType } from '../../_framework/constants/advListType';
+import { SharedModule } from '../../_framework/modules/sharedModule';
+import { ImagePreviewModalComponent } from '../../_framework/component/image-preview-modal/image-preview-modal.component';
 
 @Component({
   selector: 'app-advertisement-edit',
   standalone: true,
   imports: [
-    ReactiveFormsModule,
-    NgIf,
-    NgFor,
-    FormErrorMessageComponent,
-    NgClass,
-    ImagePreviewModalComponent,
+    SharedModule,
     AddAdvertisementButtonModalComponent,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
+    ImagePreviewModalComponent,
   ],
   templateUrl: './advertisement-edit.component.html',
   styleUrl: './advertisement-edit.component.scss',

@@ -13,7 +13,7 @@ import { HomeComponent } from './home/home.component';
 export class AppComponent implements OnInit {
   accountService = inject(AccountService);
   router = inject(Router);
-  title = 'client';
+  title = 'Chatbot';
 
   ngOnInit(): void {
     this.accountService.login();

@@ -1,13 +1,12 @@
-import { NgIf } from '@angular/common';
 import { Component, inject, input, ViewChild } from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { SharedModule } from '../../_framework/modules/sharedModule';
 import { ImagePreviewModalComponent } from '../../_framework/component/image-preview-modal/image-preview-modal.component';
 
 @Component({
   selector: 'app-advertisement-main-data',
   standalone: true,
-  imports: [MatCardModule, NgIf, ImagePreviewModalComponent],
+  imports: [SharedModule, ImagePreviewModalComponent],
   templateUrl: './advertisement-main-data.component.html',
   styleUrl: './advertisement-main-data.component.scss',
 })

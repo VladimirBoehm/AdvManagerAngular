@@ -3,32 +3,21 @@ import { AdvertisementService } from '../../_services/advertisement.service';
 import { Advertisement } from '../../_models/advertisement';
 import { TelegramBackButtonService } from '../../_framework/telegramBackButtonService';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { UpdateAdvertisementAdminRequest } from '../../_models/updateAdvertisementAdminRequest';
 import { AdvertisementStatus } from '../../_framework/constants/advertisementStatus';
-import { AdvertisementMainDataComponent } from '../advertisement-main-data/advertisement-main-data.component';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatErrorService } from '../../_framework/component/errors/mat-error-service';
 import { CustomValidators } from '../../_framework/component/validators/customValidators';
 import { AdvListType } from '../../_framework/constants/advListType';
 import { ConfirmationMatDialogService } from '../../_services/confirmation-mat-dialog.service';
+import { SharedModule } from '../../_framework/modules/sharedModule';
+import { AdvertisementMainDataComponent } from '../advertisement-main-data/advertisement-main-data.component';
 
 @Component({
   selector: 'app-advertisement-validate',
   standalone: true,
-  imports: [
-    AdvertisementMainDataComponent,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-  ],
+  imports: [SharedModule, AdvertisementMainDataComponent],
   templateUrl: './advertisement-validate.component.html',
   styleUrl: './advertisement-validate.component.scss',
   providers: [MatErrorService],

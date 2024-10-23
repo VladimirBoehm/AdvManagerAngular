@@ -1,33 +1,26 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { Advertisement } from '../../_models/advertisement';
 import { AdvertisementService } from '../../_services/advertisement.service';
 import { TelegramBackButtonService } from '../../_framework/telegramBackButtonService';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DatePipe, NgIf } from '@angular/common';
 import { AdvertisementStatus } from '../../_framework/constants/advertisementStatus';
 import { AccountService } from '../../_services/account.service';
-import { AdvertisementMainDataComponent } from '../advertisement-main-data/advertisement-main-data.component';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { PublishService } from '../../_services/publish.service';
 import { AdvertisementHelper } from '../../_framework/component/helpers/advertisementHelper';
 import { AdvListType } from '../../_framework/constants/advListType';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { ManagePublish } from '../../_models/managePublish';
 import { DateHelper } from '../../_framework/component/helpers/dateHelper';
 import { ConfirmationMatDialogService } from '../../_services/confirmation-mat-dialog.service';
+import { SharedModule } from '../../_framework/modules/sharedModule';
+import { AdvertisementMainDataComponent } from '../advertisement-main-data/advertisement-main-data.component';
 
 @Component({
   selector: 'app-advertisement-preview',
   standalone: true,
   imports: [
-    AdvertisementMainDataComponent,
-    FormsModule,
-    NgIf,
-    DatePipe,
-    MatFormFieldModule,
-    MatInputModule,
+    SharedModule,
+    AdvertisementMainDataComponent
   ],
   templateUrl: './advertisement-preview.component.html',
   styleUrl: './advertisement-preview.component.scss',
