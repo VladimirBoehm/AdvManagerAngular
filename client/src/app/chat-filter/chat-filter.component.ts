@@ -9,11 +9,12 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { BusyService } from '../_services/busy.service';
 import { SharedModule } from '../_framework/modules/sharedModule';
+import { EmptyListPlaceholderComponent } from '../_framework/component/empty-list-placeholder/empty-list-placeholder.component';
 
 @Component({
   selector: 'app-chat-filter',
   standalone: true,
-  imports: [SharedModule],
+  imports: [SharedModule, EmptyListPlaceholderComponent],
   templateUrl: './chat-filter.component.html',
   styleUrl: './chat-filter.component.scss',
   providers: [MatErrorService],
