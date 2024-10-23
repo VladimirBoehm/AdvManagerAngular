@@ -15,7 +15,10 @@
     <div class="row">
       <div class="col-6 d-flex justify-content-start ps-0">
         <app-adv-list-filter
-          *ngIf="advertisementService.advertisements().items!.length !== 0"
+          *ngIf="
+            advertisementService.advertisements().items!.length !== 0 &&
+            selectedListType !== advListType.MyAdvertisements
+          "
           (onChanged)="sortChanged($event)"
         ></app-adv-list-filter>
       </div>
@@ -250,15 +253,15 @@
 
     <ng-template #noAdvertisements>
       <div class="d-flex flex-column justify-content-center align-items-center">
-      <img
-        src="https://chatcontrolstorage.blob.core.windows.net/icons/empty.png"
-        alt="Icon"
-        width="150"
-        height="150"
-      />
+        <img
+          src="https://chatcontrolstorage.blob.core.windows.net/icons/empty.png"
+          alt="Icon"
+          width="150"
+          height="150"
+        />
 
-      <div class="text-muted">Список пуст</div>
-    </div>
+        <div class="text-muted">Список пуст</div>
+      </div>
     </ng-template>
     }
   </ng-template>
