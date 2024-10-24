@@ -1,10 +1,11 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import {
   MatDialogModule,
   MatDialogContent,
   MatDialogTitle,
   MatDialogActions,
   MatDialogRef,
+  MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { inject, signal } from '@angular/core';
@@ -18,13 +19,16 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { SortOption } from '../../../_models/sortOption';
+
 import { NgIf } from '@angular/common';
-import { AdvertisementService } from '../../../_services/advertisement.service';
+
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
+import { SortOption } from '../../../../_models/sortOption';
+import { AdvertisementService } from '../../../../_services/advertisement.service';
+import { ChatFilterService } from '../../../../_services/chat-filter.service';
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -56,17 +60,15 @@ export const MY_DATE_FORMATS = {
     MatInputModule,
     NgIf,
   ],
-  templateUrl: './mat-adv-list-filter.component.html',
-  styleUrl: './mat-adv-list-filter.component.scss',
+  templateUrl: './mat-list-filter-modal.component.html',
+  styleUrl: './mat-list-filter-modal.component.scss',
   encapsulation: ViewEncapsulation.None,
   providers: [provideMomentDateAdapter(MY_DATE_FORMATS)],
 })
-export class MatAdvListFilterComponent {
+export class MatListFilterComponentModal implements OnInit {
   private formBuilder = inject(FormBuilder);
   private advertisementService = inject(AdvertisementService);
-  public dialogRef: MatDialogRef<MatAdvListFilterComponent> = inject(
-    MatDialogRef<MatAdvListFilterComponent>
-  );
+  private chatFilterService = inject(ChatFilterService);
   sortForm: FormGroup = new FormGroup({});
   currentSortOption = signal<SortOption>({
     field: 'date',
@@ -75,10 +77,20 @@ export class MatAdvListFilterComponent {
     searchValue: '',
   } as SortOption);
 
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: { isAdvertisementList: boolean },
+    private dialogRef: MatDialogRef<MatListFilterComponentModal>
+  ) {}
+
   ngOnInit(): void {
-    const currentSortOptions =
-      this.advertisementService.getCurrentSortOptions();
-    if (currentSortOptions) this.currentSortOption.set(currentSortOptions);
+    if (this.data.isAdvertisementList) {
+      const currentSortOptions =
+        this.advertisementService.getCurrentSortOptions();
+      if (currentSortOptions) this.currentSortOption.set(currentSortOptions);
+    } else {
+      const currentSortOptions = this.chatFilterService.getCurrentSortOptions();
+      if (currentSortOptions) this.currentSortOption.set(currentSortOptions);
+    }
 
     this.sortForm = this.formBuilder.group({
       selectedSortType: [this.currentSortOption().field, Validators.required],
@@ -99,9 +111,11 @@ export class MatAdvListFilterComponent {
         end: [this.currentSortOption().dateRange?.end || null],
       }),
     });
+
+    this.setSortOptions();
   }
 
-  onFilterClick() {
+  setSortOptions() {
     // Reset the form values to currentSortOption
     this.sortForm.patchValue({
       selectedSortType: this.currentSortOption().field,

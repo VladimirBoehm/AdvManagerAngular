@@ -18,11 +18,7 @@
     <div class="d-block text-muted">Сортировка</div>
     <div class="my-info-text text-muted">{{ getLabelText() }},</div>
     <div class="my-info-text text-muted">
-      {{
-        advertisementService.getCurrentSortOptions()?.order === "asc"
-          ? "по возрастанию"
-          : "по убыванию"
-      }}
+      {{ getCurrentSortOptionsText() }}
     </div>
   </div>
 </a>

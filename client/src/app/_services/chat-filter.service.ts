@@ -1,36 +1,78 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { ChatFilter } from '../_models/chatFilter';
+import { PaginatedResult } from '../_models/pagination';
+import { tap } from 'rxjs';
+import { PaginationParams } from '../_models/paginationParams';
+import { setPaginationHeaders } from './paginationHelper';
+import { SortOption } from '../_models/sortOption';
+import { ChatFilterCacheService } from './chat-filter.cache.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatFilterService {
   private http = inject(HttpClient);
+  private chatFilterCacheService = inject(ChatFilterCacheService);
   private baseUrl = environment.apiUrl;
-  private isRequested: boolean = false;
 
-  chatFilters = signal<ChatFilter[]>([]);
+  public paginationParams = signal<PaginationParams>({
+    pageNumber: 0,
+    pageSize: 30,
+    sortOption: {
+      field: 'date',
+      order: 'desc',
+      searchType: 'title',
+    },
+  });
+
+  chatFiltersPaginatedResult = signal<PaginatedResult<ChatFilter>>(
+    new PaginatedResult<ChatFilter>()
+  );
+
   isLoaded = signal<boolean>(false);
+
+  getCurrentSortOptions() {
+    return this.paginationParams()?.sortOption;
+  }
+
+  private updatePaginationParams(
+    pageSize?: number,
+    pageNumber?: number,
+    sortOption?: SortOption
+  ) {
+    const updatedParams: PaginationParams = {
+      ...this.paginationParams,
+      pageSize:
+        pageSize !== undefined ? pageSize : this.paginationParams().pageSize,
+      pageNumber:
+        pageNumber !== undefined
+          ? pageNumber
+          : this.paginationParams().pageNumber,
+      sortOption:
+        sortOption !== undefined
+          ? sortOption
+          : this.paginationParams().sortOption,
+    };
+    this.paginationParams.set(updatedParams);
+  }
 
   save(chatFilter: ChatFilter) {
     chatFilter.id = 0;
-    this.chatFilters.set([...this.chatFilters(), chatFilter]);
+
+    const currentResult = this.chatFiltersPaginatedResult();
+    var updatedResult = currentResult.addItem(chatFilter);
+    this.chatFiltersPaginatedResult.set(updatedResult);
+
+    // Proceed with the HTTP POST request
     this.http
       .post<ChatFilter>(this.baseUrl + 'chatFilter', chatFilter)
       .subscribe({
         next: (newChatFilter: ChatFilter) => {
-          const chatFilters = this.chatFilters();
-          const index = chatFilters.findIndex((cf) => cf.id === 0);
-          if (index !== -1) {
-            const updatedChatFilters = [...chatFilters];
-            updatedChatFilters[index] = {
-              ...updatedChatFilters[index],
-              id: newChatFilter.id,
-            };
-            this.chatFilters.set(updatedChatFilters);
-          }
+          const result = this.chatFiltersPaginatedResult();
+          const updatedResult = result.setItemId(newChatFilter.id);
+          if (updatedResult) this.chatFiltersPaginatedResult.set(updatedResult);
         },
         error: (err) => {
           console.error('Error when saving chatFilters:', err);
@@ -38,32 +80,61 @@ export class ChatFilterService {
       });
   }
 
-  getAll() {
-    if (!this.isRequested) {
-      this.http.get<ChatFilter[]>(this.baseUrl + 'chatFilter').subscribe({
-        next: (result: ChatFilter[]) => {
-          this.chatFilters.set(result);
-          this.isRequested = true;
-          console.log('Loaded from db:' + JSON.stringify(this.chatFilters()));
-          this.isLoaded.set(true);
-        },
-        error: (err) => {
-          console.error('Error when loading chatFilters:', err);
-        },
-      });
+  getAll(sortOption?: SortOption) {
+    this.updatePaginationParams(undefined, 0, sortOption);
+    const params = setPaginationHeaders(this.paginationParams());
+    const cache = this.chatFilterCacheService.getCache(this.paginationParams());
+
+    if (!cache) {
+      this.http
+        .get<ChatFilter[]>(this.baseUrl + 'chatFilter', {
+          observe: 'response',
+          params,
+        })
+        .pipe(
+          tap((response) => {
+            this.handleResponse(response);
+
+            console.log(
+              'Loaded from db:' +
+                JSON.stringify(this.chatFiltersPaginatedResult())
+            );
+            this.isLoaded.set(true);
+          })
+        )
+        .subscribe({
+          error: (err) => {
+            console.error('Error when loading chatFilters:', err);
+          },
+        });
     } else {
-      console.log('Cache taken: ' + JSON.stringify(this.chatFilters()));
+      this.chatFiltersPaginatedResult.set(cache);
+      console.log(
+        'Cache taken: ' + JSON.stringify(this.chatFiltersPaginatedResult())
+      );
     }
   }
 
   delete(id: number) {
-    const updatedCache = this.chatFilters().filter((x) => x.id !== id);
-    this.chatFilters.set(updatedCache);
+    const currentResult = this.chatFiltersPaginatedResult();
+    const updatedResult = currentResult.deleteItemById(id);
+    if (updatedResult) this.chatFiltersPaginatedResult.set(updatedResult);
+    this.chatFilterCacheService.deleteItem(id);
 
     return this.http.delete(this.baseUrl + `chatFilter/${id}`).subscribe({
       error: (err) => {
-        console.error('Error when saving chatFilters:', err);
+        console.error('Error when deleting chatFilter:', err);
       },
     });
+  }
+
+  private handleResponse(response: HttpResponse<ChatFilter[]>) {
+    const result = new PaginatedResult<ChatFilter>();
+    result.items = response.body as ChatFilter[];
+    result.pagination = JSON.parse(response.headers.get('Pagination')!);
+    console.log('Loaded from DB');
+    this.chatFiltersPaginatedResult.set(result);
+    this.chatFilterCacheService.setCache(result);
+    return result;
   }
 }

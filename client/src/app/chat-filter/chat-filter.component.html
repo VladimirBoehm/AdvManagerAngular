@@ -1,76 +1,99 @@
+@if(chatFilterService.chatFiltersPaginatedResult() &&
+chatFilterService.chatFiltersPaginatedResult().items){
+
 <div class="container-fluid">
   <ng-container *ngTemplateOutlet="createButtonTemplate"></ng-container>
   <ng-container
     *ngIf="
-      (chatFilterService.chatFilters().length === 0 ||
-        chatFilterService.chatFilters().length === undefined) &&
-          chatFilterService.isLoaded();
+      (chatFilterService.chatFiltersPaginatedResult().items!.length === 0 ||
+        chatFilterService.chatFiltersPaginatedResult().items!.length ===
+          undefined) &&
+        chatFilterService.isLoaded();
       else nonEmptyList
     "
   >
     <app-empty-list-placeholder></app-empty-list-placeholder>
   </ng-container>
   <ng-template #nonEmptyList>
- 
-      <ng-template
-        [skeleton]="!chatFilterService.isLoaded() || false"
-        [skeletonRepeat]="5"
-        [skeletonClassName]="'mb-1'"
-        [skeletonHeight]="'4rem'"
-      >
-        <div>
-          <ul class="list-group list-group-flush">
-            <li
-              *ngFor="let item of chatFilterService.chatFilters()"
-              class="list-group-item"
-              style="cursor: auto"
-            >
-              <div class="d-flex">
-                <div
-                  class="d-flex flex-column col-11"
-                  style="overflow-x: auto; white-space: nowrap"
-                >
-                  <div class="fw-normal">
-                    {{ item.value }}
-                  </div>
+    <ng-template
+      [skeleton]="!chatFilterService.isLoaded() || false"
+      [skeletonRepeat]="5"
+      [skeletonClassName]="'mb-1'"
+      [skeletonHeight]="'4rem'"
+    >
+      <div>
+        <ul class="list-group list-group-flush">
+          <li
+            *ngFor="
+              let item of chatFilterService.chatFiltersPaginatedResult().items
+            "
+            class="list-group-item"
+            style="cursor: auto"
+          >
+            <div class="d-flex">
+              <div
+                class="d-flex flex-column col-11"
+                style="overflow-x: auto; white-space: nowrap"
+              >
+                <div class="fw-normal">
+                  {{ item.value }}
                 </div>
-                <div
-                  class="d-flex fw-normal col-1 align-items-center justify-content-end"
-                >
-                  <button
-                    class="btn empty-button"
-                    (click)="deleteChatFilter(item)"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="24px"
-                      viewBox="0 -960 960 960"
-                      width="24px"
-                      fill="#5f6368"
-                    >
-                      <path
-                        d="m256-236-20-20 224-224-224-224 20-20 224 224 224-224 20 20-224 224 224 224-20 20-224-224-224 224Z"
-                      />
-                    </svg>
-                  </button>
+                <div class="fw-normal my-info-text text-muted">
+                  Создан: 
+                  {{
+                    dateHelper.getLocalTime(item.created)
+                      | date : "dd.MM.yyyy"
+                  }}
                 </div>
               </div>
-            </li>
-          </ul>
-        </div>
-      </ng-template>
-
+              <div
+                class="d-flex fw-normal col-1 align-items-center justify-content-end"
+              >
+                <button
+                  class="btn empty-button"
+                  (click)="deleteChatFilter(item)"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="24px"
+                    viewBox="0 -960 960 960"
+                    width="24px"
+                    fill="#5f6368"
+                  >
+                    <path
+                      d="m256-236-20-20 224-224-224-224 20-20 224 224 224-224 20 20-224 224 224 224-20 20-224-224-224 224Z"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </ng-template>
   </ng-template>
 
   <ng-template #createButtonTemplate>
     <div class="d-flex mt-2">
-      <div class="col-6"></div>
+      <div class="col-6">
+        <app-adv-list-filter
+          *ngIf="
+            chatFilterService.chatFiltersPaginatedResult().items!.length !== 0
+          "
+          (onChanged)="sortChanged($event)"
+          [disabled]="busyService.isLoading()"
+          [isAdvertisementList]="false"
+        ></app-adv-list-filter>
+      </div>
       <div
         class="col-6 d-flex flex-column align-items-center justify-content-center"
       >
         <button
           class="btn empty-button"
-          [disabled]="chatFilterService.chatFilters().length > 29 || !chatFilterService.isLoaded()"
+          [disabled]="
+            chatFilterService.chatFiltersPaginatedResult().items!.length > 29 ||
+            !chatFilterService.isLoaded()
+          "
           (click)="showAddDialog()"
         >
           <svg
@@ -87,7 +110,9 @@
 
           <div class="text-muted">Создать</div>
           <div
-            *ngIf="chatFilterService.chatFilters().length > 29"
+            *ngIf="
+              chatFilterService.chatFiltersPaginatedResult().items!.length > 29
+            "
             class="my-info-text text-danger"
           >
             Максимум 30
@@ -134,3 +159,4 @@
     </div>
   </ng-template>
 </div>
+}

@@ -8,11 +8,9 @@ export class BusyService {
 
   busy() {
     this.isLoading.set(true);
-    console.log('BusyService: true');
   }
 
   idle() {
     this.isLoading.set(false);
-    console.log('BusyService: false');
   }
 }

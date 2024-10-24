@@ -12,6 +12,7 @@ import { setPaginationHeaders } from './paginationHelper';
 import { AdvListType } from '../_framework/constants/advListType';
 import { ManagePublish } from '../_models/managePublish';
 import { SortOption } from '../_models/sortOption';
+import { DateHelper } from '../_framework/component/helpers/dateHelper';
 
 @Injectable({
   providedIn: 'root',
@@ -20,10 +21,10 @@ export class AdvertisementService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
   private advertisementCacheService = inject(AdvertisementCacheService);
-
+  private dateHelper = DateHelper
   private selectedAdvListType?: AdvListType;
-  advertisements = signal<PaginatedResult<Advertisement[]>>(
-    new PaginatedResult<Advertisement[]>()
+  advertisements = signal<PaginatedResult<Advertisement>>(
+    new PaginatedResult<Advertisement>()
   );
   paginationParamsState: WritableSignal<Map<AdvListType, PaginationParams>>;
 
@@ -100,25 +101,20 @@ export class AdvertisementService {
       .post<Advertisement>(this.baseUrl + 'advertisement/save', advertisement)
       .pipe(
         tap((savedAdvertisement: Advertisement) => {
-          advertisement.updated = this.getUTCTime();
+          advertisement.updated = this.dateHelper.getUTCTime();
           this.advertisementCacheService.addItem(savedAdvertisement);
         })
       );
   }
 
-  getUTCTime(): Date {
-    let date = new Date();
-    date.setDate(date.getUTCDate());
-    date.setHours(date.getUTCHours());
-    return date;
-  }
+
 
   update(advertisement: Advertisement) {
     return this.http
       .put<Advertisement>(this.baseUrl + 'advertisement', advertisement)
       .pipe(
         tap(() => {
-          advertisement.updated = this.getUTCTime();
+          advertisement.updated = this.dateHelper.getUTCTime();
           this.advertisementCacheService.updateItemInAllCaches(advertisement);
         })
       );
@@ -137,7 +133,7 @@ export class AdvertisementService {
       )
       .pipe(
         tap(() => {
-          advertisement.updated = this.getUTCTime();
+          advertisement.updated = this.dateHelper.getUTCTime();
           this.advertisementCacheService.updateItemInAllCaches(advertisement);
         })
       );
@@ -163,7 +159,7 @@ export class AdvertisementService {
       )
       .pipe(
         tap(() => {
-          advertisement.updated = this.getUTCTime();
+          advertisement.updated = this.dateHelper.getUTCTime();
           this.advertisementCacheService.updateItemInAllCaches(advertisement);
           this.advertisementCacheService.deleteItemFromCachesByAdvListType(
             advertisement.id,
@@ -214,7 +210,7 @@ export class AdvertisementService {
           params,
         }
       )
-      .pipe(map((response) => this.handleAdvertisementResponse(response)))
+      .pipe(tap((response) => this.handleAdvertisementResponse(response)))
       .subscribe({
         error: (err) => {
           console.error('Error when loading pending publication ads:', err);
@@ -252,7 +248,7 @@ export class AdvertisementService {
         observe: 'response',
         params,
       })
-      .pipe(map((response) => this.handleAdvertisementResponse(response)))
+      .pipe(tap((response) => this.handleAdvertisementResponse(response)))
       .subscribe({
         error: (err) => {
           console.error('Error when loading ads:', err);
@@ -273,7 +269,7 @@ export class AdvertisementService {
         observe: 'response',
         params,
       })
-      .pipe(map((response) => this.handleAdvertisementResponse(response)))
+      .pipe(tap((response) => this.handleAdvertisementResponse(response)))
       .subscribe({
         error: (err) => {
           console.error('Error when loading advertisement history:', err);
@@ -297,7 +293,7 @@ export class AdvertisementService {
           params,
         }
       )
-      .pipe(map((response) => this.handleAdvertisementResponse(response)))
+      .pipe(tap((response) => this.handleAdvertisementResponse(response)))
       .subscribe({
         error: (err) => {
           console.error(
@@ -317,7 +313,7 @@ export class AdvertisementService {
       .put(this.baseUrl + 'advertisementAdmin/cancelPublication', managePublish)
       .pipe(
         tap(() => {
-          advertisement.updated = this.getUTCTime();
+          advertisement.updated = this.dateHelper.getUTCTime();
           this.advertisementCacheService.updateItemInAllCaches(advertisement);
           this.advertisementCacheService.deleteItemFromCachesByAdvListType(
             advertisement.id,
@@ -335,7 +331,7 @@ export class AdvertisementService {
       .put(this.baseUrl + 'advertisementAdmin/forcePublication', managePublish)
       .pipe(
         tap(() => {
-          advertisement.updated = this.getUTCTime();
+          advertisement.updated = this.dateHelper.getUTCTime();
           this.advertisementCacheService.updateItemInAllCaches(advertisement);
           this.advertisementCacheService.deleteItemFromCachesByAdvListType(
             advertisement.id,
@@ -361,7 +357,7 @@ export class AdvertisementService {
           params,
         }
       )
-      .pipe(map((response) => this.handleAdvertisementResponse(response)))
+      .pipe(tap((response) => this.handleAdvertisementResponse(response)))
       .subscribe({
         error: (err) => {
           console.error('Error when loading pending validation ads:', err);
@@ -405,7 +401,7 @@ export class AdvertisementService {
   }
 
   private handleAdvertisementResponse(response: HttpResponse<Advertisement[]>) {
-    const result = new PaginatedResult<Advertisement[]>();
+    const result = new PaginatedResult<Advertisement>();
     if (!this.selectedAdvListType) {
       console.error('advListType is undefined');
       return result;

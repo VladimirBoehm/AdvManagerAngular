@@ -12,7 +12,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialog } from '@angular/material/dialog';
-import { MatAdvListFilterComponent } from '../mat-adv-list-filter/mat-adv-list-filter.component';
+import { MatListFilterComponentModal } from './mat-adv-list-filter-modal/mat-list-filter-modal.component';
+import { ChatFilterService } from '../../../_services/chat-filter.service';
 
 @Component({
   selector: 'app-adv-list-filter',
@@ -27,22 +28,25 @@ import { MatAdvListFilterComponent } from '../mat-adv-list-filter/mat-adv-list-f
     MatDatepickerModule,
     MatInputModule,
   ],
-  templateUrl: './adv-list-filter.component.html',
+  templateUrl: './list-filter.component.html',
   providers: [provideNativeDateAdapter()],
-  styleUrl: './adv-list-filter.component.scss',
+  styleUrl: './list-filter.component.scss',
 })
-export class AdvListFilterComponent {
+export class ListFilterComponent {
+  @Input() isAdvertisementList = false;
   @Input() disabled = false;
   @Output() onChanged = new EventEmitter<SortOption>();
 
   dialog = inject(MatDialog);
   advertisementService = inject(AdvertisementService);
+  chatFilterService = inject(ChatFilterService);
 
   onFilterClick() {
     this.dialog
-      .open(MatAdvListFilterComponent, {
+      .open(MatListFilterComponentModal, {
         position: { top: '10px' },
         panelClass: 'custom-dialog-container',
+        data: { isAdvertisementList: this.isAdvertisementList },
       })
       .afterClosed()
       .subscribe((result: SortOption | null) => {
@@ -54,8 +58,12 @@ export class AdvListFilterComponent {
 
   getLabelText() {
     let fieldTranslation = '';
+    let field;
+    if (this.isAdvertisementList)
+      field = this.advertisementService.getCurrentSortOptions()?.field;
+    else field = this.chatFilterService.getCurrentSortOptions()?.field;
 
-    switch (this.advertisementService.getCurrentSortOptions()?.field) {
+    switch (field) {
       case 'date':
         fieldTranslation = 'дате';
         break;
@@ -70,5 +78,13 @@ export class AdvListFilterComponent {
         break;
     }
     return `по ${fieldTranslation}`;
+  }
+
+  getCurrentSortOptionsText() {
+    const order = this.isAdvertisementList
+      ? this.advertisementService.getCurrentSortOptions()?.order
+      : this.chatFilterService.getCurrentSortOptions()?.order;
+
+    return order === 'asc' ? 'по возрастанию' : 'по убыванию';
   }
 }

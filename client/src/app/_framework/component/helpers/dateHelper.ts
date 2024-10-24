@@ -9,4 +9,11 @@ export class DateHelper {
 
     return utcDate.toLocaleString();
   }
+
+ static getUTCTime(): Date {
+    let date = new Date();
+    date.setDate(date.getUTCDate());
+    date.setHours(date.getUTCHours());
+    return date;
+  }
 }

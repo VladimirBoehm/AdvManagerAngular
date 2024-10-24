@@ -12,17 +12,13 @@ import { Observable, Subscription } from 'rxjs';
 import { BusyService } from '../_services/busy.service';
 import { SharedModule } from '../_framework/modules/sharedModule';
 import { PageEvent } from '@angular/material/paginator';
-import { AdvListFilterComponent } from '../_framework/component/adv-list-filter/adv-list-filter.component';
+import { ListFilterComponent } from '../_framework/component/adv-list-filter/list-filter.component';
 import { EmptyListPlaceholderComponent } from '../_framework/component/empty-list-placeholder/empty-list-placeholder.component';
 
 @Component({
   selector: 'app-adv-list',
   standalone: true,
-  imports: [
-    SharedModule,
-    AdvListFilterComponent,
-    EmptyListPlaceholderComponent,
-  ],
+  imports: [SharedModule, ListFilterComponent, EmptyListPlaceholderComponent],
   templateUrl: './adv-list.component.html',
   styleUrl: './adv-list.component.scss',
 })
@@ -32,14 +28,11 @@ export class AdvListComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private routerSubscription!: Subscription;
 
-
   advertisementService = inject(AdvertisementService);
   advListType = AdvListType;
   dateHelper = DateHelper;
   selectedListType!: AdvListType;
-  busyService = inject(BusyService)
-
-
+  busyService = inject(BusyService);
 
   ngOnInit(): void {
     this.routerSubscription = this.router.events.subscribe((event) => {
@@ -66,7 +59,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
     });
 
     this.advertisementService.advertisements.set(
-      new PaginatedResult<Advertisement[]>()
+      new PaginatedResult<Advertisement>()
     );
     this.initialize();
   }

@@ -9,7 +9,7 @@ import { AdvListType } from '../_framework/constants/advListType';
   providedIn: 'root',
 })
 export class AdvertisementCacheService {
-  private advertisementCache = new Map<any, PaginatedResult<Advertisement[]>>();
+  private advertisementCache = new Map<any, PaginatedResult<Advertisement>>();
   private pendingAdvertisementsCache: number = 0;
   private selectedAdvListType?: AdvListType;
   private paginationParams?: PaginationParams;
@@ -114,7 +114,7 @@ export class AdvertisementCacheService {
   getCache(
     advListType: AdvListType,
     paginationParams?: PaginationParams
-  ): PaginatedResult<Advertisement[]> | undefined {
+  ): PaginatedResult<Advertisement> | undefined {
     this.selectedAdvListType = advListType;
     if (paginationParams) this.setPaginationParams(paginationParams);
     console.log(
@@ -124,9 +124,9 @@ export class AdvertisementCacheService {
       this.getSearchParamsKey(this.selectedAdvListType)
     );
   }
-  
+
   //Second step
-  setCache(advertisements: PaginatedResult<Advertisement[]>) {
+  setCache(advertisements: PaginatedResult<Advertisement>) {
     if (!this.selectedAdvListType) {
       console.error('selectedAdvListType is undefined');
       return;
@@ -146,17 +146,13 @@ export class AdvertisementCacheService {
 
     const cachedAdvertisements = this.advertisementCache.get(searchParamsKey);
     if (cachedAdvertisements) {
-      const updatedItems = cachedAdvertisements.items
-        ? [...cachedAdvertisements.items, advertisement]
-        : [advertisement];
+      const updatedCachedAdvertisements =
+        cachedAdvertisements.addItem(advertisement);
 
-      cachedAdvertisements.items = updatedItems;
-      this.advertisementCache.set(searchParamsKey, cachedAdvertisements);
+      this.advertisementCache.set(searchParamsKey, updatedCachedAdvertisements);
     } else {
-      this.advertisementCache.set(searchParamsKey, {
-        items: [advertisement],
-        pagination: undefined,
-      });
+      const newPaginatedResult = new PaginatedResult([advertisement]);
+      this.advertisementCache.set(searchParamsKey, newPaginatedResult);
     }
   }
 
@@ -196,11 +192,10 @@ export class AdvertisementCacheService {
     console.log('Cache: deleteItem: ' + searchParamsKey);
     const cachedAdvertisements = this.advertisementCache.get(searchParamsKey);
     if (cachedAdvertisements?.items) {
-      const updatedItems = cachedAdvertisements.items.filter(
-        (x) => x.id !== advertisementId
-      );
-      cachedAdvertisements.items = updatedItems;
-      this.advertisementCache.set(searchParamsKey, cachedAdvertisements);
+      const updatedPaginatedResult =
+        cachedAdvertisements.deleteItemById(advertisementId);
+      if (updatedPaginatedResult)
+        this.advertisementCache.set(searchParamsKey, updatedPaginatedResult);
     }
   }
 }

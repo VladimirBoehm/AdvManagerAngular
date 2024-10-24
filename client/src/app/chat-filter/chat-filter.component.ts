@@ -8,11 +8,15 @@ import { TelegramBackButtonService } from '../_framework/telegramBackButtonServi
 import { Router } from '@angular/router';
 import { SharedModule } from '../_framework/modules/sharedModule';
 import { EmptyListPlaceholderComponent } from '../_framework/component/empty-list-placeholder/empty-list-placeholder.component';
+import { ListFilterComponent } from '../_framework/component/adv-list-filter/list-filter.component';
+import { SortOption } from '../_models/sortOption';
+import { BusyService } from '../_services/busy.service';
+import { DateHelper } from '../_framework/component/helpers/dateHelper';
 
 @Component({
   selector: 'app-chat-filter',
   standalone: true,
-  imports: [SharedModule, EmptyListPlaceholderComponent],
+  imports: [SharedModule, EmptyListPlaceholderComponent, ListFilterComponent],
   templateUrl: './chat-filter.component.html',
   styleUrl: './chat-filter.component.scss',
   providers: [MatErrorService],
@@ -25,10 +29,11 @@ export class ChatFilterComponent implements OnInit {
   private router = inject(Router);
   private formBuilder = inject(FormBuilder);
 
+  busyService = inject(BusyService);
   chatFilterService = inject(ChatFilterService);
   matErrorService = inject(MatErrorService);
   editForm: FormGroup = new FormGroup({});
-
+  dateHelper = DateHelper;
   modalRef?: BsModalRef;
   maxItemLength: number = 50;
   minItemLength: number = 3;
@@ -69,6 +74,7 @@ export class ChatFilterComponent implements OnInit {
   addChatFilterDialogConfirm() {
     const newChatFiler = {
       value: this.editForm.controls['item']?.value,
+      created: this.dateHelper.getUTCTime(),
     } as ChatFilter;
 
     this.chatFilterService.save(newChatFiler);
@@ -94,5 +100,9 @@ export class ChatFilterComponent implements OnInit {
     this.chatFilterService.delete(chatFilter.id);
     this.editForm.reset();
     this.modalRef?.hide();
+  }
+
+  sortChanged($event: SortOption) {
+    this.chatFilterService.getAll($event);
   }
 }
