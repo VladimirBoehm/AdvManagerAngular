@@ -1,4 +1,10 @@
-import { Component, Injectable, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Injectable,
+  Input,
+  Output,
+  EventEmitter,
+} from '@angular/core';
 import {
   MatPaginatorIntl,
   MatPaginatorModule,
@@ -13,13 +19,13 @@ export class MyPaginatorLocalization implements MatPaginatorIntl {
   nextPageLabel = 'Следующая страница';
   previousPageLabel = 'Предыдущая страница';
 
-  firstPageLabel = "Первая страница";
-  itemsPerPageLabel = "Элементов на странице:";
-  lastPageLabel = "Последняя страница";
+  firstPageLabel = 'Первая страница';
+  itemsPerPageLabel = 'Элементов на странице:';
+  lastPageLabel = 'Последняя страница';
 
   getRangeLabel(page: number, pageSize: number, length: number): string {
-    if (length === 0)  return "Страница 1 из 1";
-    
+    if (length === 0) return 'Страница 1 из 1';
+
     const amountPages = Math.ceil(length / pageSize);
     return `Страница ${page + 1} из ${amountPages}`;
   }
@@ -33,6 +39,7 @@ export class MyPaginatorLocalization implements MatPaginatorIntl {
   providers: [{ provide: MatPaginatorIntl, useClass: MyPaginatorLocalization }],
 })
 export class PaginatorLocalization {
+  @Input() disabled = false;
   @Input() length: number = 0;
   @Input() pageSize: number = 5;
   @Input() pageIndex: number = 0;

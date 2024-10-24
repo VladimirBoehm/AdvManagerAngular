@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
@@ -32,8 +32,10 @@ import { MatAdvListFilterComponent } from '../mat-adv-list-filter/mat-adv-list-f
   styleUrl: './adv-list-filter.component.scss',
 })
 export class AdvListFilterComponent {
-  dialog = inject(MatDialog);
+  @Input() disabled = false;
   @Output() onChanged = new EventEmitter<SortOption>();
+
+  dialog = inject(MatDialog);
   advertisementService = inject(AdvertisementService);
 
   onFilterClick() {

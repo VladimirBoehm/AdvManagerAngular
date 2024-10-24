@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { AdvertisementService } from '../_services/advertisement.service';
 import { Advertisement } from '../_models/advertisement';
@@ -13,11 +13,16 @@ import { BusyService } from '../_services/busy.service';
 import { SharedModule } from '../_framework/modules/sharedModule';
 import { PageEvent } from '@angular/material/paginator';
 import { AdvListFilterComponent } from '../_framework/component/adv-list-filter/adv-list-filter.component';
+import { EmptyListPlaceholderComponent } from '../_framework/component/empty-list-placeholder/empty-list-placeholder.component';
 
 @Component({
   selector: 'app-adv-list',
   standalone: true,
-  imports: [SharedModule, AdvListFilterComponent],
+  imports: [
+    SharedModule,
+    AdvListFilterComponent,
+    EmptyListPlaceholderComponent,
+  ],
   templateUrl: './adv-list.component.html',
   styleUrl: './adv-list.component.scss',
 })
@@ -27,15 +32,14 @@ export class AdvListComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private routerSubscription!: Subscription;
 
+
   advertisementService = inject(AdvertisementService);
   advListType = AdvListType;
   dateHelper = DateHelper;
   selectedListType!: AdvListType;
-  isLoading$: Observable<boolean>;
+  busyService = inject(BusyService)
 
-  constructor(private busyService: BusyService) {
-    this.isLoading$ = this.busyService.isLoading$;
-  }
+
 
   ngOnInit(): void {
     this.routerSubscription = this.router.events.subscribe((event) => {
@@ -61,6 +65,9 @@ export class AdvListComponent implements OnInit, OnDestroy {
       } else this.router.navigate(['']);
     });
 
+    this.advertisementService.advertisements.set(
+      new PaginatedResult<Advertisement[]>()
+    );
     this.initialize();
   }
 
@@ -74,9 +81,6 @@ export class AdvListComponent implements OnInit, OnDestroy {
   }
 
   private initialize() {
-    this.advertisementService.advertisements.set(
-      new PaginatedResult<Advertisement[]>()
-    );
     switch (this.selectedListType) {
       case AdvListType.PendingValidation: {
         this.advertisementService.getPendingValidationAdvertisements();
