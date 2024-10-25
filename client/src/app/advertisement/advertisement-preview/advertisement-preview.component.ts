@@ -18,10 +18,7 @@ import { AdvertisementMainDataComponent } from '../advertisement-main-data/adver
 @Component({
   selector: 'app-advertisement-preview',
   standalone: true,
-  imports: [
-    SharedModule,
-    AdvertisementMainDataComponent
-  ],
+  imports: [SharedModule, AdvertisementMainDataComponent],
   templateUrl: './advertisement-preview.component.html',
   styleUrl: './advertisement-preview.component.scss',
 })
@@ -74,31 +71,21 @@ export class AdvertisementPreviewComponent implements OnInit {
 
   //TODO передавать state из AdvList
   private getAdvertisementById(id: number) {
-    this.advertisementService
-      .getById(Number(id))
-      ?.subscribe({
-        next: (advertisement: Advertisement) => {
-          this.advertisement = advertisement;
-        },
-        error: (err) => {
-          console.error('Error when loading ads:', err);
-        },
-      });
+    this.advertisementService.getById(Number(id))?.subscribe({
+      next: (advertisement: Advertisement) => {
+        this.advertisement = advertisement;
+      },
+      error: (err) => {
+        console.error('Error when loading ads:', err);
+      },
+    });
   }
 
   private back() {
-    if (this.advertisement) {
-      if (this.advertisement.statusId === AdvertisementStatus.published) {
-        this.router.navigate(['/adv-list', AdvListType.AllHistory]);
-      } else {
-        if (
-          this.advertisementService.getActualSearchType() ===
-          AdvListType.PrivateHistory
-        )
-          this.router.navigate(['/adv-list', AdvListType.PrivateHistory]);
-        else this.router.navigate(['/adv-list', AdvListType.MyAdvertisements]);
-      }
-    }
+    this.router.navigate([
+      '/adv-list',
+      this.advertisementService.getActualSearchType(),
+    ]);
   }
 
   edit() {
@@ -107,16 +94,16 @@ export class AdvertisementPreviewComponent implements OnInit {
 
   delete() {
     this.confirmationService
-    .confirmDialog({
-      title: 'Удалить объявление?',
-      confirmText: 'Да',
-      cancelText: 'Нет',
-    })
-    .subscribe((result) => {
-      if (result === true) {
-        this.modalDialogDeleteConfirm();
-      }
-    });
+      .confirmDialog({
+        title: 'Удалить объявление?',
+        confirmText: 'Да',
+        cancelText: 'Нет',
+      })
+      .subscribe((result) => {
+        if (result === true) {
+          this.modalDialogDeleteConfirm();
+        }
+      });
   }
 
   publishDialogShow() {
@@ -198,17 +185,18 @@ export class AdvertisementPreviewComponent implements OnInit {
 
   sendToValidateDialogShow() {
     this.confirmationService
-    .confirmDialog({
-      title: 'Отправить на валидацию?',
-      message: 'Объявление будет отправлено администратору для подтверждения!',
-      confirmText: 'Да',
-      cancelText: 'Нет',
-    })
-    .subscribe((result) => {
-      if (result === true) {
-        this.modalDialogValidateConfirm();
-      }
-    });
+      .confirmDialog({
+        title: 'Отправить на валидацию?',
+        message:
+          'Объявление будет отправлено администратору для подтверждения!',
+        confirmText: 'Да',
+        cancelText: 'Нет',
+      })
+      .subscribe((result) => {
+        if (result === true) {
+          this.modalDialogValidateConfirm();
+        }
+      });
   }
 
   modalDialogDeleteConfirm() {
@@ -245,16 +233,16 @@ export class AdvertisementPreviewComponent implements OnInit {
       this.accountService.currentUser()?.userId === this.advertisement?.userId
     ) {
       this.confirmationService
-      .confirmDialog({
-        title: 'Отменить публикацию?',
-        confirmText: 'Да',
-        cancelText: 'Нет',
-      })
-      .subscribe((result) => {
-        if (result === true) {
-          this.cancelPublication();
-        }
-      });
+        .confirmDialog({
+          title: 'Отменить публикацию?',
+          confirmText: 'Да',
+          cancelText: 'Нет',
+        })
+        .subscribe((result) => {
+          if (result === true) {
+            this.cancelPublication();
+          }
+        });
       return;
     } else if (
       this.accountService.currentUser()?.isAdmin &&

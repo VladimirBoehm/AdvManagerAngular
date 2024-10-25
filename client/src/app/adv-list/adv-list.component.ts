@@ -35,7 +35,6 @@ export class AdvListComponent implements OnInit, OnDestroy {
   busyService = inject(BusyService);
 
   ngOnInit(): void {
-    console.log('first');
     this.routerSubscription = this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
         if (event.navigationTrigger === 'popstate') {
