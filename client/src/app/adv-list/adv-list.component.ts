@@ -36,6 +36,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
   busyService = inject(BusyService);
 
   ngOnInit(): void {
+    console.log('first');
     this.routerSubscription = this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
         if (event.navigationTrigger === 'popstate') {
@@ -48,6 +49,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
 
     this.paramMapSubscription = this.route.paramMap.subscribe((params) => {
       this.selectedListType = params.get('state') as AdvListType;
+
       this.initialize();
     });
 
@@ -56,13 +58,9 @@ export class AdvListComponent implements OnInit, OnDestroy {
 
       if (this.selectedListType === AdvListType.PrivateHistory) {
         this.router.navigate(['/adv-list', this.advListType.MyAdvertisements]);
+        this.initialize();
       } else this.router.navigate(['']);
     });
-
-    this.advertisementService.advertisements.set(
-      new PaginatedResult<Advertisement>()
-    );
-   
   }
 
   handlePageEvent(e: PageEvent) {
@@ -75,6 +73,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
   }
 
   private initialize() {
+    console.log('AAAAA');
     switch (this.selectedListType) {
       case AdvListType.PendingValidation: {
         this.advertisementService.getPendingValidationAdvertisements();
