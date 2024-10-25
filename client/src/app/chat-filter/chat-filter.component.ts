@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { ChatFilterService } from '../_services/chat-filter.service';
 import { ChatFilter } from '../_models/chatFilter';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
@@ -41,6 +41,7 @@ export class ChatFilterComponent implements OnInit {
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
+      this.chatFilterService.resetPaginationParams();
       this.router.navigate(['']);
     });
     this.chatFilterService.getAll();

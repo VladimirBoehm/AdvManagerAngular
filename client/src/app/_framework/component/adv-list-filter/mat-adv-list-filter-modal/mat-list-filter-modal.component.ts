@@ -29,6 +29,7 @@ import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
 import { SortOption } from '../../../../_models/sortOption';
 import { AdvertisementService } from '../../../../_services/advertisement.service';
 import { ChatFilterService } from '../../../../_services/chat-filter.service';
+import { DEFAULT_SORT_OPTION } from '../../../constants/defaultSortOption';
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -71,10 +72,9 @@ export class MatListFilterComponentModal implements OnInit {
   private chatFilterService = inject(ChatFilterService);
   sortForm: FormGroup = new FormGroup({});
   currentSortOption = signal<SortOption>({
-    field: 'date',
-    order: 'desc',
-    searchType: 'title',
-    searchValue: '',
+    field: DEFAULT_SORT_OPTION.field,
+    order: DEFAULT_SORT_OPTION.order,
+    searchType: DEFAULT_SORT_OPTION.searchType,
   } as SortOption);
 
   constructor(

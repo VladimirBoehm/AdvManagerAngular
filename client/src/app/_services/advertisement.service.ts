@@ -13,7 +13,7 @@ import { AdvListType } from '../_framework/constants/advListType';
 import { ManagePublish } from '../_models/managePublish';
 import { SortOption } from '../_models/sortOption';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
-
+import { DEFAULT_SORT_OPTION } from '../_framework/constants/defaultSortOption';
 @Injectable({
   providedIn: 'root',
 })
@@ -32,7 +32,12 @@ export class AdvertisementService {
     const defaultPaginationParams: PaginationParams = {
       pageNumber: 0,
       pageSize: 6,
-      sortOption: { field: 'date', order: 'desc', searchType: 'title' },
+      sortOption: {
+        field: DEFAULT_SORT_OPTION.field,
+        order: DEFAULT_SORT_OPTION.order,
+        searchType: DEFAULT_SORT_OPTION.searchType,
+        searchValue: undefined,
+      },
     };
 
     const paginationState = new Map<AdvListType, PaginationParams>();
@@ -59,9 +64,9 @@ export class AdvertisementService {
       undefined, // Keep pageSize unchanged
       0, // Reset pageNumber to 0
       {
-        field: 'date', // Sort by date
-        order: 'desc', // In descending order
-        searchType: 'title', // Search by title
+        field: DEFAULT_SORT_OPTION.field, // Sort by date
+        order: DEFAULT_SORT_OPTION.order, // In descending order
+        searchType: DEFAULT_SORT_OPTION.searchType, // Search by title
         searchValue: undefined, // No specific search value
       } as SortOption
     );

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { PaginationParams } from '../../_models/paginationParams';
 import { ChatFilter } from '../../_models/chatFilter';
 import { PaginatedResult } from '../../_models/pagination';
+import { SortOption } from '../../_models/sortOption';
 
 
 @Injectable({
@@ -17,6 +18,7 @@ export class ChatFilterCacheService {
       ...paginationParams,
     };
   }
+
   //First step
   getCache(
     paginationParams?: PaginationParams

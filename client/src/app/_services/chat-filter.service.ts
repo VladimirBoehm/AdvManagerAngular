@@ -8,6 +8,7 @@ import { PaginationParams } from '../_models/paginationParams';
 import { setPaginationHeaders } from './paginationHelper';
 import { SortOption } from '../_models/sortOption';
 import { ChatFilterCacheService } from './caches/chat-filter.cache.service';
+import { DEFAULT_SORT_OPTION } from '../_framework/constants/defaultSortOption';
 
 @Injectable({
   providedIn: 'root',
@@ -17,15 +18,26 @@ export class ChatFilterService {
   private chatFilterCacheService = inject(ChatFilterCacheService);
   private baseUrl = environment.apiUrl;
 
-  public paginationParams = signal<PaginationParams>({
-    pageNumber: 0,
-    pageSize: 30,
-    sortOption: {
-      field: 'date',
-      order: 'desc',
-      searchType: 'title',
-    },
-  });
+  public paginationParams = signal<PaginationParams>(
+    this.getDefaultPaginationParams()
+  );
+
+  resetPaginationParams() {
+    this.paginationParams.set(this.getDefaultPaginationParams());
+  }
+
+  private getDefaultPaginationParams(): PaginationParams {
+    return {
+      pageNumber: 0,
+      pageSize: 30,
+      sortOption: {
+        field: DEFAULT_SORT_OPTION.field,
+        order: DEFAULT_SORT_OPTION.order,
+        searchType: DEFAULT_SORT_OPTION.searchType,
+        searchValue: '',
+      },
+    };
+  }
 
   chatFiltersPaginatedResult = signal<PaginatedResult<ChatFilter>>(
     new PaginatedResult<ChatFilter>()
