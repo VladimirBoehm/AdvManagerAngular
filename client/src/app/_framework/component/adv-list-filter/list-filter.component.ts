@@ -3,8 +3,6 @@ import {
   EventEmitter,
   inject,
   Input,
-  OnDestroy,
-  OnInit,
   Output,
 } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
@@ -19,10 +17,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatListFilterComponentModal } from './mat-adv-list-filter-modal/mat-list-filter-modal.component';
 import { ChatFilterService } from '../../../_services/chat-filter.service';
 import { TelegramBackButtonService } from '../../telegramBackButtonService';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-adv-list-filter',
@@ -41,7 +40,7 @@ import { TelegramBackButtonService } from '../../telegramBackButtonService';
   providers: [provideNativeDateAdapter()],
   styleUrl: './list-filter.component.scss',
 })
-export class ListFilterComponent implements OnInit, OnDestroy {
+export class ListFilterComponent {
   @Input() isAdvertisementList = false;
   @Input() disabled = false;
   @Output() onChanged = new EventEmitter<SortOption>();
@@ -49,11 +48,10 @@ export class ListFilterComponent implements OnInit, OnDestroy {
   dialog = inject(MatDialog);
   advertisementService = inject(AdvertisementService);
   chatFilterService = inject(ChatFilterService);
-  private dialogRef: any;
-  private backButtonService = inject(TelegramBackButtonService);
+
 
   onFilterClick() {
-    this.dialogRef = this.dialog
+    let test = this.dialog
       .open(MatListFilterComponentModal, {
         position: { top: '10px' },
         panelClass: 'custom-dialog-container',
@@ -65,14 +63,6 @@ export class ListFilterComponent implements OnInit, OnDestroy {
           this.onChanged.emit(result);
         }
       });
-  }
-
-  ngOnInit(): void {
-    this.backButtonService.setBackButtonHandler(() => {
-      if (this.dialogRef) {
-        this.dialogRef.close();
-      }
-    });
   }
 
   getLabelText() {
@@ -105,9 +95,5 @@ export class ListFilterComponent implements OnInit, OnDestroy {
       : this.chatFilterService.getCurrentSortOptions()?.order;
 
     return order === 'asc' ? 'по возрастанию' : 'по убыванию';
-  }
-
-  ngOnDestroy(): void {
-    
   }
 }
