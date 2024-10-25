@@ -7,7 +7,7 @@ import { tap } from 'rxjs';
 import { PaginationParams } from '../_models/paginationParams';
 import { setPaginationHeaders } from './paginationHelper';
 import { SortOption } from '../_models/sortOption';
-import { ChatFilterCacheService } from './chat-filter.cache.service';
+import { ChatFilterCacheService } from './caches/chat-filter.cache.service';
 
 @Injectable({
   providedIn: 'root',

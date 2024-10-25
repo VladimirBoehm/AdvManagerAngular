@@ -27,6 +27,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
   private backButtonService = inject(TelegramBackButtonService);
   private router = inject(Router);
   private routerSubscription!: Subscription;
+  private paramMapSubscription!: Subscription;
 
   advertisementService = inject(AdvertisementService);
   advListType = AdvListType;
@@ -45,23 +46,23 @@ export class AdvListComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.route.paramMap.subscribe((params) => {
+    this.paramMapSubscription = this.route.paramMap.subscribe((params) => {
       this.selectedListType = params.get('state') as AdvListType;
+      this.initialize();
     });
 
     this.backButtonService.setBackButtonHandler(() => {
       this.advertisementService.resetPaginationParams(this.selectedListType);
 
       if (this.selectedListType === AdvListType.PrivateHistory) {
-        this.selectedListType = AdvListType.MyAdvertisements;
-        this.initialize();
+        this.router.navigate(['/adv-list', this.advListType.MyAdvertisements]);
       } else this.router.navigate(['']);
     });
 
     this.advertisementService.advertisements.set(
       new PaginatedResult<Advertisement>()
     );
-    this.initialize();
+   
   }
 
   handlePageEvent(e: PageEvent) {
@@ -102,8 +103,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
   }
 
   openPrivateHistory() {
-    this.selectedListType = AdvListType.PrivateHistory;
-    this.initialize();
+    this.router.navigate(['/adv-list', this.advListType.PrivateHistory]);
   }
 
   getStatus(advertisement: Advertisement): string {
@@ -157,5 +157,6 @@ export class AdvListComponent implements OnInit, OnDestroy {
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
     }
+    this.paramMapSubscription.unsubscribe();
   }
 }

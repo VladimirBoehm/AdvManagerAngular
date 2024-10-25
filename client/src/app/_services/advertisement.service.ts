@@ -5,7 +5,7 @@ import { environment } from '../../environments/environment';
 import { map, Observable, of, tap } from 'rxjs';
 import { UpdateAdvertisementAdminRequest } from '../_models/updateAdvertisementAdminRequest';
 import { UpdateAdvertisementStatusRequest } from '../_models/updateAdvertisementStatusRequest';
-import { AdvertisementCacheService } from './advertisement.cache.service';
+import { AdvertisementCacheService } from './caches/advertisement.cache.service';
 import { PaginationParams } from '../_models/paginationParams';
 import { PaginatedResult } from '../_models/pagination';
 import { setPaginationHeaders } from './paginationHelper';
@@ -21,7 +21,7 @@ export class AdvertisementService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
   private advertisementCacheService = inject(AdvertisementCacheService);
-  private dateHelper = DateHelper
+  private dateHelper = DateHelper;
   private selectedAdvListType?: AdvListType;
   advertisements = signal<PaginatedResult<Advertisement>>(
     new PaginatedResult<Advertisement>()
@@ -106,8 +106,6 @@ export class AdvertisementService {
         })
       );
   }
-
-
 
   update(advertisement: Advertisement) {
     return this.http
@@ -417,7 +415,7 @@ export class AdvertisementService {
     this.updatePaginationParams(
       this.selectedAdvListType,
       result.pagination?.itemsPerPage,
-      result.pagination?.currentPage,
+      result.pagination?.currentPage
     );
 
     return result;

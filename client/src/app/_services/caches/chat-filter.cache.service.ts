@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { ChatFilter } from '../_models/chatFilter';
-import { PaginatedResult } from '../_models/pagination';
-import { PaginationParams } from '../_models/paginationParams';
+import { PaginationParams } from '../../_models/paginationParams';
+import { ChatFilter } from '../../_models/chatFilter';
+import { PaginatedResult } from '../../_models/pagination';
+
 
 @Injectable({
   providedIn: 'root',

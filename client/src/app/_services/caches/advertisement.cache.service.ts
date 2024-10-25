@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Advertisement } from '../_models/advertisement';
-import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
-import { PaginatedResult } from '../_models/pagination';
-import { PaginationParams } from '../_models/paginationParams';
-import { AdvListType } from '../_framework/constants/advListType';
+import { Advertisement } from '../../_models/advertisement';
+import { AdvertisementStatus } from '../../_framework/constants/advertisementStatus';
+import { PaginatedResult } from '../../_models/pagination';
+import { PaginationParams } from '../../_models/paginationParams';
+import { AdvListType } from '../../_framework/constants/advListType';
 
 @Injectable({
   providedIn: 'root',
@@ -82,6 +82,13 @@ export class AdvertisementCacheService {
   }
 
   private getSearchParamsKey(advListType: AdvListType): string {
+    const replacer = (key: string, value: any) => {
+      if (value === '') {
+        return undefined;
+      }
+      return value;
+    };
+
     const flattenObject = (obj: any): any => {
       const flattened: any = {};
 
@@ -96,7 +103,7 @@ export class AdvertisementCacheService {
     };
 
     let deepClone: PaginationParams = JSON.parse(
-      JSON.stringify(this.paginationParams)
+      JSON.stringify(this.paginationParams, replacer)
     );
     deepClone.pageSize = 0;
     const flattenedParams = flattenObject(deepClone);
