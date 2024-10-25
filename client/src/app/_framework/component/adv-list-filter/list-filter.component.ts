@@ -108,6 +108,6 @@ export class ListFilterComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.backButtonService.removeBackButtonHandler();
+    
   }
 }
