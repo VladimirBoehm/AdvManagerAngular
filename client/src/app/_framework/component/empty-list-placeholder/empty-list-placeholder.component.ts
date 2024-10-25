@@ -10,5 +10,5 @@ import { Component, Input } from '@angular/core';
 export class EmptyListPlaceholderComponent {
   @Input() message: string = 'Список пуст';
   @Input() imageUrl: string =
-    'https://chatcontrolstorage.blob.core.windows.net/icons/empty.png';
+    'https://chatcontrolstorage.blob.core.windows.net/icons/empty1.png';
 }
