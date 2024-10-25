@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { AdvertisementService } from '../_services/advertisement.service';
 import { Advertisement } from '../_models/advertisement';
@@ -6,9 +6,8 @@ import { TelegramBackButtonService } from '../_framework/telegramBackButtonServi
 import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
 import { SortOption } from '../_models/sortOption';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
-import { PaginatedResult } from '../_models/pagination';
 import { AdvListType } from '../_framework/constants/advListType';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { BusyService } from '../_services/busy.service';
 import { SharedModule } from '../_framework/modules/sharedModule';
 import { PageEvent } from '@angular/material/paginator';
@@ -73,7 +72,6 @@ export class AdvListComponent implements OnInit, OnDestroy {
   }
 
   private initialize() {
-    console.log('AAAAA');
     switch (this.selectedListType) {
       case AdvListType.PendingValidation: {
         this.advertisementService.getPendingValidationAdvertisements();
