@@ -36,7 +36,7 @@ export class AdvertisementService {
         field: DEFAULT_SORT_OPTION.field,
         order: DEFAULT_SORT_OPTION.order,
         searchType: DEFAULT_SORT_OPTION.searchType,
-        searchValue: undefined,
+        searchValue: DEFAULT_SORT_OPTION.searchValue,
       },
     };
 
@@ -67,7 +67,7 @@ export class AdvertisementService {
         field: DEFAULT_SORT_OPTION.field, // Sort by date
         order: DEFAULT_SORT_OPTION.order, // In descending order
         searchType: DEFAULT_SORT_OPTION.searchType, // Search by title
-        searchValue: undefined, // No specific search value
+        searchValue: DEFAULT_SORT_OPTION.searchValue, // No specific search value
       } as SortOption
     );
   }

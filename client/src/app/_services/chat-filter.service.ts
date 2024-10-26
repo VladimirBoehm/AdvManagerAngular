@@ -34,7 +34,7 @@ export class ChatFilterService {
         field: DEFAULT_SORT_OPTION.field,
         order: DEFAULT_SORT_OPTION.order,
         searchType: DEFAULT_SORT_OPTION.searchType,
-        searchValue: '',
+        searchValue: DEFAULT_SORT_OPTION.searchValue,
       },
     };
   }

@@ -78,7 +78,7 @@ chatFilterService.chatFiltersPaginatedResult().items){
       <div class="col-6">
         <app-adv-list-filter
           *ngIf="
-            chatFilterService.chatFiltersPaginatedResult().items!.length !== 0
+            chatFilterService.chatFiltersPaginatedResult().items
           "
           (onChanged)="sortChanged($event)"
           [disabled]="busyService.isLoading()"

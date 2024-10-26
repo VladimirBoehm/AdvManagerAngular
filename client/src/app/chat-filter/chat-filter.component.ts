@@ -1,17 +1,18 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ChatFilterService } from '../_services/chat-filter.service';
 import { ChatFilter } from '../_models/chatFilter';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatErrorService } from '../_framework/component/errors/mat-error-service';
 import { TelegramBackButtonService } from '../_framework/telegramBackButtonService';
-import { Router } from '@angular/router';
+import { NavigationStart, Router } from '@angular/router';
 import { SharedModule } from '../_framework/modules/sharedModule';
 import { EmptyListPlaceholderComponent } from '../_framework/component/empty-list-placeholder/empty-list-placeholder.component';
 import { ListFilterComponent } from '../_framework/component/adv-list-filter/list-filter.component';
 import { SortOption } from '../_models/sortOption';
 import { BusyService } from '../_services/busy.service';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-chat-filter',
@@ -21,14 +22,14 @@ import { DateHelper } from '../_framework/component/helpers/dateHelper';
   styleUrl: './chat-filter.component.scss',
   providers: [MatErrorService],
 })
-export class ChatFilterComponent implements OnInit {
+export class ChatFilterComponent implements OnInit, OnDestroy {
   @ViewChild('addFilterDialog') addFilterDialog?: any;
 
   private modalService = inject(BsModalService);
   private backButtonService = inject(TelegramBackButtonService);
   private router = inject(Router);
   private formBuilder = inject(FormBuilder);
-
+  private routerSubscription!: Subscription;
   busyService = inject(BusyService);
   chatFilterService = inject(ChatFilterService);
   matErrorService = inject(MatErrorService);
@@ -40,12 +41,19 @@ export class ChatFilterComponent implements OnInit {
   itemLengthCounter: number = 0;
 
   ngOnInit(): void {
+    this.routerSubscription = this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        if (event.navigationTrigger === 'popstate') {
+          this.chatFilterService.resetPaginationParams();
+        }
+      }
+    });
+
     this.backButtonService.setBackButtonHandler(() => {
       this.chatFilterService.resetPaginationParams();
       this.router.navigate(['']);
     });
     this.chatFilterService.getAll();
-    this.initializeForm();
   }
 
   initializeForm() {
@@ -77,7 +85,8 @@ export class ChatFilterComponent implements OnInit {
       value: this.editForm.controls['item']?.value,
       created: this.dateHelper.getUTCTime(),
     } as ChatFilter;
-
+    this.chatFilterService.resetPaginationParams();
+    this.chatFilterService.getAll();
     this.chatFilterService.save(newChatFiler);
     this.editForm.reset();
     this.modalRef?.hide();
@@ -94,6 +103,7 @@ export class ChatFilterComponent implements OnInit {
   }
 
   showAddDialog() {
+    this.initializeForm();
     this.modalRef = this.modalService.show(this.addFilterDialog);
   }
 
@@ -105,5 +115,12 @@ export class ChatFilterComponent implements OnInit {
 
   sortChanged($event: SortOption) {
     this.chatFilterService.getAll($event);
+  }
+
+  ngOnDestroy(): void {
+    this.backButtonService.removeBackButtonHandler();
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
   }
 }

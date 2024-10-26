@@ -75,6 +75,7 @@ export class MatListFilterComponentModal implements OnInit {
     field: DEFAULT_SORT_OPTION.field,
     order: DEFAULT_SORT_OPTION.order,
     searchType: DEFAULT_SORT_OPTION.searchType,
+    searchValue: DEFAULT_SORT_OPTION.searchValue,
   } as SortOption);
 
   constructor(
