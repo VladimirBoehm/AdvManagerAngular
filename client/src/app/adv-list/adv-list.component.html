@@ -4,10 +4,7 @@
   <div class="row">
     <div class="col-6 d-flex justify-content-start ps-0">
       <app-adv-list-filter
-        *ngIf="
-          advertisementService.advertisements().items!.length !== 0 &&
-          selectedListType !== advListType.MyAdvertisements
-        "
+        *ngIf="selectedListType !== advListType.MyAdvertisements"
         (onChanged)="sortChanged($event)"
         [disabled]="busyService.isLoading()"
         [isAdvertisementList]="true"
@@ -40,7 +37,6 @@
       </div>
     </div>
   </div>
-
   }
   <!-- BUTTONS -->
   <!-- MyAdvertisements -->
@@ -97,9 +93,8 @@
         </button>
       </div>
     </div>
-    <hr />
   </div>
-
+  <hr />
   <ng-template
     [skeleton]="busyService.isLoading()"
     [skeletonRepeat]="5"
