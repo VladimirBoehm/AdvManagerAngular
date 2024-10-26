@@ -69,7 +69,7 @@ export class AdvertisementPreviewComponent implements OnInit {
     );
   }
 
-  //TODO передавать state из AdvList
+  
   private getAdvertisementById(id: number) {
     this.advertisementService.getById(Number(id))?.subscribe({
       next: (advertisement: Advertisement) => {

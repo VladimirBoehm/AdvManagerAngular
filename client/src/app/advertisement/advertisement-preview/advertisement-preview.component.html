@@ -267,7 +267,6 @@
     [linkName]="advertisement.linkName"
     [linkValue]="advertisement.linkValue"
   ></app-advertisement-main-data>
-
   <div class="d-flex">
     <div *ngIf="advertisement.created" class="text-muted my-info-text me-4">
       Создан:
@@ -301,10 +300,6 @@
       [(ngModel)]="advertisement.adminMessage"
     ></textarea>
   </div>
-
-
-
-
 
   <ng-template #modalDialogCancelPublicationAdmin>
     <div class="modal-header">

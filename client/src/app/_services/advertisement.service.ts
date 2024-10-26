@@ -106,7 +106,8 @@ export class AdvertisementService {
       .post<Advertisement>(this.baseUrl + 'advertisement/save', advertisement)
       .pipe(
         tap((savedAdvertisement: Advertisement) => {
-          advertisement.updated = this.dateHelper.getUTCTime();
+          savedAdvertisement.updated = this.dateHelper.getUTCTime();
+          savedAdvertisement.created = this.dateHelper.getUTCTime();
           this.advertisementCacheService.addItem(savedAdvertisement);
         })
       );
