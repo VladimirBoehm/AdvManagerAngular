@@ -21,8 +21,15 @@ export class AdvertisementCacheService {
     }
   }
 
-  updateItemInAllCaches(advertisement: Advertisement) {
+  updateInAllCaches(advertisement: Advertisement) {
     this.advertisementCache.forEach((cachedAdvertisements, key) => {
+      // Skip keys that contain 'AllHistory' or 'PrivateHistory'
+      if (
+        key.includes(AdvListType.AllHistory) ||
+        key.includes(AdvListType.PrivateHistory)
+      )
+        return;
+
       if (cachedAdvertisements?.items) {
         const updatedItems = cachedAdvertisements.items.map((item) =>
           item.id === advertisement.id ? advertisement : item
@@ -33,14 +40,12 @@ export class AdvertisementCacheService {
     });
 
     console.log(
-      'advertisement was updated in all caches. Id: ' + advertisement.id
+      'Advertisement was updated in all relevant caches. Id: ' +
+        advertisement.id
     );
   }
 
-  deleteItemFromCachesByAdvListType(
-    advertisementId: number,
-    advListType: AdvListType
-  ) {
+  deleteByAdvListType(advertisementId: number, advListType: AdvListType) {
     this.advertisementCache.forEach((cachedAdvertisements, key) => {
       if (key.includes(advListType)) {
         if (cachedAdvertisements?.items) {
@@ -143,7 +148,7 @@ export class AdvertisementCacheService {
     this.advertisementCache.set(key, advertisements);
   }
 
-  addItem(advertisement: Advertisement) {
+  add(advertisement: Advertisement) {
     if (!this.selectedAdvListType) {
       console.error('advListType is undefined');
       return;
@@ -163,7 +168,7 @@ export class AdvertisementCacheService {
     }
   }
 
-  updateItemsStatus(
+  updateStatus(
     advertisementStatus: AdvertisementStatus,
     advertisementId: number
   ) {
@@ -190,19 +195,34 @@ export class AdvertisementCacheService {
     }
   }
 
-  deleteItem(advertisementId: number) {
-    if (!this.selectedAdvListType) {
-      console.error('advListType is undefined');
-      return;
-    }
-    const searchParamsKey = this.getSearchParamsKey(this.selectedAdvListType);
-    console.log('Cache: deleteItem: ' + searchParamsKey);
-    const cachedAdvertisements = this.advertisementCache.get(searchParamsKey);
-    if (cachedAdvertisements?.items) {
-      const updatedPaginatedResult =
-        cachedAdvertisements.deleteItemById(advertisementId);
-      if (updatedPaginatedResult)
-        this.advertisementCache.set(searchParamsKey, updatedPaginatedResult);
-    }
+  delete(advertisementId: number) {
+    this.advertisementCache.forEach((cachedAdvertisements, key) => {
+      // Skip keys that contain 'AllHistory' or 'PrivateHistory'
+      if (
+        key.includes(AdvListType.AllHistory) ||
+        key.includes(AdvListType.PrivateHistory)
+      ) {
+        console.log(`Skipping deletion for cache key: ${key}`);
+        return;
+      }
+
+      if (cachedAdvertisements?.items) {
+        const updatedItems = cachedAdvertisements.items.filter(
+          (item) => item.id !== advertisementId
+        );
+
+        if (updatedItems.length > 0) {
+          cachedAdvertisements.items = updatedItems;
+          this.advertisementCache.set(key, cachedAdvertisements);
+        } else {
+          // If no items remain, remove the entire cache entry
+          this.advertisementCache.delete(key);
+        }
+      }
+    });
+
+    console.log(
+      `Advertisement with id ${advertisementId} deleted from all relevant caches.`
+    );
   }
 }

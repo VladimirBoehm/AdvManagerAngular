@@ -7,7 +7,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const toastr = inject(ToastrService);
 
   return next(req).pipe(
-    catchError(error => {
+    catchError((error) => {
       if (error) {
         switch (error.status) {
           case 400:
@@ -15,32 +15,32 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
               const modalStateErrors = [];
               for (const key in error.error.errors) {
                 if (error.error.errors[key]) {
-                  modalStateErrors.push(error.error.errors[key])
+                  modalStateErrors.push(error.error.errors[key]);
                 }
               }
               throw modalStateErrors.flat();
             } else {
-              toastr.error(error.error, error.status)
+              toastr.error(error.error, error.status);
             }
             break;
           case 401:
-            toastr.error('Unauthorized', error.status)
+            toastr.error('Ошибка авторизации', error.status);
             break;
           case 404:
-           // router.navigateByUrl('/not-found');
-            toastr.error('Page not found')
+            // router.navigateByUrl('/not-found');
+            toastr.error('Страница не найдена');
             break;
           case 500:
-           // const navigationExtras: NavigationExtras = {state: {error: error.error}};
+            // const navigationExtras: NavigationExtras = {state: {error: error.error}};
             //router.navigateByUrl('/server-error', navigationExtras);
-            toastr.error('server-error', error.status)
+            toastr.error('Ошибка сервера', error.status);
             break;
           default:
-            toastr.error('Something unexpected went wrong');
+            toastr.error('Что-то пошло не так');
             break;
         }
       }
       throw error;
     })
-  )
+  );
 };

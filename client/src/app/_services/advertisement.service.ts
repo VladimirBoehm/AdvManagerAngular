@@ -108,7 +108,7 @@ export class AdvertisementService {
         tap((savedAdvertisement: Advertisement) => {
           savedAdvertisement.updated = this.dateHelper.getUTCTime();
           savedAdvertisement.created = this.dateHelper.getUTCTime();
-          this.advertisementCacheService.addItem(savedAdvertisement);
+          this.advertisementCacheService.add(savedAdvertisement);
         })
       );
   }
@@ -119,7 +119,7 @@ export class AdvertisementService {
       .pipe(
         tap(() => {
           advertisement.updated = this.dateHelper.getUTCTime();
-          this.advertisementCacheService.updateItemInAllCaches(advertisement);
+          this.advertisementCacheService.updateInAllCaches(advertisement);
         })
       );
   }
@@ -138,19 +138,18 @@ export class AdvertisementService {
       .pipe(
         tap(() => {
           advertisement.updated = this.dateHelper.getUTCTime();
-          this.advertisementCacheService.updateItemInAllCaches(advertisement);
+          this.advertisementCacheService.updateInAllCaches(advertisement);
         })
       );
   }
 
   delete(id: number | undefined) {
     if (!id) return;
-
     return this.http
       .delete<Advertisement>(this.baseUrl + `advertisement/${id}`)
       .pipe(
         tap(() => {
-          this.advertisementCacheService.deleteItem(id);
+          this.advertisementCacheService.delete(id);
         })
       );
   }
@@ -164,8 +163,8 @@ export class AdvertisementService {
       .pipe(
         tap(() => {
           advertisement.updated = this.dateHelper.getUTCTime();
-          this.advertisementCacheService.updateItemInAllCaches(advertisement);
-          this.advertisementCacheService.deleteItemFromCachesByAdvListType(
+          this.advertisementCacheService.updateInAllCaches(advertisement);
+          this.advertisementCacheService.deleteByAdvListType(
             advertisement.id,
             AdvListType.PendingPublication
           );
@@ -318,8 +317,8 @@ export class AdvertisementService {
       .pipe(
         tap(() => {
           advertisement.updated = this.dateHelper.getUTCTime();
-          this.advertisementCacheService.updateItemInAllCaches(advertisement);
-          this.advertisementCacheService.deleteItemFromCachesByAdvListType(
+          this.advertisementCacheService.updateInAllCaches(advertisement);
+          this.advertisementCacheService.deleteByAdvListType(
             advertisement.id,
             AdvListType.PendingPublication
           );
@@ -336,8 +335,8 @@ export class AdvertisementService {
       .pipe(
         tap(() => {
           advertisement.updated = this.dateHelper.getUTCTime();
-          this.advertisementCacheService.updateItemInAllCaches(advertisement);
-          this.advertisementCacheService.deleteItemFromCachesByAdvListType(
+          this.advertisementCacheService.updateInAllCaches(advertisement);
+          this.advertisementCacheService.deleteByAdvListType(
             advertisement.id,
             AdvListType.PendingPublication
           );

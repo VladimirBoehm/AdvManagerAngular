@@ -17,6 +17,7 @@ import { AdvertisementStatus } from '../../_framework/constants/advertisementSta
 import { AdvListType } from '../../_framework/constants/advListType';
 import { SharedModule } from '../../_framework/modules/sharedModule';
 import { ImagePreviewModalComponent } from '../../_framework/component/image-preview-modal/image-preview-modal.component';
+import { BusyService } from '../../_services/busy.service';
 
 @Component({
   selector: 'app-advertisement-edit',
@@ -44,7 +45,8 @@ export class AdvertisementEditComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-
+  
+  busyService = inject(BusyService);
   modalRef?: BsModalRef;
   editForm: FormGroup = new FormGroup({});
   matErrorService = inject(MatErrorService);

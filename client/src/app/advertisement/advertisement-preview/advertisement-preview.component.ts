@@ -14,6 +14,7 @@ import { DateHelper } from '../../_framework/component/helpers/dateHelper';
 import { ConfirmationMatDialogService } from '../../_services/confirmation-mat-dialog.service';
 import { SharedModule } from '../../_framework/modules/sharedModule';
 import { AdvertisementMainDataComponent } from '../advertisement-main-data/advertisement-main-data.component';
+import { BusyService } from '../../_services/busy.service';
 
 @Component({
   selector: 'app-advertisement-preview',
@@ -40,7 +41,7 @@ export class AdvertisementPreviewComponent implements OnInit {
   advertisementHelper = inject(AdvertisementHelper);
   confirmationService = inject(ConfirmationMatDialogService);
   advertisementService = inject(AdvertisementService);
-
+  busyService = inject(BusyService);
   advertisementStatus = AdvertisementStatus;
   advListType = AdvListType;
   dateHelper = DateHelper;
@@ -69,7 +70,6 @@ export class AdvertisementPreviewComponent implements OnInit {
     );
   }
 
-  
   private getAdvertisementById(id: number) {
     this.advertisementService.getById(Number(id))?.subscribe({
       next: (advertisement: Advertisement) => {
@@ -274,10 +274,10 @@ export class AdvertisementPreviewComponent implements OnInit {
     if (!this.advertisement) return;
     this.advertisement.statusId = AdvertisementStatus.pendingPublication;
     this.advertisement.nextPublishDate = this.nextPublishDate;
+    this.modalRef?.hide();
 
     this.publishService.unblockNextPublishDate(this.advertisement).subscribe({
       next: () => {
-        this.modalRef?.hide();
         this.getAdvertisementById(this.advertisement?.id ?? 0);
       },
       error: (err) => {

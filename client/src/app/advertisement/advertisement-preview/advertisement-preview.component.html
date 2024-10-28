@@ -4,25 +4,16 @@
   <div *ngIf="advertisement.statusId === advertisementStatus.new">
     <div class="d-flex mt-2">
       <div class="col-4 d-flex align-items-center justify-content-center">
-        <button class="btn empty-button" (click)="delete()">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#5f6368"
-          >
-            <path
-              d="m376-336 104-104 104 104 20-20-104-104 104-104-20-20-104 104-104-104-20 20 104 104-104 104 20 20Zm-64 164q-26 0-43-17t-17-43v-488h-40v-28h148v-28h240v28h148v28h-40v488q0 26-17 43t-43 17H312Zm368-548H280v488q0 12 10 22t22 10h336q12 0 22-10t10-22v-488Zm-400 0v520-520Z"
-            />
-          </svg>
-          <div class="text-muted">Удалить</div>
-        </button>
+        <ng-container *ngTemplateOutlet="deleteButtonTemplate"></ng-container>
       </div>
       <div
         class="col-4 d-flex flex-column align-items-center justify-content-center"
       >
-        <button class="btn empty-button" (click)="edit()">
+        <button
+          class="btn empty-button"
+          (click)="edit()"
+          [disabled]="busyService.isLoading()"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="24px"
@@ -40,7 +31,11 @@
       <div
         class="col-4 d-flex flex-column align-items-center justify-content-center"
       >
-        <button class="btn empty-button" (click)="sendToValidateDialogShow()">
+        <button
+          class="btn empty-button"
+          (click)="sendToValidateDialogShow()"
+          [disabled]="busyService.isLoading()"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="24px"
@@ -63,25 +58,16 @@
   <div *ngIf="advertisement.statusId === advertisementStatus.validated">
     <div class="d-flex mt-2">
       <div class="col-6 d-flex align-items-center justify-content-center">
-        <button class="btn empty-button" (click)="delete()">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#5f6368"
-          >
-            <path
-              d="m376-336 104-104 104 104 20-20-104-104 104-104-20-20-104 104-104-104-20 20 104 104-104 104 20 20Zm-64 164q-26 0-43-17t-17-43v-488h-40v-28h148v-28h240v28h148v28h-40v488q0 26-17 43t-43 17H312Zm368-548H280v488q0 12 10 22t22 10h336q12 0 22-10t10-22v-488Zm-400 0v520-520Z"
-            />
-          </svg>
-          <div class="text-muted">Удалить</div>
-        </button>
+        <ng-container *ngTemplateOutlet="deleteButtonTemplate"></ng-container>
       </div>
       <div
         class="col-6 d-flex flex-column align-items-center justify-content-center"
       >
-        <button class="btn empty-button" (click)="publishDialogShow()">
+        <button
+          class="btn empty-button"
+          (click)="publishDialogShow()"
+          [disabled]="busyService.isLoading()"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="24px"
@@ -186,20 +172,7 @@
   <div *ngIf="advertisement.statusId === advertisementStatus.rejected">
     <div class="d-flex mt-2">
       <div class="col-6 d-flex align-items-center justify-content-center">
-        <button class="btn empty-button" (click)="delete()">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#5f6368"
-          >
-            <path
-              d="m376-336 104-104 104 104 20-20-104-104 104-104-20-20-104 104-104-104-20 20 104 104-104 104 20 20Zm-64 164q-26 0-43-17t-17-43v-488h-40v-28h148v-28h240v28h148v28h-40v488q0 26-17 43t-43 17H312Zm368-548H280v488q0 12 10 22t22 10h336q12 0 22-10t10-22v-488Zm-400 0v520-520Z"
-            />
-          </svg>
-          <div class="text-muted">Удалить</div>
-        </button>
+        <ng-container *ngTemplateOutlet="deleteButtonTemplate"></ng-container>
       </div>
       <div
         class="col-6 d-flex flex-column align-items-center justify-content-center"
@@ -377,9 +350,20 @@
   <ng-template #modalDialogPublicationInfo>
     <div class="modal-body">
       <div class="text-center mb-2">Объявление будет поставлено в очередь</div>
-      <div class="text-center mb-2">
-        начиная с: {{ nextPublishDate | date : "dd.MM.yyyy" }}
+      <div class="d-flex justify-content-center align-items-center">
+        <div class="text-center mb-2 me-2">начиная с:</div>
+        <mat-progress-bar
+          *ngIf="busyService.isLoading(); else nextPublishDateTemplate"
+          mode="buffer"
+          style="width: 5rem"
+        ></mat-progress-bar>
+        <ng-template #nextPublishDateTemplate>
+          <div class="text-center mb-2">
+            {{ nextPublishDate | date : "dd.MM.yyyy" }}
+          </div>
+        </ng-template>
       </div>
+
       <div class="text-center text-muted mb-2 my-info-text">
         *Размещение объявлений зависит от активности в группе
       </div>
@@ -387,6 +371,7 @@
         <button
           class="btn empty-button me-4"
           (click)="modalDialogPublishConfirm()"
+          [disabled]="busyService.isLoading()"
         >
           <div>Подтвердить</div>
         </button>
@@ -398,3 +383,30 @@
   </ng-template>
 </div>
 }
+
+<!-- Delete Button Template -->
+<ng-template #deleteButtonTemplate>
+  <button
+    class="btn empty-button d-flex flex-column align-items-center justify-content-center"
+    (click)="delete()"
+    [disabled]="busyService.isLoading()"
+  >
+    <ng-container *ngIf="busyService.isLoading(); else defaultIcon">
+      <mat-spinner [diameter]="24"></mat-spinner>
+    </ng-container>
+    <ng-template #defaultIcon>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        height="24px"
+        viewBox="0 -960 960 960"
+        width="24px"
+        fill="#5f6368"
+      >
+        <path
+          d="m376-336 104-104 104 104 20-20-104-104 104-104-20-20-104 104-104-104-20 20 104 104-104 104 20 20Zm-64 164q-26 0-43-17t-17-43v-488h-40v-28h148v-28h240v28h148v28h-40v488q0 26-17 43t-43 17H312Zm368-548H280v488q0 12 10 22t22 10h336q12 0 22-10t10-22v-488Zm-400 0v520-520Z"
+        />
+      </svg>
+    </ng-template>
+    <div class="text-muted">Удалить</div>
+  </button>
+</ng-template>

@@ -24,7 +24,7 @@ export class PublishService {
       .post(this.baseUrl + `regularPublish`, advertisement.id)
       .pipe(
         tap(() => {
-          this.advertisementCacheService.updateItemInAllCaches(advertisement);
+          this.advertisementCacheService.updateInAllCaches(advertisement);
         })
       );
   }

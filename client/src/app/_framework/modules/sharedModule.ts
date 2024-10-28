@@ -11,12 +11,13 @@ import {
   NgIf,
   NgTemplateOutlet,
 } from '@angular/common';
-
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { PaginatorLocalization } from '../component/paginator/paginator-localization';
 import { MatCardModule } from '@angular/material/card';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 @NgModule({
   declarations: [SkeletonDirective],
   imports: [
@@ -46,6 +47,8 @@ import { MatCardModule } from '@angular/material/card';
     DatePipe,
     AsyncPipe,
     FormsModule,
+    MatProgressSpinnerModule,
+    MatProgressBarModule,
   ],
 })
 export class SharedModule {}
