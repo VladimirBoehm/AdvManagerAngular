@@ -21,10 +21,21 @@
           </div>
           <div class="col-8">Валидировать</div>
           <div class="col-2">
-            <div class="d-flex justify-content-end">
-              <div *ngIf="advertisementsToValidateCount > 0" class="text-muted">
-                {{ advertisementsToValidateCount }}
-              </div>
+            <div class="d-flex justify-content-end align-items-center">
+              <mat-progress-bar
+                *ngIf="busyService.isLoading(); else counterTemplate"
+                mode="buffer"
+                style="width: 2rem"
+              ></mat-progress-bar>
+
+              <ng-template #counterTemplate>
+                <div
+                  *ngIf="advertisementsToValidateCount > 0"
+                  class="text-muted"
+                >
+                  {{ advertisementsToValidateCount }}
+                </div>
+              </ng-template>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 height="24px"

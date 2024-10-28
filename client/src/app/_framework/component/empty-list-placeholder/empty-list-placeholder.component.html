@@ -1,9 +1,13 @@
 <div class="d-flex flex-column justify-content-center align-items-center">
-    <img
-      [src]="imageUrl"
-      alt="Icon"
-      width="150"
-      height="150"
-    />
-    <div class="text-muted">{{ message }}</div>
-  </div>
+  <img [src]="imageUrl" alt="Icon" width="150" height="150" />
+
+  <!-- Check for custom content -->
+  <ng-container *ngIf="customContent; else defaultContent">
+    <ng-container *ngTemplateOutlet="customContent"></ng-container>
+  </ng-container>
+
+  <!-- Default content if none is projected -->
+  <ng-template #defaultContent>
+    <div class="text-muted">Список пуст</div>
+  </ng-template>
+</div>

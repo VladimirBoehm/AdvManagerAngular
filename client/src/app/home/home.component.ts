@@ -5,17 +5,21 @@ import { MatIconModule } from '@angular/material/icon';
 import { AdvertisementService } from '../_services/advertisement.service';
 import { NgIf } from '@angular/common';
 import { AdvListType } from '../_framework/constants/advListType';
+import { SharedModule } from '../_framework/modules/sharedModule';
+import { BusyService } from '../_services/busy.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, MatIconModule, NgIf],
+  imports: [SharedModule, RouterLink, MatIconModule, NgIf],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit {
   advListType = AdvListType;
   advertisementService = inject(AdvertisementService);
+  busyService = inject(BusyService);
+
   advertisementsToValidateCount: number = 0;
 
   ngOnInit(): void {

@@ -183,7 +183,6 @@ export class MatListFilterComponentModal implements OnInit {
 
   save() {
     this.updateCurrentSortOption();
-    console.log(this.sortForm);
     this.dialogRef.close(this.currentSortOption());
   }
 }

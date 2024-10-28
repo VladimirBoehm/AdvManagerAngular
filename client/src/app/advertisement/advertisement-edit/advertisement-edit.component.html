@@ -135,6 +135,7 @@
       class="btn empty-button ps-0"
       *ngIf="!advertisement.linkName"
       (click)="showAddAdvertisementButtonDialog()"
+      [disabled]="busyService.isLoading()"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -229,20 +230,56 @@
       </div>
     </div>
     <hr class="mt-2 mb-0" />
-    <div class="modal-body">
-      <div *ngFor="let image of userImages; let first = first">
-        <img
-          [src]="image.url"
-          alt="image"
-          [ngClass]="{
-            'mt-1': !first,
-            'selected-image': selectedImage === image
-          }"
-          class="preview-image"
-          (click)="selectImageHandler(image)"
-        />
+    <div *ngIf="busyService.isLoading(); else imageListContent">
+      <div
+        class="d-flex align-items-center justify-content-center"
+        style="height: 10rem"
+      >
+        <div class="me-1 text-muted">Загрузка</div>
+        <mat-progress-bar
+          mode="buffer"
+          style="width: 3rem"
+        ></mat-progress-bar>
       </div>
     </div>
+
+    <ng-template #imageListContent>
+      <app-empty-list-placeholder
+        *ngIf="userImages.length === 0; else imageList"
+        [customContent]="emptyListInfo"
+      >
+        <ng-template #emptyListInfo>
+          <div class="d-flex flex-column align-items-center text-muted mb-3">
+            <div class="my-info-text" style="line-height: 1.5">
+              Нет загруженных изображений.
+            </div>
+            <div class="my-info-text" style="line-height: 1.5">
+              Для загрузки выполните в боте команду <strong>/start</strong>,
+            </div>
+            <div class="my-info-text" style="line-height: 1.5">
+              далее выберите пункт меню
+              <strong>'Загрузить изображения'</strong>.
+            </div>
+          </div>
+        </ng-template>
+      </app-empty-list-placeholder>
+      <ng-template #imageList>
+        <div class="modal-body">
+          <div *ngFor="let image of userImages; let first = first">
+            <img
+              [src]="image.url"
+              alt="image"
+              [ngClass]="{
+                'mt-1': !first,
+                'selected-image': selectedImage === image
+              }"
+              class="preview-image"
+              (click)="selectImageHandler(image)"
+            />
+          </div>
+        </div>
+      </ng-template>
+    </ng-template>
   </ng-template>
   <ng-template #imageShowTemplate>
     <app-image-preview-modal

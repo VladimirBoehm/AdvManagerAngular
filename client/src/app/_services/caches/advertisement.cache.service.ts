@@ -52,12 +52,8 @@ export class AdvertisementCacheService {
           const updatedItems = cachedAdvertisements.items.filter(
             (item) => item.id !== advertisementId
           );
-          if (updatedItems.length > 0) {
-            cachedAdvertisements.items = updatedItems;
-            this.advertisementCache.set(key, cachedAdvertisements);
-          } else {
-            this.advertisementCache.delete(key);
-          }
+          cachedAdvertisements.items = updatedItems;
+          this.advertisementCache.set(key, cachedAdvertisements);
         }
       }
     });
@@ -176,23 +172,37 @@ export class AdvertisementCacheService {
       console.error('advListType is undefined');
       return;
     }
-    const searchParamsKey = this.getSearchParamsKey(this.selectedAdvListType);
-    const cachedAdvertisements = this.advertisementCache.get(searchParamsKey);
-    console.log('Cache: updateItemsStatus: ' + searchParamsKey);
 
-    if (cachedAdvertisements?.items) {
-      const updatedItems = cachedAdvertisements.items.map((item) => {
-        if (item.id === advertisementId) {
-          return {
-            ...item,
-            statusId: advertisementStatus,
-          } as Advertisement;
-        }
-        return item;
-      });
-      cachedAdvertisements.items = updatedItems;
-      this.advertisementCache.set(searchParamsKey, cachedAdvertisements);
-    }
+    this.advertisementCache.forEach((cachedAdvertisements, key) => {
+      // Skip keys that contain 'AllHistory' or 'PrivateHistory'
+      if (
+        key.includes(AdvListType.AllHistory) ||
+        key.includes(AdvListType.PrivateHistory)
+      ) {
+        console.log(`Skipping status update for cache key: ${key}`);
+        return;
+      }
+
+      console.log('Cache: updateItemsStatus: ' + key);
+
+      if (cachedAdvertisements?.items) {
+        const updatedItems = cachedAdvertisements.items.map((item) => {
+          if (item.id === advertisementId) {
+            return {
+              ...item,
+              statusId: advertisementStatus,
+            } as Advertisement;
+          }
+          return item;
+        });
+        cachedAdvertisements.items = updatedItems;
+        this.advertisementCache.set(key, cachedAdvertisements);
+      }
+    });
+
+    console.log(
+      `Status updated for advertisement ID ${advertisementId} in all relevant caches.`
+    );
   }
 
   delete(advertisementId: number) {
@@ -211,13 +221,8 @@ export class AdvertisementCacheService {
           (item) => item.id !== advertisementId
         );
 
-        if (updatedItems.length > 0) {
-          cachedAdvertisements.items = updatedItems;
-          this.advertisementCache.set(key, cachedAdvertisements);
-        } else {
-          // If no items remain, remove the entire cache entry
-          this.advertisementCache.delete(key);
-        }
+        cachedAdvertisements.items = updatedItems;
+        this.advertisementCache.set(key, cachedAdvertisements);
       }
     });
 

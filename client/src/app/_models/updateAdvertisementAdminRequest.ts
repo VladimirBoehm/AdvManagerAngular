@@ -4,5 +4,5 @@ export interface UpdateAdvertisementAdminRequest {
   advertisementId: number;
   advertisementStatus: AdvertisementStatus;
   publishFrequency?: number;
-  adminMessage?: string ;
+  adminMessage?: string;
 }

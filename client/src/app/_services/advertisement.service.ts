@@ -382,25 +382,22 @@ export class AdvertisementService {
       );
   }
 
-  //TODO обновлять cache
-  updateAdvertisementAdmin(
+  validateAdvertisementAdmin(
     updateAdvertisementAdminRequest: UpdateAdvertisementAdminRequest
   ) {
-    return this.http
-      .post(
-        this.baseUrl + 'advertisementAdmin',
-        updateAdvertisementAdminRequest
-      )
-      .pipe(
-        tap(() => {
-          this.advertisementCacheService.resetCache(
-            AdvListType.PendingValidation
-          );
-          this.advertisementCacheService.resetCache(
-            AdvListType.MyAdvertisements
-          );
-        })
-      );
+    this.advertisementCacheService.deleteByAdvListType(
+      updateAdvertisementAdminRequest.advertisementId,
+      AdvListType.PendingValidation
+    );
+    this.advertisementCacheService.updateStatus(
+      updateAdvertisementAdminRequest.advertisementStatus,
+      updateAdvertisementAdminRequest.advertisementId
+    );
+
+    return this.http.post(
+      this.baseUrl + 'advertisementAdmin',
+      updateAdvertisementAdminRequest
+    );
   }
 
   private handleAdvertisementResponse(response: HttpResponse<Advertisement[]>) {

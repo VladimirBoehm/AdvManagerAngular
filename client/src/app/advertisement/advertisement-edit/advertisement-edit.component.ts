@@ -18,6 +18,7 @@ import { AdvListType } from '../../_framework/constants/advListType';
 import { SharedModule } from '../../_framework/modules/sharedModule';
 import { ImagePreviewModalComponent } from '../../_framework/component/image-preview-modal/image-preview-modal.component';
 import { BusyService } from '../../_services/busy.service';
+import { EmptyListPlaceholderComponent } from "../../_framework/component/empty-list-placeholder/empty-list-placeholder.component";
 
 @Component({
   selector: 'app-advertisement-edit',
@@ -26,7 +27,8 @@ import { BusyService } from '../../_services/busy.service';
     SharedModule,
     AddAdvertisementButtonModalComponent,
     ImagePreviewModalComponent,
-  ],
+    EmptyListPlaceholderComponent
+],
   templateUrl: './advertisement-edit.component.html',
   styleUrl: './advertisement-edit.component.scss',
   providers: [MatErrorService],

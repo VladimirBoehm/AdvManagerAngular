@@ -110,16 +110,14 @@ export class AdvertisementValidateComponent implements OnInit {
         this.editFormModalDialog.controls['frequencyValue']?.value,
       adminMessage: this.editForm.controls['adminMessage']?.value,
     };
+    this.modalRef?.hide();
 
     this.advertisementService
-      .updateAdvertisementAdmin(updateAdvertisementAdminRequest)
+      .validateAdvertisementAdmin(updateAdvertisementAdminRequest)
       .subscribe({
-        next: () => {
-          this.modalRef?.hide();
-          this.router.navigate(['/adv-list', AdvListType.PendingValidation]);
-        },
         error: (error: any) => console.log(error),
       });
+    this.router.navigate(['/adv-list', AdvListType.PendingValidation]);
   }
 
   reject() {
