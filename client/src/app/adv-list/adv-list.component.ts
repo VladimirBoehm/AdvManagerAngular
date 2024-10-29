@@ -38,9 +38,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
     this.routerSubscription = this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
         if (event.navigationTrigger === 'popstate') {
-          this.advertisementService.resetPaginationParams(
-            this.selectedListType
-          );
+          this.advertisementService.resetPaginationParams();
         }
       }
     });
@@ -52,7 +50,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
     });
 
     this.backButtonService.setBackButtonHandler(() => {
-      this.advertisementService.resetPaginationParams(this.selectedListType);
+      this.advertisementService.resetPaginationParams();
 
       if (this.selectedListType === AdvListType.PrivateHistory) {
         this.router.navigate(['/adv-list', this.advListType.MyAdvertisements]);

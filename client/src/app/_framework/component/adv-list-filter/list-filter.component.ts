@@ -1,14 +1,7 @@
-import {
-  Component,
-  EventEmitter,
-  inject,
-  Input,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
-
 import { ReactiveFormsModule } from '@angular/forms';
 import { SortOption } from '../../../_models/sortOption';
 import { NgIf } from '@angular/common';
@@ -17,11 +10,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MatListFilterComponentModal } from './mat-adv-list-filter-modal/mat-list-filter-modal.component';
 import { ChatFilterService } from '../../../_services/chat-filter.service';
-import { TelegramBackButtonService } from '../../telegramBackButtonService';
-import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-adv-list-filter',
@@ -48,7 +39,6 @@ export class ListFilterComponent {
   dialog = inject(MatDialog);
   advertisementService = inject(AdvertisementService);
   chatFilterService = inject(ChatFilterService);
-
 
   onFilterClick() {
     let test = this.dialog

@@ -2,7 +2,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { Advertisement } from '../_models/advertisement';
 import { environment } from '../../environments/environment';
-import { map, Observable, of, tap } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
 import { UpdateAdvertisementAdminRequest } from '../_models/updateAdvertisementAdminRequest';
 import { UpdateAdvertisementStatusRequest } from '../_models/updateAdvertisementStatusRequest';
 import { AdvertisementCacheService } from './caches/advertisement.cache.service';
@@ -29,6 +29,11 @@ export class AdvertisementService {
   paginationParamsState: WritableSignal<Map<AdvListType, PaginationParams>>;
 
   constructor() {
+    const paginationState = this.initializePaginationState();
+    this.paginationParamsState = signal(paginationState);
+  }
+
+  private initializePaginationState() {
     const defaultPaginationParams: PaginationParams = {
       pageNumber: 0,
       pageSize: 6,
@@ -43,10 +48,20 @@ export class AdvertisementService {
     const paginationState = new Map<AdvListType, PaginationParams>();
 
     Object.values(AdvListType).forEach((advListType) => {
-      paginationState.set(advListType, { ...defaultPaginationParams });
+      if (advListType === AdvListType.PendingPublication) {
+        paginationState.set(advListType, {
+          ...defaultPaginationParams,
+          sortOption: {
+            ...defaultPaginationParams.sortOption,
+            field: 'date',
+            order: 'asc',
+          },
+        });
+      } else {
+        paginationState.set(advListType, { ...defaultPaginationParams });
+      }
     });
-
-    this.paginationParamsState = signal(paginationState);
+    return paginationState;
   }
 
   getCurrentSortOptions() {
@@ -58,18 +73,9 @@ export class AdvertisementService {
       ?.sortOption;
   }
 
-  resetPaginationParams(advListType: AdvListType) {
-    this.updatePaginationParams(
-      advListType,
-      undefined, // Keep pageSize unchanged
-      0, // Reset pageNumber to 0
-      {
-        field: DEFAULT_SORT_OPTION.field, // Sort by date
-        order: DEFAULT_SORT_OPTION.order, // In descending order
-        searchType: DEFAULT_SORT_OPTION.searchType, // Search by title
-        searchValue: DEFAULT_SORT_OPTION.searchValue, // No specific search value
-      } as SortOption
-    );
+  resetPaginationParams() {
+    const paginationState = this.initializePaginationState();
+    this.paginationParamsState.set(paginationState);
   }
 
   updatePaginationParams(

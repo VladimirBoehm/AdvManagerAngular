@@ -3,7 +3,6 @@ import { AdImage } from './adImage';
 import { PaginatedItem } from './paginatedItem';
 
 export interface Advertisement extends PaginatedItem {
-  
   isDirty?: boolean;
   isEditable?: boolean;
   userId: number;
@@ -21,6 +20,7 @@ export interface Advertisement extends PaginatedItem {
   nextPublishId?: number;
   linkName?: string;
   linkValue?: string;
+  placeInQueue?: number;
   created?: Date;
   updated?: Date;
 }

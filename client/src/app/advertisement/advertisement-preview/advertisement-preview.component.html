@@ -160,11 +160,19 @@
     <div class="alert alert-info text-center" role="alert">
       <div class="d-flex flex-column">
         <div>Ожидает размещения!</div>
-        <div>
+        <div *ngIf="!advertisement.placeInQueue; else imageListContent">
           Будет поставлено в очередь:
           {{ advertisement.nextPublishDate | date : "dd.MM.yyyy" }}
         </div>
       </div>
+      <ng-template #imageListContent>
+        <div class="d-flex flex-column">
+          <div>Место в очереди: {{ advertisement.placeInQueue }}</div>
+          <div class="text-muted my-info-text">
+            *Размещение объявлений зависит от активности в группе
+          </div>
+        </div>
+      </ng-template>
     </div>
   </div>
 

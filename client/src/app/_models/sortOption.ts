@@ -1,7 +1,10 @@
+export type SortField = 'date' | 'title' | 'username' | 'name';
+export type SortOrder = 'asc' | 'desc';
+export type SearchType = 'title' | 'content' | 'date' | 'link';
 export interface SortOption {
-  field: 'date' | 'title' | 'username' | 'name';
-  order: 'asc' | 'desc';
-  searchType: 'title' | 'content' | 'date' | 'link';
+  field: SortField;
+  order: SortOrder;
+  searchType: SearchType;
   searchValue?: string;
   dateRange?: { start: Date; end: Date };
 }
