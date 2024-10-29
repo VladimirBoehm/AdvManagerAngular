@@ -41,7 +41,7 @@ export class ListFilterComponent {
   chatFilterService = inject(ChatFilterService);
 
   onFilterClick() {
-    let test = this.dialog
+    this.dialog
       .open(MatListFilterComponentModal, {
         position: { top: '10px' },
         panelClass: 'custom-dialog-container',

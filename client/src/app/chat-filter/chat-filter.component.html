@@ -1,13 +1,10 @@
-@if(chatFilterService.chatFiltersPaginatedResult() &&
-chatFilterService.chatFiltersPaginatedResult().items){
+@if(chatFilterService.chatFilters()){
 
 <div class="container-fluid">
   <ng-container *ngTemplateOutlet="createButtonTemplate"></ng-container>
   <ng-container
     *ngIf="
-      (chatFilterService.chatFiltersPaginatedResult().items!.length === 0 ||
-        chatFilterService.chatFiltersPaginatedResult().items!.length ===
-          undefined) &&
+      chatFilterService.chatFilters().length === 0 &&
         chatFilterService.isLoaded();
       else nonEmptyList
     "
@@ -25,7 +22,7 @@ chatFilterService.chatFiltersPaginatedResult().items){
         <ul class="list-group list-group-flush">
           <li
             *ngFor="
-              let item of chatFilterService.chatFiltersPaginatedResult().items
+              let item of chatFilterService.chatFilters()
             "
             class="list-group-item"
             style="cursor: auto"
@@ -78,7 +75,7 @@ chatFilterService.chatFiltersPaginatedResult().items){
       <div class="col-6">
         <app-adv-list-filter
           *ngIf="
-            chatFilterService.chatFiltersPaginatedResult().items
+            chatFilterService.chatFilters()
           "
           (onChanged)="sortChanged($event)"
           [disabled]="busyService.isLoading()"
@@ -91,7 +88,7 @@ chatFilterService.chatFiltersPaginatedResult().items){
         <button
           class="btn empty-button"
           [disabled]="
-            chatFilterService.chatFiltersPaginatedResult().items!.length > 29 ||
+            chatFilterService.chatFilters().length > 29 ||
             !chatFilterService.isLoaded()
           "
           (click)="showAddDialog()"
@@ -111,7 +108,7 @@ chatFilterService.chatFiltersPaginatedResult().items){
           <div class="text-muted">Создать</div>
           <div
             *ngIf="
-              chatFilterService.chatFiltersPaginatedResult().items!.length > 29
+              chatFilterService.chatFilters().length > 29
             "
             class="my-info-text text-danger"
           >

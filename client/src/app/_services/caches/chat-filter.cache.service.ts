@@ -1,87 +1,80 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { PaginationParams } from '../../_models/paginationParams';
 import { ChatFilter } from '../../_models/chatFilter';
-import { PaginatedResult } from '../../_models/pagination';
-import { SortOption } from '../../_models/sortOption';
-
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatFilterCacheService {
-  private chatFilterCache = new Map<any, PaginatedResult<ChatFilter>>();
-  private paginationParams?: PaginationParams;
+  private chatFilterCache = signal<ChatFilter[]>([]);
 
-  private setPaginationParams(paginationParams: PaginationParams) {
-    this.paginationParams = {
-      ...this.paginationParams,
-      ...paginationParams,
-    };
-  }
+  getCache(paginationParams?: PaginationParams): ChatFilter[] | undefined {
+    console.log('cache requested');
 
-  //First step
-  getCache(
-    paginationParams?: PaginationParams
-  ): PaginatedResult<ChatFilter> | undefined {
-    if (paginationParams) this.setPaginationParams(paginationParams);
-    console.log('cache requested: ' + this.getSearchParamsKey());
-    return this.chatFilterCache.get(this.getSearchParamsKey());
-  }
+    if (!paginationParams) {
+      return this.chatFilterCache();
+    }
 
-  //Second step
-  setCache(chatFilters: PaginatedResult<ChatFilter>) {
-    const key = this.getSearchParamsKey();
-    console.log('Cache set: ' + key);
-    this.chatFilterCache.set(key, chatFilters);
-  }
+    const { pageNumber, pageSize, sortOption } = paginationParams;
+    let filteredList = [...this.chatFilterCache()];
 
-  private getSearchParamsKey(): string {
-    const flattenObject = (obj: any): any => {
-      const flattened: any = {};
-
-      for (const key in obj) {
-        if (obj[key] && typeof obj[key] === 'object') {
-          Object.assign(flattened, flattenObject(obj[key]));
-        } else {
-          flattened[key] = obj[key];
-        }
+    if (sortOption.searchValue) {
+      if (sortOption.searchType === 'title') {
+        filteredList = filteredList.filter((item) =>
+          item.value.includes(sortOption.searchValue!)
+        );
+      } else if (sortOption.searchType === 'date' && sortOption.dateRange) {
+        const { start, end } = sortOption.dateRange;
+        filteredList = filteredList.filter(
+          (item) => item.created >= start && item.created <= end
+        );
       }
-      return flattened;
-    };
+    }
+    filteredList.sort((a, b) => {
+      let compareResult = 0;
+      if (sortOption.field === 'date') {
+        compareResult = a.created.getTime() - b.created.getTime(); 
+      } else if (sortOption.field === 'title') {
+        compareResult = a.value.localeCompare(b.value);
+      }
+      return sortOption.order === 'asc' ? compareResult : -compareResult;
+    });
 
-    let deepClone: PaginationParams = JSON.parse(
-      JSON.stringify(this.paginationParams)
+    const startIndex = pageNumber  * pageSize;
+    const endIndex = startIndex + pageSize;
+    return filteredList.slice(startIndex, endIndex);
+  }
+
+  setCache(chatFilters: ChatFilter[]) {
+    console.log('Cache is set');
+    
+    const chatFiltersWithDates = chatFilters.map((cf) => ({
+      ...cf,
+      created: new Date(cf.created),
+    }));
+    this.chatFilterCache.set(chatFiltersWithDates);
+  }
+
+  updateId(id: number) {
+    const result = this.chatFilterCache();
+    const updatedItems = result.map((item) =>
+      item.id === 0 ? { ...item, id } : item
     );
-    deepClone.pageSize = 0;
-    const flattenedParams = flattenObject(deepClone);
-    return Object.values(flattenedParams).join('-');
+    this.chatFilterCache.set(updatedItems);
   }
 
   addItem(chatFilter: ChatFilter) {
-    const searchParamsKey = this.getSearchParamsKey();
-    console.log('Cache: addItem: ' + searchParamsKey);
-
-    const cachedAdvertisements = this.chatFilterCache.get(searchParamsKey);
-    if (cachedAdvertisements) {
-      const updatedCachedAdvertisements =
-        cachedAdvertisements.addItem(chatFilter);
-
-      this.chatFilterCache.set(searchParamsKey, updatedCachedAdvertisements);
-    } else {
-      const newPaginatedResult = new PaginatedResult([chatFilter]);
-      this.chatFilterCache.set(searchParamsKey, newPaginatedResult);
-    }
+    const newChatFilter = {
+      ...chatFilter,
+      created: new Date(chatFilter.created),
+    };
+    const newItems = [newChatFilter, ...this.chatFilterCache()];
+    this.chatFilterCache.set(newItems);
   }
 
   deleteItem(id: number) {
-    console.log('Cache: deleteItem across all keys');
-    for (const [key, cache] of this.chatFilterCache.entries()) {
-      if (cache?.items) {
-        const updatedPaginatedResult = cache.deleteItemById(id);
-        if (updatedPaginatedResult) {
-          this.chatFilterCache.set(key, updatedPaginatedResult);
-        }
-      }
-    }
+    const items = this.chatFilterCache();
+    const result = items.filter((item) => item.id !== id);
+    this.chatFilterCache.set(result);
   }
 }
