@@ -69,7 +69,7 @@ export class FeedbackComponent implements OnInit {
   onSendClick() {
     this.confirmationService
       .confirmDialog({
-        title: 'Отклонить объявление?',
+        title: 'Отправить сообщение?',
         confirmText: 'Да',
         cancelText: 'Нет',
       })
