@@ -164,7 +164,7 @@
       <ng-template #imageListContent>
         <div class="d-flex flex-column">
           <div>Место в очереди: {{ advertisement.placeInQueue }}</div>
-          <div class="text-muted my-info-text">
+          <div class="text-muted my-info-text lh-sm mt-1">
             *Размещение объявлений зависит от активности в группе
           </div>
         </div>
@@ -230,7 +230,11 @@
     role="alert"
   >
     <div class="text-center">
-      Размещено: {{ advertisement.nextPublishDate | date : "dd.MM.yyyy" }}
+      Размещено:
+      {{
+        dateHelper.getLocalTime(advertisement.nextPublishDate)
+          | date : "dd.MM.yyyy HH:mm"
+      }}
     </div>
     <div class="text-center">
       Автор: {{ advertisementHelper.getUserDisplayName(advertisement) }}
@@ -408,7 +412,7 @@
         </ng-template>
       </div>
 
-      <div class="text-center text-muted mb-2 my-info-text">
+      <div class="text-center text-muted mb-2 my-info-text lh-sm mt-1">
         *Размещение объявлений зависит от активности в группе
       </div>
       <div class="d-flex justify-content-end">
