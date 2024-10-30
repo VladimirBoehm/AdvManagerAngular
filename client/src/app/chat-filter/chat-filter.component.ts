@@ -85,8 +85,6 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
       value: this.editForm.controls['item']?.value,
       created: this.dateHelper.getUTCTime(),
     } as ChatFilter;
-    this.chatFilterService.resetPaginationParams();
-    this.chatFilterService.getAll();
     this.chatFilterService.save(newChatFiler);
     this.editForm.reset();
     this.modalRef?.hide();
