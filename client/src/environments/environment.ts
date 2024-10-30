@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://7zbkcr2f-7117.euw.devtunnels.ms/',
+  apiUrl: 'https://kll0mmwt-7117.euw.devtunnels.ms/',
 };
