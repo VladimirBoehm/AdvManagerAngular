@@ -63,7 +63,7 @@ export class AdvertisementPreviewComponent implements OnInit {
     });
   }
 
-  isCancelButtonShown(): boolean {
+  shouldShowCancelButton(): boolean {
     return (
       this.accountService.currentUser()?.isAdmin ||
       this.accountService.currentUser()?.userId === this.advertisement?.userId
@@ -300,5 +300,14 @@ export class AdvertisementPreviewComponent implements OnInit {
       return 'дня';
     }
     return 'дней';
+  }
+
+  shouldShowForceButton(): boolean {
+    let result =
+      this.accountService.currentUser()?.isAdmin &&
+      this.advertisementService.getActualSearchType() ===
+        this.advListType.PendingPublication;
+    if (result) return result;
+    return false;
   }
 }

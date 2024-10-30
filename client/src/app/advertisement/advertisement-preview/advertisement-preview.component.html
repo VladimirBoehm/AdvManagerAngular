@@ -110,11 +110,7 @@
         class="col-6 d-flex flex-column align-items-center justify-content-center"
       >
         <button
-          *ngIf="
-            accountService.currentUser()?.isAdmin &&
-            advertisementService.getActualSearchType() ===
-              advListType.PendingPublication
-          "
+          *ngIf="shouldShowForceButton()"
           class="btn empty-button"
           (click)="forcePublicationDialogShow()"
         >
@@ -136,7 +132,7 @@
         class="col-6 d-flex flex-column align-items-center justify-content-center"
       >
         <button
-          *ngIf="isCancelButtonShown()"
+          *ngIf="shouldShowCancelButton()"
           class="btn empty-button"
           (click)="cancelPublicationDialogShow()"
         >
@@ -155,7 +151,7 @@
         </button>
       </div>
     </div>
-    <hr />
+    <hr *ngIf="shouldShowForceButton() || shouldShowCancelButton()" />
 
     <div class="alert alert-info text-center" role="alert">
       <div class="d-flex flex-column">
@@ -266,7 +262,12 @@
   </div>
 
   <div
-    *ngIf="advertisement.adminMessage && advertisement.adminMessage.length > 0"
+    *ngIf="
+      advertisement.adminMessage &&
+      advertisement.adminMessage.length &&
+      (accountService.currentUser()?.isAdmin ||
+        accountService.currentUser()?.userId === advertisement.userId)
+    "
     class="input-group mt-3 pb-4"
   >
     <span class="input-group-text" id="adminMessage">
