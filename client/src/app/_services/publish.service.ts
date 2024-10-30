@@ -4,6 +4,7 @@ import { environment } from '../../environments/environment';
 import { Observable, tap } from 'rxjs';
 import { AdvertisementCacheService } from './caches/advertisement.cache.service';
 import { Advertisement } from '../_models/advertisement';
+import { AdvListType } from '../_framework/constants/advListType';
 
 @Injectable({
   providedIn: 'root',
@@ -25,6 +26,9 @@ export class PublishService {
       .pipe(
         tap(() => {
           this.advertisementCacheService.updateInAllCaches(advertisement);
+          this.advertisementCacheService.resetCache(
+            AdvListType.PendingPublication
+          );
         })
       );
   }

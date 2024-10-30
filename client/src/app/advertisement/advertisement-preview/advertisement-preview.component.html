@@ -393,7 +393,10 @@
       <div class="d-flex justify-content-center align-items-center">
         <div class="text-center mb-2 me-2">начиная с:</div>
         <mat-progress-bar
-          *ngIf="busyService.isLoading(); else nextPublishDateTemplate"
+          *ngIf="
+            busyService.isLoading() && !nextPublishDate;
+            else nextPublishDateTemplate
+          "
           mode="buffer"
           style="width: 5rem"
         ></mat-progress-bar>
