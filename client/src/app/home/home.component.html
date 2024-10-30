@@ -1,6 +1,6 @@
 <body>
   <ul class="list-group list-group-flush">
-    <li class="list-group-item">
+    <li *ngIf="accountService.currentUser()?.isAdmin" class="list-group-item">
       <a
         [routerLink]="['/adv-list', advListType.PendingValidation]"
         class="list-group-item list-group-item-action"
@@ -51,7 +51,7 @@
           </div></div
       ></a>
     </li>
-    <li class="list-group-item">
+    <li *ngIf="accountService.currentUser()?.isAdmin" class="list-group-item">
       <a
         [routerLink]="['/app-chat-filter']"
         class="list-group-item list-group-item-action"
