@@ -87,10 +87,12 @@ export class MatListFilterComponentModal implements OnInit {
     if (this.data.isAdvertisementList) {
       const currentSortOptions =
         this.advertisementService.getCurrentSortOptions();
-      if (currentSortOptions) this.currentSortOption.set(currentSortOptions);
+      if (currentSortOptions)
+        this.currentSortOption.set({ ...currentSortOptions });
     } else {
       const currentSortOptions = this.chatFilterService.getCurrentSortOptions();
-      if (currentSortOptions) this.currentSortOption.set(currentSortOptions);
+      if (currentSortOptions)
+        this.currentSortOption.set({ ...currentSortOptions });
     }
 
     this.sortForm = this.formBuilder.group({

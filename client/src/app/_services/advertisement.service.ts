@@ -205,8 +205,11 @@ export class AdvertisementService {
 
   // PUBLICATION
   getPendingPublicationAdvertisements() {
-    if (this.getCache(AdvListType.PendingPublication)) return;
-
+    const cachedResult = this.getCache(AdvListType.PendingPublication);
+    if (cachedResult) {
+      this.advertisements.set(cachedResult);
+      return;
+    }
     const params = setPaginationHeaders(
       this.paginationParamsState().get(AdvListType.PendingPublication)
     );
@@ -227,7 +230,7 @@ export class AdvertisementService {
       });
   }
 
-  getCache(advListType: AdvListType): boolean {
+  getCache(advListType: AdvListType): PaginatedResult<Advertisement> | null {
     this.selectedAdvListType = advListType;
     const cachedResponse = this.advertisementCacheService.getCache(
       advListType,
@@ -238,15 +241,18 @@ export class AdvertisementService {
         'Cache returned:',
         JSON.stringify(this.paginationParamsState().get(advListType))
       );
-      this.advertisements.set(cachedResponse);
-      return true;
+      return cachedResponse;
     }
-    return false;
+    return null;
   }
 
   // MY ADVERTISEMENTS
   getMyAdvertisements() {
-    if (this.getCache(AdvListType.MyAdvertisements)) return;
+    const cachedResult = this.getCache(AdvListType.MyAdvertisements);
+    if (cachedResult) {
+      this.advertisements.set(cachedResult);
+      return;
+    }
 
     const params = setPaginationHeaders(
       this.paginationParamsState().get(AdvListType.MyAdvertisements)
@@ -267,7 +273,11 @@ export class AdvertisementService {
 
   // ALL_HISTORY
   getAllAdvertisementHistory() {
-    if (this.getCache(AdvListType.AllHistory)) return;
+    const cachedResult = this.getCache(AdvListType.AllHistory);
+    if (cachedResult) {
+      this.advertisements.set(cachedResult);
+      return;
+    }
 
     const params = setPaginationHeaders(
       this.paginationParamsState().get(AdvListType.AllHistory)
@@ -288,8 +298,11 @@ export class AdvertisementService {
 
   // PRIVATE_HISTORY
   getPrivateAdvertisementHistory() {
-    if (this.getCache(AdvListType.PrivateHistory)) return;
-
+    const cachedResult = this.getCache(AdvListType.PrivateHistory);
+    if (cachedResult) {
+      this.advertisements.set(cachedResult);
+      return;
+    }
     const params = setPaginationHeaders(
       this.paginationParamsState().get(AdvListType.PrivateHistory)
     );
@@ -352,7 +365,11 @@ export class AdvertisementService {
 
   // VALIDATION
   getPendingValidationAdvertisements() {
-    if (this.getCache(AdvListType.PendingValidation)) return;
+    const cachedResult = this.getCache(AdvListType.PendingValidation);
+    if (cachedResult) {
+      this.advertisements.set(cachedResult);
+      return;
+    }
 
     const params = setPaginationHeaders(
       this.paginationParamsState().get(AdvListType.PendingValidation)

@@ -12,7 +12,7 @@ export class AdvertisementCacheService {
   private advertisementCache = new Map<any, PaginatedResult<Advertisement>>();
   private pendingAdvertisementsCache: number = 0;
   private selectedAdvListType?: AdvListType;
-  private paginationParams?: PaginationParams;
+  private paginationParams!: PaginationParams;
 
   resetPendingAdvertisementsCache(counter: number) {
     if (this.pendingAdvertisementsCache !== counter) {
@@ -82,7 +82,10 @@ export class AdvertisementCacheService {
     return this.paginationParams;
   }
 
-  private getSearchParamsKey(advListType: AdvListType): string {
+  private getSearchParamsKey(
+    advListType: AdvListType,
+    paginationParams: PaginationParams
+  ): string {
     const replacer = (key: string, value: any) => {
       if (value === '') {
         return undefined;
@@ -104,7 +107,7 @@ export class AdvertisementCacheService {
     };
 
     let deepClone: PaginationParams = JSON.parse(
-      JSON.stringify(this.paginationParams, replacer)
+      JSON.stringify(paginationParams, replacer)
     );
     deepClone.pageSize = 0;
     const flattenedParams = flattenObject(deepClone);
@@ -126,10 +129,11 @@ export class AdvertisementCacheService {
     this.selectedAdvListType = advListType;
     if (paginationParams) this.setPaginationParams(paginationParams);
     console.log(
-      'cache requested: ' + this.getSearchParamsKey(this.selectedAdvListType)
+      'cache requested: ' +
+        this.getSearchParamsKey(this.selectedAdvListType, this.paginationParams)
     );
     return this.advertisementCache.get(
-      this.getSearchParamsKey(this.selectedAdvListType)
+      this.getSearchParamsKey(this.selectedAdvListType, this.paginationParams)
     );
   }
 
@@ -139,7 +143,10 @@ export class AdvertisementCacheService {
       console.error('selectedAdvListType is undefined');
       return;
     }
-    const key = this.getSearchParamsKey(this.selectedAdvListType);
+    const key = this.getSearchParamsKey(
+      this.selectedAdvListType,
+      this.paginationParams
+    );
     console.log('Cache set: ' + key);
     this.advertisementCache.set(key, advertisements);
   }
@@ -149,7 +156,10 @@ export class AdvertisementCacheService {
       console.error('advListType is undefined');
       return;
     }
-    const searchParamsKey = this.getSearchParamsKey(this.selectedAdvListType);
+    const searchParamsKey = this.getSearchParamsKey(
+      this.selectedAdvListType,
+      this.paginationParams
+    );
     console.log('Cache: addItem: ' + searchParamsKey);
 
     const cachedAdvertisements = this.advertisementCache.get(searchParamsKey);

@@ -45,10 +45,15 @@
       <select class="form-select ms-1" formControlName="selectedSearchType">
         <option value="date">по дате</option>
         <option value="title">по заголовку</option>
-        <option *ngIf="data.isAdvertisementList" value="content">
+        <option [hidden]="!data.isAdvertisementList" value="content">
           по содержанию
         </option>
-        <option *ngIf="data.isAdvertisementList" value="link">по ссылке</option>
+        <option [hidden]="!data.isAdvertisementList" value="username">
+          по &#64;username
+        </option>
+        <option [hidden]="!data.isAdvertisementList" value="name">
+          по имени
+        </option>
       </select>
     </div>
 
