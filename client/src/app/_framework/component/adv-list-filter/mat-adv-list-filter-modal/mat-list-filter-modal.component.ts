@@ -1,4 +1,10 @@
-import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  Inject,
+  OnDestroy,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
 import {
   MatDialogModule,
   MatDialogContent,
@@ -30,6 +36,7 @@ import { SortOption } from '../../../../_models/sortOption';
 import { AdvertisementService } from '../../../../_services/advertisement.service';
 import { ChatFilterService } from '../../../../_services/chat-filter.service';
 import { DEFAULT_SORT_OPTION } from '../../../constants/defaultSortOption';
+import { TelegramBackButtonService } from '../../../telegramBackButtonService';
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -66,10 +73,11 @@ export const MY_DATE_FORMATS = {
   encapsulation: ViewEncapsulation.None,
   providers: [provideMomentDateAdapter(MY_DATE_FORMATS)],
 })
-export class MatListFilterComponentModal implements OnInit {
+export class MatListFilterComponentModal implements OnInit, OnDestroy {
   private formBuilder = inject(FormBuilder);
   private advertisementService = inject(AdvertisementService);
   private chatFilterService = inject(ChatFilterService);
+  private backButtonService = inject(TelegramBackButtonService);
   sortForm: FormGroup = new FormGroup({});
   currentSortOption = signal<SortOption>({
     field: DEFAULT_SORT_OPTION.field,
@@ -84,6 +92,7 @@ export class MatListFilterComponentModal implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.backButtonService.setCloseDialogHandler(() => this.close());
     if (this.data.isAdvertisementList) {
       const currentSortOptions =
         this.advertisementService.getCurrentSortOptions();
@@ -186,5 +195,13 @@ export class MatListFilterComponentModal implements OnInit {
   save() {
     this.updateCurrentSortOption();
     this.dialogRef.close(this.currentSortOption());
+  }
+
+  close(): void {
+    this.dialogRef.close();
+  }
+
+  ngOnDestroy(): void {
+    this.backButtonService.removeCloseDialogHandler();
   }
 }
