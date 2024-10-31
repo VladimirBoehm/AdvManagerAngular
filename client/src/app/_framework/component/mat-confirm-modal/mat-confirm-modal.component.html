@@ -12,7 +12,7 @@
   <button class="btn empty-button me-4" [mat-dialog-close]="true">
     {{ data.confirmText }}
   </button>
-  <button class="btn empty-button" [mat-dialog-close]="false">
+  <button class="btn empty-button" (click)="close()">
     {{ data.cancelText }}
   </button>
 </mat-dialog-actions>
