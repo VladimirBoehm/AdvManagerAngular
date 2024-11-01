@@ -21,9 +21,7 @@
       <div>
         <ul class="list-group list-group-flush">
           <li
-            *ngFor="
-              let item of chatFilterService.chatFilters()
-            "
+            *ngFor="let item of chatFilterService.chatFilters()"
             class="list-group-item"
             style="cursor: auto"
           >
@@ -36,10 +34,9 @@
                   {{ item.value }}
                 </div>
                 <div class="fw-normal my-info-text text-muted">
-                  Создан: 
+                  Создан:
                   {{
-                    dateHelper.getLocalTime(item.created)
-                      | date : "dd.MM.yyyy"
+                    dateHelper.getLocalTime(item.created) | date : "dd.MM.yyyy"
                   }}
                 </div>
               </div>
@@ -74,9 +71,7 @@
     <div class="d-flex mt-2">
       <div class="col-6">
         <app-adv-list-filter
-          *ngIf="
-            chatFilterService.chatFilters()
-          "
+          *ngIf="chatFilterService.chatFilters()"
           (onChanged)="sortChanged($event)"
           [disabled]="busyService.isLoading()"
           [isAdvertisementList]="false"
@@ -107,9 +102,7 @@
 
           <div class="text-muted">Создать</div>
           <div
-            *ngIf="
-              chatFilterService.chatFilters().length > 29
-            "
+            *ngIf="chatFilterService.chatFilters().length > 29"
             class="my-info-text text-danger"
           >
             Максимум 30
@@ -117,7 +110,10 @@
         </button>
       </div>
     </div>
-    <hr />
+    <div class="d-flex flex-column align-items-center">
+      <hr class="mb-0 pb-0" style="width: 100%" />
+      <div class="mt-0 pt-0 my-info-text text-muted">Фильтр чата</div>
+    </div>
   </ng-template>
 
   <ng-template #addFilterDialog>
