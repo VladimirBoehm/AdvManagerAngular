@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Advertisement } from '../../_models/advertisement';
 import { AdvertisementService } from '../../_services/advertisement.service';
 import { TelegramBackButtonService } from '../../_framework/telegramBackButtonService';
@@ -23,7 +23,7 @@ import { BusyService } from '../../_services/busy.service';
   templateUrl: './advertisement-preview.component.html',
   styleUrl: './advertisement-preview.component.scss',
 })
-export class AdvertisementPreviewComponent implements OnInit {
+export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   @ViewChild('modalDialogPublicationInfo') modalDialogPublicationInfo?: any;
   @ViewChild('modalDialogForcePublicationAdmin')
   modalDialogForcePublicationAdmin?: any;
@@ -51,6 +51,7 @@ export class AdvertisementPreviewComponent implements OnInit {
   timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   ngOnInit(): void {
+    this.backButtonService.setCloseDialogHandler(() => this.modalRef?.hide());
     this.backButtonService.setBackButtonHandler(() => {
       this.back();
     });
@@ -309,5 +310,10 @@ export class AdvertisementPreviewComponent implements OnInit {
         this.advListType.PendingPublication;
     if (result) return result;
     return false;
+  }
+
+  ngOnDestroy(): void {
+    this.backButtonService.removeCloseDialogHandler();
+    this.backButtonService.removeBackButtonHandler();
   }
 }
