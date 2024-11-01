@@ -146,6 +146,21 @@ export class AdvListComponent implements OnInit, OnDestroy {
     this.initialize();
   }
 
+  getListName(): string {
+    switch (this.selectedListType) {
+      case AdvListType.PendingValidation:
+        return 'Валидировать';
+      case AdvListType.MyAdvertisements:
+        return 'Мои объявления';
+      case AdvListType.AllHistory:
+        return 'История';
+      case AdvListType.PrivateHistory:
+        return 'Моя история';
+      case AdvListType.PendingPublication:
+        return 'Размещается';
+    }
+  }
+
   ngOnDestroy(): void {
     this.backButtonService.removeBackButtonHandler();
     if (this.routerSubscription) {
