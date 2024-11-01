@@ -49,10 +49,13 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
       }
     });
 
+    this.backButtonService.setCloseDialogHandler(() => this.closeDialog());
     this.backButtonService.setBackButtonHandler(() => {
       this.chatFilterService.resetPaginationParams();
       this.router.navigate(['']);
     });
+
+
     this.chatFilterService.getAll();
   }
 
@@ -116,6 +119,7 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.backButtonService.removeCloseDialogHandler();
     this.backButtonService.removeBackButtonHandler();
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
