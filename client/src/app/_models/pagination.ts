@@ -12,9 +12,20 @@ export class PaginatedResult<T extends PaginatedItem> {
   items?: T[];
   pagination?: Pagination;
 
-  constructor(items?: T[], pagination?: Pagination) {
-    this.items = items;
-    this.pagination = pagination;
+  constructor(items?: T[], pagination?: Pagination);
+  constructor(paginatedResult?: PaginatedResult<T>);
+
+  constructor(
+    itemsOrResult?: T[] | PaginatedResult<T>,
+    pagination?: Pagination
+  ) {
+    if (itemsOrResult instanceof Array) {
+      this.items = itemsOrResult;
+      this.pagination = pagination;
+    } else if (itemsOrResult instanceof PaginatedResult) {
+      this.items = itemsOrResult.items;
+      this.pagination = itemsOrResult.pagination;
+    }
   }
 
   setItems(items: T[]): PaginatedResult<T> {

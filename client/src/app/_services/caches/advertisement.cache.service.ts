@@ -4,7 +4,7 @@ import { AdvertisementStatus } from '../../_framework/constants/advertisementSta
 import { PaginatedResult } from '../../_models/pagination';
 import { PaginationParams } from '../../_models/paginationParams';
 import { AdvListType } from '../../_framework/constants/advListType';
-
+import _ from 'lodash';
 @Injectable({
   providedIn: 'root',
 })
@@ -148,7 +148,10 @@ export class AdvertisementCacheService {
       this.paginationParams
     );
     console.log('Cache set: ' + key);
-    this.advertisementCache.set(key, advertisements);
+    this.advertisementCache.set(
+      key,
+      new PaginatedResult(_.cloneDeep(advertisements))
+    );
   }
 
   add(advertisement: Advertisement) {
