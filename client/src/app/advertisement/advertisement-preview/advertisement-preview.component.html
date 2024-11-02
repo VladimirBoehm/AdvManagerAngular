@@ -233,7 +233,6 @@
       Размещено:
       {{
         dateHelper.getLocalTime(advertisement.nextPublishDate)
-          | date : "dd.MM.yyyy HH:mm"
       }}
     </div>
     <div class="text-center">
@@ -253,14 +252,13 @@
       Создан:
       {{
         dateHelper.getLocalTime(advertisement.created)
-          | date : "dd.MM.yyyy HH:mm"
+    
       }}
     </div>
     <div *ngIf="advertisement.updated" class="text-muted my-info-text">
       Обновлён:
       {{
         dateHelper.getLocalTime(advertisement.updated)
-          | date : "dd.MM.yyyy HH:mm"
       }}
     </div>
   </div>

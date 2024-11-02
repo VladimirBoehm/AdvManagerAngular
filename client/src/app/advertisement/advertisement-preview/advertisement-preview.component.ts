@@ -42,6 +42,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   confirmationService = inject(ConfirmationMatDialogService);
   advertisementService = inject(AdvertisementService);
   busyService = inject(BusyService);
+  
   advertisementStatus = AdvertisementStatus;
   advListType = AdvListType;
   dateHelper = DateHelper;
