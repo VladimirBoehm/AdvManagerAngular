@@ -1,10 +1,8 @@
-@if(chatFilterService.chatFilters()){
-
 <div class="container-fluid">
   <ng-container *ngTemplateOutlet="createButtonTemplate"></ng-container>
   <ng-container
     *ngIf="
-      chatFilterService.chatFilters().length === 0 &&
+      (chatFilterService.chatFilters$ | async)?.length === 0 &&
         chatFilterService.isLoaded();
       else nonEmptyList
     "
@@ -21,7 +19,10 @@
       <div>
         <ul class="list-group list-group-flush">
           <li
-            *ngFor="let item of chatFilterService.chatFilters()"
+            *ngFor="
+              let item of this.chatFilterService.chatFilters$ | async;
+              trackBy: trackById
+            "
             class="list-group-item"
             style="cursor: auto"
           >
@@ -35,9 +36,7 @@
                 </div>
                 <div class="fw-normal my-info-text text-muted">
                   Создан:
-                  {{
-                    dateHelper.getLocalTime(item.created) 
-                  }}
+                  {{ dateHelper.getLocalTime(item.created) }}
                 </div>
               </div>
               <div
@@ -71,7 +70,7 @@
     <div class="d-flex mt-2">
       <div class="col-6">
         <app-adv-list-filter
-          *ngIf="chatFilterService.chatFilters()"
+          *ngIf="chatFilterService.chatFilters$ | async"
           (onChanged)="sortChanged($event)"
           [disabled]="busyService.isLoading()"
           [isAdvertisementList]="false"
@@ -83,7 +82,7 @@
         <button
           class="btn empty-button"
           [disabled]="
-            chatFilterService.chatFilters().length > 29 ||
+            (chatFilterService.chatFilters$ | async)!.length > maxItemNumber ||
             !chatFilterService.isLoaded()
           "
           (click)="showAddDialog()"
@@ -102,7 +101,7 @@
 
           <div class="text-muted">Создать</div>
           <div
-            *ngIf="chatFilterService.chatFilters().length > 29"
+            *ngIf="(chatFilterService.chatFilters$ | async)!.length > maxItemNumber"
             class="my-info-text text-danger"
           >
             Максимум 30
@@ -152,4 +151,3 @@
     </div>
   </ng-template>
 </div>
-}

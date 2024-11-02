@@ -12,7 +12,7 @@ import { ListFilterComponent } from '../_framework/component/adv-list-filter/lis
 import { SortOption } from '../_models/sortOption';
 import { BusyService } from '../_services/busy.service';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-chat-filter',
@@ -37,6 +37,7 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
   dateHelper = DateHelper;
   modalRef?: BsModalRef;
   maxItemLength: number = 50;
+  maxItemNumber: number = 30;
   minItemLength: number = 3;
   itemLengthCounter: number = 0;
 
@@ -55,8 +56,8 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
       this.router.navigate(['']);
     });
 
-
     this.chatFilterService.getAll();
+
   }
 
   initializeForm() {
@@ -116,6 +117,9 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
 
   sortChanged($event: SortOption) {
     this.chatFilterService.getAll($event);
+  }
+  trackById(index: number, item: ChatFilter): number {
+    return item.id;
   }
 
   ngOnDestroy(): void {

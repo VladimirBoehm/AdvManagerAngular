@@ -6,6 +6,7 @@ import { PaginationParams } from '../_models/paginationParams';
 import { SortOption } from '../_models/sortOption';
 import { ChatFilterCacheService } from './caches/chat-filter.cache.service';
 import { DEFAULT_SORT_OPTION } from '../_framework/constants/defaultSortOption';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +15,11 @@ export class ChatFilterService {
   private http = inject(HttpClient);
   private chatFilterCacheService = inject(ChatFilterCacheService);
   private baseUrl = environment.apiUrl;
+
+  private chatFiltersSubject = new BehaviorSubject<ChatFilter[]>([]);
+  chatFilters$ = this.chatFiltersSubject.asObservable();
+
+  isLoaded = signal<boolean>(false);
 
   public paginationParams = signal<PaginationParams>(
     this.getDefaultPaginationParams()
@@ -35,8 +41,6 @@ export class ChatFilterService {
       },
     };
   }
-  chatFilters = signal<ChatFilter[]>([]);
-  isLoaded = signal<boolean>(false);
 
   getCurrentSortOptions() {
     return this.paginationParams().sortOption;
@@ -71,7 +75,7 @@ export class ChatFilterService {
           const cache = this.chatFilterCacheService.getCache(
             this.paginationParams()
           );
-          if (cache) this.chatFilters.set(cache);
+          if (cache) this.chatFiltersSubject.next(cache);
         },
         error: (err) => {
           console.error('Error when saving chatFilters:', err);
@@ -86,12 +90,15 @@ export class ChatFilterService {
       this.http.get<ChatFilter[]>(this.baseUrl + 'chatFilter', {}).subscribe({
         next: (result) => {
           console.log('Loaded from DB');
-          const chatFiltersWithDates = result.map(cf => ({
+
+          this.chatFiltersSubject.next(result);
+
+          const chatFiltersWithDates = result.map((cf) => ({
             ...cf,
             created: new Date(cf.created),
           }));
           this.chatFilterCacheService.setCache(chatFiltersWithDates);
-          this.chatFilters.set(chatFiltersWithDates);
+          this.chatFiltersSubject.next(chatFiltersWithDates);
           this.isLoaded.set(true);
         },
         error: (err) => {
@@ -99,8 +106,10 @@ export class ChatFilterService {
         },
       });
     } else {
-      const cache = this.chatFilterCacheService.getCache(this.paginationParams());
-      this.chatFilters.set(cache!);
+      const cache = this.chatFilterCacheService.getCache(
+        this.paginationParams()
+      );
+      if (cache) this.chatFiltersSubject.next(cache);
       console.log('Cache taken');
     }
   }
@@ -108,7 +117,7 @@ export class ChatFilterService {
   delete(id: number) {
     this.chatFilterCacheService.deleteItem(id);
     const cache = this.chatFilterCacheService.getCache(this.paginationParams());
-    if (cache) this.chatFilters.set(cache);
+    if (cache) this.chatFiltersSubject.next(cache);
     return this.http.delete(this.baseUrl + `chatFilter/${id}`).subscribe({
       error: (err) => {
         console.error('Error when deleting chatFilter:', err);

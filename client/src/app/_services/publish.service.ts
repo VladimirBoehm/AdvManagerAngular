@@ -22,7 +22,7 @@ export class PublishService {
     );
   }
 
-  unblockNextPublishDate(advertisement: Advertisement) {
+  publish(advertisement: Advertisement) {
     return this.http
       .post(this.baseUrl + `regularPublish`, advertisement.id)
       .pipe(

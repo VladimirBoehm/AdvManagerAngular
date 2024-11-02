@@ -42,7 +42,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   confirmationService = inject(ConfirmationMatDialogService);
   advertisementService = inject(AdvertisementService);
   busyService = inject(BusyService);
-  
+
   advertisementStatus = AdvertisementStatus;
   advListType = AdvListType;
   dateHelper = DateHelper;
@@ -278,7 +278,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
     this.advertisement.nextPublishDate = this.nextPublishDate;
     this.modalRef?.hide();
 
-    this.publishService.unblockNextPublishDate(this.advertisement).subscribe({
+    this.publishService.publish(this.advertisement).subscribe({
       next: () => {
         this.getAdvertisementById(this.advertisement?.id ?? 0);
       },
