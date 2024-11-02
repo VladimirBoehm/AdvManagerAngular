@@ -7,10 +7,16 @@ export class DateHelper {
       return 'Incorrect date';
     }
 
-    return utcDate.toLocaleString();
+    return utcDate.toLocaleString('de-DE', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
   }
 
- static getUTCTime(): Date {
+  static getUTCTime(): Date {
     let date = new Date();
     date.setDate(date.getUTCDate());
     date.setHours(date.getUTCHours());
