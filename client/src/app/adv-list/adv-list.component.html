@@ -1,6 +1,5 @@
 <div class="container-fluid">
-  @if ( advertisementService.advertisements() &&
-  advertisementService.advertisements().items) {
+  @if ( (advertisementService.advertisements$ | async)?.items) {
   <div class="row">
     <div class="col-6 d-flex justify-content-start ps-0">
       <app-adv-list-filter
@@ -14,10 +13,13 @@
     <div class="col-6 d-flex justify-content-end">
       <div
         *ngIf="
-          advertisementService.advertisements().pagination &&
-          advertisementService.advertisements().pagination!.totalItems > 0 &&
-          advertisementService.advertisements().pagination!.totalItems >
-            advertisementService.advertisements().pagination!.itemsPerPage
+          (advertisementService.advertisements$ | async)?.pagination &&
+          ((advertisementService.advertisements$ | async)?.pagination)!
+            .totalItems > 0 &&
+          ((advertisementService.advertisements$ | async)?.pagination)!
+            .totalItems >
+            ((advertisementService.advertisements$ | async)?.pagination)!
+              .itemsPerPage
         "
       >
         <paginator-localization
@@ -25,13 +27,16 @@
           #paginator
           (page)="handlePageEvent($event)"
           [length]="
-            advertisementService.advertisements().pagination?.totalItems ?? 0
+            (advertisementService.advertisements$ | async)?.pagination
+              ?.totalItems ?? 0
           "
           [pageSize]="
-            advertisementService.advertisements().pagination?.itemsPerPage ?? 0
+            (advertisementService.advertisements$ | async)?.pagination
+              ?.itemsPerPage ?? 0
           "
           [pageIndex]="
-            advertisementService.advertisements().pagination?.currentPage ?? 0
+            (advertisementService.advertisements$ | async)?.pagination
+              ?.currentPage ?? 0
           "
         ></paginator-localization>
       </div>
@@ -43,7 +48,7 @@
   <div
     *ngIf="
       selectedListType === advListType.MyAdvertisements &&
-      advertisementService.advertisements().items
+      (advertisementService.advertisements$ | async)?.items
     "
   >
     <div class="d-flex mt-2">
@@ -69,7 +74,9 @@
         <button
           class="btn empty-button"
           (click)="create()"
-          [disabled]="advertisementService.advertisements().items!.length > 2"
+          [disabled]="
+            ((advertisementService.advertisements$ | async)?.items)!.length > 2
+          "
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -85,7 +92,10 @@
 
           <div class="text-muted">Создать</div>
           <div
-            *ngIf="advertisementService.advertisements().items!.length > 2"
+            *ngIf="
+              ((advertisementService.advertisements$ | async)?.items)!.length >
+              2
+            "
             class="my-info-text text-danger"
           >
             Максимум 3 объявления
@@ -104,25 +114,29 @@
     [skeletonClassName]="'mb-1'"
     [skeletonHeight]="'4rem'"
   >
-    @if ( advertisementService.advertisements() &&
-    advertisementService.advertisements().items) {
+    @if ( (advertisementService.advertisements$ | async)?.items) {
 
-    <div *ngIf="advertisementService.advertisements().items!.length === 0">
+    <div
+      *ngIf="
+        ((advertisementService.advertisements$ | async)?.items)!.length === 0
+      "
+    >
       <app-empty-list-placeholder></app-empty-list-placeholder>
     </div>
 
     <!-- Pending validation -->
     <div
       *ngIf="
-        advertisementService.advertisements().items &&
-        advertisementService.advertisements().items!.length > 0 &&
+        (advertisementService.advertisements$ | async)?.items &&
+        ((advertisementService.advertisements$ | async)?.items)!.length > 0 &&
         selectedListType === advListType.PendingValidation
       "
     >
       <ul class="list-group list-group-flush">
         <li
           *ngFor="
-            let advertisement of advertisementService.advertisements().items
+            let advertisement of (advertisementService.advertisements$ | async)
+              ?.items
           "
           class="list-group-item"
           [routerLink]="['/app-advertisement-validate', advertisement.id]"
@@ -135,9 +149,7 @@
               </div>
               <div class="text-muted my-info-text">
                 Поступил:
-                {{
-                  dateHelper.getLocalTime(advertisement.updated)
-                }}
+                {{ dateHelper.getLocalTime(advertisement.updated) }}
               </div>
             </div>
             <div
@@ -164,13 +176,14 @@
     <div
       *ngIf="
         selectedListType === advListType.MyAdvertisements &&
-        advertisementService.advertisements().items
+        (advertisementService.advertisements$ | async)?.items
       "
     >
       <ul class="list-group list-group-flush">
         <li
           *ngFor="
-            let advertisement of advertisementService.advertisements().items
+            let advertisement of (advertisementService.advertisements$ | async)
+              ?.items
           "
           class="list-group-item"
           [routerLink]="['/app-advertisement-preview', advertisement.id]"
@@ -183,9 +196,7 @@
               </div>
               <div class="text-muted my-info-text">
                 Создан:
-                {{
-                  dateHelper.getLocalTime(advertisement.created)
-                }}
+                {{ dateHelper.getLocalTime(advertisement.created) }}
               </div>
             </div>
             <div
@@ -210,7 +221,7 @@
     <!-- AllHistory || PrivateHistory-->
     <div
       *ngIf="
-        advertisementService.advertisements().items!.length > 0 &&
+        ((advertisementService.advertisements$ | async)?.items)!.length > 0 &&
         (selectedListType === advListType.AllHistory ||
           selectedListType === advListType.PrivateHistory ||
           selectedListType === advListType.PendingPublication)
@@ -219,7 +230,8 @@
       <ul class="list-group list-group-flush">
         <li
           *ngFor="
-            let advertisement of advertisementService.advertisements().items
+            let advertisement of (advertisementService.advertisements$ | async)
+              ?.items
           "
           class="list-group-item"
           [routerLink]="['/app-advertisement-preview', advertisement.id]"

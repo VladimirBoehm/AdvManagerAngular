@@ -2,7 +2,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { Advertisement } from '../_models/advertisement';
 import { environment } from '../../environments/environment';
-import { Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, Observable, of, tap } from 'rxjs';
 import { UpdateAdvertisementAdminRequest } from '../_models/updateAdvertisementAdminRequest';
 import { UpdateAdvertisementStatusRequest } from '../_models/updateAdvertisementStatusRequest';
 import { AdvertisementCacheService } from './caches/advertisement.cache.service';
@@ -23,9 +23,12 @@ export class AdvertisementService {
   private advertisementCacheService = inject(AdvertisementCacheService);
   private dateHelper = DateHelper;
   private selectedAdvListType?: AdvListType;
-  advertisements = signal<PaginatedResult<Advertisement>>(
-    new PaginatedResult<Advertisement>()
-  );
+
+  private advertisementsSubject = new BehaviorSubject<
+    PaginatedResult<Advertisement>
+  >(new PaginatedResult<Advertisement>());
+  advertisements$ = this.advertisementsSubject.asObservable();
+
   paginationParamsState: WritableSignal<Map<AdvListType, PaginationParams>>;
 
   constructor() {
@@ -204,12 +207,14 @@ export class AdvertisementService {
   }
 
   // PUBLICATION
-  getPendingPublicationAdvertisements() {
+  getPendingPublicationAdvertisements()
+   {
     const cachedResult = this.getCache(AdvListType.PendingPublication);
     if (cachedResult) {
-      this.advertisements.set(cachedResult);
-      return;
+      this.advertisementsSubject.next(cachedResult);
+      return of(cachedResult);
     }
+
     const params = setPaginationHeaders(
       this.paginationParamsState().get(AdvListType.PendingPublication)
     );
@@ -250,7 +255,7 @@ export class AdvertisementService {
   getMyAdvertisements() {
     const cachedResult = this.getCache(AdvListType.MyAdvertisements);
     if (cachedResult) {
-      this.advertisements.set(cachedResult);
+      this.advertisementsSubject.next(cachedResult);
       return;
     }
 
@@ -275,7 +280,7 @@ export class AdvertisementService {
   getAllAdvertisementHistory() {
     const cachedResult = this.getCache(AdvListType.AllHistory);
     if (cachedResult) {
-      this.advertisements.set(cachedResult);
+      this.advertisementsSubject.next(cachedResult);
       return;
     }
 
@@ -300,7 +305,7 @@ export class AdvertisementService {
   getPrivateAdvertisementHistory() {
     const cachedResult = this.getCache(AdvListType.PrivateHistory);
     if (cachedResult) {
-      this.advertisements.set(cachedResult);
+      this.advertisementsSubject.next(cachedResult);
       return;
     }
     const params = setPaginationHeaders(
@@ -367,7 +372,7 @@ export class AdvertisementService {
   getPendingValidationAdvertisements() {
     const cachedResult = this.getCache(AdvListType.PendingValidation);
     if (cachedResult) {
-      this.advertisements.set(cachedResult);
+      this.advertisementsSubject.next(cachedResult);
       return;
     }
 
@@ -435,7 +440,7 @@ export class AdvertisementService {
 
     this.advertisementCacheService.setCache(result);
     console.log('Loaded from DB');
-    this.advertisements.set(result);
+    this.advertisementsSubject.next(result);
 
     this.updatePaginationParams(
       this.selectedAdvListType,
