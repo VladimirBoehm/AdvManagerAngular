@@ -1,9 +1,29 @@
-.custom-flaky-icon {
-  font-variation-settings: "FILL" 0, "wght" 700, "GRAD" 10, "opsz" 240;
-  font-size: 24px;
-  color: #5f6368;
 
+
+.button-card {
+  cursor: pointer;
+  background-color: #f5f5f5;
+  border-radius: 8px;
 }
-.list-group-item {
-  background-color: antiquewhite;
+
+.button-icon {
+  color: #2196f3;
+  font-size: 24px;
+}
+
+.button-text h6 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.button-text p {
+  font-size: 14px;
+  color: #757575;
+}
+
+
+.material-symbols-outlined {
+  color: #7c21f3;
+  font-size: 36px;
 }

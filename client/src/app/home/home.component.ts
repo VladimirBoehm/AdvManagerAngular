@@ -1,6 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { MatIconModule } from '@angular/material/icon';
 
 import { AdvertisementService } from '../_services/advertisement.service';
 import { NgIf } from '@angular/common';
@@ -8,11 +7,12 @@ import { AdvListType } from '../_framework/constants/advListType';
 import { SharedModule } from '../_framework/modules/sharedModule';
 import { BusyService } from '../_services/busy.service';
 import { AccountService } from '../_services/account.service';
+import { MatRippleModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [SharedModule, RouterLink, MatIconModule, NgIf],
+  imports: [SharedModule, RouterLink, NgIf, MatRippleModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
