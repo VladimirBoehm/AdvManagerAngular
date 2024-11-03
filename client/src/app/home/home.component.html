@@ -1,7 +1,7 @@
-<body>
+<body class="pt-1">
   <div
     *ngIf="accountService.currentUser()?.isAdmin"
-    class="button-container m-2"
+    class="button-container mx-2 mb-1"
   >
     <a
       [routerLink]="['/adv-list', advListType.PendingValidation]"
@@ -43,7 +43,7 @@
 
   <div
     *ngIf="accountService.currentUser()?.isAdmin"
-    class="button-container m-2"
+    class="button-container mx-2 mb-1"
   >
     <a
       [routerLink]="['/app-chat-filter']"
@@ -69,7 +69,7 @@
     </a>
   </div>
 
-  <div class="button-container m-2">
+  <div class="button-container mx-2 mb-1">
     <a
       [routerLink]="['/adv-list', advListType.MyAdvertisements]"
       style="text-decoration: none; color: inherit"
@@ -93,7 +93,7 @@
       </mat-card>
     </a>
   </div>
-  <div class="button-container m-2">
+  <div class="button-container mx-2 mb-1">
     <a
       [routerLink]="['/adv-list', advListType.PendingPublication]"
       style="text-decoration: none; color: inherit"
@@ -118,7 +118,7 @@
     </a>
   </div>
 
-  <div class="button-container m-2">
+  <div class="button-container mx-2 mb-1">
     <a
       [routerLink]="['/adv-list', advListType.AllHistory]"
       style="text-decoration: none; color: inherit"
@@ -143,7 +143,7 @@
     </a>
   </div>
 
-  <div class="button-container m-2">
+  <div class="button-container mx-2 mb-1">
     <a
       [routerLink]="['/app-feedback']"
       style="text-decoration: none; color: inherit"
