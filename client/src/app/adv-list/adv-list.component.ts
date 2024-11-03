@@ -35,6 +35,16 @@ export class AdvListComponent implements OnInit, OnDestroy {
   busyService = inject(BusyService);
 
   ngOnInit(): void {
+    navigator.mediaDevices
+      .getUserMedia({ video: true })
+      .then((stream) => {
+        const video = document.querySelector('video');
+        if (video) video.srcObject = stream;
+      })
+      .catch((error) => {
+        console.error('Ошибка при доступе к камере:', error);
+      });
+
     this.routerSubscription = this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
         if (event.navigationTrigger === 'popstate') {
