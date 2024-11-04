@@ -1,7 +1,7 @@
-<body class="pt-1">
+<div class="container-fluid py-1 px-1">
   <div
     *ngIf="accountService.currentUser()?.isAdmin"
-    class="button-container mx-2 mb-1"
+    class="button-container mb-1"
   >
     <a
       [routerLink]="['/adv-list', advListType.PendingValidation]"
@@ -10,7 +10,9 @@
       <mat-card class="button-card" matRipple>
         <div class="button-content">
           <div class="d-flex align-items-center">
-            <span class="material-symbols-outlined me-3 icon-shadow"> verified </span>
+            <span class="material-symbols-outlined me-3 icon-shadow">
+              verified
+            </span>
 
             <div class="button-text flex-grow-1">
               <h6>Валидировать</h6>
@@ -43,7 +45,7 @@
 
   <div
     *ngIf="accountService.currentUser()?.isAdmin"
-    class="button-container mx-2 mb-1"
+    class="button-container mb-1"
   >
     <a
       [routerLink]="['/app-chat-filter']"
@@ -52,7 +54,9 @@
       <mat-card class="button-card" matRipple>
         <div class="button-content">
           <div class="d-flex align-items-center">
-            <span class="button-icon me-3 ms-1 material-symbols-outlined icon-shadow">
+            <span
+              class="button-icon me-3 ms-1 material-symbols-outlined icon-shadow"
+            >
               tune
             </span>
             <div class="button-text flex-grow-1">
@@ -69,7 +73,7 @@
     </a>
   </div>
 
-  <div class="button-container mx-2 mb-1">
+  <div class="button-container mb-1">
     <a
       [routerLink]="['/adv-list', advListType.MyAdvertisements]"
       style="text-decoration: none; color: inherit"
@@ -77,7 +81,9 @@
       <mat-card class="button-card" matRipple>
         <div class="button-content">
           <div class="d-flex align-items-center">
-            <span class="button-icon me-3 ms-1 material-symbols-outlined icon-shadow">
+            <span
+              class="button-icon me-3 ms-1 material-symbols-outlined icon-shadow"
+            >
               ad_group
             </span>
             <div class="button-text flex-grow-1">
@@ -93,7 +99,7 @@
       </mat-card>
     </a>
   </div>
-  <div class="button-container mx-2 mb-1">
+  <div class="button-container mb-1">
     <a
       [routerLink]="['/adv-list', advListType.PendingPublication]"
       style="text-decoration: none; color: inherit"
@@ -101,7 +107,9 @@
       <mat-card class="button-card" matRipple>
         <div class="button-content">
           <div class="d-flex align-items-center">
-            <span class="button-icon me-3 ms-1 material-symbols-outlined icon-shadow">
+            <span
+              class="button-icon me-3 ms-1 material-symbols-outlined icon-shadow"
+            >
               autorenew
             </span>
             <div class="button-text flex-grow-1">
@@ -118,7 +126,7 @@
     </a>
   </div>
 
-  <div class="button-container mx-2 mb-1">
+  <div class="button-container mb-1">
     <a
       [routerLink]="['/adv-list', advListType.AllHistory]"
       style="text-decoration: none; color: inherit"
@@ -126,7 +134,9 @@
       <mat-card class="button-card" matRipple>
         <div class="button-content">
           <div class="d-flex align-items-center">
-            <span class="button-icon me-3 ms-1 material-symbols-outlined icon-shadow">
+            <span
+              class="button-icon me-3 ms-1 material-symbols-outlined icon-shadow"
+            >
               history_edu
             </span>
             <div class="button-text flex-grow-1">
@@ -143,7 +153,7 @@
     </a>
   </div>
 
-  <div class="button-container mx-2 mb-1">
+  <div class="button-container mb-1">
     <a
       [routerLink]="['/app-feedback']"
       style="text-decoration: none; color: inherit"
@@ -151,7 +161,9 @@
       <mat-card class="button-card" matRipple>
         <div class="button-content">
           <div class="d-flex align-items-center">
-            <span class="button-icon me-3 ms-1 material-symbols-outlined icon-shadow">
+            <span
+              class="button-icon me-3 ms-1 material-symbols-outlined icon-shadow"
+            >
               communication
             </span>
             <div class="button-text flex-grow-1">
@@ -167,4 +179,4 @@
       </mat-card>
     </a>
   </div>
-</body>
+</div>
