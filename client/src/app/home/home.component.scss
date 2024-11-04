@@ -1,11 +1,10 @@
 .button-card {
   cursor: pointer;
-  background-color: #ebe0d1ef;
+  background-color: #fff0d1ee;
   border-radius: 8px;
 }
 
 .button-icon {
-  color: #2196f3;
   font-size: 24px;
 }
 
@@ -21,6 +20,18 @@
 }
 
 .material-symbols-outlined {
-  color: #7c21f3;
+  color: #795757;
   font-size: 36px;
 }
+/*
+fff0d1ee   rgba(255, 240, 209, 0.933)   -- Creamy Light Beige             -- background
+795757     rgba(121, 87, 87, 1)         -- A medium-dark, muted red-brown -- icon default
+664343     rgba(102, 67, 67, 1)         -- Dark Brownish-Red
+3B3030     rgba(59, 48, 48, 1)          -- Very Dark Brown
+430A5D     rgba(67, 10, 93, 1)          -- Violet
+757575     rgba(117, 117, 117, 1)       -- muted for the bottom text
+D1C27B     rgba(209, 194, 123, 1)       -- Yellow
+6B7B59     rgba(107, 123, 89, 1)        -- Green 
+#7A4C4C    rgb(122, 76, 76)             -- Red
+506D8B     rgba(80, 109, 139, 1)        -- Blue 
+*/
