@@ -198,7 +198,10 @@
           >
             <mat-list-item class="flex-grow-1">
               <mat-icon matListItemIcon>
-                <span class="material-symbols-outlined me-3 icon-shadow">
+                <span
+                  class="material-symbols-outlined me-3"
+                  [ngClass]="getShadowIconClass(advertisement)"
+                >
                   sticky_note_2
                 </span></mat-icon
               >

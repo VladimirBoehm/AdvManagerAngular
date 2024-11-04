@@ -173,6 +173,19 @@ export class AdvListComponent implements OnInit, OnDestroy {
     return advertisement.id;
   }
 
+  getShadowIconClass(advertisement: Advertisement): string {
+    switch (advertisement.statusId) {
+      case AdvertisementStatus.rejected:
+        return 'icon-rejected-shadow';
+      case AdvertisementStatus.pendingPublication:
+        return 'icon-pending-publication-shadow';
+      case AdvertisementStatus.validated:
+        return 'icon-validated-shadow';
+      default:
+        return 'icon-default-shadow';
+    }
+  }
+
   ngOnDestroy(): void {
     this.backButtonService.removeBackButtonHandler();
     if (this.routerSubscription) {
