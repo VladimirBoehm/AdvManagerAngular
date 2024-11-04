@@ -59,6 +59,10 @@ export class AdvListComponent implements OnInit, OnDestroy {
     });
   }
 
+  onItemClick(advertisementId: number) {
+    this.router.navigate(['/app-advertisement-preview', advertisementId]);
+  }
+
   handlePageEvent(e: PageEvent) {
     this.advertisementService.updatePaginationParams(
       this.selectedListType,
@@ -123,6 +127,10 @@ export class AdvListComponent implements OnInit, OnDestroy {
     }
   }
 
+  getCreationDate(advertisement: Advertisement) {
+    return `Создан: ${this.dateHelper.getLocalTime(advertisement.created)}`;
+  }
+
   getUserDisplayName(advertisement: Advertisement): string {
     const userName = advertisement.userName ? `@${advertisement.userName}` : '';
     const firstName = advertisement.firstName ? advertisement.firstName : '';
@@ -159,6 +167,10 @@ export class AdvListComponent implements OnInit, OnDestroy {
       case AdvListType.PendingPublication:
         return 'Размещается';
     }
+  }
+
+  trackByAdvertisementId(index: number, advertisement: any): number {
+    return advertisement.id;
   }
 
   ngOnDestroy(): void {

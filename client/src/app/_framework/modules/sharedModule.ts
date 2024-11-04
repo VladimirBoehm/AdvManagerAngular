@@ -19,7 +19,8 @@ import { PaginatorLocalization } from '../component/paginator/paginator-localiza
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatIconModule } from '@angular/material/icon';
-
+import { MatListModule } from '@angular/material/list';
+import { MatDividerModule } from '@angular/material/divider';
 @NgModule({
   declarations: [SkeletonDirective],
   imports: [
@@ -52,7 +53,9 @@ import { MatIconModule } from '@angular/material/icon';
     FormsModule,
     MatProgressSpinnerModule,
     MatProgressBarModule,
-    MatIconModule
+    MatIconModule,
+    MatListModule,
+    MatDividerModule,
   ],
 })
 export class SharedModule {}
