@@ -63,6 +63,10 @@ export class AdvListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/app-advertisement-preview', advertisementId]);
   }
 
+  onItemClickValidate(advertisementId: number) {
+    this.router.navigate(['/app-advertisement-validate', advertisementId]);
+  }
+
   handlePageEvent(e: PageEvent) {
     this.advertisementService.updatePaginationParams(
       this.selectedListType,

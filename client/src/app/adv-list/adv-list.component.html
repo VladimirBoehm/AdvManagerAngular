@@ -1,105 +1,109 @@
-<div class="container-fluid py-1 px-1">
+<div class="container-fluid py-1">
   @if ( (advertisementService.advertisements$ | async)?.items) {
-  <div class="buttons-top-panel">
-    <div class="row">
-      <div class="col-6 d-flex justify-content-start ps-0">
-        <app-adv-list-filter
-          *ngIf="selectedListType !== advListType.MyAdvertisements"
-          (onChanged)="sortChanged($event)"
-          [disabled]="busyService.isLoading()"
-          [isAdvertisementList]="true"
-        ></app-adv-list-filter>
-      </div>
-
-      <div class="col-6 d-flex justify-content-end">
-        <div
-          *ngIf="
-            (advertisementService.advertisements$ | async)?.pagination &&
-            ((advertisementService.advertisements$ | async)?.pagination)!
-              .totalItems > 0 &&
-            ((advertisementService.advertisements$ | async)?.pagination)!
-              .totalItems >
-              ((advertisementService.advertisements$ | async)?.pagination)!
-                .itemsPerPage
-          "
-        >
-          <paginator-localization
+    <div class="buttons-top-panel">
+      <div class="row">
+        <div class="col-6 d-flex justify-content-start ps-0">
+          <app-adv-list-filter
+            *ngIf="selectedListType !== advListType.MyAdvertisements"
+            (onChanged)="sortChanged($event)"
             [disabled]="busyService.isLoading()"
-            #paginator
-            (page)="handlePageEvent($event)"
-            [length]="
-              (advertisementService.advertisements$ | async)?.pagination
-                ?.totalItems ?? 0
+            [isAdvertisementList]="true"
+          ></app-adv-list-filter>
+        </div>
+  
+        <div class="col-6 d-flex justify-content-end">
+          <div
+            *ngIf="
+              (advertisementService.advertisements$ | async)?.pagination &&
+              ((advertisementService.advertisements$ | async)?.pagination)!
+                .totalItems > 0 &&
+              ((advertisementService.advertisements$ | async)?.pagination)!
+                .totalItems >
+                ((advertisementService.advertisements$ | async)?.pagination)!
+                  .itemsPerPage
             "
-            [pageSize]="
-              (advertisementService.advertisements$ | async)?.pagination
-                ?.itemsPerPage ?? 0
-            "
-            [pageIndex]="
-              (advertisementService.advertisements$ | async)?.pagination
-                ?.currentPage ?? 0
-            "
-          ></paginator-localization>
+          >
+            <paginator-localization
+              [disabled]="busyService.isLoading()"
+              #paginator
+              (page)="handlePageEvent($event)"
+              [length]="
+                (advertisementService.advertisements$ | async)?.pagination
+                  ?.totalItems ?? 0
+              "
+              [pageSize]="
+                (advertisementService.advertisements$ | async)?.pagination
+                  ?.itemsPerPage ?? 0
+              "
+              [pageIndex]="
+                (advertisementService.advertisements$ | async)?.pagination
+                  ?.currentPage ?? 0
+              "
+            ></paginator-localization>
+          </div>
         </div>
       </div>
-    </div>
-
-    <!-- BUTTONS -->
-    <!-- MyAdvertisements -->
-    <div
-      *ngIf="
-        selectedListType === advListType.MyAdvertisements &&
-        (advertisementService.advertisements$ | async)?.items
-      "
-      class="mt-1"
-    >
-      <div class="d-flex flex-column mt-2 pb-2">
-        <div class="d-flex">
-          <div class="col-6 d-flex align-items-center justify-content-center">
-            <button class="btn header-button" (click)="openPrivateHistory()">
-              <span class="button-icon material-symbols-outlined very-dark-brown">
-                history_edu
-              </span>
-              <div class="very-dark-brown">История</div>
-            </button>
+  
+      <!-- BUTTONS -->
+      <!-- MyAdvertisements -->
+      <div
+        *ngIf="
+          selectedListType === advListType.MyAdvertisements &&
+          (advertisementService.advertisements$ | async)?.items
+        "
+        class="mt-1"
+      >
+        <div class="d-flex flex-column mt-2 pb-2">
+          <div class="d-flex">
+            <div class="col-6 d-flex align-items-center justify-content-center">
+              <button class="btn header-button" (click)="openPrivateHistory()">
+                <span
+                  class="button-icon material-symbols-outlined very-dark-brown"
+                >
+                  history_edu
+                </span>
+                <div class="very-dark-brown">История</div>
+              </button>
+            </div>
+            <div class="col-6 d-flex align-items-center justify-content-center">
+              <button
+                class="btn header-button"
+                (click)="create()"
+                [disabled]="
+                  ((advertisementService.advertisements$ | async)?.items)!
+                    .length > 2
+                "
+              >
+                <span
+                  class="button-icon material-symbols-outlined very-dark-brown"
+                >
+                  add_circle
+                </span>
+  
+                <div class="very-dark-brown">Создать</div>
+              </button>
+            </div>
           </div>
-          <div class="col-6 d-flex align-items-center justify-content-center">
-            <button
-              class="btn header-button"
-              (click)="create()"
-              [disabled]="
-                ((advertisementService.advertisements$ | async)?.items)!
-                  .length > 2
-              "
-            >
-              <span class="button-icon material-symbols-outlined very-dark-brown">
-                add_circle
-              </span>
-
-              <div class="very-dark-brown">Создать</div>
-            </button>
-          </div>
-        </div>
-        <div class="d-flex">
-          <div
-            class="col-6 d-flex align-items-center justify-content-center"
-          ></div>
-          <div class="col-6 d-flex align-items-center justify-content-center">
+          <div class="d-flex">
             <div
-              *ngIf="
-                ((advertisementService.advertisements$ | async)?.items)!
-                  .length > 2
-              "
-              class="my-info-text text-danger"
-            >
-              Максимум 3 объявления
+              class="col-6 d-flex align-items-center justify-content-center"
+            ></div>
+            <div class="col-6 d-flex align-items-center justify-content-center">
+              <div
+                *ngIf="
+                  ((advertisementService.advertisements$ | async)?.items)!
+                    .length > 2
+                "
+                class="my-info-text text-danger"
+              >
+                Максимум 3 объявления
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  }
+    }
 
   <ng-template
     [skeleton]="busyService.isLoading()"
@@ -119,51 +123,53 @@
 
     <!-- Pending validation -->
     <div
+      class="list-container"
       *ngIf="
         (advertisementService.advertisements$ | async)?.items &&
         ((advertisementService.advertisements$ | async)?.items)!.length > 0 &&
         selectedListType === advListType.PendingValidation
       "
     >
-      <ul class="list-group list-group-flush">
-        <li
+      <mat-action-list>
+        <div class="text-center text-muted mb-1">{{ getListName() }}</div>
+        <div
           *ngFor="
             let advertisement of (advertisementService.advertisements$ | async)
-              ?.items
+              ?.items;
+            let last = last;
+            trackBy: trackByAdvertisementId
           "
-          class="list-group-item"
-          [routerLink]="['/app-advertisement-validate', advertisement.id]"
         >
-          <div class="d-flex">
-            <div class="d-flex flex-column col-11">
-              <h6 class="mb-0">{{ advertisement.title }}</h6>
-              <div class="fw-normal">
-                {{ getUserDisplayName(advertisement) }}
-              </div>
-              <div class="text-muted my-info-text">
-                Поступил:
-                {{ dateHelper.getLocalTime(advertisement.updated) }}
-              </div>
-            </div>
-            <div
-              class="d-flex fw-normal col-1 align-items-center justify-content-end"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="24px"
-                viewBox="0 -960 960 960"
-                width="24px"
-                fill="#5f6368"
+          <div
+            class="d-flex align-items-center"
+            (click)="onItemClickValidate(advertisement.id)"
+          >
+            <mat-list-item class="flex-grow-1">
+              <mat-icon matListItemIcon>
+                <span
+                  class="material-symbols-outlined me-3"
+                  [ngClass]="getShadowIconClass(advertisement)"
+                >
+                  sticky_note_2
+                </span></mat-icon
               >
-                <path
-                  d="m320-116-34-34 330-330-330-330 34-34 364 364-364 364Z"
-                />
-              </svg>
-            </div>
+              <div matListItemTitle>{{ advertisement.title }}</div>
+              <div class="d-flex justify-content-start mt-2" matListItemLine>
+                От {{ getUserDisplayName(advertisement) }}
+              </div>
+              <div class="d-flex justify-content-start" matListItemLine>
+                Поступил: {{ dateHelper.getLocalTime(advertisement.updated) }}
+              </div>
+            </mat-list-item>
+            <span class="material-symbols-outlined text-muted">
+              chevron_right
+            </span>
           </div>
-        </li>
-      </ul>
+          <mat-divider></mat-divider>
+        </div>
+      </mat-action-list>
     </div>
+
 
     <!-- My advertisements -->
     <div
