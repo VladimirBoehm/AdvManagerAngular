@@ -13,11 +13,13 @@ import { SharedModule } from '../_framework/modules/sharedModule';
 import { PageEvent } from '@angular/material/paginator';
 import { ListFilterComponent } from '../_framework/component/adv-list-filter/list-filter.component';
 import { EmptyListPlaceholderComponent } from '../_framework/component/empty-list-placeholder/empty-list-placeholder.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-adv-list',
   standalone: true,
   imports: [SharedModule, ListFilterComponent, EmptyListPlaceholderComponent],
+  providers: [DatePipe],
   templateUrl: './adv-list.component.html',
   styleUrl: './adv-list.component.scss',
 })
@@ -33,6 +35,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
   dateHelper = DateHelper;
   selectedListType!: AdvListType;
   busyService = inject(BusyService);
+  datePipe = inject(DatePipe);
 
   ngOnInit(): void {
     this.routerSubscription = this.router.events.subscribe((event) => {
@@ -188,6 +191,26 @@ export class AdvListComponent implements OnInit, OnDestroy {
       default:
         return 'icon-default-shadow';
     }
+  }
+
+  getMatListItemHistoryInfo(advertisement: Advertisement): string {
+    let result: string;
+
+    if (
+      this.selectedListType === this.advListType.AllHistory ||
+      this.selectedListType === this.advListType.PrivateHistory
+    ) {
+      result = 'Размещено:';
+    } else {
+      result = 'Следующее размещение:';
+    }
+
+    const formattedDate = this.datePipe.transform(
+      advertisement.nextPublishDate,
+      'dd.MM.yyyy'
+    );
+
+    return `${result} ${formattedDate}`;
   }
 
   ngOnDestroy(): void {
