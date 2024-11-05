@@ -107,11 +107,11 @@
     </div>
     }
 
-    <ng-template
-      [skeleton]="busyService.isLoading()"
-      [skeletonRepeat]="5"
-      [skeletonClassName]="'mb-1'"
-      [skeletonHeight]="'4rem'"
+    <ng-container *ngIf="busyService.isLoading(); else itemList">
+      <app-skeleton-full-screen></app-skeleton-full-screen>
+    </ng-container>
+
+    <ng-template #itemList
     >
       @if ( (advertisementService.advertisements$ | async)?.items) {
 

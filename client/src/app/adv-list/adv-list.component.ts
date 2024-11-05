@@ -14,11 +14,17 @@ import { PageEvent } from '@angular/material/paginator';
 import { ListFilterComponent } from '../_framework/component/adv-list-filter/list-filter.component';
 import { EmptyListPlaceholderComponent } from '../_framework/component/empty-list-placeholder/empty-list-placeholder.component';
 import { DatePipe } from '@angular/common';
+import { SkeletonFullScreenComponent } from '../_framework/component/skeleton-full-screen/skeleton-full-screen.component';
 
 @Component({
   selector: 'app-adv-list',
   standalone: true,
-  imports: [SharedModule, ListFilterComponent, EmptyListPlaceholderComponent],
+  imports: [
+    SharedModule,
+    ListFilterComponent,
+    EmptyListPlaceholderComponent,
+    SkeletonFullScreenComponent,
+  ],
   providers: [DatePipe],
   templateUrl: './adv-list.component.html',
   styleUrl: './adv-list.component.scss',

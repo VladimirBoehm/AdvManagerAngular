@@ -1,7 +1,5 @@
 import {
-  AfterContentInit,
   Component,
-  ContentChild,
   Input,
   TemplateRef,
 } from '@angular/core';

@@ -1,3 +1,18 @@
+:root {
+  --very-dark-brown: #564747;
+  --dark-brownish-red: #7c5656;
+  --soft-beige-background: rgba(235, 224, 209, 0.937);
+  --muted-red-brown: #8b6a6a;
+  --muted-red-brown-opacity: #8b6a6ae8;
+  --violet: #61307a;
+  --warm-gray: #908e8e;
+  --yellow: #e3d79a;
+  --green: #889b73;
+  --red: #966161;
+  --blue: #6f88a3;
+  --neutral-gray:  #6f6f6f
+}
+
 html,
 body {
   margin: 0;
@@ -122,28 +137,47 @@ mat-progress-spinner {
   text-shadow: 0px 2px 2px rgba(0, 0, 0, 0.4);
 }
 
-.very-dark-brown {
-  color: #564747;
-}
-
-.dark-brownish-red {
-  color: #7c5656;
-}
-
 .home-symbols-outlined {
   color: #7c5656;
   font-size: 36px;
 }
 
-/*
-EBE0D1EF   rgba(235, 224, 209, 0.937)   -- background
-8B6A6A     rgba(139, 106, 106, 1)       -- A medium-dark, muted red-brown -- icon default
-7C5656     rgba(124, 86, 86, 1)         -- Dark Brownish-Red
-564747     rgba(86, 71, 71, 1)          -- Very Dark Brown
-61307A     rgba(97, 48, 122, 1)         -- Violet
-908E8E     rgba(144, 142, 142, 1)       -- muted for the bottom text
-E3D79A     rgba(227, 215, 154, 1)       -- Yellow
-889B73     rgba(136, 155, 115, 1)       -- Green 
-966161     rgba(150, 97, 97, 1)         -- Red
-6F88A3     rgba(111, 136, 163, 1)       -- Blue 
-*/
+.very-dark-brown {
+  color: var(--very-dark-brown);
+}
+
+.dark-brownish-red {
+  color: var(--dark-brownish-red);
+}
+
+.soft-beige-background {
+  background-color: var(--soft-beige-background);
+}
+
+.muted-red-brown {
+  color: var(--muted-red-brown); /* Medium-dark, muted red-brown   8b6a6a*/
+}
+
+.violet {
+  color: var(--violet);
+}
+
+.warm-gray {
+  color: var(--warm-gray); /* Muted for the bottom text  908e8e */
+}
+
+.yellow {
+  color: var(--yellow);
+}
+
+.green {
+  color: var(--green);
+}
+
+.red {
+  color: var(--red);
+}
+
+.blue {
+  color: var(--blue);
+}

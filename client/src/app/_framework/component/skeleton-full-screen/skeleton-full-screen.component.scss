@@ -1,0 +1,24 @@
+.header-panel {
+  width: 100%;
+
+  background: linear-gradient(
+    135deg,
+    var(--soft-beige-background) 15%,
+    var(--muted-red-brown-opacity) 50%,
+    var(--soft-beige-background) 85%
+  );
+  background-size: 500% 100%;
+  border-radius: 8px;
+  animation: wave 17s linear infinite;
+  border: 1px solid var(--muted-red-brown-opacity);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 1);
+}
+
+@keyframes wave {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
