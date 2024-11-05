@@ -1,6 +1,8 @@
-<body class="px-1 py-1">
-    <div class="container-fluid px-0">
-        <div class="header-panel" style="height: 6.3rem;"></div>
-        <div class="header-panel mt-2" style="height: 70vh;"></div>
-    </div>
-</body>
+<div class="d-flex flex-column">
+  <div
+    *ngIf="shouldShowHeaderPanel"
+    class="header-panel"
+    style="height: 6.3rem"
+  ></div>
+  <div class="header-panel mt-2" style="height: 70vh"></div>
+</div>

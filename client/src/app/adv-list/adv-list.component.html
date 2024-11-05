@@ -108,11 +108,15 @@
     }
 
     <ng-container *ngIf="busyService.isLoading(); else itemList">
-      <app-skeleton-full-screen></app-skeleton-full-screen>
+      <app-skeleton-full-screen
+        [shouldShowHeaderPanel]="
+          (advertisementService.advertisements$ | async)?.items === null ||
+          (advertisementService.advertisements$ | async)?.items === undefined
+        "
+      ></app-skeleton-full-screen>
     </ng-container>
 
-    <ng-template #itemList
-    >
+    <ng-template #itemList>
       @if ( (advertisementService.advertisements$ | async)?.items) {
 
       <div
