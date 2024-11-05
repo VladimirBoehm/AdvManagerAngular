@@ -1,172 +1,186 @@
-<div class="container-fluid py-1">
-  <div
-    *ngIf="accountService.currentUser()?.isAdmin"
-    class="button-container mb-1"
-  >
-    <a
-      [routerLink]="['/adv-list', advListType.PendingValidation]"
-      style="text-decoration: none; color: inherit"
+<body class="px-1 py-1">
+  <div class="container-fluid px-0">
+    <div
+      *ngIf="accountService.currentUser()?.isAdmin"
+      class="button-container mb-1"
     >
-      <mat-card class="button-card" matRipple>
-        <div class="button-content">
-          <div class="d-flex align-items-center">
-            <span class="material-symbols-outlined home-symbols-outlined me-3 icon-shadow">
-              verified
-            </span>
+      <a
+        [routerLink]="['/adv-list', advListType.PendingValidation]"
+        style="text-decoration: none; color: inherit"
+      >
+        <mat-card class="button-card" matRipple>
+          <div class="button-content">
+            <div class="d-flex align-items-center">
+              <span
+                class="material-symbols-outlined home-symbols-outlined me-3 icon-shadow"
+              >
+                verified
+              </span>
 
-            <div class="very-dark-brown flex-grow-1">
-              <h6>Валидировать</h6>
-              <p class="mb-2">Объявления для валидации</p>
+              <div class="very-dark-brown flex-grow-1">
+                <h6>Валидировать</h6>
+                <p class="mb-2">Объявления для валидации</p>
+              </div>
+              <div class="d-flex justify-content-end align-items-center">
+                <mat-progress-bar
+                  *ngIf="busyService.isLoading(); else counterTemplate"
+                  mode="buffer"
+                  style="width: 2rem"
+                ></mat-progress-bar>
+
+                <ng-template #counterTemplate>
+                  <div
+                    *ngIf="advertisementsToValidateCount > 0"
+                    class="text-muted"
+                  >
+                    {{ advertisementsToValidateCount }}
+                  </div>
+                </ng-template>
+                <span class="material-symbols-outlined text-muted">
+                  chevron_right
+                </span>
+              </div>
             </div>
-            <div class="d-flex justify-content-end align-items-center">
-              <mat-progress-bar
-                *ngIf="busyService.isLoading(); else counterTemplate"
-                mode="buffer"
-                style="width: 2rem"
-              ></mat-progress-bar>
+          </div>
+        </mat-card>
+      </a>
+    </div>
 
-              <ng-template #counterTemplate>
-                <div
-                  *ngIf="advertisementsToValidateCount > 0"
-                  class="text-muted"
-                >
-                  {{ advertisementsToValidateCount }}
-                </div>
-              </ng-template>
+    <div
+      *ngIf="accountService.currentUser()?.isAdmin"
+      class="button-container mb-1"
+    >
+      <a
+        [routerLink]="['/app-chat-filter']"
+        style="text-decoration: none; color: inherit"
+      >
+        <mat-card class="button-card" matRipple>
+          <div class="button-content">
+            <div class="d-flex align-items-center">
+              <span
+                class="me-3 ms-1 material-symbols-outlined home-symbols-outlined icon-shadow"
+              >
+                tune
+              </span>
+              <div class="very-dark-brown flex-grow-1">
+                <h6>Фильтр чата</h6>
+                <p class="mb-2">Автоматическое удаление</p>
+              </div>
+
               <span class="material-symbols-outlined text-muted">
                 chevron_right
               </span>
             </div>
           </div>
-        </div>
-      </mat-card>
-    </a>
-  </div>
+        </mat-card>
+      </a>
+    </div>
 
-  <div
-    *ngIf="accountService.currentUser()?.isAdmin"
-    class="button-container mb-1"
-  >
-    <a
-      [routerLink]="['/app-chat-filter']"
-      style="text-decoration: none; color: inherit"
-    >
-      <mat-card class="button-card" matRipple>
-        <div class="button-content">
-          <div class="d-flex align-items-center">
-            <span class="me-3 ms-1 material-symbols-outlined home-symbols-outlined icon-shadow">
-              tune
-            </span>
-            <div class="very-dark-brown flex-grow-1">
-              <h6>Фильтр чата</h6>
-              <p class="mb-2">Автоматическое удаление</p>
+    <div class="button-container mb-1">
+      <a
+        [routerLink]="['/adv-list', advListType.MyAdvertisements]"
+        style="text-decoration: none; color: inherit"
+      >
+        <mat-card class="button-card" matRipple>
+          <div class="button-content">
+            <div class="d-flex align-items-center">
+              <span
+                class="me-3 ms-1 material-symbols-outlined home-symbols-outlined icon-shadow"
+              >
+                ad_group
+              </span>
+              <div class="very-dark-brown flex-grow-1">
+                <h6>Мои объявления</h6>
+                <p class="mb-2">Администрирование рекламы</p>
+              </div>
+
+              <span class="material-symbols-outlined text-muted">
+                chevron_right
+              </span>
             </div>
-
-            <span class="material-symbols-outlined text-muted">
-              chevron_right
-            </span>
           </div>
-        </div>
-      </mat-card>
-    </a>
-  </div>
+        </mat-card>
+      </a>
+    </div>
+    <div class="button-container mb-1">
+      <a
+        [routerLink]="['/adv-list', advListType.PendingPublication]"
+        style="text-decoration: none; color: inherit"
+      >
+        <mat-card class="button-card" matRipple>
+          <div class="button-content">
+            <div class="d-flex align-items-center">
+              <span
+                class="me-3 ms-1 material-symbols-outlined home-symbols-outlined icon-shadow"
+              >
+                autorenew
+              </span>
+              <div class="very-dark-brown flex-grow-1">
+                <h6>Размещается</h6>
+                <p class="mb-2">Очередь размещения</p>
+              </div>
 
-  <div class="button-container mb-1">
-    <a
-      [routerLink]="['/adv-list', advListType.MyAdvertisements]"
-      style="text-decoration: none; color: inherit"
-    >
-      <mat-card class="button-card" matRipple>
-        <div class="button-content">
-          <div class="d-flex align-items-center">
-            <span class="me-3 ms-1 material-symbols-outlined home-symbols-outlined icon-shadow">
-              ad_group
-            </span>
-            <div class="very-dark-brown flex-grow-1">
-              <h6>Мои объявления</h6>
-              <p class="mb-2">Администрирование рекламы</p>
+              <span class="material-symbols-outlined text-muted">
+                chevron_right
+              </span>
             </div>
-
-            <span class="material-symbols-outlined text-muted">
-              chevron_right
-            </span>
           </div>
-        </div>
-      </mat-card>
-    </a>
-  </div>
-  <div class="button-container mb-1">
-    <a
-      [routerLink]="['/adv-list', advListType.PendingPublication]"
-      style="text-decoration: none; color: inherit"
-    >
-      <mat-card class="button-card" matRipple>
-        <div class="button-content">
-          <div class="d-flex align-items-center">
-            <span class="me-3 ms-1 material-symbols-outlined home-symbols-outlined icon-shadow">
-              autorenew
-            </span>
-            <div class="very-dark-brown flex-grow-1">
-              <h6>Размещается</h6>
-              <p class="mb-2">Очередь размещения</p>
+        </mat-card>
+      </a>
+    </div>
+
+    <div class="button-container mb-1">
+      <a
+        [routerLink]="['/adv-list', advListType.AllHistory]"
+        style="text-decoration: none; color: inherit"
+      >
+        <mat-card class="button-card" matRipple>
+          <div class="button-content">
+            <div class="d-flex align-items-center">
+              <span
+                class="me-3 ms-1 material-symbols-outlined home-symbols-outlined icon-shadow"
+              >
+                history_edu
+              </span>
+              <div class="very-dark-brown flex-grow-1">
+                <h6>История</h6>
+                <p class="mb-2">История размещений</p>
+              </div>
+
+              <span class="material-symbols-outlined text-muted">
+                chevron_right
+              </span>
             </div>
-
-            <span class="material-symbols-outlined text-muted">
-              chevron_right
-            </span>
           </div>
-        </div>
-      </mat-card>
-    </a>
-  </div>
+        </mat-card>
+      </a>
+    </div>
 
-  <div class="button-container mb-1">
-    <a
-      [routerLink]="['/adv-list', advListType.AllHistory]"
-      style="text-decoration: none; color: inherit"
-    >
-      <mat-card class="button-card" matRipple>
-        <div class="button-content">
-          <div class="d-flex align-items-center">
-            <span class="me-3 ms-1 material-symbols-outlined home-symbols-outlined icon-shadow">
-              history_edu
-            </span>
-            <div class="very-dark-brown flex-grow-1">
-              <h6>История</h6>
-              <p class="mb-2">История размещений</p>
+    <div class="button-container mb-1">
+      <a
+        [routerLink]="['/app-feedback']"
+        style="text-decoration: none; color: inherit"
+      >
+        <mat-card class="button-card" matRipple>
+          <div class="button-content">
+            <div class="d-flex align-items-center">
+              <span
+                class="me-3 ms-1 material-symbols-outlined home-symbols-outlined icon-shadow"
+              >
+                communication
+              </span>
+              <div class="very-dark-brown flex-grow-1">
+                <h6>Обратная связь</h6>
+                <p class="mb-2">Отзыв администратору</p>
+              </div>
+
+              <span class="material-symbols-outlined text-muted">
+                chevron_right
+              </span>
             </div>
-
-            <span class="material-symbols-outlined text-muted">
-              chevron_right
-            </span>
           </div>
-        </div>
-      </mat-card>
-    </a>
+        </mat-card>
+      </a>
+    </div>
   </div>
-
-  <div class="button-container mb-1">
-    <a
-      [routerLink]="['/app-feedback']"
-      style="text-decoration: none; color: inherit"
-    >
-      <mat-card class="button-card" matRipple>
-        <div class="button-content">
-          <div class="d-flex align-items-center">
-            <span class="me-3 ms-1 material-symbols-outlined home-symbols-outlined icon-shadow">
-              communication
-            </span>
-            <div class="very-dark-brown flex-grow-1">
-              <h6>Обратная связь</h6>
-              <p class="mb-2">Отзыв администратору</p>
-            </div>
-
-            <span class="material-symbols-outlined text-muted">
-              chevron_right
-            </span>
-          </div>
-        </div>
-      </mat-card>
-    </a>
-  </div>
-</div>
+</body>
