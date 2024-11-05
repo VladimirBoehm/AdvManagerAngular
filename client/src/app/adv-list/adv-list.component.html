@@ -210,8 +210,14 @@
                   </span></mat-icon
                 >
                 <div matListItemTitle>{{ advertisement.title }}</div>
-                <div matListItemLine>{{ getStatus(advertisement) }}</div>
-                <div matListItemLine>{{ getCreationDate(advertisement) }}</div>
+                <div matListItemLine class="mt-2">
+                  <!--
+                -->{{ getStatus(advertisement) }}
+                </div>
+                <div matListItemLine>
+                  <!--
+                  -->{{ getCreationDate(advertisement) }}
+                </div>
               </mat-list-item>
               <span class="material-symbols-outlined text-muted">
                 chevron_right
@@ -257,7 +263,7 @@
                   </span></mat-icon
                 >
                 <div matListItemTitle>{{ advertisement.title }}</div>
-                <div matListItemLine>
+                <div matListItemLine class="mt-2">
                   <!--
                 -->{{ getMatListItemHistoryInfo(advertisement) }}
                 </div>
