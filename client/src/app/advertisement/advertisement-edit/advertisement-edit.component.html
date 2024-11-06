@@ -103,17 +103,9 @@
         (click)="deleteImage()"
         [disabled]="busyService.isLoading()"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="48px"
-          viewBox="0 -960 960 960"
-          width="48px"
-          fill="#5f6368"
-        >
-          <path
-            d="m254-238-16-16 226-226-226-226 16-16 226 226 226-226 16 16-226 226 226 226-16 16-226-226-226 226Z"
-          />
-        </svg>
+        <span class="material-symbols-outlined text-muted">
+          delete_forever
+        </span>
         <div class="text-muted my-info-text">Удалить</div>
       </button>
 
@@ -236,10 +228,7 @@
         style="height: 10rem"
       >
         <div class="me-1 text-muted">Загрузка</div>
-        <mat-progress-bar
-          mode="buffer"
-          style="width: 3rem"
-        ></mat-progress-bar>
+        <mat-progress-bar mode="buffer" style="width: 3rem"></mat-progress-bar>
       </div>
     </div>
 

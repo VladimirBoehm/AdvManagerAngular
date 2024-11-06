@@ -1,22 +1,14 @@
-<div class="modal-header d-flex justify-content-end pb-0 pt-1">
-  <div class="container d-flex justify-content-between align-items-center">
-    <h6 class="text-muted mb-0">Изображение</h6>
-    <button type="button" class="btn empty-button" (click)="closeModal()">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        height="24px"
-        viewBox="0 -960 960 960"
-        width="24px"
-        fill="#5f6368"
-      >
-        <path
-          d="m256-236-20-20 224-224-224-224 20-20 224 224 224-224 20 20-224 224 224 224-20 20-224-224-224 224Z"
-        />
-      </svg>
-      <div class="text-muted my-info-text">Закрыть</div>
-    </button>
+<div class="my-dialog">
+  <div class="modal-header d-flex justify-content-end pb-0 pt-1">
+    <div class="container d-flex justify-content-between align-items-center">
+      <h6 class="text-muted mb-0">Изображение</h6>
+      <button type="button" class="btn empty-button" (click)="closeModal()">
+        <span class="material-symbols-outlined text-muted"> close </span>
+        <div class="text-muted my-info-text">Закрыть</div>
+      </button>
+    </div>
   </div>
-</div>
-<div class="modal-body">
-  <img [src]="imageUrl" alt="image" class="preview-image" />
+  <div class="p-2">
+    <img [src]="imageUrl" alt="image" class="preview-image" />
+  </div>
 </div>

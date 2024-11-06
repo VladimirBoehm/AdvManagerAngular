@@ -1,7 +1,8 @@
 :root {
   --very-dark-brown: #564747;
   --dark-brownish-red: #7c5656;
-  --soft-beige-background: rgba(235, 224, 209, 0.937);
+  --soft-beige-background-opacity: rgba(235, 224, 209, 0.937);
+  --soft-beige-background: rgba(235, 224, 209);
   --muted-red-brown: #8b6a6a;
   --muted-red-brown-opacity: #8b6a6ae8;
   --violet: #61307a;
@@ -44,8 +45,8 @@ body {
   color: var(--dark-brownish-red);
 }
 
-.soft-beige-background {
-  background-color: var(--soft-beige-background);
+.soft-beige-background-opacity {
+  background-color: var(--soft-beige-background-opacity);
 }
 
 .muted-red-brown {
@@ -92,7 +93,6 @@ a {
   align-items: center;
   justify-content: center;
 }
-
 
 .preview-image {
   width: 100%;
@@ -178,7 +178,7 @@ mat-progress-spinner {
 }
 
 .background-rectangle-panel-common {
-  background-color: #ebe0d1ef;
+  background-color: var(--soft-beige-background-opacity);
   border-radius: 8px;
   border: 1px solid var(--muted-red-brown-opacity);
 }
@@ -188,3 +188,16 @@ mat-progress-spinner {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 1);
 }
 
+.mat-mdc-dialog-surface {
+  background-color: var(--soft-beige-background) !important;
+}
+
+.modal-body {
+  background-color: var(--soft-beige-background);
+  border-radius: 8px;
+}
+
+.my-dialog {
+  background-color: var(--soft-beige-background);
+  border-radius: 8px;
+}

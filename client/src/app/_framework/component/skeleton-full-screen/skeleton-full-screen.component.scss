@@ -2,9 +2,9 @@
   width: 100%;
   background: linear-gradient(
     135deg,
-    var(--soft-beige-background) 15%,
+    var(--soft-beige-background-opacity) 15%,
     var(--very-dark-brown) 50%,
-    var(--soft-beige-background) 85%
+    var(--soft-beige-background-opacity) 85%
   );
   background-size: 500% 100%;
   border-radius: 8px;
@@ -21,7 +21,3 @@
     background-position: -200% 0;
   }
 }
-
-
-
-
