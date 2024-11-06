@@ -39,7 +39,7 @@
 
     <!-- buttons: status VALIDATED  -->
     <div *ngIf="advertisement.statusId === advertisementStatus.validated">
-      <div class="d-flex mt-2 background-rectangle-panel-shadow">
+      <div class="d-flex background-rectangle-panel-shadow">
         <div class="col-6 d-flex align-items-center justify-content-center">
           <ng-container *ngTemplateOutlet="deleteButtonTemplate"></ng-container>
         </div>
@@ -51,24 +51,16 @@
             (click)="publishDialogShow()"
             [disabled]="busyService.isLoading()"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              fill="#5f6368"
-            >
-              <path
-                d="M182-236v-492l467 201q-13 2-27.5 4.5T598-516L210-680v160l180 40-180 40v160l249-106q-4 8-7 19t-4 16L182-236Zm488 84q-62 0-105-43t-43-105q0-62 43-105t105-43q62 0 105 43t43 105q0 62-43 105t-105 43Zm66-62 20-20-72-72v-108h-28v120l80 80ZM210-386v-294 400-106Z"
-              />
-            </svg>
+            <span class="material-symbols-outlined text-muted">
+              schedule_send
+            </span>
             <div class="text-muted">Разместить</div>
           </button>
         </div>
       </div>
       <div
         *ngIf="advertisement.statusId === advertisementStatus.validated"
-        class="alert alert-success mt-2"
+        class="alert alert-success mt-2 mb-0"
         role="alert"
       >
         <div class="text-center">Подтверждено!</div>
@@ -92,7 +84,7 @@
     <div
       *ngIf="advertisement.statusId === advertisementStatus.pendingPublication"
     >
-      <div class="d-flex mt-2 background-rectangle-panel-shadow">
+      <div class="d-flex background-rectangle-panel-shadow">
         <div
           class="col-6 d-flex flex-column align-items-center justify-content-center"
         >
@@ -101,17 +93,9 @@
             class="btn empty-button"
             (click)="forcePublicationDialogShow()"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="48px"
-              viewBox="0 -960 960 960"
-              width="48px"
-              fill="#5f6368"
-            >
-              <path
-                d="M184-312v-336l248 168-248 168Zm344 0v-336l248 168-248 168ZM206-480Zm344 0ZM206-354l188-126-188-127v253Zm344 0 188-126-188-127v253Z"
-              />
-            </svg>
+            <span class="material-symbols-outlined text-muted">
+              fast_forward
+            </span>
             <div class="text-muted">Форсировать</div>
           </button>
         </div>
@@ -123,23 +107,13 @@
             class="btn empty-button"
             (click)="cancelPublicationDialogShow()"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              fill="#5f6368"
-            >
-              <path
-                d="M306-466h348v-28H306v28Zm174.17 334q-72.17 0-135.73-27.39-63.56-27.39-110.57-74.35-47.02-46.96-74.44-110.43Q132-407.65 132-479.83q0-72.17 27.39-135.73 27.39-63.56 74.35-110.57 46.96-47.02 110.43-74.44Q407.65-828 479.83-828q72.17 0 135.73 27.39 63.56 27.39 110.57 74.35 47.02 46.96 74.44 110.43Q828-552.35 828-480.17q0 72.17-27.39 135.73-27.39 63.56-74.35 110.57-46.96 47.02-110.43 74.44Q552.35-132 480.17-132Zm-.17-28q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"
-              />
-            </svg>
+            <span class="material-symbols-outlined text-muted"> cancel </span>
             <div class="text-muted">Отменить</div>
           </button>
         </div>
       </div>
 
-      <div class="alert alert-info text-center mt-2" role="alert">
+      <div class="alert alert-info text-center mt-2 mb-0" role="alert">
         <div class="d-flex flex-column">
           <div>Ожидает размещения!</div>
           <div *ngIf="!advertisement.placeInQueue; else imageListContent">
@@ -160,7 +134,7 @@
 
     <!-- buttons: status REJECTED  -->
     <div *ngIf="advertisement.statusId === advertisementStatus.rejected">
-      <div class="d-flex mt-2 background-rectangle-panel-shadow">
+      <div class="d-flex background-rectangle-panel-shadow">
         <div class="col-6 d-flex align-items-center justify-content-center">
           <ng-container *ngTemplateOutlet="deleteButtonTemplate"></ng-container>
         </div>
@@ -183,7 +157,7 @@
           </button>
         </div>
       </div>
-      <div class="alert alert-warning text-center mt-2" role="alert">
+      <div class="alert alert-warning text-center mt-2 mb-0" role="alert">
         Объявление отклонено!
       </div>
     </div>
@@ -193,14 +167,14 @@
       *ngIf="advertisement.statusId === advertisementStatus.pendingValidation"
       class="mt-2"
     >
-      <div class="alert alert-info text-center" role="alert">
+      <div class="alert alert-info text-center mb-0" role="alert">
         Отправлено администратору для подтверждения!
       </div>
     </div>
 
     <!-- No Username error  -->
     <div *ngIf="!accountService.currentUser()?.userName" class="mt-2">
-      <div class="alert alert-warning text-center" role="alert">
+      <div class="alert alert-warning text-center mb-0" role="alert">
         <div class="text-center">⚠️ У вас не указан &#64;Username!</div>
         <div class="text-center">
           Обновите свой профиль и в боте выполните комманду
@@ -211,7 +185,7 @@
 
     <div
       *ngIf="advertisement.statusId === advertisementStatus.published"
-      class="alert alert-success mt-2"
+      class="alert alert-success mt-2 mb-0"
       role="alert"
     >
       <div class="text-center">
