@@ -5,33 +5,35 @@
     (ngSubmit)="save()"
     autocomplete="off"
   >
-    <div class="container d-flex justify-content-between align-items-center">
-      <div class="d-flex flex-column">
-        <h6 class="text-muted mt-3 mb-0">Кнопка</h6>
-        <div class="text-muted my-info-text text-center">
-          Размещается под объявлением
+    <div class="d-flex flex-column">
+      <div class="d-flex">
+        <div class="d-flex col-6 flex-column justify-content-center">
+          <h6 class="text-muted">Кнопка</h6>
+        </div>
+        <div class="d-flex col-6 justify-content-end">
+          <button
+            type="submit"
+            class="btn empty-button"
+            aria-label="Close"
+            [disabled]="editForm.invalid"
+          >
+            <span class="material-symbols-outlined text-muted">
+              check_circle
+            </span>
+            <div class="text-muted my-info-text">Сохранить</div>
+          </button>
+          <button
+            type="button"
+            class="btn empty-button ms-2"
+            (click)="closeModal()"
+          >
+            <span class="material-symbols-outlined text-muted"> close </span>
+            <div class="text-muted my-info-text">Закрыть</div>
+          </button>
         </div>
       </div>
-      <div class="d-flex mt-2">
-        <button
-          type="submit"
-          class="btn empty-button"
-          aria-label="Close"
-          [disabled]="editForm.invalid"
-        >
-          <span class="material-symbols-outlined text-muted">
-            check_circle
-          </span>
-          <div class="text-muted my-info-text">Сохранить</div>
-        </button>
-        <button
-          type="button"
-          class="btn empty-button ms-2"
-          (click)="closeModal()"
-        >
-          <span class="material-symbols-outlined text-muted"> close </span>
-          <div class="text-muted my-info-text">Закрыть</div>
-        </button>
+      <div class="text-muted my-info-text text-left">
+        Размещается под объявлением
       </div>
     </div>
     <hr class="mt-1 mb-2" />
