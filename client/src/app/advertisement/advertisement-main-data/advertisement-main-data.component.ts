@@ -18,6 +18,8 @@ export class AdvertisementMainDataComponent {
   url = input<string | undefined>();
   linkName = input<string | undefined>();
   linkValue = input<string | undefined>();
+  created = input<string | undefined>();
+  updated = input<string | undefined>();
   modalRef?: BsModalRef;
 
   showImage() {
