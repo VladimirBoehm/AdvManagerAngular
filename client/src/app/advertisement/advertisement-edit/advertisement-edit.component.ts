@@ -18,7 +18,8 @@ import { AdvListType } from '../../_framework/constants/advListType';
 import { SharedModule } from '../../_framework/modules/sharedModule';
 import { ImagePreviewModalComponent } from '../../_framework/component/image-preview-modal/image-preview-modal.component';
 import { BusyService } from '../../_services/busy.service';
-import { EmptyListPlaceholderComponent } from "../../_framework/component/empty-list-placeholder/empty-list-placeholder.component";
+import { EmptyListPlaceholderComponent } from '../../_framework/component/empty-list-placeholder/empty-list-placeholder.component';
+import { SkeletonFullScreenComponent } from '../../_framework/component/skeleton-full-screen/skeleton-full-screen.component';
 
 @Component({
   selector: 'app-advertisement-edit',
@@ -27,8 +28,9 @@ import { EmptyListPlaceholderComponent } from "../../_framework/component/empty-
     SharedModule,
     AddAdvertisementButtonModalComponent,
     ImagePreviewModalComponent,
-    EmptyListPlaceholderComponent
-],
+    EmptyListPlaceholderComponent,
+    SkeletonFullScreenComponent,
+  ],
   templateUrl: './advertisement-edit.component.html',
   styleUrl: './advertisement-edit.component.scss',
   providers: [MatErrorService],
@@ -47,7 +49,7 @@ export class AdvertisementEditComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  
+
   busyService = inject(BusyService);
   modalRef?: BsModalRef;
   editForm: FormGroup = new FormGroup({});

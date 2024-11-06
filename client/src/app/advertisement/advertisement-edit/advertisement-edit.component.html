@@ -222,16 +222,9 @@
       </div>
       <hr class="mt-2 mb-0" />
       <div *ngIf="busyService.isLoading(); else imageListContent">
-        <div
-          class="d-flex align-items-center justify-content-center"
-          style="height: 10rem"
-        >
-          <div class="me-1 text-muted">Загрузка</div>
-          <mat-progress-bar
-            mode="buffer"
-            style="width: 3rem"
-          ></mat-progress-bar>
-        </div>
+        <app-skeleton-full-screen
+          [shouldShowHeaderPanel]="false"
+        ></app-skeleton-full-screen>
       </div>
 
       <ng-template #imageListContent>
