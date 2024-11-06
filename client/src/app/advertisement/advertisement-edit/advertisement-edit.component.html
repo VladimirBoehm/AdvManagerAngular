@@ -1,23 +1,202 @@
-@if(advertisement){
-<div class="container">
+<body class="p-1">
+  @if(advertisement){
   <form
     id="editForm"
     [formGroup]="editForm"
     (ngSubmit)="save()"
     autocomplete="off"
   >
-    <div class="d-flex mt-2">
-      <div class="col-6"></div>
-      <div class="col-6 d-flex align-items-center justify-content-center">
-        <button
-          class="btn empty-button"
-          type="submit"
-          [disabled]="editForm.invalid || busyService.isLoading()"
-        >
-          <ng-container *ngIf="busyService.isLoading(); else defaultIcon">
-            <mat-spinner [diameter]="24"></mat-spinner>
-          </ng-container>
-          <ng-template #defaultIcon>
+    <div class="container-fluid px-0">
+      <div class="d-flex background-rectangle-panel-shadow">
+        <div class="col-6"></div>
+        <div class="col-6 d-flex align-items-center justify-content-center">
+          <button
+            class="btn empty-button"
+            type="submit"
+            [disabled]="editForm.invalid || busyService.isLoading()"
+          >
+            <ng-container *ngIf="busyService.isLoading(); else defaultIcon">
+              <mat-spinner [diameter]="24"></mat-spinner>
+            </ng-container>
+            <ng-template #defaultIcon>
+              <span class="material-symbols-outlined text-muted">
+                check_circle
+              </span>
+            </ng-template>
+            <div class="text-muted">Сохранить</div>
+          </button>
+        </div>
+      </div>
+      <div>
+        <div class="background-rectangle-panel-shadow mt-2 p-1">
+          <mat-form-field class="col-12 mt-4">
+            <mat-label>Заголовок</mat-label>
+            <input
+              matInput
+              [readonly]="busyService.isLoading()"
+              formControlName="title"
+            />
+            @if (matErrorService.getHasError(editForm.controls['title'])){
+            <mat-error>{{
+              matErrorService.getErrorMessage(
+                editForm.controls["title"],
+                "title"
+              )
+            }}</mat-error>
+            }
+            <mat-hint [align]="'end'">
+              {{ titleCounter }}/{{ maxTitleLength }}</mat-hint
+            >
+          </mat-form-field>
+
+          <mat-form-field class="mt-3 col-12">
+            <mat-label>Объявление</mat-label>
+            <textarea
+              matInput
+              required
+              rows="6"
+              type="text"
+              name="message"
+              formControlName="message"
+              [readonly]="busyService.isLoading()"
+            ></textarea>
+            @if (matErrorService.getHasError(editForm.controls['message'])){
+            <mat-error>{{
+              matErrorService.getErrorMessage(
+                editForm.controls["message"],
+                "message"
+              )
+            }}</mat-error>
+            }
+            <mat-hint [align]="'end'">
+              {{ messageCounter }}/{{ maxMessageLength }}</mat-hint
+            >
+          </mat-form-field>
+
+          <div class="d-flex flex-column align-items-start">
+            <div class="d-flex">
+              <button
+                *ngIf="!this.advertisement.adImage"
+                class="btn empty-button p-0 text-start"
+                type="button"
+                (click)="showImageSelector()"
+                [disabled]="busyService.isLoading()"
+              >
+                <div class="d-flex flex-column align-items-start">
+                  <span
+                    class="material-symbols-outlined text-muted"
+                    style="font-size: 48px; margin-left: 0"
+                  >
+                    image
+                  </span>
+                  <div class="text-muted my-info-text" style="margin-left: 0">
+                    Изображение
+                  </div>
+                </div>
+              </button>
+
+              <button
+                *ngIf="this.advertisement.adImage"
+                class="btn empty-button ps-0 text-start"
+                type="button"
+                (click)="deleteImage()"
+                [disabled]="busyService.isLoading()"
+              >
+                <span
+                  class="material-symbols-outlined text-muted"
+                  style="font-size: 48px"
+                >
+                  close
+                </span>
+                <div class="text-muted my-info-text">Удалить</div>
+              </button>
+
+              <div
+                *ngIf="this.advertisement.adImage"
+                class="image-container"
+                style="width: 100px"
+              >
+                <img
+                  [src]="this.advertisement.adImage.url"
+                  (click)="showImage()"
+                  alt="Изображение"
+                  class="preview-image rounded"
+                />
+              </div>
+            </div>
+
+            <button
+              type="button"
+              class="btn empty-button p-0"
+              *ngIf="!advertisement.linkName"
+              (click)="showAddAdvertisementButtonDialog()"
+              [disabled]="busyService.isLoading()"
+            >
+              <div class="d-flex flex-column align-items-start">
+                <span
+                  class="material-symbols-outlined text-muted"
+                  style="font-size: 48px; margin-left: 0"
+                >
+                  link
+                </span>
+                <div class="text-muted my-info-text" style="margin-left: 0">
+                  Кнопка
+                </div>
+              </div>
+            </button>
+          </div>
+
+          <div class="d-flex flex-column mt-2" *ngIf="advertisement.linkName">
+            <div
+              class="background-rectangle-panel-common p-2 d-flex flex-column"
+            >
+              <div class="d-flex">
+                <div>Кнопка:</div>
+                <div class="ms-1 linkName">{{ advertisement.linkName }}</div>
+              </div>
+              <div class="d-flex">
+                <div>Ссылка:</div>
+                <a [href]="advertisement.linkValue" class="ms-1">
+                  {{ advertisement.linkValue }}
+                </a>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+              <button
+                type="button"
+                class="btn empty-button semi-transparent"
+                (click)="removeAdvertisementButton()"
+                [disabled]="busyService.isLoading()"
+              >
+                Удалить
+              </button>
+              <button
+                type="button"
+                class="btn empty-button semi-transparent"
+                (click)="showAddAdvertisementButtonDialog()"
+                [disabled]="busyService.isLoading()"
+              >
+                Редактировать
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <ng-template #imageSelectorDialog>
+    <div class="modal-body">
+      <div class="container d-flex justify-content-between align-items-center">
+        <h6 class="text-muted mt-2 mb-0">Выберите изображение</h6>
+        <div class="d-flex mt-2">
+          <button
+            type="button"
+            class="btn empty-button"
+            aria-label="Close"
+            [disabled]="!selectedImage"
+            (click)="selectImage()"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               height="24px"
@@ -29,246 +208,70 @@
                 d="m422-332 248-248-20-20-228 228-114-114-20 20 134 134Zm58.17 200q-72.17 0-135.73-27.39-63.56-27.39-110.57-74.35-47.02-46.96-74.44-110.43Q132-407.65 132-479.83q0-72.17 27.39-135.73 27.39-63.56 74.35-110.57 46.96-47.02 110.43-74.44Q407.65-828 479.83-828q72.17 0 135.73 27.39 63.56 27.39 110.57 74.35 47.02 46.96 74.44 110.43Q828-552.35 828-480.17q0 72.17-27.39 135.73-27.39 63.56-74.35 110.57-46.96 47.02-110.43 74.44Q552.35-132 480.17-132Zm-.17-28q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"
               />
             </svg>
+            <div class="text-muted my-info-text">Выбрать</div>
+          </button>
+          <button
+            type="button"
+            class="btn empty-button ms-2"
+            (click)="modalRef?.hide()"
+          >
+            <span class="material-symbols-outlined text-muted"> close </span>
+            <div class="text-muted my-info-text">Закрыть</div>
+          </button>
+        </div>
+      </div>
+      <hr class="mt-2 mb-0" />
+      <div *ngIf="busyService.isLoading(); else imageListContent">
+        <div
+          class="d-flex align-items-center justify-content-center"
+          style="height: 10rem"
+        >
+          <div class="me-1 text-muted">Загрузка</div>
+          <mat-progress-bar
+            mode="buffer"
+            style="width: 3rem"
+          ></mat-progress-bar>
+        </div>
+      </div>
+
+      <ng-template #imageListContent>
+        <app-empty-list-placeholder
+          *ngIf="userImages.length === 0; else imageList"
+          [customContent]="emptyListInfo"
+        >
+          <ng-template #emptyListInfo>
+            <div class="d-flex flex-column align-items-center text-muted mb-3">
+              <div class="my-info-text" style="line-height: 1.5">
+                Нет загруженных изображений.
+              </div>
+              <div class="my-info-text" style="line-height: 1.5">
+                Для загрузки выполните в боте команду <strong>/start</strong>,
+              </div>
+              <div class="my-info-text" style="line-height: 1.5">
+                далее выберите пункт меню
+                <strong>'Загрузить изображения'</strong>.
+              </div>
+            </div>
           </ng-template>
-          <div class="text-muted">Сохранить</div>
-        </button>
-      </div>
-    </div>
-    <hr />
-
-    <mat-form-field class="col-12">
-      <mat-label>Заголовок</mat-label>
-      <input
-        matInput
-        [readonly]="busyService.isLoading()"
-        formControlName="title"
-      />
-      @if (matErrorService.getHasError(editForm.controls['title'])){
-      <mat-error>{{
-        matErrorService.getErrorMessage(editForm.controls["title"], "title")
-      }}</mat-error>
-      }
-      <mat-hint [align]="'end'">
-        {{ titleCounter }}/{{ maxTitleLength }}</mat-hint
-      >
-    </mat-form-field>
-
-    <mat-form-field class="mt-3 col-12">
-      <mat-label>Объявление</mat-label>
-      <textarea
-        matInput
-        required
-        rows="6"
-        type="text"
-        name="message"
-        formControlName="message"
-        [readonly]="busyService.isLoading()"
-      ></textarea>
-      @if (matErrorService.getHasError(editForm.controls['message'])){
-      <mat-error>{{
-        matErrorService.getErrorMessage(editForm.controls["message"], "message")
-      }}</mat-error>
-      }
-      <mat-hint [align]="'end'">
-        {{ messageCounter }}/{{ maxMessageLength }}</mat-hint
-      >
-    </mat-form-field>
-  </form>
-
-  <div class="d-flex flex-column align-items-start">
-    <div class="d-flex">
-      <button
-        *ngIf="!this.advertisement.adImage"
-        class="btn empty-button ps-0 text-start"
-        (click)="showImageSelector()"
-        [disabled]="busyService.isLoading()"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="48px"
-          viewBox="0 -960 960 960"
-          width="48px"
-          fill="#5f6368"
-        >
-          <path
-            d="M480-480ZM226-172q-22.77 0-38.39-15.61Q172-203.23 172-226v-508q0-22.78 15.61-38.39Q203.23-788 226-788h282v22H226q-14 0-23 9t-9 23v508q0 14 9 23t23 9h508q14 0 23-9t9-23v-282h22v282q0 22.77-15.61 38.39Q756.78-172 734-172H226Zm54-141h400L559-474 437-323l-78-90-79 100Zm404-289v-82h-82v-22h82v-82h22v82h82v22h-82v82h-22Z"
-          />
-        </svg>
-        <div class="text-muted my-info-text">Изображение</div>
-      </button>
-
-      <button
-        *ngIf="this.advertisement.adImage"
-        class="btn empty-button ps-0 text-start"
-        (click)="deleteImage()"
-        [disabled]="busyService.isLoading()"
-      >
-        <span class="material-symbols-outlined text-muted">
-          delete_forever
-        </span>
-        <div class="text-muted my-info-text">Удалить</div>
-      </button>
-
-      <div
-        *ngIf="this.advertisement.adImage"
-        class="image-container"
-        style="width: 100px"
-      >
-        <img
-          [src]="this.advertisement.adImage.url"
-          (click)="showImage()"
-          alt="Изображение"
-          class="preview-image rounded"
-        />
-      </div>
-    </div>
-
-    <button
-      class="btn empty-button ps-0"
-      *ngIf="!advertisement.linkName"
-      (click)="showAddAdvertisementButtonDialog()"
-      [disabled]="busyService.isLoading()"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        height="48px"
-        viewBox="0 -960 960 960"
-        width="48px"
-        fill="#5f6368"
-      >
-        <path
-          d="M423-328H284q-63.08 0-107.54-44.44Q132-416.89 132-479.94q0-63.06 44.46-107.56T284-632h139v22H284q-54.33 0-92.17 37.76-37.83 37.77-37.83 92Q154-426 191.83-388q37.84 38 92.17 38h139v22Zm-75-141v-22h265v22H348Zm189 141v-22h139q54.33 0 92.17-37.76 37.83-37.77 37.83-92Q806-534 768.17-572q-37.84-38-92.17-38H537v-22h139q63.08 0 107.54 44.44Q828-543.11 828-480.06q0 63.06-44.46 107.56T676-328H537Z"
-        />
-      </svg>
-      <div class="text-muted my-info-text">Кнопка</div>
-    </button>
-  </div>
-
-  <div class="d-flex flex-column" *ngIf="advertisement.linkName">
-    <mat-card appearance="raised" class="mt-2">
-      <mat-card-content>
-        <div class="d-flex">
-          <div>Кнопка:</div>
-          <div class="ms-1 linkName">{{ advertisement.linkName }}</div>
-        </div>
-        <div class="d-flex">
-          <div>Ссылка:</div>
-          <a [href]="advertisement.linkValue" class="ms-1">
-            {{ advertisement.linkValue }}
-          </a>
-        </div>
-      </mat-card-content>
-    </mat-card>
-    <div class="d-flex justify-content-end">
-      <button
-        class="btn empty-button semi-transparent"
-        (click)="removeAdvertisementButton()"
-        [disabled]="busyService.isLoading()"
-      >
-        Удалить
-      </button>
-      <button
-        class="btn empty-button semi-transparent"
-        (click)="showAddAdvertisementButtonDialog()"
-        [disabled]="busyService.isLoading()"
-      >
-        Редактировать
-      </button>
-    </div>
-  </div>
-
-  <ng-template #imageSelectorDialog>
-    <div class="container d-flex justify-content-between align-items-center">
-      <h6 class="text-muted mt-2 mb-0">Выберите изображение</h6>
-      <div class="d-flex mt-2">
-        <button
-          type="button"
-          class="btn empty-button"
-          aria-label="Close"
-          [disabled]="!selectedImage"
-          (click)="selectImage()"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#5f6368"
-          >
-            <path
-              d="m422-332 248-248-20-20-228 228-114-114-20 20 134 134Zm58.17 200q-72.17 0-135.73-27.39-63.56-27.39-110.57-74.35-47.02-46.96-74.44-110.43Q132-407.65 132-479.83q0-72.17 27.39-135.73 27.39-63.56 74.35-110.57 46.96-47.02 110.43-74.44Q407.65-828 479.83-828q72.17 0 135.73 27.39 63.56 27.39 110.57 74.35 47.02 46.96 74.44 110.43Q828-552.35 828-480.17q0 72.17-27.39 135.73-27.39 63.56-74.35 110.57-46.96 47.02-110.43 74.44Q552.35-132 480.17-132Zm-.17-28q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"
-            />
-          </svg>
-          <div class="text-muted my-info-text">Выбрать</div>
-        </button>
-        <button
-          type="button"
-          class="btn empty-button ms-2"
-          (click)="modalRef?.hide()"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#5f6368"
-          >
-            <path
-              d="m256-236-20-20 224-224-224-224 20-20 224 224 224-224 20 20-224 224 224 224-20 20-224-224-224 224Z"
-            />
-          </svg>
-          <div class="text-muted my-info-text">Закрыть</div>
-        </button>
-      </div>
-    </div>
-    <hr class="mt-2 mb-0" />
-    <div *ngIf="busyService.isLoading(); else imageListContent">
-      <div
-        class="d-flex align-items-center justify-content-center"
-        style="height: 10rem"
-      >
-        <div class="me-1 text-muted">Загрузка</div>
-        <mat-progress-bar mode="buffer" style="width: 3rem"></mat-progress-bar>
-      </div>
-    </div>
-
-    <ng-template #imageListContent>
-      <app-empty-list-placeholder
-        *ngIf="userImages.length === 0; else imageList"
-        [customContent]="emptyListInfo"
-      >
-        <ng-template #emptyListInfo>
-          <div class="d-flex flex-column align-items-center text-muted mb-3">
-            <div class="my-info-text" style="line-height: 1.5">
-              Нет загруженных изображений.
-            </div>
-            <div class="my-info-text" style="line-height: 1.5">
-              Для загрузки выполните в боте команду <strong>/start</strong>,
-            </div>
-            <div class="my-info-text" style="line-height: 1.5">
-              далее выберите пункт меню
-              <strong>'Загрузить изображения'</strong>.
+        </app-empty-list-placeholder>
+        <ng-template #imageList>
+          <div class="modal-body">
+            <div *ngFor="let image of userImages; let first = first">
+              <img
+                [src]="image.url"
+                alt="image"
+                [ngClass]="{
+                  'mt-1': !first,
+                  'selected-image': selectedImage === image
+                }"
+                class="preview-image"
+                (click)="selectImageHandler(image)"
+              />
             </div>
           </div>
         </ng-template>
-      </app-empty-list-placeholder>
-      <ng-template #imageList>
-        <div class="modal-body">
-          <div *ngFor="let image of userImages; let first = first">
-            <img
-              [src]="image.url"
-              alt="image"
-              [ngClass]="{
-                'mt-1': !first,
-                'selected-image': selectedImage === image
-              }"
-              class="preview-image"
-              (click)="selectImageHandler(image)"
-            />
-          </div>
-        </div>
       </ng-template>
-    </ng-template>
+    </div>
   </ng-template>
   <ng-template #imageShowTemplate>
     <app-image-preview-modal
@@ -288,5 +291,6 @@
     >
     </app-add-advertisement-button-modal>
   </ng-template>
-</div>
-}
+
+  }
+</body>

@@ -1,59 +1,40 @@
-<form
-  id="editForm"
-  [formGroup]="editForm"
-  (ngSubmit)="save()"
-  autocomplete="off"
->
-  <div class="container d-flex justify-content-between align-items-center">
-    <div class="d-flex flex-column">
-      <h6 class="text-muted mt-3 mb-0">Кнопка</h6>
-      <div class="text-muted my-info-text text-center">
-        Размещается под объявлением
+<div class="modal-body">
+  <form
+    id="editForm"
+    [formGroup]="editForm"
+    (ngSubmit)="save()"
+    autocomplete="off"
+  >
+    <div class="container d-flex justify-content-between align-items-center">
+      <div class="d-flex flex-column">
+        <h6 class="text-muted mt-3 mb-0">Кнопка</h6>
+        <div class="text-muted my-info-text text-center">
+          Размещается под объявлением
+        </div>
+      </div>
+      <div class="d-flex mt-2">
+        <button
+          type="submit"
+          class="btn empty-button"
+          aria-label="Close"
+          [disabled]="editForm.invalid"
+        >
+          <span class="material-symbols-outlined text-muted">
+            check_circle
+          </span>
+          <div class="text-muted my-info-text">Сохранить</div>
+        </button>
+        <button
+          type="button"
+          class="btn empty-button ms-2"
+          (click)="closeModal()"
+        >
+          <span class="material-symbols-outlined text-muted"> close </span>
+          <div class="text-muted my-info-text">Закрыть</div>
+        </button>
       </div>
     </div>
-    <div class="d-flex mt-2">
-      <button
-        type="submit"
-        class="btn empty-button"
-        aria-label="Close"
-        [disabled]="editForm.invalid"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="24px"
-          viewBox="0 -960 960 960"
-          width="24px"
-          fill="#5f6368"
-        >
-          <path
-            d="m422-332 248-248-20-20-228 228-114-114-20 20 134 134Zm58.17 200q-72.17 0-135.73-27.39-63.56-27.39-110.57-74.35-47.02-46.96-74.44-110.43Q132-407.65 132-479.83q0-72.17 27.39-135.73 27.39-63.56 74.35-110.57 46.96-47.02 110.43-74.44Q407.65-828 479.83-828q72.17 0 135.73 27.39 63.56 27.39 110.57 74.35 47.02 46.96 74.44 110.43Q828-552.35 828-480.17q0 72.17-27.39 135.73-27.39 63.56-74.35 110.57-46.96 47.02-110.43 74.44Q552.35-132 480.17-132Zm-.17-28q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"
-          />
-        </svg>
-        <div class="text-muted my-info-text">Сохранить</div>
-      </button>
-      <button
-        type="button"
-        class="btn empty-button ms-2"
-        (click)="closeModal()"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="24px"
-          viewBox="0 -960 960 960"
-          width="24px"
-          fill="#5f6368"
-        >
-          <path
-            d="m256-236-20-20 224-224-224-224 20-20 224 224 224-224 20 20-224 224 224 224-20 20-224-224-224 224Z"
-          />
-        </svg>
-        <div class="text-muted my-info-text">Закрыть</div>
-      </button>
-    </div>
-  </div>
-  <hr class="mt-2 mb-0" />
-
-  <div class="modal-body">
+    <hr class="mt-1 mb-2" />
     <div class="d-flex flex-column">
       <mat-form-field>
         <mat-label>Имя кнопки</mat-label>
@@ -66,7 +47,7 @@
           )
         }}</mat-error>
         }
-        <mat-hint align="end">
+        <mat-hint [align]="'end'">
           {{ buttonNameCounter }}/{{ maxButtonNameLength }}</mat-hint
         >
       </mat-form-field>
@@ -86,8 +67,10 @@
           matErrorService.getErrorMessage(editForm.controls["link"], "link")
         }}</mat-error>
         }
-        <mat-hint align="end"> {{ linkCounter }}/{{ maxLinkLength }}</mat-hint>
+        <mat-hint [align]="'end'">
+          {{ linkCounter }}/{{ maxLinkLength }}</mat-hint
+        >
       </mat-form-field>
     </div>
-  </div>
-</form>
+  </form>
+</div>

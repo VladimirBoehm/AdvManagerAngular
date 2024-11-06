@@ -6,7 +6,7 @@
       *ngIf="advertisement.statusId === advertisementStatus.new"
       class="background-rectangle-panel-shadow"
     >
-      <div class="d-flex mt-2">
+      <div class="d-flex">
         <div class="col-4 d-flex align-items-center justify-content-center">
           <ng-container *ngTemplateOutlet="deleteButtonTemplate"></ng-container>
         </div>
@@ -184,7 +184,7 @@
 
     <div
       *ngIf="advertisement.statusId === advertisementStatus.published"
-      class="alert alert-success mt-2 mb-0"
+      class="alert alert-success mb-0"
       role="alert"
     >
       <div class="text-center">

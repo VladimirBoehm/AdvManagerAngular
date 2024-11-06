@@ -2,7 +2,7 @@
   <div class="container-fluid px-0">
     @if ( (advertisementService.advertisements$ | async)?.items) {
     <div class="background-rectangle-panel-shadow">
-      <div class="row">
+      <div class="d-flex">
         <div class="col-6 d-flex justify-content-start ps-0">
           <app-adv-list-filter
             *ngIf="selectedListType !== advListType.MyAdvertisements"
@@ -53,9 +53,8 @@
           selectedListType === advListType.MyAdvertisements &&
           (advertisementService.advertisements$ | async)?.items
         "
-        class="mt-1"
       >
-        <div class="d-flex flex-column mt-2 pb-2">
+        <div class="d-flex flex-column">
           <div class="d-flex">
             <div class="col-6 d-flex align-items-center justify-content-center">
               <button class="btn empty-button" (click)="openPrivateHistory()">
@@ -74,7 +73,7 @@
                     .length > 2
                 "
               >
-                <span class="button-icon material-symbols-outlined text-muted">
+                <span class="material-symbols-outlined text-muted">
                   add_circle
                 </span>
 
