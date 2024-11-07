@@ -1,4 +1,4 @@
-<body class="px-1 py-1">
+<body class="p-1">
   <div class="container-fluid px-0">
     @if ( (advertisementService.advertisements$ | async)?.items) {
     <div class="background-rectangle-panel-shadow">
@@ -76,7 +76,6 @@
                 <span class="material-symbols-outlined text-muted">
                   add_circle
                 </span>
-
                 <div class="text-muted">Создать</div>
               </button>
             </div>
@@ -138,7 +137,6 @@
               let advertisement of (
                 advertisementService.advertisements$ | async
               )?.items;
-              let last = last;
               trackBy: trackByAdvertisementId
             "
           >
@@ -187,7 +185,6 @@
               let advertisement of (
                 advertisementService.advertisements$ | async
               )?.items;
-              let last = last;
               trackBy: trackByAdvertisementId
             "
           >
@@ -240,7 +237,6 @@
               let advertisement of (
                 advertisementService.advertisements$ | async
               )?.items;
-              let last = last;
               trackBy: trackByAdvertisementId
             "
           >

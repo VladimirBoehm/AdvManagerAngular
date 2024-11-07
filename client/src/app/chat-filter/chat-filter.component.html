@@ -1,153 +1,132 @@
-<div class="container-fluid">
-  <ng-container *ngTemplateOutlet="createButtonTemplate"></ng-container>
-  <ng-container
-    *ngIf="
-      (chatFilterService.chatFilters$ | async)?.length === 0 &&
-        chatFilterService.isLoaded();
-      else nonEmptyList
-    "
-  >
-    <app-empty-list-placeholder></app-empty-list-placeholder>
-  </ng-container>
-  <ng-template #nonEmptyList>
-    <ng-template
-      [skeleton]="!chatFilterService.isLoaded() || false"
-      [skeletonRepeat]="5"
-      [skeletonClassName]="'mb-1'"
-      [skeletonHeight]="'4rem'"
-    >
-      <div>
-        <ul class="list-group list-group-flush">
-          <li
-            *ngFor="
-              let item of this.chatFilterService.chatFilters$ | async;
-              trackBy: trackById
+<body class="p-1">
+  <div class="container-fluid px-0">
+    <div class="background-rectangle-panel-shadow">
+      <div class="d-flex">
+        <div class="col-6">
+          <app-adv-list-filter
+            *ngIf="chatFilterService.chatFilters$ | async"
+            (onChanged)="sortChanged($event)"
+            [disabled]="busyService.isLoading()"
+            [isAdvertisementList]="false"
+          ></app-adv-list-filter>
+        </div>
+        <div
+          class="col-6 d-flex flex-column align-items-center justify-content-center"
+        >
+          <button
+            class="btn empty-button"
+            [disabled]="
+              (chatFilterService.chatFilters$ | async)!.length >
+                maxItemNumber || !chatFilterService.isLoaded()
             "
-            class="list-group-item"
-            style="cursor: auto"
+            (click)="showAddDialog()"
           >
-            <div class="d-flex">
-              <div
-                class="d-flex flex-column col-11"
-                style="overflow-x: auto; white-space: nowrap"
-              >
-                <div class="fw-normal">
-                  {{ item.value }}
-                </div>
-                <div class="fw-normal my-info-text text-muted">
-                  Создан:
-                  {{ dateHelper.getLocalTime(item.created) }}
-                </div>
-              </div>
-              <div
-                class="d-flex fw-normal col-1 align-items-center justify-content-end"
-              >
+            <span class="material-symbols-outlined text-muted">
+              add_circle
+            </span>
+            <div class="text-muted">Создать</div>
+            <div
+              *ngIf="
+                (chatFilterService.chatFilters$ | async)!.length > maxItemNumber
+              "
+              class="my-info-text text-danger"
+            >
+              Максимум 30
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <ng-container *ngIf="!chatFilterService.isLoaded(); else itemList">
+      <app-skeleton-full-screen
+        [shouldShowHeaderPanel]="false"
+      ></app-skeleton-full-screen>
+    </ng-container>
+
+    <ng-template #itemList>
+      <div
+        *ngIf="
+          (this.chatFilterService.chatFilters$ | async)!.length === 0;
+          else items
+        "
+      >
+        <app-empty-list-placeholder></app-empty-list-placeholder>
+      </div>
+      <ng-template #items>
+        <div class="list-container">
+          <mat-list>
+            <div class="text-center text-muted mb-1">Фильтр чата</div>
+            <div
+              *ngFor="
+                let item of this.chatFilterService.chatFilters$ | async;
+                trackBy: trackById
+              "
+            >
+              <div class="d-flex align-items-center">
+                <mat-list-item class="flex-grow-1">
+                  <mat-icon matListItemIcon>
+                    <span class="material-symbols-outlined me-3">
+                      font_download_off
+                    </span></mat-icon
+                  >
+                  <div matListItemTitle>{{ item.value }}</div>
+                  <div matListItemLine class="mt-1">
+                    <!--
+              -->Создан:
+                    {{ dateHelper.getLocalTime(item.created) }}
+                  </div>
+                </mat-list-item>
                 <button
                   class="btn empty-button"
                   (click)="deleteChatFilter(item)"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="24px"
-                    viewBox="0 -960 960 960"
-                    width="24px"
-                    fill="#5f6368"
-                  >
-                    <path
-                      d="m256-236-20-20 224-224-224-224 20-20 224 224 224-224 20 20-224 224 224 224-20 20-224-224-224 224Z"
-                    />
-                  </svg>
+                  <span class="material-symbols-outlined text-muted">
+                    close
+                  </span>
                 </button>
               </div>
+              <mat-divider class="mt-1"></mat-divider>
             </div>
-          </li>
-        </ul>
+          </mat-list>
+        </div>
+      </ng-template>
+    </ng-template>
+
+    <ng-template #addFilterDialog>
+      <div class="modal-body">
+        <div class="container d-flex flex-column align-items-start">
+          <h6 class="text-muted mt-1 mb-1">Добавить</h6>
+          <div class="text-muted my-info-text">
+            Сообщения, содержащие данный текст, будут удаляться
+          </div>
+        </div>
+        <hr class="mt-1 mb-3" />
+        <mat-form-field class="col-12">
+          <mat-label>Значение</mat-label>
+          <input matInput [formControl]="$any(editForm.controls['item'])" />
+          @if (matErrorService.getHasError(editForm.controls['item'])){
+          <mat-error>{{
+            matErrorService.getErrorMessage(editForm.controls["item"], "item")
+          }}</mat-error>
+          }
+          <mat-hint [align]="'end'">
+            {{ itemLengthCounter }}/{{ maxItemLength }}</mat-hint
+          >
+        </mat-form-field>
+
+        <div class="d-flex justify-content-end">
+          <button
+            class="btn empty-button"
+            (click)="addChatFilterDialogConfirm()"
+            [disabled]="editForm.invalid"
+          >
+            <div>Сохранить</div></button
+          ><button class="btn empty-button" (click)="closeDialog()">
+            <div>Назад</div>
+          </button>
+        </div>
       </div>
     </ng-template>
-  </ng-template>
-
-  <ng-template #createButtonTemplate>
-    <div class="d-flex mt-2">
-      <div class="col-6">
-        <app-adv-list-filter
-          *ngIf="chatFilterService.chatFilters$ | async"
-          (onChanged)="sortChanged($event)"
-          [disabled]="busyService.isLoading()"
-          [isAdvertisementList]="false"
-        ></app-adv-list-filter>
-      </div>
-      <div
-        class="col-6 d-flex flex-column align-items-center justify-content-center"
-      >
-        <button
-          class="btn empty-button"
-          [disabled]="
-            (chatFilterService.chatFilters$ | async)!.length > maxItemNumber ||
-            !chatFilterService.isLoaded()
-          "
-          (click)="showAddDialog()"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#5f6368"
-          >
-            <path
-              d="M466-306h28v-160h160v-28H494v-160h-28v160H306v28h160v160Zm14.17 174q-72.17 0-135.73-27.39-63.56-27.39-110.57-74.35-47.02-46.96-74.44-110.43Q132-407.65 132-479.83q0-72.17 27.39-135.73 27.39-63.56 74.35-110.57 46.96-47.02 110.43-74.44Q407.65-828 479.83-828q72.17 0 135.73 27.39 63.56 27.39 110.57 74.35 47.02 46.96 74.44 110.43Q828-552.35 828-480.17q0 72.17-27.39 135.73-27.39 63.56-74.35 110.57-46.96 47.02-110.43 74.44Q552.35-132 480.17-132Zm-.17-28q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"
-            />
-          </svg>
-
-          <div class="text-muted">Создать</div>
-          <div
-            *ngIf="(chatFilterService.chatFilters$ | async)!.length > maxItemNumber"
-            class="my-info-text text-danger"
-          >
-            Максимум 30
-          </div>
-        </button>
-      </div>
-    </div>
-    <div class="d-flex flex-column align-items-center">
-      <hr class="mb-0 pb-0" style="width: 100%" />
-      <div class="mt-0 pt-0 my-info-text text-muted">Фильтр чата</div>
-    </div>
-  </ng-template>
-
-  <ng-template #addFilterDialog>
-    <div class="container d-flex flex-column align-items-start">
-      <h6 class="text-muted mt-3 mb-1">Добавить</h6>
-      <div class="text-muted my-info-text">
-        Сообщения, содержащие данный текст, будут удаляться
-      </div>
-    </div>
-    <hr class="mt-2 mb-0" />
-    <div class="modal-body">
-      <mat-form-field class="col-12">
-        <mat-label>Значение</mat-label>
-        <input matInput [formControl]="$any(editForm.controls['item'])" />
-        @if (matErrorService.getHasError(editForm.controls['item'])){
-        <mat-error>{{
-          matErrorService.getErrorMessage(editForm.controls["item"], "item")
-        }}</mat-error>
-        }
-        <mat-hint [align]="'end'">
-          {{ itemLengthCounter }}/{{ maxItemLength }}</mat-hint
-        >
-      </mat-form-field>
-
-      <div class="d-flex justify-content-end">
-        <button
-          class="btn empty-button"
-          (click)="addChatFilterDialogConfirm()"
-          [disabled]="editForm.invalid"
-        >
-          <div>Сохранить</div></button
-        ><button class="btn empty-button" (click)="closeDialog()">
-          <div>Назад</div>
-        </button>
-      </div>
-    </div>
-  </ng-template>
-</div>
+  </div>
+</body>

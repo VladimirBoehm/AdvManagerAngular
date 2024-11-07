@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { SkeletonDirective } from '../directives/skeleton/skeletonDirective';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -22,7 +21,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
 @NgModule({
-  declarations: [SkeletonDirective],
+
   imports: [
     NgTemplateOutlet,
     NgIf,
@@ -39,7 +38,6 @@ import { MatDividerModule } from '@angular/material/divider';
     NgIf,
     NgFor,
     NgClass,
-    SkeletonDirective,
     NgxSkeletonLoaderModule,
     MatFormFieldModule,
     MatCardModule,

@@ -13,11 +13,17 @@ import { SortOption } from '../_models/sortOption';
 import { BusyService } from '../_services/busy.service';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
 import { Observable, Subscription } from 'rxjs';
+import { SkeletonFullScreenComponent } from '../_framework/component/skeleton-full-screen/skeleton-full-screen.component';
 
 @Component({
   selector: 'app-chat-filter',
   standalone: true,
-  imports: [SharedModule, EmptyListPlaceholderComponent, ListFilterComponent],
+  imports: [
+    SharedModule,
+    EmptyListPlaceholderComponent,
+    ListFilterComponent,
+    SkeletonFullScreenComponent,
+  ],
   templateUrl: './chat-filter.component.html',
   styleUrl: './chat-filter.component.scss',
   providers: [MatErrorService],
@@ -57,7 +63,6 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
     });
 
     this.chatFilterService.getAll();
-
   }
 
   initializeForm() {
