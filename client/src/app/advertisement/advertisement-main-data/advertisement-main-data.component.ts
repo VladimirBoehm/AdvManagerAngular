@@ -2,6 +2,7 @@ import { Component, inject, input, ViewChild } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { SharedModule } from '../../_framework/modules/sharedModule';
 import { ImagePreviewModalComponent } from '../../_framework/component/image-preview-modal/image-preview-modal.component';
+import { DateHelper } from '../../_framework/component/helpers/dateHelper';
 
 @Component({
   selector: 'app-advertisement-main-data',
@@ -18,11 +19,14 @@ export class AdvertisementMainDataComponent {
   url = input<string | undefined>();
   linkName = input<string | undefined>();
   linkValue = input<string | undefined>();
-  created = input<string | undefined>();
-  updated = input<string | undefined>();
+  created = input<Date | undefined>();
+  updated = input<Date | undefined>();
   modalRef?: BsModalRef;
+  dateHelper = DateHelper;
 
   showImage() {
     this.modalRef = this.modalService.show(this.imageShowTemplate);
   }
+
+  
 }

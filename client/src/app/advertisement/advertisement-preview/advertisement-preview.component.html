@@ -196,16 +196,17 @@
       </div>
     </div>
 
-    <app-advertisement-main-data
-      [title]="advertisement.title"
-      [message]="advertisement.message"
-      [url]="advertisement.adImage?.url"
-      [linkName]="advertisement.linkName"
-      [linkValue]="advertisement.linkValue"
-      [created]="dateHelper.getLocalTime(advertisement.created)"
-      [updated]="dateHelper.getLocalTime(advertisement.updated)"
-    ></app-advertisement-main-data>
-
+    <div class="mt-2">
+      <app-advertisement-main-data
+        [title]="advertisement.title"
+        [message]="advertisement.message"
+        [url]="advertisement.adImage?.url"
+        [linkName]="advertisement.linkName"
+        [linkValue]="advertisement.linkValue"
+        [created]="advertisement.created"
+        [updated]="advertisement.updated"
+      ></app-advertisement-main-data>
+    </div>
     <div
       *ngIf="
         advertisement.adminMessage &&
@@ -213,7 +214,7 @@
         (accountService.currentUser()?.isAdmin ||
           accountService.currentUser()?.userId === advertisement.userId)
       "
-      class="input-group mt-3 pb-4"
+      class="input-group mt-2 pb-4"
     >
       <span class="input-group-text" id="adminMessage">
         <div>Комментарий:</div>
