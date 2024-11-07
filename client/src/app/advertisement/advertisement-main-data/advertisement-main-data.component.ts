@@ -3,6 +3,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { SharedModule } from '../../_framework/modules/sharedModule';
 import { ImagePreviewModalComponent } from '../../_framework/component/image-preview-modal/image-preview-modal.component';
 import { DateHelper } from '../../_framework/component/helpers/dateHelper';
+import { TelegramBackButtonService } from '../../_framework/telegramBackButtonService';
 
 @Component({
   selector: 'app-advertisement-main-data',
@@ -14,6 +15,7 @@ import { DateHelper } from '../../_framework/component/helpers/dateHelper';
 export class AdvertisementMainDataComponent {
   @ViewChild('imageShowTemplate') imageShowTemplate?: any;
   private modalService = inject(BsModalService);
+  private backButtonService = inject(TelegramBackButtonService);
   title = input.required<string | undefined>();
   message = input.required<string | undefined>();
   url = input<string | undefined>();
@@ -25,8 +27,7 @@ export class AdvertisementMainDataComponent {
   dateHelper = DateHelper;
 
   showImage() {
+    this.backButtonService.setCloseDialogHandler(() => this.modalRef?.hide());
     this.modalRef = this.modalService.show(this.imageShowTemplate);
   }
-
-  
 }

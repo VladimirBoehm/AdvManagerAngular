@@ -178,6 +178,7 @@ export class AdvertisementEditComponent implements OnInit {
         console.error('Error when getUserImages :', err);
       },
     });
+    this.backButtonService.setCloseDialogHandler(() => this.modalRef?.hide());
     this.modalRef = this.modalService.show(this.imageSelectorDialog);
   }
 
