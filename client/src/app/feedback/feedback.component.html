@@ -27,7 +27,7 @@
         <div class="text-muted my-info-text mb-2 mt-1 text-center">
           Сообщения об ошибках, обращения, пожелания
         </div>
-        <mat-form-field class="col-12 mb-2">
+        <mat-form-field class="w-100 mb-2">
           <mat-label>Обратная связь</mat-label>
           <textarea
             matInput
@@ -49,20 +49,9 @@
     </form>
 
     <ng-template [ngIf]="isSend">
-      <div class="alert alert-success mt-2" role="alert">
-        <div class="d-flex col-12 justify-content-center text-muted">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#5f6368"
-            class="me-1"
-          >
-            <path
-              d="M268-276 78-466l20-20 170 170 36-36 20 20-56 56Zm226 0L304-466l20-20 170 170 368-368 20 20-388 388Zm-36-190-20-20 198-198 20 20-198 198Z"
-            />
-          </svg>
+      <div class="alert alert-success" role="alert">
+        <div class="d-flex w-100 justify-content-center text-muted">
+          <span class="material-symbols-outlined text-muted"> done_all </span>
           Отправлено
         </div>
       </div>
