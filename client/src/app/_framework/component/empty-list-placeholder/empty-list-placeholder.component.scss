@@ -1,0 +1,28 @@
+.emptyListPlaceholder {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+  border-color: var(--soft-beige-background-opacity);
+}
+
+.placeholderImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  mask-image: radial-gradient(
+    circle,
+    var(--soft-beige-background) 50%,
+    transparent 70%
+  );
+  mask-mode: alpha;
+}
+
+.emptyListText {
+  color: var(--soft-beige-background-opacity);
+  text-align: center;
+  font-weight: bold;
+  font-size: 2rem;
+  text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.76);
+}

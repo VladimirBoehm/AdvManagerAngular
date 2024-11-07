@@ -1,8 +1,4 @@
-import {
-  Component,
-  Input,
-  TemplateRef,
-} from '@angular/core';
+import { Component, Input, TemplateRef } from '@angular/core';
 import { SharedModule } from '../../modules/sharedModule';
 
 @Component({
@@ -14,6 +10,6 @@ import { SharedModule } from '../../modules/sharedModule';
 })
 export class EmptyListPlaceholderComponent {
   @Input() imageUrl: string =
-    'https://chatcontrolstorage.blob.core.windows.net/icons/empty1.png';
+    'https://chatcontrolstorage.blob.core.windows.net/icons/empty.jpg';
   @Input() customContent?: TemplateRef<any>;
 }

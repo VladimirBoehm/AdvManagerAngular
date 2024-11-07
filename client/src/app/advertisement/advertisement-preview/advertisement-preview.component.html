@@ -289,12 +289,13 @@
     </ng-template>
 
     <ng-template #modalDialogForcePublicationAdmin>
-      <div class="modal-header">
-        <h6 class="modal-title pull-left text-muted">
-          Разместить объявление мгновенно?
-        </h6>
-      </div>
       <div class="modal-body">
+        <div class="d-flex flex-column">
+          <h6 class="modal-title pull-left text-muted">
+            Разместить объявление мгновенно?
+          </h6>
+          <hr class="m-1" />
+        </div>
         <mat-form-field class="mt-2 w-100">
           <mat-label>Комментарий</mat-label>
           <textarea
