@@ -84,7 +84,10 @@
     <div
       *ngIf="advertisement.statusId === advertisementStatus.pendingPublication"
     >
-      <div class="d-flex background-rectangle-panel-shadow">
+      <div
+        *ngIf="shouldShowCancelButton() || shouldShowCancelButton()"
+        class="d-flex background-rectangle-panel-shadow"
+      >
         <div
           class="col-6 d-flex flex-column align-items-center justify-content-center"
         >
