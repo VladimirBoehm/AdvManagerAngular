@@ -1,5 +1,5 @@
 export const environment = {
-  apiUrl: 'https://tsnc1xqk-7117.euw.devtunnels.ms/',
+  apiUrl: determineApiUrl(),
 };
 
 function determineApiUrl(): string {
