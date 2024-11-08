@@ -1,6 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
-import { AccountService } from './_services/account.service';
 import { HomeComponent } from './home/home.component';
 
 @Component({
@@ -10,12 +9,7 @@ import { HomeComponent } from './home/home.component';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent implements OnInit {
-  accountService = inject(AccountService);
+export class AppComponent {
   router = inject(Router);
   title = 'Chatbot';
-
-  ngOnInit(): void {
-    this.accountService.login();
-  }
 }
