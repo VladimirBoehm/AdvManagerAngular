@@ -8,6 +8,8 @@ import { SharedModule } from '../_framework/modules/sharedModule';
 import { BusyService } from '../_services/busy.service';
 import { AccountService } from '../_services/account.service';
 import { MatRippleModule } from '@angular/material/core';
+import { EMPTY, switchMap } from 'rxjs';
+import { User } from '../_models/user';
 
 @Component({
   selector: 'app-home',
@@ -21,27 +23,34 @@ export class HomeComponent implements OnInit {
   advertisementService = inject(AdvertisementService);
   busyService = inject(BusyService);
   accountService = inject(AccountService);
-
-
   advertisementsToValidateCount: number = 0;
+
+  constructor() {
+    this.accountService.login().pipe(
+      switchMap((user: User) => {
+        if (user.isAdmin) {
+          return this.advertisementService.getPendingValidationAdvertisementsCount();
+        } else {
+          return EMPTY;
+        }
+      })
+    ).subscribe({
+      next: (result: number) => {
+        this.advertisementsToValidateCount = result;
+      },
+      error: (err) => {
+        console.error(
+          'Error during login or loading PendingValidationAdvertisementsCount:',
+          err
+        );
+      },
+    });
+  }
 
   ngOnInit(): void {
     if (window.Telegram?.WebApp) {
       window.Telegram?.WebApp?.expand();
       window.Telegram?.WebApp?.BackButton?.hide();
     }
-    this.advertisementService
-      .getPendingValidationAdvertisementsCount()
-      .subscribe({
-        next: (result: number) => {
-          this.advertisementsToValidateCount = result;
-        },
-        error: (err) => {
-          console.error(
-            'Error when loading PendingValidationAdvertisementsCount:',
-            err
-          );
-        },
-      });
   }
 }

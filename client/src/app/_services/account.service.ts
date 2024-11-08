@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { User } from '../_models/user';
-// Singleton создает при создании приложения, подходит для хранения состояния
+import { Observable, tap } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
@@ -11,14 +11,11 @@ export class AccountService {
   private baseUrl = environment.apiUrl;
   currentUser = signal<User | null>(null);
 
-  login() {
-    this.http.get<User>(this.baseUrl + 'account/getLoginData').subscribe({
-      next: (user: User) => {
+  login(): Observable<User> {
+    return this.http.get<User>(this.baseUrl + 'account/getLoginData').pipe(
+      tap((user: User) => {
         this.currentUser.set(user);
-      },
-      error: (error) => {
-        console.error('Error during login:', error);
-      },
-    });
+      })
+    );
   }
 }
