@@ -4,10 +4,11 @@ export const environment = {
 
 function determineApiUrl(): string {
   const hostname = window.location.hostname;
+  const developUrl = 'https://tsnc1xqk-7117.euw.devtunnels.ms/';
 
   if (hostname === 'gray-coast-0eea7ee03.5.azurestaticapps.net') {
-    return 'https://production-api-url.com/';
+    return 'https://chatcontrolwebapi.azurewebsites.net';
   } else {
-    return 'https://ljscvw91-7117.euw.devtunnels.ms/';
+    return developUrl;
   }
 }
