@@ -24,7 +24,7 @@
     "@types/lodash": "^4.17.13",
     "bootstrap": "^5.3.3",
     "font-awesome": "^4.7.0",
-    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
     "ngx-bootstrap": "^18.0.2",
     "ngx-skeleton-loader": "^9.0.0",
     "ngx-toastr": "^19.0.0",
