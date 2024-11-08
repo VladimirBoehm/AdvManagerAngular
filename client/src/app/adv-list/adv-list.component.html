@@ -175,7 +175,8 @@
         class="list-container"
         *ngIf="
           selectedListType === advListType.MyAdvertisements &&
-          (advertisementService.advertisements$ | async)?.items
+          (advertisementService.advertisements$ | async)?.items &&
+          ((advertisementService.advertisements$ | async)?.items)!.length > 0
         "
       >
         <mat-action-list>
