@@ -1,9 +1,5 @@
 import { HttpParams } from '@angular/common/http';
 import { PaginationParams } from '../_models/paginationParams';
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-
-dayjs.extend(utc);
 
 export function setPaginationHeaders(paginationParams?: PaginationParams) {
   let params = new HttpParams();
@@ -23,21 +19,23 @@ export function setPaginationHeaders(paginationParams?: PaginationParams) {
   );
 
   if (paginationParams.sortOption.dateRange?.start) {
-    params = params.append(
-      'startDate',
-      dayjs(paginationParams.sortOption.dateRange.start)
-        .utcOffset(0, true)
-        .format()
+    const startDate = new Date(paginationParams.sortOption.dateRange.start);
+    const utcStartDate = new Date(
+      Date.UTC(
+        startDate.getFullYear(),
+        startDate.getMonth(),
+        startDate.getDate()
+      )
     );
+    params = params.append('startDate', utcStartDate.toISOString());
   }
 
   if (paginationParams.sortOption.dateRange?.end) {
-    params = params.append(
-      'endDate',
-      dayjs(paginationParams.sortOption.dateRange.end)
-        .utcOffset(0, true)
-        .format()
+    const endDate = new Date(paginationParams.sortOption.dateRange.end);
+    const utcEndDate = new Date(
+      Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate())
     );
+    params = params.append('endDate', utcEndDate.toISOString());
   }
 
   return params;
