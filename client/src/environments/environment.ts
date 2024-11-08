@@ -6,7 +6,7 @@ function determineApiUrl(): string {
   const hostname = window.location.hostname;
   const developUrl = 'https://tsnc1xqk-7117.euw.devtunnels.ms/';
 
-  if (hostname === 'gray-coast-0eea7ee03.5.azurestaticapps.net') {
+  if (hostname === 'icy-tree-03d429b03.5.azurestaticapps.net') {
     return 'https://chatcontrolwebapi.azurewebsites.net/';
   } else {
     return developUrl;
