@@ -86,7 +86,7 @@
     >
       <div
         *ngIf="shouldShowCancelButton() || shouldShowCancelButton()"
-        class="d-flex background-rectangle-panel-shadow"
+        class="d-flex background-rectangle-panel-shadow mb-2"
       >
         <div
           class="col-6 d-flex flex-column align-items-center justify-content-center"
@@ -116,7 +116,7 @@
         </div>
       </div>
 
-      <div class="alert alert-info text-center mt-2 mb-0" role="alert">
+      <div class="alert alert-info text-center mb-0" role="alert">
         <div class="d-flex flex-column">
           <div>Ожидает размещения!</div>
           <div *ngIf="!advertisement.placeInQueue; else imageListContent">
