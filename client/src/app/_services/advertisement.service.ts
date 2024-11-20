@@ -27,7 +27,7 @@ export class AdvertisementService {
   private advertisementsSubject = new BehaviorSubject<
     PaginatedResult<Advertisement>
   >(new PaginatedResult<Advertisement>());
-  advertisements$ = this.advertisementsSubject.asObservable();
+  readonly advertisements$ = this.advertisementsSubject.asObservable();
 
   paginationParamsState: WritableSignal<Map<AdvListType, PaginationParams>>;
 
@@ -207,8 +207,7 @@ export class AdvertisementService {
   }
 
   // PUBLICATION
-  getPendingPublicationAdvertisements()
-   {
+  getPendingPublicationAdvertisements() {
     const cachedResult = this.getCache(AdvListType.PendingPublication);
     if (cachedResult) {
       this.advertisementsSubject.next(cachedResult);

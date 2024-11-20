@@ -17,7 +17,7 @@ export class ChatFilterService {
   private baseUrl = environment.apiUrl;
 
   private chatFiltersSubject = new BehaviorSubject<ChatFilter[]>([]);
-  chatFilters$ = this.chatFiltersSubject.asObservable();
+  readonly chatFilters$ = this.chatFiltersSubject.asObservable();
 
   isLoaded = signal<boolean>(false);
 

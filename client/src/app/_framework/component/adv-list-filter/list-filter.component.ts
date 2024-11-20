@@ -22,7 +22,6 @@ import { ChatFilterService } from '../../../_services/chat-filter.service';
     MatCheckboxModule,
     MatRadioModule,
     ReactiveFormsModule,
-    NgIf,
     MatFormFieldModule,
     MatDatepickerModule,
     MatInputModule,
@@ -32,7 +31,7 @@ import { ChatFilterService } from '../../../_services/chat-filter.service';
   styleUrl: './list-filter.component.scss',
 })
 export class ListFilterComponent {
-  @Input() isAdvertisementList = false;
+  @Input({ required: true }) isAdvertisementList = false;
   @Input() disabled = false;
   @Output() onChanged = new EventEmitter<SortOption>();
 

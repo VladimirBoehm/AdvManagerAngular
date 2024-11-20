@@ -12,7 +12,7 @@ import { ListFilterComponent } from '../_framework/component/adv-list-filter/lis
 import { SortOption } from '../_models/sortOption';
 import { BusyService } from '../_services/busy.service';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { SkeletonFullScreenComponent } from '../_framework/component/skeleton-full-screen/skeleton-full-screen.component';
 
 @Component({
