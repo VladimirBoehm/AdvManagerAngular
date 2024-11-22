@@ -3,12 +3,13 @@
     <div class="background-rectangle-panel-shadow">
       <div class="d-flex">
         <div class="col-6">
+          @if(chatFilterService.chatFilters$ | async){
           <app-adv-list-filter
-            *ngIf="chatFilterService.chatFilters$ | async"
             (onChanged)="sortChanged($event)"
             [disabled]="busyService.isLoading()"
             [isAdvertisementList]="false"
           ></app-adv-list-filter>
+          }
         </div>
         <div
           class="col-6 d-flex flex-column align-items-center justify-content-center"
@@ -25,73 +26,52 @@
               add_circle
             </span>
             <div class="text-muted">Создать</div>
-            <div
-              *ngIf="
-                (chatFilterService.chatFilters$ | async)!.length > maxItemNumber
-              "
-              class="my-info-text text-danger"
-            >
-              Максимум 30
-            </div>
+            @if((chatFilterService.chatFilters$ | async)!.length >
+            maxItemNumber){
+            <div class="my-info-text text-danger">Максимум 30</div>
+            }
           </button>
         </div>
       </div>
     </div>
 
-    <ng-container *ngIf="!chatFilterService.isLoaded(); else itemList">
-      <app-skeleton-full-screen
-        [shouldShowHeaderPanel]="false"
-      ></app-skeleton-full-screen>
-    </ng-container>
+    @if(chatFilterService.isLoaded()){
+    <div class="list-container">
+      <mat-list>
+        <div class="text-center text-muted mb-1">Фильтр чата</div>
+        @for (item of this.chatFilterService.chatFilters$ | async; track
+        trackById) {
 
-    <ng-template #itemList>
-      <div
-        *ngIf="
-          (this.chatFilterService.chatFilters$ | async)!.length === 0;
-          else items
-        "
-      >
-        <app-empty-list-placeholder></app-empty-list-placeholder>
-      </div>
-      <ng-template #items>
-        <div class="list-container">
-          <mat-list>
-            <div class="text-center text-muted mb-1">Фильтр чата</div>
-            <div
-              *ngFor="
-                let item of this.chatFilterService.chatFilters$ | async;
-                trackBy: trackById
-              "
+        <div class="d-flex align-items-center">
+          <mat-list-item class="flex-grow-1">
+            <mat-icon matListItemIcon>
+              <span class="material-symbols-outlined me-3">
+                font_download_off
+              </span></mat-icon
             >
-              <div class="d-flex align-items-center">
-                <mat-list-item class="flex-grow-1">
-                  <mat-icon matListItemIcon>
-                    <span class="material-symbols-outlined me-3">
-                      font_download_off
-                    </span></mat-icon
-                  >
-                  <div matListItemTitle>{{ item.value }}</div>
-                  <div matListItemLine class="mt-1">
-                    <!--
-              -->Создан:
-                    {{ dateHelper.getLocalTime(item.created) }}
-                  </div>
-                </mat-list-item>
-                <button
-                  class="btn empty-button"
-                  (click)="deleteChatFilter(item)"
-                >
-                  <span class="material-symbols-outlined text-muted">
-                    close
-                  </span>
-                </button>
-              </div>
-              <mat-divider class="mt-1"></mat-divider>
+            <div matListItemTitle>{{ item.value }}</div>
+            <div matListItemLine class="mt-1">
+              <!--
+          -->Создан:
+              {{ dateHelper.getLocalTime(item.created) }}
             </div>
-          </mat-list>
+          </mat-list-item>
+          <button class="btn empty-button" (click)="deleteChatFilter(item)">
+            <span class="material-symbols-outlined text-muted"> close </span>
+          </button>
         </div>
-      </ng-template>
-    </ng-template>
+        <mat-divider class="mt-1"></mat-divider>
+
+        } @empty {
+        <app-empty-list-placeholder></app-empty-list-placeholder>
+        }
+      </mat-list>
+    </div>
+    } @else {
+    <app-skeleton-full-screen
+      [shouldShowHeaderPanel]="false"
+    ></app-skeleton-full-screen>
+    }
 
     <ng-template #addFilterDialog>
       <div class="modal-body">
