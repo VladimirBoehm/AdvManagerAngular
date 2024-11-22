@@ -5,7 +5,7 @@
       <div class="d-flex">
         <div class="col-6 d-flex justify-content-start ps-0">
           <app-adv-list-filter
-            *ngIf="selectedListType !== advListType.MyAdvertisements"
+            *ngIf="selectedListType() !== advListType.MyAdvertisements"
             (onChanged)="sortChanged($event)"
             [disabled]="busyService.isLoading()"
             [isAdvertisementList]="true"
@@ -13,7 +13,7 @@
         </div>
 
         <div class="col-6 d-flex justify-content-end align-items-center">
-          @if(selectedListType !== advListType.MyAdvertisements &&
+          @if(selectedListType() !== advListType.MyAdvertisements &&
           (advertisementService.advertisements$ | async)?.pagination &&
           ((advertisementService.advertisements$ | async)?.pagination)!
           .totalItems > 0 && ((advertisementService.advertisements$ |
@@ -45,7 +45,7 @@
 
       <!-- BUTTONS -->
       <!-- MyAdvertisements -->
-      @if( selectedListType === advListType.MyAdvertisements &&
+      @if( selectedListType() === advListType.MyAdvertisements &&
       (advertisementService.advertisements$ | async)?.items){
 
       <div class="d-flex flex-column">
@@ -108,7 +108,7 @@
         ?.items; track trackByAdvertisementId){
 
         <!-- Pending validation -->
-        @if(selectedListType === advListType.PendingValidation){
+        @if(selectedListType() === advListType.PendingValidation){
 
         <div
           class="d-flex align-items-center"
@@ -138,7 +138,7 @@
         <mat-divider></mat-divider>
         }
         <!-- My advertisements -->
-        @if( selectedListType === advListType.MyAdvertisements){
+        @if( selectedListType() === advListType.MyAdvertisements){
         <div
           class="d-flex align-items-center"
           (click)="onItemClick(advertisement.id)"
@@ -169,9 +169,9 @@
         <mat-divider></mat-divider>
         }
         <!-- AllHistory || PrivateHistory || PendingPublication-->
-        @if(( selectedListType === advListType.AllHistory || selectedListType
-        === advListType.PrivateHistory || selectedListType ===
-        advListType.PendingPublication)){
+        @if(( selectedListType() === advListType.AllHistory ||
+        selectedListType() === advListType.PrivateHistory || selectedListType()
+        === advListType.PendingPublication)){
 
         <div
           class="d-flex align-items-center"

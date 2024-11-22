@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { AdvertisementService } from '../_services/advertisement.service';
 import { Advertisement } from '../_models/advertisement';
@@ -37,9 +37,9 @@ export class AdvListComponent implements OnInit, OnDestroy {
   private paramMapSubscription!: Subscription;
 
   advertisementService = inject(AdvertisementService);
-  advListType = AdvListType;
+  advListType = AdvListType 
   dateHelper = DateHelper;
-  selectedListType!: AdvListType;
+  selectedListType = signal<AdvListType>(AdvListType.MyAdvertisements) ;
   busyService = inject(BusyService);
   datePipe = inject(DatePipe);
 
@@ -53,7 +53,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
     });
 
     this.paramMapSubscription = this.route.paramMap.subscribe((params) => {
-      this.selectedListType = params.get('state') as AdvListType;
+      this.selectedListType.set(params.get('state') as AdvListType);
 
       this.initialize();
     });
@@ -61,7 +61,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
     this.backButtonService.setBackButtonHandler(() => {
       this.advertisementService.resetPaginationParams();
 
-      if (this.selectedListType === AdvListType.PrivateHistory) {
+      if (this.selectedListType() === AdvListType.PrivateHistory) {
         this.router.navigate(['/adv-list', this.advListType.MyAdvertisements]);
         this.initialize();
       } else this.router.navigate(['']);
@@ -78,7 +78,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
 
   handlePageEvent(e: PageEvent) {
     this.advertisementService.updatePaginationParams(
-      this.selectedListType,
+      this.selectedListType(),
       e.pageSize,
       e.pageIndex
     );
@@ -86,7 +86,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
   }
 
   private initialize() {
-    switch (this.selectedListType) {
+    switch (this.selectedListType()) {
       case AdvListType.PendingValidation: {
         this.advertisementService.getPendingValidationAdvertisements();
         break;
@@ -159,7 +159,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
   sortChanged($event: SortOption) {
     //reset page number
     this.advertisementService.updatePaginationParams(
-      this.selectedListType,
+      this.selectedListType(),
       undefined,
       0,
       $event
@@ -168,7 +168,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
   }
 
   getListName(): string {
-    switch (this.selectedListType) {
+    switch (this.selectedListType()) {
       case AdvListType.PendingValidation:
         return 'Валидировать';
       case AdvListType.MyAdvertisements:
@@ -203,8 +203,8 @@ export class AdvListComponent implements OnInit, OnDestroy {
     let result: string;
 
     if (
-      this.selectedListType === this.advListType.AllHistory ||
-      this.selectedListType === this.advListType.PrivateHistory
+      this.selectedListType() === this.advListType.AllHistory ||
+      this.selectedListType() === this.advListType.PrivateHistory
     ) {
       result = 'Размещено:';
     } else {
