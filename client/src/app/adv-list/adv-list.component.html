@@ -1,6 +1,6 @@
 <body class="p-1">
   <div class="container-fluid px-0">
-    @if ( (advertisementService.advertisements$ | async)?.items) {
+    @if ((advertisementService.advertisements$ | async)?.items) {
     <div class="background-rectangle-panel-shadow">
       <div class="d-flex">
         <div class="col-6 d-flex justify-content-start ps-0">
@@ -13,36 +13,33 @@
         </div>
 
         <div class="col-6 d-flex justify-content-end align-items-center">
-          <div
-            *ngIf="
-              selectedListType !== advListType.MyAdvertisements &&
-              (advertisementService.advertisements$ | async)?.pagination &&
-              ((advertisementService.advertisements$ | async)?.pagination)!
-                .totalItems > 0 &&
-              ((advertisementService.advertisements$ | async)?.pagination)!
-                .totalItems >
-                ((advertisementService.advertisements$ | async)?.pagination)!
-                  .itemsPerPage
+          @if(selectedListType !== advListType.MyAdvertisements &&
+          (advertisementService.advertisements$ | async)?.pagination &&
+          ((advertisementService.advertisements$ | async)?.pagination)!
+          .totalItems > 0 && ((advertisementService.advertisements$ |
+          async)?.pagination)! .totalItems >
+          ((advertisementService.advertisements$ | async)?.pagination)!
+          .itemsPerPage){
+
+          <paginator-localization
+            [disabled]="busyService.isLoading()"
+            #paginator
+            (page)="handlePageEvent($event)"
+            [length]="
+              (advertisementService.advertisements$ | async)?.pagination
+                ?.totalItems ?? 0
             "
-          >
-            <paginator-localization
-              [disabled]="busyService.isLoading()"
-              #paginator
-              (page)="handlePageEvent($event)"
-              [length]="
-                (advertisementService.advertisements$ | async)?.pagination
-                  ?.totalItems ?? 0
-              "
-              [pageSize]="
-                (advertisementService.advertisements$ | async)?.pagination
-                  ?.itemsPerPage ?? 0
-              "
-              [pageIndex]="
-                (advertisementService.advertisements$ | async)?.pagination
-                  ?.currentPage ?? 0
-              "
-            ></paginator-localization>
-          </div>
+            [pageSize]="
+              (advertisementService.advertisements$ | async)?.pagination
+                ?.itemsPerPage ?? 0
+            "
+            [pageIndex]="
+              (advertisementService.advertisements$ | async)?.pagination
+                ?.currentPage ?? 0
+            "
+          ></paginator-localization>
+
+          }
         </div>
       </div>
 
