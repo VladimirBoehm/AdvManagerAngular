@@ -1,15 +1,17 @@
+@import "../../../../theme.scss";
+
 .header-panel {
   width: 100%;
   background: linear-gradient(
     135deg,
-    var(--soft-beige-background-opacity) 15%,
-    var(--very-dark-brown) 50%,
-    var(--soft-beige-background-opacity) 85%
+    $soft-beige-background-opacity 15%,
+    $very-dark-brown 50%,
+    $soft-beige-background-opacity 85%
   );
   background-size: 500% 100%;
   border-radius: 8px;
   animation: wave 18s linear infinite;
-  border: 1px solid var(--muted-red-brown-opacity);
+  border: 1px solid $muted-red-brown-opacity;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 1);
 }
 

@@ -1,6 +1,8 @@
+@import "../../theme.scss";
+
 .button-card {
   cursor: pointer;
-  background-color: var(--soft-beige-background-opacity);
+  background-color: $soft-beige-background-opacity;
   border-radius: 8px;
 }
 
@@ -12,10 +14,11 @@
 
 .very-dark-brown p {
   font-size: 14px;
-  color: var(--warm-gray);
+  color: $warm-gray;
 }
 
 .material-symbols-outlined {
-  color: var(--very-dark-brown);
+  color: $very-dark-brown;
   font-size: 36px;
 }
+
