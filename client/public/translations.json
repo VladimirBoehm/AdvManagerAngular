@@ -1,0 +1,51 @@
+{
+    "validate_title": {
+      "ru": "Валидировать",
+      "en": "Validate"
+    },
+    "validate_subtitle": {
+      "ru": "Объявления для валидации",
+      "en": "Advertisements for validation"
+    },
+    "chat_filter_title": {
+      "ru": "Фильтр чата",
+      "en": "Chat Filter"
+    },
+    "chat_filter_subtitle": {
+      "ru": "Автоматическое удаление",
+      "en": "Automatic deletion"
+    },
+    "my_ads_title": {
+      "ru": "Мои объявления",
+      "en": "My Advertisements"
+    },
+    "my_ads_subtitle": {
+      "ru": "Администрирование рекламы",
+      "en": "Advertisement management"
+    },
+    "publishing_title": {
+      "ru": "Размещается",
+      "en": "Publishing"
+    },
+    "publishing_subtitle": {
+      "ru": "Очередь размещения",
+      "en": "Publishing queue"
+    },
+    "history_title": {
+      "ru": "История",
+      "en": "History"
+    },
+    "history_subtitle": {
+      "ru": "История размещений",
+      "en": "Publishing history"
+    },
+    "feedback_title": {
+      "ru": "Обратная связь",
+      "en": "Feedback"
+    },
+    "feedback_subtitle": {
+      "ru": "Отзыв администратору",
+      "en": "Feedback to administrator"
+    }
+  }
+  

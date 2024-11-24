@@ -1,4 +1,6 @@
 <body class="px-1 py-1">
+  <span style="color: azure"> {{ testUserLanguage }} </span>
+
   <div class="container-fluid px-0">
     @if (busyService.isLoading()){
     <app-skeleton-full-screen
@@ -23,8 +25,10 @@
               </span>
 
               <div class="very-dark-brown flex-grow-1">
-                <h6>Валидировать</h6>
-                <p class="mb-2">Объявления для валидации</p>
+                <h6>{{ Localization.getWord("validate_title") }}</h6>
+                <p class="mb-2">
+                  {{ Localization.getWord("validate_subtitle") }}
+                </p>
               </div>
               <div class="d-flex justify-content-end align-items-center">
                 <mat-progress-bar
@@ -68,8 +72,10 @@
                 tune
               </span>
               <div class="very-dark-brown flex-grow-1">
-                <h6>Фильтр чата</h6>
-                <p class="mb-2">Автоматическое удаление</p>
+                <h6>{{ Localization.getWord("chat_filter_title") }}</h6>
+                <p class="mb-2">
+                  {{ Localization.getWord("chat_filter_subtitle") }}
+                </p>
               </div>
 
               <span class="material-symbols-outlined text-muted">
@@ -95,8 +101,10 @@
                 ad_group
               </span>
               <div class="very-dark-brown flex-grow-1">
-                <h6>Мои объявления</h6>
-                <p class="mb-2">Администрирование рекламы</p>
+                <h6>{{ Localization.getWord("my_ads_title") }}</h6>
+                <p class="mb-2">
+                  {{ Localization.getWord("my_ads_subtitle") }}
+                </p>
               </div>
 
               <span class="material-symbols-outlined text-muted">
@@ -121,8 +129,10 @@
                 autorenew
               </span>
               <div class="very-dark-brown flex-grow-1">
-                <h6>Размещается</h6>
-                <p class="mb-2">Очередь размещения</p>
+                <h6>{{ Localization.getWord("publishing_title") }}</h6>
+                <p class="mb-2">
+                  {{ Localization.getWord("publishing_subtitle") }}
+                </p>
               </div>
 
               <span class="material-symbols-outlined text-muted">
@@ -148,8 +158,10 @@
                 history_edu
               </span>
               <div class="very-dark-brown flex-grow-1">
-                <h6>История</h6>
-                <p class="mb-2">История размещений</p>
+                <h6>{{ Localization.getWord("history_title") }}</h6>
+                <p class="mb-2">
+                  {{ Localization.getWord("history_subtitle") }}
+                </p>
               </div>
 
               <span class="material-symbols-outlined text-muted">
@@ -175,8 +187,10 @@
                 communication
               </span>
               <div class="very-dark-brown flex-grow-1">
-                <h6>Обратная связь</h6>
-                <p class="mb-2">Отзыв администратору</p>
+                <h6>{{ Localization.getWord("feedback_title") }}</h6>
+                <p class="mb-2">
+                  {{ Localization.getWord("feedback_subtitle") }}
+                </p>
               </div>
 
               <span class="material-symbols-outlined text-muted">
