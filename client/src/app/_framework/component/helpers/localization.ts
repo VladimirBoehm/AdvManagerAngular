@@ -4,8 +4,20 @@ type LanguageCode = 'en' | 'ru';
 export class Localization {
   private static language: LanguageCode = 'en';
 
-  static setLanguage(ISO2: LanguageCode) {
-    this.language = ISO2;
+  static setLanguage(ISO2language: string) {
+    if (this.isValidLanguageCode(ISO2language)) {
+      this.language = ISO2language as LanguageCode;
+    } else {
+      console.warn(
+        `Invalid language code: ${ISO2language}. Falling back to default ('en').`
+      );
+      this.language = 'en';
+    }
+  }
+  private static isValidLanguageCode(
+    language: string
+  ): language is LanguageCode {
+    return ['en', 'ru'].includes(language);
   }
 
   private static translations: {
