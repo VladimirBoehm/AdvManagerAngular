@@ -122,5 +122,33 @@
   "feedback_label": {
     "ru": "Обратная связь",
     "en": "Feedback"
+  },
+  "maximum": {
+    "ru": "Максимум",
+    "en": "Maximum"
+  },
+  "create": {
+    "ru": "Создать",
+    "en": "Create"
+  },
+  "created_label": {
+    "ru": "Создан:",
+    "en": "Created:"
+  },
+  "add": {
+    "ru": "Добавить",
+    "en": "Add"
+  },
+  "message_delete_info": {
+    "ru": "Сообщения, содержащие данный текст, будут удаляться",
+    "en": "Messages containing this text will be deleted"
+  },
+  "value": {
+    "ru": "Значение",
+    "en": "Value"
+  },
+  "back": {
+    "ru": "Назад",
+    "en": "Back"
   }
 }

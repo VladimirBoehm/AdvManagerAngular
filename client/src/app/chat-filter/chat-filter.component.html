@@ -25,10 +25,12 @@
             <span class="material-symbols-outlined text-muted">
               add_circle
             </span>
-            <div class="text-muted">Создать</div>
+            <div class="text-muted">{{ Localization.getWord("create") }}</div>
             @if((chatFilterService.chatFilters$ | async)!.length >
             maxItemNumber){
-            <div class="my-info-text text-danger">Максимум 30</div>
+            <div class="my-info-text text-danger">
+              {{ Localization.getWord("maximum") }} {{ maxItemNumber }}
+            </div>
             }
           </button>
         </div>
@@ -38,9 +40,11 @@
     @if(chatFilterService.isLoaded()){
     <div class="list-container">
       <mat-list>
-        <div class="text-center text-muted mb-1">Фильтр чата</div>
+        <div class="text-center text-muted mb-1">
+          {{ Localization.getWord("chat_filter_title") }}
+        </div>
         @for (item of this.chatFilterService.chatFilters$ | async; track
-        trackById) {
+        item.id) {
 
         <div class="d-flex align-items-center">
           <mat-list-item class="flex-grow-1">
@@ -52,7 +56,7 @@
             <div matListItemTitle>{{ item.value }}</div>
             <div matListItemLine class="mt-1">
               <!--
-          -->Создан:
+          -->{{ Localization.getWord("created_label") }}
               {{ dateHelper.getLocalTime(item.created) }}
             </div>
           </mat-list-item>
@@ -76,14 +80,16 @@
     <ng-template #addFilterDialog>
       <div class="modal-body">
         <div class="container d-flex flex-column align-items-start">
-          <h6 class="text-muted mt-1 mb-1">Добавить</h6>
+          <h6 class="text-muted mt-1 mb-1">
+            {{ Localization.getWord("create") }}
+          </h6>
           <div class="text-muted my-info-text">
-            Сообщения, содержащие данный текст, будут удаляться
+            {{ Localization.getWord("message_delete_info") }}
           </div>
         </div>
         <hr class="mt-1 mb-3" />
         <mat-form-field class="w-100">
-          <mat-label>Значение</mat-label>
+          <mat-label>{{ Localization.getWord("value") }}</mat-label>
           <input matInput [formControl]="$any(editForm.controls['item'])" />
           @if (matErrorService.getHasError(editForm.controls['item'])){
           <mat-error>{{
@@ -103,7 +109,7 @@
           >
             <div>{{ Localization.getWord("save") }}</div></button
           ><button class="btn empty-button" (click)="closeDialog()">
-            <div>Назад</div>
+            <div>{{ Localization.getWord("back") }}</div>
           </button>
         </div>
       </div>

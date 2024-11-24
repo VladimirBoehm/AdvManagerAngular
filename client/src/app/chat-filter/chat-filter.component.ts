@@ -125,9 +125,7 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
   sortChanged($event: SortOption) {
     this.chatFilterService.getAll($event);
   }
-  trackById(index: number, item: ChatFilter): number {
-    return item.id;
-  }
+
 
   ngOnDestroy(): void {
     this.backButtonService.removeCloseDialogHandler();
