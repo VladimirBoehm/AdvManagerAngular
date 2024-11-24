@@ -33,8 +33,7 @@ export class HomeComponent implements OnInit {
   accountService = inject(AccountService);
   advertisementsToValidateCount: number = 0;
   Localization = Localization;
-  testUserLanguage?: string;
-  
+
   constructor() {
     this.accountService
       .login()
@@ -61,7 +60,8 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.testUserLanguage = window.Telegram?.WebApp?.WebAppUser?.language_code;
+    console.log(window.Telegram?.WebApp);
+    
     if (window.Telegram?.WebApp) {
       window.Telegram?.WebApp?.expand();
       window.Telegram?.WebApp?.BackButton?.hide();
