@@ -10,11 +10,12 @@ import { AccountService } from '../_services/account.service';
 import { MatRippleModule } from '@angular/material/core';
 import { EMPTY, switchMap } from 'rxjs';
 import { User } from '../_models/user';
+import { SkeletonFullScreenComponent } from "../_framework/component/skeleton-full-screen/skeleton-full-screen.component";
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [SharedModule, RouterLink, NgIf, MatRippleModule],
+  imports: [SharedModule, RouterLink, NgIf, MatRippleModule, SkeletonFullScreenComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })

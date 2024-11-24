@@ -1,11 +1,11 @@
 <body class="p-1">
   <div class="container-fluid px-0">
-    @if ( (advertisementService.advertisements$ | async)?.items) {
+    @if ((advertisementService.advertisements$ | async)?.items) {
     <div class="background-rectangle-panel-shadow">
       <div class="d-flex">
         <div class="col-6 d-flex justify-content-start ps-0">
           <app-adv-list-filter
-            *ngIf="selectedListType !== advListType.MyAdvertisements"
+            *ngIf="selectedListType() !== advListType.MyAdvertisements"
             (onChanged)="sortChanged($event)"
             [disabled]="busyService.isLoading()"
             [isAdvertisementList]="true"
@@ -13,266 +13,199 @@
         </div>
 
         <div class="col-6 d-flex justify-content-end align-items-center">
-          <div
-            *ngIf="
-              selectedListType !== advListType.MyAdvertisements &&
-              (advertisementService.advertisements$ | async)?.pagination &&
-              ((advertisementService.advertisements$ | async)?.pagination)!
-                .totalItems > 0 &&
-              ((advertisementService.advertisements$ | async)?.pagination)!
-                .totalItems >
-                ((advertisementService.advertisements$ | async)?.pagination)!
-                  .itemsPerPage
+          @if(selectedListType() !== advListType.MyAdvertisements &&
+          (advertisementService.advertisements$ | async)?.pagination &&
+          ((advertisementService.advertisements$ | async)?.pagination)!
+          .totalItems > 0 && ((advertisementService.advertisements$ |
+          async)?.pagination)! .totalItems >
+          ((advertisementService.advertisements$ | async)?.pagination)!
+          .itemsPerPage){
+
+          <paginator-localization
+            [disabled]="busyService.isLoading()"
+            #paginator
+            (page)="handlePageEvent($event)"
+            [length]="
+              (advertisementService.advertisements$ | async)?.pagination
+                ?.totalItems ?? 0
             "
-          >
-            <paginator-localization
-              [disabled]="busyService.isLoading()"
-              #paginator
-              (page)="handlePageEvent($event)"
-              [length]="
-                (advertisementService.advertisements$ | async)?.pagination
-                  ?.totalItems ?? 0
-              "
-              [pageSize]="
-                (advertisementService.advertisements$ | async)?.pagination
-                  ?.itemsPerPage ?? 0
-              "
-              [pageIndex]="
-                (advertisementService.advertisements$ | async)?.pagination
-                  ?.currentPage ?? 0
-              "
-            ></paginator-localization>
-          </div>
+            [pageSize]="
+              (advertisementService.advertisements$ | async)?.pagination
+                ?.itemsPerPage ?? 0
+            "
+            [pageIndex]="
+              (advertisementService.advertisements$ | async)?.pagination
+                ?.currentPage ?? 0
+            "
+          ></paginator-localization>
+
+          }
         </div>
       </div>
 
       <!-- BUTTONS -->
       <!-- MyAdvertisements -->
-      <div
-        *ngIf="
-          selectedListType === advListType.MyAdvertisements &&
-          (advertisementService.advertisements$ | async)?.items
-        "
-      >
-        <div class="d-flex flex-column">
-          <div class="d-flex">
-            <div class="col-6 d-flex align-items-center justify-content-center">
-              <button class="btn empty-button" (click)="openPrivateHistory()">
-                <span class="material-symbols-outlined text-muted">
-                  history_edu
-                </span>
-                <div class="text-muted">История</div>
-              </button>
-            </div>
-            <div class="col-6 d-flex align-items-center justify-content-center">
-              <button
-                class="btn empty-button"
-                (click)="create()"
-                [disabled]="
-                  ((advertisementService.advertisements$ | async)?.items)!
-                    .length > 2
-                "
-              >
-                <span class="material-symbols-outlined text-muted">
-                  add_circle
-                </span>
-                <div class="text-muted">Создать</div>
-              </button>
-            </div>
+      @if( selectedListType() === advListType.MyAdvertisements &&
+      (advertisementService.advertisements$ | async)?.items){
+
+      <div class="d-flex flex-column">
+        <div class="d-flex">
+          <div class="col-6 d-flex align-items-center justify-content-center">
+            <button class="btn empty-button" (click)="openPrivateHistory()">
+              <span class="material-symbols-outlined text-muted">
+                history_edu
+              </span>
+              <div class="text-muted">История</div>
+            </button>
           </div>
-          <div class="d-flex">
+          <div class="col-6 d-flex align-items-center justify-content-center">
+            <button
+              class="btn empty-button"
+              (click)="create()"
+              [disabled]="
+                ((advertisementService.advertisements$ | async)?.items)!
+                  .length > 2
+              "
+            >
+              <span class="material-symbols-outlined text-muted">
+                add_circle
+              </span>
+              <div class="text-muted">Создать</div>
+            </button>
+          </div>
+        </div>
+        <div class="d-flex">
+          <div
+            class="col-6 d-flex align-items-center justify-content-center"
+          ></div>
+          <div class="col-6 d-flex align-items-center justify-content-center">
             <div
-              class="col-6 d-flex align-items-center justify-content-center"
-            ></div>
-            <div class="col-6 d-flex align-items-center justify-content-center">
-              <div
-                *ngIf="
-                  ((advertisementService.advertisements$ | async)?.items)!
-                    .length > 2
-                "
-                class="my-info-text text-muted"
-              >
-                Максимум 3 объявления
-              </div>
+              *ngIf="
+                ((advertisementService.advertisements$ | async)?.items)!
+                  .length > 2
+              "
+              class="my-info-text text-muted"
+            >
+              Максимум 3 объявления
             </div>
           </div>
         </div>
       </div>
-    </div>
-    }
-
-    <ng-container *ngIf="busyService.isLoading(); else itemList">
-      <app-skeleton-full-screen
-        [shouldShowHeaderPanel]="
-          (advertisementService.advertisements$ | async)?.items === null ||
-          (advertisementService.advertisements$ | async)?.items === undefined
-        "
-      ></app-skeleton-full-screen>
-    </ng-container>
-
-    <ng-template #itemList>
-      @if ( (advertisementService.advertisements$ | async)?.items) {
-
-      <div
-        *ngIf="
-          ((advertisementService.advertisements$ | async)?.items)!.length === 0
-        "
-      >
-        <app-empty-list-placeholder></app-empty-list-placeholder>
-      </div>
-
-      <!-- Pending validation -->
-      <div
-        class="list-container"
-        *ngIf="
-          (advertisementService.advertisements$ | async)?.items &&
-          ((advertisementService.advertisements$ | async)?.items)!.length > 0 &&
-          selectedListType === advListType.PendingValidation
-        "
-      >
-        <mat-action-list>
-          <div class="text-center text-muted mb-1">{{ getListName() }}</div>
-          <div
-            *ngFor="
-              let advertisement of (
-                advertisementService.advertisements$ | async
-              )?.items;
-              trackBy: trackByAdvertisementId
-            "
-          >
-            <div
-              class="d-flex align-items-center"
-              (click)="onItemClickValidate(advertisement.id)"
-            >
-              <mat-list-item class="flex-grow-1">
-                <mat-icon matListItemIcon>
-                  <span
-                    class="material-symbols-outlined me-3"
-                    [ngClass]="getShadowIconClass(advertisement)"
-                  >
-                    sticky_note_2
-                  </span></mat-icon
-                >
-                <div matListItemTitle>{{ advertisement.title }}</div>
-                <div class="d-flex justify-content-start mt-2" matListItemLine>
-                  От {{ getUserDisplayName(advertisement) }}
-                </div>
-                <div class="d-flex justify-content-start" matListItemLine>
-                  Поступил: {{ dateHelper.getLocalTime(advertisement.updated) }}
-                </div>
-              </mat-list-item>
-              <span class="material-symbols-outlined text-muted">
-                chevron_right
-              </span>
-            </div>
-            <mat-divider></mat-divider>
-          </div>
-        </mat-action-list>
-      </div>
-
-      <!-- My advertisements -->
-      <div
-        class="list-container"
-        *ngIf="
-          selectedListType === advListType.MyAdvertisements &&
-          (advertisementService.advertisements$ | async)?.items &&
-          ((advertisementService.advertisements$ | async)?.items)!.length > 0
-        "
-      >
-        <mat-action-list>
-          <div class="text-center text-muted mb-1">{{ getListName() }}</div>
-          <div
-            *ngFor="
-              let advertisement of (
-                advertisementService.advertisements$ | async
-              )?.items;
-              trackBy: trackByAdvertisementId
-            "
-          >
-            <div
-              class="d-flex align-items-center"
-              (click)="onItemClick(advertisement.id)"
-            >
-              <mat-list-item class="flex-grow-1">
-                <mat-icon matListItemIcon>
-                  <span
-                    class="material-symbols-outlined me-3"
-                    [ngClass]="getShadowIconClass(advertisement)"
-                  >
-                    sticky_note_2
-                  </span></mat-icon
-                >
-                <div matListItemTitle>{{ advertisement.title }}</div>
-                <div matListItemLine class="mt-2">
-                  <!--
-                -->{{ getStatus(advertisement) }}
-                </div>
-                <div matListItemLine>
-                  <!--
-                  -->{{ getCreationDate(advertisement) }}
-                </div>
-              </mat-list-item>
-              <span class="material-symbols-outlined text-muted">
-                chevron_right
-              </span>
-            </div>
-            <mat-divider></mat-divider>
-          </div>
-        </mat-action-list>
-      </div>
-
-      <!-- AllHistory || PrivateHistory-->
-      <div
-        class="list-container"
-        *ngIf="
-          ((advertisementService.advertisements$ | async)?.items)!.length > 0 &&
-          (selectedListType === advListType.AllHistory ||
-            selectedListType === advListType.PrivateHistory ||
-            selectedListType === advListType.PendingPublication)
-        "
-      >
-        <mat-action-list>
-          <div class="text-center text-muted mb-1">{{ getListName() }}</div>
-          <div
-            *ngFor="
-              let advertisement of (
-                advertisementService.advertisements$ | async
-              )?.items;
-              trackBy: trackByAdvertisementId
-            "
-          >
-            <div
-              class="d-flex align-items-center"
-              (click)="onItemClick(advertisement.id)"
-            >
-              <mat-list-item class="flex-grow-1">
-                <mat-icon matListItemIcon>
-                  <span
-                    class="material-symbols-outlined me-3"
-                    [ngClass]="getShadowIconClass(advertisement)"
-                  >
-                    sticky_note_2
-                  </span></mat-icon
-                >
-                <div matListItemTitle>{{ advertisement.title }}</div>
-                <div matListItemLine class="mt-2">
-                  <!--
-                -->{{ getMatListItemHistoryInfo(advertisement) }}
-                </div>
-                <div matListItemLine>
-                  <!--
-                -->{{ getUserDisplayName(advertisement) }}
-                </div>
-              </mat-list-item>
-              <span class="material-symbols-outlined text-muted">
-                chevron_right
-              </span>
-            </div>
-            <mat-divider></mat-divider>
-          </div>
-        </mat-action-list>
-      </div>
       }
-    </ng-template>
+    </div>
+    } @if(busyService.isLoading()){
+    <app-skeleton-full-screen
+      [shouldShowHeaderPanel]="
+        (advertisementService.advertisements$ | async)?.items === null ||
+        (advertisementService.advertisements$ | async)?.items === undefined
+      "
+    ></app-skeleton-full-screen>
+    } @else { @if ( (advertisementService.advertisements$ | async)?.items) {
+    <div class="list-container">
+      <mat-action-list>
+        <div class="text-center text-muted mb-1">{{ getListName() }}</div>
+        @for(advertisement of (advertisementService.advertisements$ | async)
+        ?.items; track trackByAdvertisementId){
+
+        <!-- Pending validation -->
+        @if(selectedListType() === advListType.PendingValidation){
+
+        <div
+          class="d-flex align-items-center"
+          (click)="onItemClickValidate(advertisement.id)"
+        >
+          <mat-list-item class="flex-grow-1">
+            <mat-icon matListItemIcon>
+              <span
+                class="material-symbols-outlined me-3"
+                [ngClass]="getShadowIconClass(advertisement)"
+              >
+                sticky_note_2
+              </span></mat-icon
+            >
+            <div matListItemTitle>{{ advertisement.title }}</div>
+            <div class="d-flex justify-content-start mt-2" matListItemLine>
+              От {{ getUserDisplayName(advertisement) }}
+            </div>
+            <div class="d-flex justify-content-start" matListItemLine>
+              Поступил: {{ dateHelper.getLocalTime(advertisement.updated) }}
+            </div>
+          </mat-list-item>
+          <span class="material-symbols-outlined text-muted">
+            chevron_right
+          </span>
+        </div>
+        <mat-divider></mat-divider>
+        }
+        <!-- My advertisements -->
+        @if( selectedListType() === advListType.MyAdvertisements){
+        <div
+          class="d-flex align-items-center"
+          (click)="onItemClick(advertisement.id)"
+        >
+          <mat-list-item class="flex-grow-1">
+            <mat-icon matListItemIcon>
+              <span
+                class="material-symbols-outlined me-3"
+                [ngClass]="getShadowIconClass(advertisement)"
+              >
+                sticky_note_2
+              </span></mat-icon
+            >
+            <div matListItemTitle>{{ advertisement.title }}</div>
+            <div matListItemLine class="mt-2">
+              <!--
+                                    -->{{ getStatus(advertisement) }}
+            </div>
+            <div matListItemLine>
+              <!--
+                                      -->{{ getCreationDate(advertisement) }}
+            </div>
+          </mat-list-item>
+          <span class="material-symbols-outlined text-muted">
+            chevron_right
+          </span>
+        </div>
+        <mat-divider></mat-divider>
+        }
+        <!-- AllHistory || PrivateHistory || PendingPublication-->
+        @if(( selectedListType() === advListType.AllHistory ||
+        selectedListType() === advListType.PrivateHistory || selectedListType()
+        === advListType.PendingPublication)){
+
+        <div
+          class="d-flex align-items-center"
+          (click)="onItemClick(advertisement.id)"
+        >
+          <mat-list-item class="flex-grow-1">
+            <mat-icon matListItemIcon>
+              <span
+                class="material-symbols-outlined me-3"
+                [ngClass]="getShadowIconClass(advertisement)"
+              >
+                sticky_note_2
+              </span></mat-icon
+            >
+            <div matListItemTitle>{{ advertisement.title }}</div>
+            <div matListItemLine class="mt-2">
+              <!--
+-->{{ getMatListItemHistoryInfo(advertisement) }}
+            </div>
+            <div matListItemLine>
+              <!--
+-->{{ getUserDisplayName(advertisement) }}
+            </div>
+          </mat-list-item>
+          <span class="material-symbols-outlined text-muted">
+            chevron_right
+          </span>
+        </div>
+        <mat-divider></mat-divider>
+        } } @empty {
+        <app-empty-list-placeholder></app-empty-list-placeholder>
+        }
+      </mat-action-list>
+    </div>
+    } }
   </div>
 </body>

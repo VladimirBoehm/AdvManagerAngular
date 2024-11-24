@@ -1,10 +1,13 @@
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap/modal';
 import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { BsModalRef } from 'ngx-bootstrap/modal';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatErrorService } from '../../../_framework/component/errors/mat-error-service';
 import { CustomValidators } from '../../../_framework/component/validators/customValidators';
 import { SharedModule } from '../../../_framework/modules/sharedModule';
@@ -22,9 +25,9 @@ export interface ButtonLink {
   providers: [MatErrorService],
 })
 export class AddAdvertisementButtonModalComponent implements OnInit {
-  @Input() modalRef?: BsModalRef;
-  @Input() buttonName?: string;
-  @Input() link?: string;
+  @Input({ required: true }) modalRef?: BsModalRef;
+  @Input({ required: true }) buttonName?: string;
+  @Input({ required: true }) link?: string;
   @Output() onSave = new EventEmitter<ButtonLink>();
 
   private formBuilder = inject(FormBuilder);

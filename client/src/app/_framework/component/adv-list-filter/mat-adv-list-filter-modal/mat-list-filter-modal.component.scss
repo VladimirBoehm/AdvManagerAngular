@@ -1,11 +1,11 @@
-:root {
-  --input-width: 180px;
-}
+@import "../../../../../theme.scss";
+
+$input-width: 180px;
 
 .scaled-form-field {
   transform-origin: top left;
   height: 50px;
-  width: var(--input-width);
+  width: $input-width;
 }
 
 .scaled-form-field input {
@@ -18,7 +18,7 @@
 }
 
 .searchInput {
-  width: var(--input-width);
+  width: $input-width;
 }
 
 .search-container {
@@ -27,8 +27,7 @@
 
 .sortName {
   min-width: 9rem;
-  background-color: var(--soft-beige-background-opacity);
+  background-color: $soft-beige-background-opacity;
   border-radius: 8px;
   border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 8px;
 }

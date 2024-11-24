@@ -40,9 +40,9 @@ export class MyPaginatorLocalization implements MatPaginatorIntl {
 })
 export class PaginatorLocalization {
   @Input() disabled = false;
-  @Input() length: number = 0;
-  @Input() pageSize: number = 5;
-  @Input() pageIndex: number = 0;
+  @Input({ required: true }) length: number = 0;
+  @Input({ required: true }) pageSize: number = 5;
+  @Input({ required: true }) pageIndex: number = 0;
   @Output() page: EventEmitter<PageEvent> = new EventEmitter<PageEvent>();
 
   handlePageEvent(event: PageEvent): void {

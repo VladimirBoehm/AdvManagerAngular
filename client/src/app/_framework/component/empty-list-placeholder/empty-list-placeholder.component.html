@@ -1,10 +1,8 @@
 <div class="d-flex flex-column justify-content-center align-items-center mt-5">
-  <!-- Check for custom content -->
   <ng-container *ngIf="customContent; else defaultContent">
     <ng-container *ngTemplateOutlet="customContent"></ng-container>
   </ng-container>
 
-  <!-- Default content if none is projected -->
   <ng-template #defaultContent>
     <div class="emptyListPlaceholder">
       <img class="placeholderImage" [src]="imageUrl" alt="Icon" />

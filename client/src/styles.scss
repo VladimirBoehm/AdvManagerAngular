@@ -1,18 +1,4 @@
-:root {
-  --very-dark-brown: #564747;
-  --dark-brownish-red: #7c5656;
-  --soft-beige-background-opacity: rgba(235, 224, 209, 0.937);
-  --soft-beige-background: rgba(235, 224, 209);
-  --muted-red-brown: #8b6a6a;
-  --muted-red-brown-opacity: #8b6a6ae8;
-  --violet: #61307a;
-  --warm-gray: #908e8e;
-  --yellow: #e3d79a;
-  --green: #889b73;
-  --red: #966161;
-  --blue: #6f88a3;
-  --neutral-gray: #6f6f6f;
-}
+@import "theme.scss";
 
 html,
 body {
@@ -20,6 +6,7 @@ body {
   padding: 0;
   height: 100%;
 }
+
 body {
   background-image: url("https://chatcontrolstorage.blob.core.windows.net/icons/BackgroundTestKlein.jpg");
   background-size: cover;
@@ -33,7 +20,7 @@ body {
 }
 
 .list-container {
-  background-color: var(--soft-beige-background-opacity);
+  background-color: $soft-beige-background-opacity;
   border-radius: 8px;
   padding: 16px;
   margin-top: 10px;
@@ -44,48 +31,48 @@ body {
 }
 
 .home-symbols-outlined {
-  color: #7c5656;
+  color: $dark-brownish-red;
   font-size: 36px;
 }
 
 .very-dark-brown {
-  color: var(--very-dark-brown);
+  color: $very-dark-brown;
 }
 
 .dark-brownish-red {
-  color: var(--dark-brownish-red);
+  color: $dark-brownish-red;
 }
 
 .soft-beige-background-opacity {
-  background-color: var(--soft-beige-background-opacity);
+  background-color: $soft-beige-background-opacity;
 }
 
 .muted-red-brown {
-  color: var(--muted-red-brown);
+  color: $muted-red-brown;
 }
 
 .violet {
-  color: var(--violet);
+  color: $violet;
 }
 
 .warm-gray {
-  color: var(--warm-gray);
+  color: $warm-gray;
 }
 
 .yellow {
-  color: var(--yellow);
+  color: $yellow;
 }
 
 .green {
-  color: var(--green);
+  color: $green;
 }
 
 .red {
-  color: var(--red);
+  color: $red;
 }
 
 .blue {
-  color: var(--blue);
+  color: $blue;
 }
 
 a {
@@ -117,7 +104,7 @@ a {
 }
 
 .errorMessage {
-  color: red;
+  color: $red;
 }
 .errorMessage,
 .my-info-text {
@@ -135,7 +122,7 @@ a {
 
 input.ng-invalid.ng-touched,
 textarea.ng-invalid.ng-touched {
-  border-color: red;
+  border-color: $red;
 }
 
 .modal-header {
@@ -146,8 +133,8 @@ textarea.ng-invalid.ng-touched {
 .mat-mdc-dialog-surface {
   border-radius: 8px !important;
   border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 8px;
   box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
+  background-color: $soft-beige-background !important;
 }
 
 @keyframes slideInFromTop {
@@ -189,9 +176,9 @@ mat-progress-spinner {
 }
 
 .background-rectangle-panel-common {
-  background-color: var(--soft-beige-background-opacity);
+  background-color: $soft-beige-background-opacity;
   border-radius: 8px;
-  border: 1px solid var(--muted-red-brown-opacity);
+  border: 1px solid $muted-red-brown-opacity;
 }
 
 .background-rectangle-panel-shadow {
@@ -199,17 +186,13 @@ mat-progress-spinner {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 1);
 }
 
-.mat-mdc-dialog-surface {
-  background-color: var(--soft-beige-background) !important;
-}
-
 .modal-body {
-  background-color: var(--soft-beige-background);
+  background-color: $soft-beige-background;
   border-radius: 8px;
 }
 
 .my-dialog {
-  background-color: var(--soft-beige-background);
+  background-color: $soft-beige-background;
   border-radius: 8px;
 }
 

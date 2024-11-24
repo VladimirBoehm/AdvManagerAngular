@@ -1,10 +1,13 @@
+@import "../../../../theme.scss";
+
+
 .emptyListPlaceholder {
   width: 150px;
   height: 150px;
   border-radius: 50%;
   position: relative;
   overflow: hidden;
-  border-color: var(--soft-beige-background-opacity);
+  border-color: $soft-beige-background-opacity;
 }
 
 .placeholderImage {
@@ -13,16 +16,15 @@
   object-fit: cover;
   mask-image: radial-gradient(
     circle,
-    var(--soft-beige-background) 50%,
+    $soft-beige-background 50%,
     transparent 70%
   );
   mask-mode: alpha;
 }
 
 .emptyListText {
-  color: var(--soft-beige-background);
+  color: $neutral-gray-opacity;
   text-align: center;
-  font-weight: bold;
-  font-size: 2rem;
-  text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.76);
+  font-size: 1.4rem;
+  text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.137);
 }

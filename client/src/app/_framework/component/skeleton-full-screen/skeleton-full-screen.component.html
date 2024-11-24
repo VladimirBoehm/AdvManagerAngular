@@ -4,5 +4,5 @@
     class="header-panel"
     style="height: 6.3rem"
   ></div>
-  <div class="header-panel mt-2" style="height: 70vh"></div>
+  <div class="header-panel" [ngClass]="{'mt-2': shouldShowHeaderPanel}" style="height: 70vh"></div>
 </div>
