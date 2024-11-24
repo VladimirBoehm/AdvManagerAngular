@@ -16,7 +16,7 @@ export class AppComponent {
 
   constructor() {
     this.Localization.setLanguage(
-      window.Telegram.WebApp.initDataUnsafe.user.language_code
+      window.Telegram.WebApp.initDataUnsafe?.user?.language_code ?? 'en'
     );
   }
 

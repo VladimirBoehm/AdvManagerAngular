@@ -1,51 +1,110 @@
 {
-    "validate_title": {
-      "ru": "Валидировать",
-      "en": "Validate"
-    },
-    "validate_subtitle": {
-      "ru": "Объявления для валидации",
-      "en": "Advertisements for validation"
-    },
-    "chat_filter_title": {
-      "ru": "Фильтр чата",
-      "en": "Chat Filter"
-    },
-    "chat_filter_subtitle": {
-      "ru": "Автоматическое удаление",
-      "en": "Automatic deletion"
-    },
-    "my_ads_title": {
-      "ru": "Мои объявления",
-      "en": "My Advertisements"
-    },
-    "my_ads_subtitle": {
-      "ru": "Администрирование рекламы",
-      "en": "Advertisement management"
-    },
-    "publishing_title": {
-      "ru": "Размещается",
-      "en": "Publishing"
-    },
-    "publishing_subtitle": {
-      "ru": "Очередь размещения",
-      "en": "Publishing queue"
-    },
-    "history_title": {
-      "ru": "История",
-      "en": "History"
-    },
-    "history_subtitle": {
-      "ru": "История размещений",
-      "en": "Publishing history"
-    },
-    "feedback_title": {
-      "ru": "Обратная связь",
-      "en": "Feedback"
-    },
-    "feedback_subtitle": {
-      "ru": "Отзыв администратору",
-      "en": "Feedback to administrator"
-    }
+  "validate_title": {
+    "ru": "Валидировать",
+    "en": "Validate"
+  },
+  "validate_subtitle": {
+    "ru": "Объявления для валидации",
+    "en": "Advertisements for validation"
+  },
+  "chat_filter_title": {
+    "ru": "Фильтр чата",
+    "en": "Chat Filter"
+  },
+  "chat_filter_subtitle": {
+    "ru": "Автоматическое удаление",
+    "en": "Automatic deletion"
+  },
+  "my_ads_title": {
+    "ru": "Мои объявления",
+    "en": "My Advertisements"
+  },
+  "my_ads_subtitle": {
+    "ru": "Администрирование рекламы",
+    "en": "Advertisement management"
+  },
+  "publishing_title": {
+    "ru": "Размещается",
+    "en": "Publishing"
+  },
+  "publishing_subtitle": {
+    "ru": "Очередь размещения",
+    "en": "Publishing queue"
+  },
+  "history_title": {
+    "ru": "История",
+    "en": "History"
+  },
+  "history_subtitle": {
+    "ru": "История размещений",
+    "en": "Publishing history"
+  },
+  "feedback_title": {
+    "ru": "Обратная связь",
+    "en": "Feedback"
+  },
+  "feedback_subtitle": {
+    "ru": "Отзыв администратору",
+    "en": "Feedback to administrator"
+  },
+  "save": {
+    "ru": "Сохранить",
+    "en": "Save"
+  },
+  "title_label": {
+    "ru": "Заголовок",
+    "en": "Title"
+  },
+  "advertisement_label": {
+    "ru": "Объявление",
+    "en": "Advertisement"
+  },
+  "image": {
+    "ru": "Изображение",
+    "en": "Image"
+  },
+  "delete": {
+    "ru": "Удалить",
+    "en": "Delete"
+  },
+  "button": {
+    "ru": "Кнопка",
+    "en": "Button"
+  },
+  "button_label": {
+    "ru": "Кнопка:",
+    "en": "Button:"
+  },
+  "link_label": {
+    "ru": "Ссылка:",
+    "en": "Link:"
+  },
+  "edit": {
+    "ru": "Редактировать",
+    "en": "Edit"
+  },
+  "select_image": {
+    "ru": "Выберите изображение",
+    "en": "Select Image"
+  },
+  "select": {
+    "ru": "Выбрать",
+    "en": "Select"
+  },
+  "close": {
+    "ru": "Закрыть",
+    "en": "Close"
+  },
+  "no_uploaded_images": {
+    "ru": "Нет загруженных изображений.",
+    "en": "No uploaded images."
+  },
+  "upload_instruction_1": {
+    "ru": "Для загрузки выполните в боте команду <strong>/start</strong>,",
+    "en": "To upload, execute the <strong>/start</strong> command in the bot,"
+  },
+  "upload_instruction_2": {
+    "ru": "далее выберите пункт меню <strong>'Загрузить изображения'</strong>.",
+    "en": "then select the menu item <strong>'Upload images'</strong>."
   }
-  
+}

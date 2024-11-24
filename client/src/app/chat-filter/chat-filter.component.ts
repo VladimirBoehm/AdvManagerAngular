@@ -14,6 +14,7 @@ import { BusyService } from '../_services/busy.service';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
 import { Subscription } from 'rxjs';
 import { SkeletonFullScreenComponent } from '../_framework/component/skeleton-full-screen/skeleton-full-screen.component';
+import { Localization } from '../_framework/component/helpers/localization';
 
 @Component({
   selector: 'app-chat-filter',
@@ -46,6 +47,7 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
   maxItemNumber: number = 30;
   minItemLength: number = 3;
   itemLengthCounter: number = 0;
+  Localization = Localization;
 
   ngOnInit(): void {
     this.routerSubscription = this.router.events.subscribe((event) => {

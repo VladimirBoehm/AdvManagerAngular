@@ -11,6 +11,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatErrorService } from '../../../_framework/component/errors/mat-error-service';
 import { CustomValidators } from '../../../_framework/component/validators/customValidators';
 import { SharedModule } from '../../../_framework/modules/sharedModule';
+import { Localization } from '../../../_framework/component/helpers/localization';
 export interface ButtonLink {
   buttonName: string;
   link: string;
@@ -37,6 +38,7 @@ export class AddAdvertisementButtonModalComponent implements OnInit {
   maxButtonNameLength: number = 20;
   linkCounter: number = 0;
   maxLinkLength: number = 500;
+  Localization = Localization;
 
   ngOnInit(): void {
     this.initializeForm();
