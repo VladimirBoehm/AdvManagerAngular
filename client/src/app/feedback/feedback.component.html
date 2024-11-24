@@ -19,16 +19,16 @@
             [disabled]="editForm.invalid"
           >
             <span class="material-symbols-outlined text-muted"> send </span>
-            <div class="text-muted">Отправить</div>
+            <div class="text-muted">{{ Localization.getWord("send") }}</div>
           </button>
         </div>
       </div>
       <div class="mt-2 background-rectangle-panel-common">
         <div class="text-muted my-info-text mb-2 mt-1 text-center">
-          Сообщения об ошибках, обращения, пожелания
+          {{ Localization.getWord("error_messages_requests_suggestions") }}
         </div>
         <mat-form-field class="w-100 mb-2">
-          <mat-label>Обратная связь</mat-label>
+          <mat-label>{{ Localization.getWord("feedback_label") }}</mat-label>
           <textarea
             matInput
             rows="3"
@@ -52,7 +52,7 @@
       <div class="alert alert-success" role="alert">
         <div class="d-flex w-100 justify-content-center text-muted">
           <span class="material-symbols-outlined text-muted"> done_all </span>
-          Отправлено
+          {{ Localization.getWord("sent") }}
         </div>
       </div>
     </ng-template>

@@ -106,5 +106,21 @@
   "upload_instruction_2": {
     "ru": "далее выберите пункт меню <strong>'Загрузить изображения'</strong>.",
     "en": "then select the menu item <strong>'Upload images'</strong>."
+  },
+  "send": {
+    "ru": "Отправить",
+    "en": "Send"
+  },
+  "error_messages_requests_suggestions": {
+    "ru": "Сообщения об ошибках, обращения, пожелания",
+    "en": "Error messages, requests, suggestions"
+  },
+  "sent": {
+    "ru": "Отправлено",
+    "en": "Sent"
+  },
+  "feedback_label": {
+    "ru": "Обратная связь",
+    "en": "Feedback"
   }
 }
