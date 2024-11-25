@@ -11,23 +11,29 @@ import {
   PageEvent,
 } from '@angular/material/paginator';
 import { Subject } from 'rxjs';
+import { Localization } from '../helpers/localization';
 
 @Injectable()
 export class MyPaginatorLocalization implements MatPaginatorIntl {
   changes = new Subject<void>();
 
-  nextPageLabel = 'Следующая страница';
-  previousPageLabel = 'Предыдущая страница';
-
-  firstPageLabel = 'Первая страница';
-  itemsPerPageLabel = 'Элементов на странице:';
-  lastPageLabel = 'Последняя страница';
+  nextPageLabel = Localization.getWord('next_page_label');
+  previousPageLabel = Localization.getWord('previous_page_label');
+  firstPageLabel = Localization.getWord('first_page_label');
+  itemsPerPageLabel = Localization.getWord('items_per_page_label');
+  lastPageLabel = Localization.getWord('last_page_label');
 
   getRangeLabel(page: number, pageSize: number, length: number): string {
-    if (length === 0) return 'Страница 1 из 1';
+    if (length === 0) {
+      return Localization.getWord('page_range_label_single');
+    }
 
     const amountPages = Math.ceil(length / pageSize);
-    return `Страница ${page + 1} из ${amountPages}`;
+    const currentPage = page + 1;
+
+    return Localization.getWord('page_range_label')
+      .replace('{current}', currentPage.toString())
+      .replace('{total}', amountPages.toString());
   }
 }
 

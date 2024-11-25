@@ -14,6 +14,15 @@ export class Localization {
       this.language = 'en';
     }
   }
+
+  static getFormattedWord(key: string, params: { [key: string]: any }): string {
+    let word = this.getWord(key);
+    for (const param in params) {
+      word = word.replace(`{${param}}`, params[param]);
+    }
+    return word;
+  }
+
   private static isValidLanguageCode(
     language: string
   ): language is LanguageCode {

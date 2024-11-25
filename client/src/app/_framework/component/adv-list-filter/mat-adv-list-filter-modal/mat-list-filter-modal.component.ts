@@ -5,38 +5,17 @@ import {
   OnInit,
   ViewEncapsulation,
 } from '@angular/core';
-import {
-  MatDialogModule,
-  MatDialogContent,
-  MatDialogTitle,
-  MatDialogActions,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { inject, signal } from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatRadioModule } from '@angular/material/radio';
-
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  ReactiveFormsModule,
-} from '@angular/forms';
-
-import { NgIf } from '@angular/common';
-
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatInputModule } from '@angular/material/input';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
 import { SortOption } from '../../../../_models/sortOption';
 import { AdvertisementService } from '../../../../_services/advertisement.service';
 import { ChatFilterService } from '../../../../_services/chat-filter.service';
 import { DEFAULT_SORT_OPTION } from '../../../constants/defaultSortOption';
 import { TelegramBackButtonService } from '../../../telegramBackButtonService';
+import { SharedModule } from '../../../modules/sharedModule';
+import { Localization } from '../../helpers/localization';
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -52,22 +31,7 @@ export const MY_DATE_FORMATS = {
 @Component({
   selector: 'app-mat-adv-list-filter',
   standalone: true,
-  imports: [
-    MatDialogModule,
-    MatButtonModule,
-    MatDialogContent,
-    MatDialogTitle,
-    MatDialogActions,
-    MatCardModule,
-    MatCheckboxModule,
-    MatRadioModule,
-    ReactiveFormsModule,
-    NgIf,
-    MatFormFieldModule,
-    MatDatepickerModule,
-    MatInputModule,
-    NgIf,
-  ],
+  imports: [SharedModule],
   templateUrl: './mat-list-filter-modal.component.html',
   styleUrl: './mat-list-filter-modal.component.scss',
   encapsulation: ViewEncapsulation.None,
@@ -85,6 +49,7 @@ export class MatListFilterComponentModal implements OnInit, OnDestroy {
     searchType: DEFAULT_SORT_OPTION.searchType,
     searchValue: DEFAULT_SORT_OPTION.searchValue,
   } as SortOption);
+  Localization = Localization;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { isAdvertisementList: boolean },

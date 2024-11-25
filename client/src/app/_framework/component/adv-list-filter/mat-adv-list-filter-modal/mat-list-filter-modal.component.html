@@ -6,7 +6,7 @@
           *ngIf="sortForm.get('selectedSearchType')?.value === 'date'"
           class="scaled-form-field"
         >
-          <mat-label>Диапазон</mat-label>
+          <mat-label>{{ Localization.getWord('range') }}</mat-label>
           <mat-date-range-input
             [rangePicker]="picker"
             formGroupName="dateRange"
@@ -25,7 +25,7 @@
           <input
             type="text"
             class="form-control searchInput"
-            placeholder="Поиск"
+            [placeholder]="Localization.getWord('search')"
             aria-label="Text input with dropdown button"
             formControlName="searchValue"
           />
@@ -33,48 +33,43 @@
             *ngIf="sortForm.controls['searchValue'].errors"
             class="text-danger my-info-text"
           >
-            Максимум
-            {{
-              sortForm.controls["searchValue"].errors["maxlength"]
-                .requiredLength
-            }}
-            символов
+            {{ Localization.getFormattedWord('maximum_characters', { maxLength: sortForm.controls['searchValue'].errors['maxlength'].requiredLength }) }}
           </div>
         </div>
       </div>
       <select class="form-select ms-1" formControlName="selectedSearchType">
-        <option value="date">по дате</option>
-        <option value="title">по заголовку</option>
+        <option value="date">{{ Localization.getWord('by_date') }}</option>
+        <option value="title">{{ Localization.getWord('by_title') }}</option>
         <option [hidden]="!data.isAdvertisementList" value="content">
-          по содержанию
+          {{ Localization.getWord('by_content') }}
         </option>
         <option [hidden]="!data.isAdvertisementList" value="username">
-          по &#64;username
+          {{ Localization.getWord('by_username') }}
         </option>
         <option [hidden]="!data.isAdvertisementList" value="name">
-          по имени
+          {{ Localization.getWord('by_name') }}
         </option>
       </select>
     </div>
 
-    <h6 class="text-muted">Сортировать</h6>
+    <h6 class="text-muted">{{ Localization.getWord('sort') }}</h6>
     <section class="d-flex flex-column">
       <mat-radio-group formControlName="selectedSortType">
         <mat-radio-button value="date" class="d-block">
           <div class="d-flex align-items-center">
-            <span class="input-group-text me-1 sortName">По дате</span>
+            <span class="input-group-text me-1 sortName">{{ Localization.getWord('sort_by_date') }}</span>
             <select class="form-select" formControlName="selectedSortDate">
-              <option value="asc">по возрастанию</option>
-              <option value="desc">по убыванию</option>
+              <option value="asc">{{ Localization.getWord('ascending') }}</option>
+              <option value="desc">{{ Localization.getWord('descending') }}</option>
             </select>
           </div>
         </mat-radio-button>
         <mat-radio-button value="title" class="mt-1 d-block">
           <div class="d-flex align-items-center">
-            <span class="input-group-text me-1 sortName">По заголовку</span>
+            <span class="input-group-text me-1 sortName">{{ Localization.getWord('sort_by_title') }}</span>
             <select class="form-select" formControlName="selectedSortTitle">
-              <option value="asc">по возрастанию</option>
-              <option value="desc">по убыванию</option>
+              <option value="asc">{{ Localization.getWord('ascending') }}</option>
+              <option value="desc">{{ Localization.getWord('descending') }}</option>
             </select>
           </div>
         </mat-radio-button>
@@ -84,10 +79,10 @@
           class="mt-1 d-block"
         >
           <div class="d-flex align-items-center">
-            <span class="input-group-text me-1 sortName">По &#64;username</span>
+            <span class="input-group-text me-1 sortName">{{ Localization.getWord('sort_by_username') }}</span>
             <select class="form-select" formControlName="selectedSortUsername">
-              <option value="asc">по возрастанию</option>
-              <option value="desc">по убыванию</option>
+              <option value="asc">{{ Localization.getWord('ascending') }}</option>
+              <option value="desc">{{ Localization.getWord('descending') }}</option>
             </select>
           </div>
         </mat-radio-button>
@@ -97,10 +92,10 @@
           class="mt-1 d-block"
         >
           <div class="d-flex align-items-center">
-            <span class="input-group-text me-1 sortName">По имени</span>
+            <span class="input-group-text me-1 sortName">{{ Localization.getWord('sort_by_name') }}</span>
             <select class="form-select" formControlName="selectedSortName">
-              <option value="asc">по возрастанию</option>
-              <option value="desc">по убыванию</option>
+              <option value="asc">{{ Localization.getWord('ascending') }}</option>
+              <option value="desc">{{ Localization.getWord('descending') }}</option>
             </select>
           </div>
         </mat-radio-button>
@@ -114,10 +109,10 @@
         type="submit"
         [disabled]="sortForm.invalid"
       >
-        <div>Выбрать</div>
+        <div>{{ Localization.getWord('select') }}</div>
       </button>
       <button class="btn empty-button" (click)="close()">
-        <div>Назад</div>
+        <div>{{ Localization.getWord('back') }}</div>
       </button>
     </mat-dialog-actions>
   </form>

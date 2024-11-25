@@ -15,6 +15,7 @@ import { ConfirmationMatDialogService } from '../../_services/confirmation-mat-d
 import { SharedModule } from '../../_framework/modules/sharedModule';
 import { AdvertisementMainDataComponent } from '../advertisement-main-data/advertisement-main-data.component';
 import { BusyService } from '../../_services/busy.service';
+import { Localization } from '../../_framework/component/helpers/localization';
 
 @Component({
   selector: 'app-advertisement-preview',
@@ -50,6 +51,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   advertisement?: Advertisement;
   nextPublishDate?: Date;
   timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  Localization = Localization;
 
   ngOnInit(): void {
     this.backButtonService.setCloseDialogHandler(() => this.modalRef?.hide());
@@ -97,9 +99,9 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   delete() {
     this.confirmationService
       .confirmDialog({
-        title: 'Удалить объявление?',
-        confirmText: 'Да',
-        cancelText: 'Нет',
+        title: this.Localization.getWord('delete_advertisement_question'),
+        confirmText: this.Localization.getWord('yes'),
+        cancelText: this.Localization.getWord('no'),
       })
       .subscribe((result) => {
         if (result === true) {
@@ -188,11 +190,12 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   sendToValidateDialogShow() {
     this.confirmationService
       .confirmDialog({
-        title: 'Отправить на валидацию?',
-        message:
-          'Объявление будет отправлено администратору для подтверждения!',
-        confirmText: 'Да',
-        cancelText: 'Нет',
+        title: this.Localization.getWord('send_for_validation_question'),
+        message: this.Localization.getWord(
+          'advertisement_will_be_sent_for_confirmation'
+        ),
+        confirmText: this.Localization.getWord('yes'),
+        cancelText: this.Localization.getWord('no'),
       })
       .subscribe((result) => {
         if (result === true) {
@@ -236,9 +239,9 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
     ) {
       this.confirmationService
         .confirmDialog({
-          title: 'Отменить публикацию?',
-          confirmText: 'Да',
-          cancelText: 'Нет',
+          title: this.Localization.getWord('cancel_publication_question'),
+          confirmText: this.Localization.getWord('yes'),
+          cancelText: this.Localization.getWord('no'),
         })
         .subscribe((result) => {
           if (result === true) {
@@ -293,15 +296,15 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
     const lastTwoDigits = frequency % 100;
 
     if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
-      return 'дней';
+      return this.Localization.getWord('days_plural');
     }
     if (lastDigit === 1) {
-      return 'день';
+      return this.Localization.getWord('day_singular');
     }
     if (lastDigit >= 2 && lastDigit <= 4) {
-      return 'дня';
+      return this.Localization.getWord('days_few');
     }
-    return 'дней';
+    return this.Localization.getWord('days_plural');
   }
 
   shouldShowForceButton(): boolean {

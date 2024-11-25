@@ -20,6 +20,10 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatDialogActions } from '@angular/material/dialog';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+
 @NgModule({
   imports: [
     NgTemplateOutlet,
@@ -30,7 +34,8 @@ import { MatDividerModule } from '@angular/material/divider';
     DatePipe,
     PaginatorLocalization,
     AsyncPipe,
-    MatIconModule
+    MatIconModule,
+    MatDialogActions,
   ],
   exports: [
     NgTemplateOutlet,
@@ -53,6 +58,9 @@ import { MatDividerModule } from '@angular/material/divider';
     MatIconModule,
     MatListModule,
     MatDividerModule,
+    MatDialogActions,
+    MatRadioModule,
+    MatDatepickerModule,
   ],
 })
 export class SharedModule {}

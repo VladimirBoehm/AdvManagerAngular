@@ -150,5 +150,399 @@
   "back": {
     "ru": "Назад",
     "en": "Back"
+  },
+  "approve": {
+    "ru": "Одобрить",
+    "en": "Approve"
+  },
+  "reject": {
+    "ru": "Отклонить",
+    "en": "Reject"
+  },
+  "admin_comment": {
+    "ru": "Комментарий администратора",
+    "en": "Administrator's comment"
+  },
+  "approve_advertisement_question": {
+    "ru": "Одобрить объявление?",
+    "en": "Approve advertisement?"
+  },
+  "set_allowed_posting_frequency": {
+    "ru": "Установите разрешенную периодичность размещения:",
+    "en": "Set the allowed posting frequency:"
+  },
+  "days": {
+    "ru": "Дни",
+    "en": "Days"
+  },
+  "publish": {
+    "ru": "Разместить",
+    "en": "Publish"
+  },
+  "confirmed": {
+    "ru": "Подтверждено!",
+    "en": "Confirmed!"
+  },
+  "posting_frequency": {
+    "ru": "Периодичность размещения: раз в",
+    "en": "Posting frequency: once every"
+  },
+  "one_time_posting": {
+    "ru": "Одноразовое размещение.",
+    "en": "One-time posting."
+  },
+  "waiting_for_publication": {
+    "ru": "Ожидает размещения!",
+    "en": "Awaiting publication!"
+  },
+  "will_be_queued": {
+    "ru": "Будет поставлено в очередь:",
+    "en": "Will be queued:"
+  },
+  "queue_position": {
+    "ru": "Место в очереди:",
+    "en": "Queue position:"
+  },
+  "placement_depends_on_activity": {
+    "ru": "*Размещение объявлений зависит от активности в группе",
+    "en": "*Advertisement placement depends on group activity"
+  },
+  "advertisement_rejected": {
+    "ru": "Объявление отклонено!",
+    "en": "Advertisement rejected!"
+  },
+  "sent_to_admin_for_confirmation": {
+    "ru": "Отправлено администратору для подтверждения!",
+    "en": "Sent to administrator for confirmation!"
+  },
+  "username_not_specified": {
+    "ru": "⚠️ У вас не указан @Username!",
+    "en": "⚠️ You have not specified @Username!"
+  },
+  "update_profile_and_run_command": {
+    "ru": "Обновите свой профиль и в боте выполните команду <strong>/start</strong>.",
+    "en": "Update your profile and execute the <strong>/start</strong> command in the bot."
+  },
+  "published": {
+    "ru": "Размещено:",
+    "en": "Published:"
+  },
+  "author": {
+    "ru": "Автор:",
+    "en": "Author:"
+  },
+  "comment": {
+    "ru": "Комментарий:",
+    "en": "Comment:"
+  },
+  "comment_short": {
+    "ru": "Комментарий",
+    "en": "Comment"
+  },
+  "cancel_publication_question": {
+    "ru": "Отменить публикацию?",
+    "en": "Cancel publication?"
+  },
+  "block_advertisement_question": {
+    "ru": "Заблокировать объявление?",
+    "en": "Block advertisement?"
+  },
+  "validation_will_be_revoked": {
+    "ru": "Валидация будет отозвана",
+    "en": "Validation will be revoked"
+  },
+  "yes": {
+    "ru": "Да",
+    "en": "Yes"
+  },
+  "no": {
+    "ru": "Нет",
+    "en": "No"
+  },
+  "publish_ad_immediately_question": {
+    "ru": "Разместить объявление мгновенно?",
+    "en": "Publish advertisement immediately?"
+  },
+  "ad_will_be_queued": {
+    "ru": "Объявление будет поставлено в очередь",
+    "en": "Advertisement will be queued"
+  },
+  "starting_from": {
+    "ru": "начиная с:",
+    "en": "Starting from:"
+  },
+  "confirm": {
+    "ru": "Подтвердить",
+    "en": "Confirm"
+  },
+  "force": {
+    "ru": "Форсировать",
+    "en": "Force"
+  },
+  "cancel": {
+    "ru": "Отменить",
+    "en": "Cancel"
+  },
+
+  "updated_label": {
+    "ru": "Обновлён:",
+    "en": "Updated:"
+  },
+  "placed_under_advertisement": {
+    "ru": "Размещается под объявлением",
+    "en": "Placed under the advertisement"
+  },
+  "button_name": {
+    "ru": "Имя кнопки",
+    "en": "Button name"
+  },
+  "link": {
+    "ru": "Ссылка",
+    "en": "Link"
+  },
+  "history": {
+    "ru": "История",
+    "en": "History"
+  },
+  "maximum_ads": {
+    "ru": "Максимум 3 объявления",
+    "en": "Maximum 3 advertisements"
+  },
+  "from": {
+    "ru": "От",
+    "en": "From"
+  },
+  "received": {
+    "ru": "Поступил",
+    "en": "Received"
+  },
+  "authorization_error": {
+    "ru": "Ошибка авторизации",
+    "en": "Authorization error"
+  },
+  "page_not_found": {
+    "ru": "Страница не найдена",
+    "en": "Page not found"
+  },
+  "server_error": {
+    "ru": "Ошибка сервера",
+    "en": "Server error"
+  },
+  "something_went_wrong": {
+    "ru": "Что-то пошло не так",
+    "en": "Something went wrong"
+  },
+  "next_page_label": {
+    "ru": "Следующая страница",
+    "en": "Next page"
+  },
+  "previous_page_label": {
+    "ru": "Предыдущая страница",
+    "en": "Previous page"
+  },
+  "first_page_label": {
+    "ru": "Первая страница",
+    "en": "First page"
+  },
+  "items_per_page_label": {
+    "ru": "Элементов на странице:",
+    "en": "Items per page:"
+  },
+  "last_page_label": {
+    "ru": "Последняя страница",
+    "en": "Last page"
+  },
+  "page_range_label_single": {
+    "ru": "Страница 1 из 1",
+    "en": "Page 1 of 1"
+  },
+  "page_range_label": {
+    "ru": "Страница {current} из {total}",
+    "en": "Page {current} of {total}"
+  },
+  "field_is_required": {
+    "ru": "Поле обязательно для заполнения",
+    "en": "This field is required"
+  },
+  "url_must_start_with": {
+    "ru": "Ссылка должна начинаться с 'https://'",
+    "en": "The URL must start with 'https://'"
+  },
+  "max_length_exceeded": {
+    "ru": "Превышено допустимое количество символов: {maxLength}",
+    "en": "Exceeded maximum allowed characters: {maxLength}"
+  },
+  "minimum_characters_required": {
+    "ru": "Минимум {minLength} символа",
+    "en": "Minimum {minLength} characters required"
+  },
+  "value_must_not_exceed": {
+    "ru": "Значение не должно превышать: {max}",
+    "en": "Value must not exceed: {max}"
+  },
+  "only_positive_numbers_allowed": {
+    "ru": "Разрешены только положительные числа",
+    "en": "Only positive numbers are allowed"
+  },
+  "list_is_empty": {
+    "ru": "Список пуст",
+    "en": "List is empty"
+  },
+  "icon": {
+    "ru": "Иконка",
+    "en": "Icon"
+  },
+  "new_status": {
+    "ru": "Новый",
+    "en": "New"
+  },
+  "awaiting_publication": {
+    "ru": "Ожидает размещения",
+    "en": "Awaiting publication"
+  },
+  "under_review": {
+    "ru": "На рассмотрении",
+    "en": "Under review"
+  },
+  "rejected_status": {
+    "ru": "Отклонён",
+    "en": "Rejected"
+  },
+  "confirmed_status": {
+    "ru": "Подтверждён",
+    "en": "Confirmed"
+  },
+  "published_status": {
+    "ru": "Размещён",
+    "en": "Published"
+  },
+  "my_history": {
+    "ru": "Моя история",
+    "en": "My History"
+  },
+  "posted_label": {
+    "ru": "Размещено:",
+    "en": "Posted:"
+  },
+  "next_publication": {
+    "ru": "Следующее размещение:",
+    "en": "Next publication:"
+  },
+  "by": {
+    "ru": "по",
+    "en": "by"
+  },
+  "date_case": {
+    "ru": "дате",
+    "en": "date"
+  },
+  "title_case": {
+    "ru": "заголовку",
+    "en": "title"
+  },
+  "name_case": {
+    "ru": "имени",
+    "en": "name"
+  },
+  "ascending_order": {
+    "ru": "по возрастанию",
+    "en": "ascending"
+  },
+  "descending_order": {
+    "ru": "по убыванию",
+    "en": "descending"
+  },
+  "sorting": {
+    "ru": "Сортировка",
+    "en": "Sorting"
+  },
+
+  "range": {
+    "ru": "Диапазон",
+    "en": "Range"
+  },
+  "search": {
+    "ru": "Поиск",
+    "en": "Search"
+  },
+  "maximum_characters": {
+    "ru": "Максимум {maxLength} символов",
+    "en": "Maximum {maxLength} characters"
+  },
+  "by_date": {
+    "ru": "по дате",
+    "en": "by date"
+  },
+  "by_title": {
+    "ru": "по заголовку",
+    "en": "by title"
+  },
+  "by_content": {
+    "ru": "по содержанию",
+    "en": "by content"
+  },
+  "by_username": {
+    "ru": "по @username",
+    "en": "by @username"
+  },
+  "by_name": {
+    "ru": "по имени",
+    "en": "by name"
+  },
+  "sort": {
+    "ru": "Сортировать",
+    "en": "Sort"
+  },
+  "sort_by_date": {
+    "ru": "По дате",
+    "en": "By date"
+  },
+  "sort_by_title": {
+    "ru": "По заголовку",
+    "en": "By title"
+  },
+  "sort_by_username": {
+    "ru": "По @username",
+    "en": "By @username"
+  },
+  "sort_by_name": {
+    "ru": "По имени",
+    "en": "By name"
+  },
+  "ascending": {
+    "ru": "по возрастанию",
+    "en": "ascending"
+  },
+  "descending": {
+    "ru": "по убыванию",
+    "en": "descending"
+  },
+  "reject_advertisement_question": {
+    "ru": "Отклонить объявление?",
+    "en": "Reject the advertisement?"
+  },
+  "delete_advertisement_question": {
+    "ru": "Удалить объявление?",
+    "en": "Delete the advertisement?"
+  },
+  "send_for_validation_question": {
+    "ru": "Отправить на валидацию?",
+    "en": "Send for validation?"
+  },
+  "advertisement_will_be_sent_for_confirmation": {
+    "ru": "Объявление будет отправлено администратору для подтверждения!",
+    "en": "The advertisement will be sent to the administrator for confirmation!"
+  },
+  "days_plural": {
+    "ru": "дней",
+    "en": "days"
+  },
+  "day_singular": {
+    "ru": "день",
+    "en": "day"
+  },
+  "days_few": {
+    "ru": "дня",
+    "en": "days"
   }
 }

@@ -2,10 +2,12 @@ import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { catchError } from 'rxjs';
+import { Localization } from '../_framework/component/helpers/localization';
+
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const toastr = inject(ToastrService);
-
+ 
   return next(req).pipe(
     catchError((error) => {
       if (error) {
@@ -24,19 +26,16 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
             }
             break;
           case 401:
-            toastr.error('Ошибка авторизации', error.status);
+            toastr.error(Localization.getWord('authorization_error'), error.status);
             break;
           case 404:
-            // router.navigateByUrl('/not-found');
-            toastr.error('Страница не найдена');
+            toastr.error(Localization.getWord('page_not_found'));
             break;
           case 500:
-            // const navigationExtras: NavigationExtras = {state: {error: error.error}};
-            //router.navigateByUrl('/server-error', navigationExtras);
-            toastr.error('Ошибка сервера', error.status);
+            toastr.error(Localization.getWord('server_error'), error.status);
             break;
           default:
-            toastr.error('Что-то пошло не так');
+            toastr.error(Localization.getWord('something_went_wrong'));
             break;
         }
       }

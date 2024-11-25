@@ -1,5 +1,6 @@
 import { Component, Input, TemplateRef } from '@angular/core';
 import { SharedModule } from '../../modules/sharedModule';
+import { Localization } from '../helpers/localization';
 
 @Component({
   selector: 'app-empty-list-placeholder',
@@ -12,4 +13,6 @@ export class EmptyListPlaceholderComponent {
   @Input() imageUrl: string =
     'https://chatcontrolstorage.blob.core.windows.net/icons/empty.jpg';
   @Input() customContent?: TemplateRef<any>;
+
+  Localization = Localization;
 }

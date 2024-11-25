@@ -38,7 +38,6 @@
                 ?.currentPage ?? 0
             "
           ></paginator-localization>
-
           }
         </div>
       </div>
@@ -55,7 +54,9 @@
               <span class="material-symbols-outlined text-muted">
                 history_edu
               </span>
-              <div class="text-muted">История</div>
+              <div class="text-muted">
+                {{ Localization.getWord("history") }}
+              </div>
             </button>
           </div>
           <div class="col-6 d-flex align-items-center justify-content-center">
@@ -70,7 +71,7 @@
               <span class="material-symbols-outlined text-muted">
                 add_circle
               </span>
-              <div class="text-muted">Создать</div>
+              <div class="text-muted">{{ Localization.getWord("create") }}</div>
             </button>
           </div>
         </div>
@@ -86,7 +87,7 @@
               "
               class="my-info-text text-muted"
             >
-              Максимум 3 объявления
+              {{ Localization.getWord("maximum_ads") }}
             </div>
           </div>
         </div>
@@ -125,10 +126,12 @@
             >
             <div matListItemTitle>{{ advertisement.title }}</div>
             <div class="d-flex justify-content-start mt-2" matListItemLine>
-              От {{ getUserDisplayName(advertisement) }}
+              {{ Localization.getWord("from") }}
+              {{ getUserDisplayName(advertisement) }}
             </div>
             <div class="d-flex justify-content-start" matListItemLine>
-              Поступил: {{ dateHelper.getLocalTime(advertisement.updated) }}
+              {{ Localization.getWord("received") }}:
+              {{ dateHelper.getLocalTime(advertisement.updated) }}
             </div>
           </mat-list-item>
           <span class="material-symbols-outlined text-muted">
@@ -155,11 +158,13 @@
             <div matListItemTitle>{{ advertisement.title }}</div>
             <div matListItemLine class="mt-2">
               <!--
-                                    -->{{ getStatus(advertisement) }}
+                                        -->{{ getStatus(advertisement) }}
             </div>
             <div matListItemLine>
               <!--
-                                      -->{{ getCreationDate(advertisement) }}
+                                          -->{{
+                getCreationDate(advertisement)
+              }}
             </div>
           </mat-list-item>
           <span class="material-symbols-outlined text-muted">
@@ -189,11 +194,11 @@
             <div matListItemTitle>{{ advertisement.title }}</div>
             <div matListItemLine class="mt-2">
               <!--
--->{{ getMatListItemHistoryInfo(advertisement) }}
+    -->{{ getMatListItemHistoryInfo(advertisement) }}
             </div>
             <div matListItemLine>
               <!--
--->{{ getUserDisplayName(advertisement) }}
+    -->{{ getUserDisplayName(advertisement) }}
             </div>
           </mat-list-item>
           <span class="material-symbols-outlined text-muted">

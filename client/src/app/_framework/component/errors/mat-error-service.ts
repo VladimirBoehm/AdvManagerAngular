@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
+import { Localization } from '../helpers/localization';
 
 export interface ErrorVariables {
   maxLength?: number;
@@ -23,17 +24,23 @@ export class MatErrorService {
     const errorVariables: ErrorVariables = this.controlErrors[controlName];
 
     if (control.hasError('required')) {
-      return 'Поле обязательно для заполнения';
+      return Localization.getWord('field_is_required');
     } else if (control.hasError('invalidUrl')) {
-      return "Ссылка должна начинаться с 'https://'";
+      return Localization.getWord('url_must_start_with');
     } else if (control.hasError('maxlength') && errorVariables?.maxLength) {
-      return `Превышено допустимое количество символов: ${errorVariables.maxLength}`;
+      return Localization.getFormattedWord('max_length_exceeded', {
+        maxLength: errorVariables.maxLength,
+      });
     } else if (control.hasError('minlength') && errorVariables?.minLength) {
-      return `Минимум ${errorVariables.minLength} символа`;
+      return Localization.getFormattedWord('minimum_characters_required', {
+        minLength: errorVariables.minLength,
+      });
     } else if (control.hasError('max') && errorVariables?.max) {
-      return `Значение не должно превышать: ${errorVariables.max}`;
+      return Localization.getFormattedWord('value_must_not_exceed', {
+        max: errorVariables.max,
+      });
     } else if (control.hasError('notNumeric')) {
-      return `Разрешены только положительные числа`;
+      return Localization.getWord('only_positive_numbers_allowed');
     } else {
       return '';
     }

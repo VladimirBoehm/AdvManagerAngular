@@ -1,6 +1,7 @@
 import { NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
+import { Localization } from '../../helpers/localization';
 
 @Component({
   selector: 'app-form-error-message',
@@ -11,5 +12,5 @@ import { AbstractControl } from '@angular/forms';
 })
 export class FormErrorMessageComponent {
   @Input() control?: AbstractControl;
-
+  Localization = Localization;
 }
