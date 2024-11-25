@@ -71,9 +71,9 @@ export class FeedbackComponent implements OnInit {
   onSendClick() {
     this.confirmationService
       .confirmDialog({
-        title: 'Отправить сообщение?',
-        confirmText: 'Да',
-        cancelText: 'Нет',
+        title: this.Localization.getWord('send_message_question'),
+        confirmText: this.Localization.getWord('yes'),
+        cancelText: this.Localization.getWord('no'),
       })
       .subscribe((result) => {
         if (result === true) {

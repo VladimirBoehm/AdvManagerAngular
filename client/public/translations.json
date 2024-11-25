@@ -544,5 +544,9 @@
   "days_few": {
     "ru": "дня",
     "en": "days"
+  },
+  "send_message_question": {
+    "ru": "Отправить сообщение?",
+    "en": "Send message?"
   }
 }

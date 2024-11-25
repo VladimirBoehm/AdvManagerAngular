@@ -5,7 +5,6 @@ export class Localization {
   private static language: LanguageCode = 'en';
 
   static setLanguage(ISO2language: string) {
-    console.log(ISO2language);
     if (this.isValidLanguageCode(ISO2language)) {
       this.language = ISO2language as LanguageCode;
     } else {
