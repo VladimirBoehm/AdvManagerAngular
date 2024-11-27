@@ -5,12 +5,9 @@ export class Localization {
   private static language: LanguageCode = 'en';
 
   static setLanguage(ISO2language: string) {
-    if (this.isValidLanguageCode(ISO2language)) {
-      this.language = ISO2language as LanguageCode;
+    if (['ru', 'uk', 'be'].includes(ISO2language)) {
+      this.language = 'ru';
     } else {
-      console.warn(
-        `Invalid language code: ${ISO2language}. Falling back to default ('en').`
-      );
       this.language = 'en';
     }
   }
@@ -21,12 +18,6 @@ export class Localization {
       word = word.replace(`{${param}}`, params[param]);
     }
     return word;
-  }
-
-  private static isValidLanguageCode(
-    language: string
-  ): language is LanguageCode {
-    return ['en', 'ru'].includes(language);
   }
 
   private static translations: {

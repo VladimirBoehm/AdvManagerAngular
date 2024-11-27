@@ -188,8 +188,8 @@
     "en": "Posting frequency: once every"
   },
   "one_time_posting": {
-    "ru": "Одноразовое размещение.",
-    "en": "One-time posting."
+    "ru": "Одноразовое размещение",
+    "en": "One-time posting"
   },
   "waiting_for_publication": {
     "ru": "Ожидает размещения!",
@@ -269,7 +269,7 @@
   },
   "starting_from": {
     "ru": "начиная с:",
-    "en": "Starting from:"
+    "en": "starting from:"
   },
   "confirm": {
     "ru": "Подтвердить",
