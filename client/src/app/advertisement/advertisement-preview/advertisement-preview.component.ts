@@ -264,14 +264,16 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
     if (this.advertisement) {
       this.advertisement.statusId = AdvertisementStatus.pendingValidation;
 
-      this.advertisementService.updateStatus(this.advertisement)?.subscribe({
-        next: () => {
-          this.getAdvertisementById(this.advertisement?.id ?? 0);
-        },
-        error: (err) => {
-          console.error('Error when updating status pendingValidation:', err);
-        },
-      });
+      this.advertisementService
+        .sendToValidation(this.advertisement)
+        ?.subscribe({
+          next: () => {
+            this.getAdvertisementById(this.advertisement?.id ?? 0);
+          },
+          error: (err) => {
+            console.error('Error when updating status pendingValidation:', err);
+          },
+        });
     }
   }
 

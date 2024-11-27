@@ -132,17 +132,12 @@ export class AdvertisementService {
         })
       );
   }
-
-  updateStatus(advertisement: Advertisement) {
-    let updateAdvertisementStatusRequest = {
-      advertisementId: advertisement.id,
-      advertisementStatus: advertisement.statusId,
-    } as UpdateAdvertisementStatusRequest;
-
+  // return this.http.get<Advertisement>(this.baseUrl + `advertisement/${id}`);
+  sendToValidation(advertisement: Advertisement) {
     return this.http
-      .put<UpdateAdvertisementStatusRequest>(
-        this.baseUrl + 'advertisement/updateStatus',
-        updateAdvertisementStatusRequest
+      .post<UpdateAdvertisementStatusRequest>(
+        this.baseUrl + 'advertisement/sendToValidation',
+        { id: advertisement.id }
       )
       .pipe(
         tap(() => {
