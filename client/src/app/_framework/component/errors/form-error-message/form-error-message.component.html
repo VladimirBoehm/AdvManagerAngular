@@ -1,6 +1,5 @@
 <div *ngIf="control?.invalid && control?.touched" class="errorMessage">
   <ng-container *ngIf="control?.hasError('required')">
-    Поле обязательно для заполнения
+    {{ Localization.getWord("field_is_required") }}
   </ng-container>
-  <!-- Другие типы ошибок при необходимости -->
 </div>

@@ -23,14 +23,14 @@
                 check_circle
               </span>
             </ng-template>
-            <div class="text-muted">Сохранить</div>
+            <div class="text-muted">{{ Localization.getWord("save") }}</div>
           </button>
         </div>
       </div>
       <div>
         <div class="background-rectangle-panel-shadow mt-2 p-1">
           <mat-form-field class="w-100 mt-4">
-            <mat-label>Заголовок</mat-label>
+            <mat-label>{{ Localization.getWord("title_label") }}</mat-label>
             <input
               matInput
               [readonly]="busyService.isLoading()"
@@ -50,7 +50,9 @@
           </mat-form-field>
 
           <mat-form-field class="mt-3 w-100">
-            <mat-label>Объявление</mat-label>
+            <mat-label>{{
+              Localization.getWord("advertisement_label")
+            }}</mat-label>
             <textarea
               matInput
               required
@@ -90,7 +92,7 @@
                     image
                   </span>
                   <div class="text-muted my-info-text" style="margin-left: 0">
-                    Изображение
+                    {{ Localization.getWord("image") }}
                   </div>
                 </div>
               </button>
@@ -108,7 +110,9 @@
                 >
                   close
                 </span>
-                <div class="text-muted my-info-text">Удалить</div>
+                <div class="text-muted my-info-text">
+                  {{ Localization.getWord("delete") }}
+                </div>
               </button>
 
               <div
@@ -140,7 +144,7 @@
                   link
                 </span>
                 <div class="text-muted my-info-text" style="margin-left: 0">
-                  Кнопка
+                  {{ Localization.getWord("button") }}
                 </div>
               </div>
             </button>
@@ -151,11 +155,11 @@
               class="background-rectangle-panel-common p-2 d-flex flex-column"
             >
               <div class="d-flex">
-                <div>Кнопка:</div>
+                <div>{{ Localization.getWord("button_label") }}</div>
                 <div class="ms-1 linkName">{{ advertisement.linkName }}</div>
               </div>
               <div class="d-flex">
-                <div>Ссылка:</div>
+                <div>{{ Localization.getWord("link_label") }}</div>
                 <a [href]="advertisement.linkValue" class="ms-1">
                   {{ advertisement.linkValue }}
                 </a>
@@ -169,7 +173,7 @@
                 (click)="removeAdvertisementButton()"
                 [disabled]="busyService.isLoading()"
               >
-                Удалить
+                {{ Localization.getWord("delete") }}
               </button>
               <button
                 type="button"
@@ -177,7 +181,7 @@
                 (click)="showAddAdvertisementButtonDialog()"
                 [disabled]="busyService.isLoading()"
               >
-                Редактировать
+                {{ Localization.getWord("edit") }}
               </button>
             </div>
           </div>
@@ -188,7 +192,9 @@
   <ng-template #imageSelectorDialog>
     <div class="modal-body">
       <div class="container d-flex justify-content-between align-items-center">
-        <h6 class="text-muted mt-2 mb-0">Выберите изображение</h6>
+        <h6 class="text-muted mt-2 mb-0">
+          {{ Localization.getWord("select_image") }}
+        </h6>
         <div class="d-flex mt-2">
           <button
             type="button"
@@ -200,7 +206,9 @@
             <span class="material-symbols-outlined text-muted">
               check_circle
             </span>
-            <div class="text-muted my-info-text">Выбрать</div>
+            <div class="text-muted my-info-text">
+              {{ Localization.getWord("select") }}
+            </div>
           </button>
           <button
             type="button"
@@ -208,7 +216,9 @@
             (click)="modalRef?.hide()"
           >
             <span class="material-symbols-outlined text-muted"> close </span>
-            <div class="text-muted my-info-text">Закрыть</div>
+            <div class="text-muted my-info-text">
+              {{ Localization.getWord("close") }}
+            </div>
           </button>
         </div>
       </div>
@@ -227,15 +237,18 @@
           <ng-template #emptyListInfo>
             <div class="d-flex flex-column align-items-center text-muted mb-3">
               <div class="my-info-text" style="line-height: 1.5">
-                Нет загруженных изображений.
+                {{ Localization.getWord("no_uploaded_images") }}
               </div>
-              <div class="my-info-text" style="line-height: 1.5">
-                Для загрузки выполните в боте команду <strong>/start</strong>,
-              </div>
-              <div class="my-info-text" style="line-height: 1.5">
-                далее выберите пункт меню
-                <strong>'Загрузить изображения'</strong>.
-              </div>
+              <div
+                class="my-info-text"
+                style="line-height: 1.5"
+                [innerHTML]="Localization.getWord('upload_instruction_1')"
+              ></div>
+              <div
+                class="my-info-text"
+                style="line-height: 1.5"
+                [innerHTML]="Localization.getWord('upload_instruction_2')"
+              ></div>
             </div>
           </ng-template>
         </app-empty-list-placeholder>

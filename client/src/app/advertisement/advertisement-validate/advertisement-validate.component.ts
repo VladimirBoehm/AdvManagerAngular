@@ -13,6 +13,7 @@ import { AdvListType } from '../../_framework/constants/advListType';
 import { ConfirmationMatDialogService } from '../../_services/confirmation-mat-dialog.service';
 import { SharedModule } from '../../_framework/modules/sharedModule';
 import { AdvertisementMainDataComponent } from '../advertisement-main-data/advertisement-main-data.component';
+import { Localization } from '../../_framework/component/helpers/localization';
 
 @Component({
   selector: 'app-advertisement-validate',
@@ -45,6 +46,7 @@ export class AdvertisementValidateComponent implements OnInit {
   advertisement?: Advertisement;
   advertisementStatus = AdvertisementStatus;
   modalRef?: BsModalRef;
+  Localization = Localization;
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
@@ -123,9 +125,9 @@ export class AdvertisementValidateComponent implements OnInit {
   reject() {
     this.confirmationService
       .confirmDialog({
-        title: 'Отклонить объявление?',
-        confirmText: 'Да',
-        cancelText: 'Нет',
+        title: this.Localization.getWord('reject_advertisement_question'),
+        confirmText: this.Localization.getWord('yes'),
+        cancelText: this.Localization.getWord('no'),
       })
       .subscribe((result) => {
         if (result === true) {

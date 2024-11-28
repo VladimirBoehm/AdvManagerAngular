@@ -20,6 +20,7 @@ import { ImagePreviewModalComponent } from '../../_framework/component/image-pre
 import { BusyService } from '../../_services/busy.service';
 import { EmptyListPlaceholderComponent } from '../../_framework/component/empty-list-placeholder/empty-list-placeholder.component';
 import { SkeletonFullScreenComponent } from '../../_framework/component/skeleton-full-screen/skeleton-full-screen.component';
+import { Localization } from '../../_framework/component/helpers/localization';
 
 @Component({
   selector: 'app-advertisement-edit',
@@ -63,7 +64,8 @@ export class AdvertisementEditComponent implements OnInit {
   advertisement?: Advertisement;
   userImages: AdImage[] = [];
   selectedImage?: AdImage | null = null;
-
+  Localization = Localization;
+  
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
       this.router.navigate(['/adv-list', AdvListType.MyAdvertisements]);

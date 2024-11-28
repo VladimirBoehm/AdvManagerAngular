@@ -11,7 +11,6 @@ import {
   MatDialogRef,
   MatDialogModule,
   MatDialogContent,
-  MatDialogTitle,
   MatDialogActions,
 } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -25,7 +24,6 @@ import { TelegramBackButtonService } from '../../telegramBackButtonService';
     MatDialogModule,
     MatButtonModule,
     MatDialogContent,
-    MatDialogTitle,
     MatDialogActions,
   ],
   templateUrl: './mat-confirm-modal.component.html',

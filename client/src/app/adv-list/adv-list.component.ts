@@ -15,6 +15,7 @@ import { ListFilterComponent } from '../_framework/component/adv-list-filter/lis
 import { EmptyListPlaceholderComponent } from '../_framework/component/empty-list-placeholder/empty-list-placeholder.component';
 import { DatePipe } from '@angular/common';
 import { SkeletonFullScreenComponent } from '../_framework/component/skeleton-full-screen/skeleton-full-screen.component';
+import { Localization } from '../_framework/component/helpers/localization';
 
 @Component({
   selector: 'app-adv-list',
@@ -37,11 +38,12 @@ export class AdvListComponent implements OnInit, OnDestroy {
   private paramMapSubscription!: Subscription;
 
   advertisementService = inject(AdvertisementService);
-  advListType = AdvListType 
+  advListType = AdvListType;
   dateHelper = DateHelper;
-  selectedListType = signal<AdvListType>(AdvListType.MyAdvertisements) ;
+  selectedListType = signal<AdvListType>(AdvListType.MyAdvertisements);
   busyService = inject(BusyService);
   datePipe = inject(DatePipe);
+  Localization = Localization;
 
   ngOnInit(): void {
     this.routerSubscription = this.router.events.subscribe((event) => {
@@ -120,28 +122,30 @@ export class AdvListComponent implements OnInit, OnDestroy {
   getStatus(advertisement: Advertisement): string {
     switch (advertisement.statusId) {
       case AdvertisementStatus.new: {
-        return 'Новый';
+        return this.Localization.getWord('new_status');
       }
       case AdvertisementStatus.pendingPublication: {
-        return 'Ожидает размещения';
+        return this.Localization.getWord('awaiting_publication');
       }
       case AdvertisementStatus.pendingValidation: {
-        return 'На рассмотрении';
+        return this.Localization.getWord('under_review');
       }
       case AdvertisementStatus.rejected: {
-        return 'Отклонён';
+        return this.Localization.getWord('rejected_status');
       }
       case AdvertisementStatus.validated: {
-        return 'Подтверждён';
+        return this.Localization.getWord('confirmed_status');
       }
       case AdvertisementStatus.published: {
-        return 'Размещён';
+        return this.Localization.getWord('published_status');
       }
     }
   }
 
-  getCreationDate(advertisement: Advertisement) {
-    return `Создан: ${this.dateHelper.getLocalTime(advertisement.created)}`;
+  getCreationDate(advertisement: Advertisement): string {
+    return `${this.Localization.getWord(
+      'created_label'
+    )} ${this.dateHelper.getLocalTime(advertisement.created)}`;
   }
 
   getUserDisplayName(advertisement: Advertisement): string {
@@ -170,15 +174,15 @@ export class AdvListComponent implements OnInit, OnDestroy {
   getListName(): string {
     switch (this.selectedListType()) {
       case AdvListType.PendingValidation:
-        return 'Валидировать';
+        return this.Localization.getWord('validate_title');
       case AdvListType.MyAdvertisements:
-        return 'Мои объявления';
+        return this.Localization.getWord('my_ads_title');
       case AdvListType.AllHistory:
-        return 'История';
+        return this.Localization.getWord('history');
       case AdvListType.PrivateHistory:
-        return 'Моя история';
+        return this.Localization.getWord('my_history');
       case AdvListType.PendingPublication:
-        return 'Размещается';
+        return this.Localization.getWord('publishing_title');
     }
   }
 
@@ -206,9 +210,9 @@ export class AdvListComponent implements OnInit, OnDestroy {
       this.selectedListType() === this.advListType.AllHistory ||
       this.selectedListType() === this.advListType.PrivateHistory
     ) {
-      result = 'Размещено:';
+      result = this.Localization.getWord('posted_label');
     } else {
-      result = 'Следующее размещение:';
+      result = this.Localization.getWord('next_publication');
     }
 
     const formattedDate = this.datePipe.transform(

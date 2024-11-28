@@ -15,6 +15,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Feedback } from '../_models/feedback';
 import { NgIf } from '@angular/common';
 import { ConfirmationMatDialogService } from '../_services/confirmation-mat-dialog.service';
+import { Localization } from '../_framework/component/helpers/localization';
 
 @Component({
   selector: 'app-feedback',
@@ -37,6 +38,7 @@ export class FeedbackComponent implements OnInit {
   modalRef?: BsModalRef;
   feedbackCounter: number = 0;
   maxFeedbackLength: number = 500;
+  Localization = Localization;
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
@@ -69,9 +71,9 @@ export class FeedbackComponent implements OnInit {
   onSendClick() {
     this.confirmationService
       .confirmDialog({
-        title: 'Отправить сообщение?',
-        confirmText: 'Да',
-        cancelText: 'Нет',
+        title: this.Localization.getWord('send_message_question'),
+        confirmText: this.Localization.getWord('yes'),
+        cancelText: this.Localization.getWord('no'),
       })
       .subscribe((result) => {
         if (result === true) {

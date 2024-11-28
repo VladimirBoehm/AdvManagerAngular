@@ -4,6 +4,7 @@ import { SharedModule } from '../../_framework/modules/sharedModule';
 import { ImagePreviewModalComponent } from '../../_framework/component/image-preview-modal/image-preview-modal.component';
 import { DateHelper } from '../../_framework/component/helpers/dateHelper';
 import { TelegramBackButtonService } from '../../_framework/telegramBackButtonService';
+import { Localization } from '../../_framework/component/helpers/localization';
 
 @Component({
   selector: 'app-advertisement-main-data',
@@ -25,6 +26,7 @@ export class AdvertisementMainDataComponent {
   updated = input<Date | undefined>();
   modalRef?: BsModalRef;
   dateHelper = DateHelper;
+  Localization = Localization;
 
   showImage() {
     this.backButtonService.setCloseDialogHandler(() => this.modalRef?.hide());

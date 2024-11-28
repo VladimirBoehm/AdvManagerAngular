@@ -4,7 +4,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SortOption } from '../../../_models/sortOption';
-import { NgIf } from '@angular/common';
 import { AdvertisementService } from '../../../_services/advertisement.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -13,6 +12,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDialog } from '@angular/material/dialog';
 import { MatListFilterComponentModal } from './mat-adv-list-filter-modal/mat-list-filter-modal.component';
 import { ChatFilterService } from '../../../_services/chat-filter.service';
+import { Localization } from '../helpers/localization';
 
 @Component({
   selector: 'app-adv-list-filter',
@@ -38,6 +38,7 @@ export class ListFilterComponent {
   dialog = inject(MatDialog);
   advertisementService = inject(AdvertisementService);
   chatFilterService = inject(ChatFilterService);
+  Localization = Localization; 
 
   onFilterClick() {
     this.dialog
@@ -63,19 +64,19 @@ export class ListFilterComponent {
 
     switch (field) {
       case 'date':
-        fieldTranslation = 'дате';
+        fieldTranslation = this.Localization.getWord('date_case');
         break;
       case 'title':
-        fieldTranslation = 'заголовку';
+        fieldTranslation = this.Localization.getWord('title_case');
         break;
       case 'username':
         fieldTranslation = 'username';
         break;
       case 'name':
-        fieldTranslation = 'имени';
+        fieldTranslation = this.Localization.getWord('name_case');
         break;
     }
-    return `по ${fieldTranslation}`;
+    return `${this.Localization.getWord('by')} ${fieldTranslation}`;
   }
 
   getCurrentSortOptionsText() {
@@ -83,6 +84,8 @@ export class ListFilterComponent {
       ? this.advertisementService.getCurrentSortOptions()?.order
       : this.chatFilterService.getCurrentSortOptions()?.order;
 
-    return order === 'asc' ? 'по возрастанию' : 'по убыванию';
+    return order === 'asc'
+      ? this.Localization.getWord('ascending_order')
+      : this.Localization.getWord('descending_order');
   }
 }

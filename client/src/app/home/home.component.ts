@@ -1,6 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-
 import { AdvertisementService } from '../_services/advertisement.service';
 import { NgIf } from '@angular/common';
 import { AdvListType } from '../_framework/constants/advListType';
@@ -10,12 +9,12 @@ import { AccountService } from '../_services/account.service';
 import { MatRippleModule } from '@angular/material/core';
 import { EMPTY, switchMap } from 'rxjs';
 import { User } from '../_models/user';
-import { SkeletonFullScreenComponent } from "../_framework/component/skeleton-full-screen/skeleton-full-screen.component";
+import { Localization } from '../_framework/component/helpers/localization';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [SharedModule, RouterLink, NgIf, MatRippleModule, SkeletonFullScreenComponent],
+  imports: [SharedModule, RouterLink, NgIf, MatRippleModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
@@ -25,27 +24,31 @@ export class HomeComponent implements OnInit {
   busyService = inject(BusyService);
   accountService = inject(AccountService);
   advertisementsToValidateCount: number = 0;
+  Localization = Localization;
 
   constructor() {
-    this.accountService.login().pipe(
-      switchMap((user: User) => {
-        if (user.isAdmin) {
-          return this.advertisementService.getPendingValidationAdvertisementsCount();
-        } else {
-          return EMPTY;
-        }
-      })
-    ).subscribe({
-      next: (result: number) => {
-        this.advertisementsToValidateCount = result;
-      },
-      error: (err) => {
-        console.error(
-          'Error during login or loading PendingValidationAdvertisementsCount:',
-          err
-        );
-      },
-    });
+    this.accountService
+      .login()
+      .pipe(
+        switchMap((user: User) => {
+          if (user.isAdmin) {
+            return this.advertisementService.getPendingValidationAdvertisementsCount();
+          } else {
+            return EMPTY;
+          }
+        })
+      )
+      .subscribe({
+        next: (result: number) => {
+          this.advertisementsToValidateCount = result;
+        },
+        error: (err) => {
+          console.error(
+            'Error during login or loading PendingValidationAdvertisementsCount:',
+            err
+          );
+        },
+      });
   }
 
   ngOnInit(): void {

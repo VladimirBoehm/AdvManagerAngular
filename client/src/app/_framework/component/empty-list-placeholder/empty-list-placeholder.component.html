@@ -4,10 +4,16 @@
   </ng-container>
 
   <ng-template #defaultContent>
-    <div class="emptyListPlaceholder">
-      <img class="placeholderImage" [src]="imageUrl" alt="Icon" />
+    <div class="empty-list-placeholder">
+      <img
+        class="placeholder-image"
+        [src]="imageUrl"
+        alt="{{ Localization.getWord('icon') }}"
+      />
     </div>
 
-    <div class="emptyListText">Список пуст</div>
+    <div class="empty-list-text">
+      {{ Localization.getWord("list_is_empty") }}
+    </div>
   </ng-template>
 </div>
