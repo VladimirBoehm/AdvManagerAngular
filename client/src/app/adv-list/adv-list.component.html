@@ -106,7 +106,7 @@
       <mat-action-list>
         <div class="text-center text-muted mb-1">{{ getListName() }}</div>
         @for(advertisement of (advertisementService.advertisements$ | async)
-        ?.items; track trackByAdvertisementId){
+        ?.items; track advertisement.id){
 
         <!-- Pending validation -->
         @if(selectedListType() === advListType.PendingValidation){
