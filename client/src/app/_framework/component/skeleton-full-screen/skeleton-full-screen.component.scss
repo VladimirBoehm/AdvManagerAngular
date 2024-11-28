@@ -18,7 +18,7 @@
 
 .header-buttons-panel {
   @include skeleton;
-  height: 6.3rem;
+  height: $buttons-top-panel-min-hight;
 }
 
 .list-panel {
