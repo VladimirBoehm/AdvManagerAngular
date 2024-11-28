@@ -16,6 +16,8 @@ $neutral-gray-opacity: #6f6f6fda;
 $margin-list-from-top-buttons: 10px;
 $margin-list-from-bottom: 20px;
 
+$buttons-top-panel-min-hight: 66px;
+
 @mixin transition-ease {
   transition: all 0.5s ease-in-out;
 }
