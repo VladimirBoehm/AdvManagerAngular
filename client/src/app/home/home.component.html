@@ -196,14 +196,18 @@
       </a>
     </div>
   </div>
-  <!-- [ngClass]="{ isOpen: isImpressumInfoShown() -->
+
   <div id="impressumInfo" [ngClass]="{ isOpen: isImpressumInfoShown() }">
     <app-impressum [onClose]="onImpressumClose"></app-impressum>
   </div>
-  <footer id="footer" class="d-flex justify-content-around">
-    <div class="my-info-text impressum-button" (click)="onImpressumClick()">
-      Impressum
+
+  <footer id="footer" class="d-flex flex-column">
+    <div id="footer__hr"></div>
+    <div class="d-flex justify-content-around">
+      <div class="my-info-text impressum-button" (click)="onImpressumClick()">
+        Impressum
+      </div>
+      <div class="my-info-text">© 2024 All rights reserved</div>
     </div>
-    <div class="my-info-text">© 2024 All rights reserved</div>
   </footer>
 </body>
