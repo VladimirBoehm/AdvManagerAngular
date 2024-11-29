@@ -1,5 +1,14 @@
 @import "../../theme.scss";
 
+body {
+  overflow: hidden;
+}
+
+#page-container {
+  position: relative;
+  min-height: 90vh;
+}
+
 .button-card {
   cursor: pointer;
   background-color: $soft-beige-background-opacity;
@@ -22,3 +31,34 @@
   font-size: 36px;
 }
 
+.impressum-button {
+  cursor: pointer;
+}
+
+#impressumInfo {
+  position: absolute;
+  bottom: 0;
+  width: 99%;
+  z-index: 10;
+  transform: translateY(100%);
+  transition: all 0.5s ease-in-out;
+}
+
+#impressumInfo.isOpen {
+  transform: translateY(0);
+}
+
+#footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  color: $soft-beige-background-opacity;
+
+  #{&}__hr {
+    position: absolute;
+    width: 99%;
+    height: 1px;
+    background: $warm-gray;
+    bottom: -10;
+  }
+}
