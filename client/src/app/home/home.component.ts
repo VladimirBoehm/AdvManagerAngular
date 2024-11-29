@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AdvertisementService } from '../_services/advertisement.service';
 import { NgIf } from '@angular/common';
@@ -10,11 +10,18 @@ import { MatRippleModule } from '@angular/material/core';
 import { EMPTY, switchMap } from 'rxjs';
 import { User } from '../_models/user';
 import { Localization } from '../_framework/component/helpers/localization';
+import { ImpressumComponent } from './impressum/impressum.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [SharedModule, RouterLink, NgIf, MatRippleModule],
+  imports: [
+    SharedModule,
+    RouterLink,
+    NgIf,
+    MatRippleModule,
+    ImpressumComponent,
+  ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
@@ -26,7 +33,11 @@ export class HomeComponent implements OnInit {
   advertisementsToValidateCount: number = 0;
   Localization = Localization;
 
+  isImpressumInfoShown = signal<boolean>(false);
+
   constructor() {
+    this.onImpressumClose = this.onImpressumClose.bind(this);
+
     this.accountService
       .login()
       .pipe(
@@ -56,5 +67,13 @@ export class HomeComponent implements OnInit {
       window.Telegram?.WebApp?.expand();
       window.Telegram?.WebApp?.BackButton?.hide();
     }
+  }
+
+  onImpressumClick() {
+    this.isImpressumInfoShown.set(true);
+  }
+
+  onImpressumClose() {
+    this.isImpressumInfoShown.set(false);
   }
 }

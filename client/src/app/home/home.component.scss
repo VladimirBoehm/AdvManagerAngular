@@ -1,12 +1,12 @@
 @import "../../theme.scss";
 
+body {
+  overflow: hidden;
+}
+
 #page-container {
   position: relative;
   min-height: 90vh;
-}
-
-#content-wrap {
-  padding-bottom: 2.5rem;    
 }
 
 #footer {
@@ -17,7 +17,7 @@
 }
 
 #footer::before {
-  content: '';
+  content: "";
   position: absolute;
   width: 100%;
   height: 1px;
@@ -46,4 +46,19 @@
   font-size: 36px;
 }
 
+.impressum-button {
+  cursor: pointer;
+}
 
+#impressumInfo {
+  position: absolute;
+  bottom: 0;
+  width: 99%;
+  z-index: 10;
+  transform: translateY(100%);
+  transition: all 0.5s ease-in-out;
+}
+
+#impressumInfo.isOpen {
+  transform: translateY(0);
+}

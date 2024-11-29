@@ -1,6 +1,6 @@
 <body class="p-1">
   @if(advertisement){
-  <div class="container-fluid px-0">
+  <div class="container-fluid">
     <!-- buttons: status NEW  -->
     <div
       *ngIf="advertisement.statusId === advertisementStatus.new"
@@ -174,8 +174,14 @@
     <!-- No Username error -->
     <div *ngIf="!accountService.currentUser()?.userName" class="mt-2">
       <div class="alert alert-warning text-center mb-0" role="alert">
-        <div class="text-center" [innerHTML]="Localization.getWord('username_not_specified')"></div>
-        <div class="text-center" [innerHTML]="Localization.getWord('update_profile_and_run_command')"></div>
+        <div
+          class="text-center"
+          [innerHTML]="Localization.getWord('username_not_specified')"
+        ></div>
+        <div
+          class="text-center"
+          [innerHTML]="Localization.getWord('update_profile_and_run_command')"
+        ></div>
       </div>
     </div>
 

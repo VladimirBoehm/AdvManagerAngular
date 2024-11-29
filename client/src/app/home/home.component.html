@@ -1,5 +1,5 @@
 <body class="px-1 py-1" id="page-container">
-  <div id="content-wrap" class="container-fluid px-0">
+  <div class="container-fluid">
     <div
       *ngIf="accountService.currentUser()?.isAdmin"
       class="button-container mb-1"
@@ -196,8 +196,14 @@
       </a>
     </div>
   </div>
+  <!-- [ngClass]="{ isOpen: isImpressumInfoShown() -->
+  <div id="impressumInfo" [ngClass]="{ isOpen: isImpressumInfoShown() }">
+    <app-impressum [onClose]="onImpressumClose"></app-impressum>
+  </div>
   <footer id="footer" class="d-flex justify-content-around">
-    <div class="my-info-text">Impressum</div>
+    <div class="my-info-text impressum-button" (click)="onImpressumClick()">
+      Impressum
+    </div>
     <div class="my-info-text">© 2024 All rights reserved</div>
   </footer>
 </body>
