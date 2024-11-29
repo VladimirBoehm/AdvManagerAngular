@@ -1,5 +1,29 @@
 @import "../../theme.scss";
 
+#page-container {
+  position: relative;
+  min-height: 90vh;
+}
+
+#content-wrap {
+  padding-bottom: 2.5rem;    
+}
+
+#footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  color: $soft-beige-background-opacity;
+}
+
+#footer::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  background: $warm-gray;
+}
+
 .button-card {
   cursor: pointer;
   background-color: $soft-beige-background-opacity;
@@ -21,4 +45,5 @@
   color: $very-dark-brown;
   font-size: 36px;
 }
+
 

@@ -1,5 +1,5 @@
-<body class="px-1 py-1">
-  <div class="container-fluid px-0">
+<body class="px-1 py-1" id="page-container">
+  <div id="content-wrap" class="container-fluid px-0">
     <div
       *ngIf="accountService.currentUser()?.isAdmin"
       class="button-container mb-1"
@@ -108,7 +108,7 @@
         </mat-card>
       </a>
     </div>
-    
+
     <div class="button-container mb-1">
       <a
         [routerLink]="['/adv-list', advListType.PendingPublication]"
@@ -196,4 +196,8 @@
       </a>
     </div>
   </div>
+  <footer id="footer" class="d-flex justify-content-around">
+    <div class="my-info-text">Impressum</div>
+    <div class="my-info-text">© 2024 All rights reserved</div>
+  </footer>
 </body>
