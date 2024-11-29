@@ -7,6 +7,7 @@ body {
 #page-container {
   position: relative;
   min-height: 90vh;
+  padding: 4px;
 }
 
 .button-card {
@@ -48,18 +49,19 @@ body {
   transform: translateY(0);
 }
 
-#footer {
+footer {
   position: absolute;
   bottom: 0;
   width: 100%;
   color: $soft-beige-background-opacity;
+}
 
-  #{&}__hr {
-    position: absolute;
-    width: 120%;
-    height: 1px;
-    background: $warm-gray;
-    bottom: -10;
-    transform: translateX(-2%); 
-  }
+.footer-hr {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 110%;
+  height: 1px;
+  background: $warm-gray;
 }
