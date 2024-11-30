@@ -30,7 +30,7 @@ export class HomeComponent implements OnInit {
   advertisementService = inject(AdvertisementService);
   busyService = inject(BusyService);
   accountService = inject(AccountService);
-  advertisementsToValidateCount: number = 0;
+  advertisementsToValidateCount = signal<number>(0);
   Localization = Localization;
 
   isImpressumInfoShown = signal<boolean>(false);
@@ -51,7 +51,7 @@ export class HomeComponent implements OnInit {
       )
       .subscribe({
         next: (result: number) => {
-          this.advertisementsToValidateCount = result;
+          this.advertisementsToValidateCount.set(result);
         },
         error: (err) => {
           console.error(
@@ -77,25 +77,4 @@ export class HomeComponent implements OnInit {
     this.isImpressumInfoShown.set(false);
   }
 
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      const file = input.files[0];
-      console.log('Selected file:', file);
-
-      // Пример отправки файла на сервер
-      this.uploadFile(file);
-    }
-  }
-
-  uploadFile(file: File) {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    // Отправка на сервер через HTTP
-    // Пример с Angular HttpClient:
-    // this.http.post('https://your-server-endpoint.com/upload', formData).subscribe(response => {
-    //   console.log('Upload success:', response);
-    // });
-  }
 }
