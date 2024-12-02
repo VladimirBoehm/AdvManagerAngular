@@ -116,10 +116,10 @@ export class AdvertisementService {
     const formData = new FormData();
     formData.append('advertisementJson', JSON.stringify(advertisement));
     if (advertisement.adImage && advertisement.adImage.url) {
-      const file = await this.advertisementHelper.getFileFromUrl(
-        advertisement.adImage.url
-      );
       try {
+        const file = await this.advertisementHelper.getFileFromUrl(
+          advertisement.adImage.url
+        );
         formData.append('file', file);
       } catch (error) {
         console.error('Error fetching or reconstructing file:', error);
