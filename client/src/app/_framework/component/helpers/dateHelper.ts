@@ -1,6 +1,10 @@
 export class DateHelper {
   static getLocalTime(dateString: Date | undefined): string {
-    const utcDateString = dateString + 'Z';
+    if (!dateString) {
+      return '';
+    }
+    const dateStr = dateString.toString();
+    const utcDateString = dateStr.endsWith('Z') ? dateStr : dateStr + 'Z';
     const utcDate = new Date(utcDateString);
 
     if (isNaN(utcDate.getTime())) {

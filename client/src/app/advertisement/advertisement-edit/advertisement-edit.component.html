@@ -81,7 +81,7 @@
                 *ngIf="!this.advertisement.adImage"
                 class="btn empty-button p-0 text-start"
                 type="button"
-                (click)="showImageSelector()"
+                (click)="triggerFileInput()"
                 [disabled]="busyService.isLoading()"
               >
                 <div class="d-flex flex-column align-items-start">
@@ -95,6 +95,13 @@
                     {{ Localization.getWord("image") }}
                   </div>
                 </div>
+                <input
+                  type="file"
+                  accept=".jpg,.jpeg,.png"
+                  #fileInput
+                  (change)="onFileSelected($event)"
+                  style="display: none"
+                />
               </button>
 
               <button
@@ -189,88 +196,7 @@
       </div>
     </div>
   </form>
-  <ng-template #imageSelectorDialog>
-    <div class="modal-body">
-      <div class="container d-flex justify-content-between align-items-center">
-        <h6 class="text-muted mt-2 mb-0">
-          {{ Localization.getWord("select_image") }}
-        </h6>
-        <div class="d-flex mt-2">
-          <button
-            type="button"
-            class="btn empty-button"
-            aria-label="Close"
-            [disabled]="!selectedImage"
-            (click)="selectImage()"
-          >
-            <span class="material-symbols-outlined text-muted">
-              check_circle
-            </span>
-            <div class="text-muted my-info-text">
-              {{ Localization.getWord("select") }}
-            </div>
-          </button>
-          <button
-            type="button"
-            class="btn empty-button ms-2"
-            (click)="modalRef?.hide()"
-          >
-            <span class="material-symbols-outlined text-muted"> close </span>
-            <div class="text-muted my-info-text">
-              {{ Localization.getWord("close") }}
-            </div>
-          </button>
-        </div>
-      </div>
-      <hr class="mt-2 mb-0" />
-      <div *ngIf="busyService.isLoading(); else imageListContent">
-        <app-skeleton-full-screen
-          [shouldShowHeaderPanel]="false"
-        ></app-skeleton-full-screen>
-      </div>
 
-      <ng-template #imageListContent>
-        <app-empty-list-placeholder
-          *ngIf="userImages.length === 0; else imageList"
-          [customContent]="emptyListInfo"
-        >
-          <ng-template #emptyListInfo>
-            <div class="d-flex flex-column align-items-center text-muted mb-3">
-              <div class="my-info-text" style="line-height: 1.5">
-                {{ Localization.getWord("no_uploaded_images") }}
-              </div>
-              <div
-                class="my-info-text"
-                style="line-height: 1.5"
-                [innerHTML]="Localization.getWord('upload_instruction_1')"
-              ></div>
-              <div
-                class="my-info-text"
-                style="line-height: 1.5"
-                [innerHTML]="Localization.getWord('upload_instruction_2')"
-              ></div>
-            </div>
-          </ng-template>
-        </app-empty-list-placeholder>
-        <ng-template #imageList>
-          <div class="modal-body">
-            <div *ngFor="let image of userImages; let first = first">
-              <img
-                [src]="image.url"
-                alt="image"
-                [ngClass]="{
-                  'mt-1': !first,
-                  'selected-image': selectedImage === image
-                }"
-                class="preview-image"
-                (click)="selectImageHandler(image)"
-              />
-            </div>
-          </div>
-        </ng-template>
-      </ng-template>
-    </div>
-  </ng-template>
   <ng-template #imageShowTemplate>
     <app-image-preview-modal
       [imageUrl]="this.advertisement.adImage?.url"

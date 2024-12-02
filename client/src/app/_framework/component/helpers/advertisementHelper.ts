@@ -12,4 +12,10 @@ export class AdvertisementHelper {
 
     return `${userName} ${firstName || lastName}`.trim();
   }
+
+ async getFileFromUrl(url: string): Promise<File> {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new File([blob], 'reconstructedFile');
+  }
 }

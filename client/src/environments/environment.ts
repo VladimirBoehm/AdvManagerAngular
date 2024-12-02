@@ -4,7 +4,7 @@ export const environment = {
 
 function determineApiUrl(): string {
   const hostname = window.location.hostname;
-  const developUrl = 'https://d3fdq3d5-7117.euw.devtunnels.ms/';
+  const developUrl = 'https://xcvsl3t2-7117.euw.devtunnels.ms/';
 
   if (hostname === 'gray-coast-0eea7ee03.5.azurestaticapps.net') {
     return 'https://chatcontrolwebapi.azurewebsites.net/';
