@@ -30,7 +30,7 @@ export class HomeComponent implements OnInit {
   advertisementService = inject(AdvertisementService);
   busyService = inject(BusyService);
   accountService = inject(AccountService);
-  advertisementsToValidateCount: number = 0;
+  advertisementsToValidateCount = signal<number>(0);
   Localization = Localization;
 
   isImpressumInfoShown = signal<boolean>(false);
@@ -51,7 +51,7 @@ export class HomeComponent implements OnInit {
       )
       .subscribe({
         next: (result: number) => {
-          this.advertisementsToValidateCount = result;
+          this.advertisementsToValidateCount.set(result);
         },
         error: (err) => {
           console.error(
@@ -76,4 +76,5 @@ export class HomeComponent implements OnInit {
   onImpressumClose() {
     this.isImpressumInfoShown.set(false);
   }
+
 }

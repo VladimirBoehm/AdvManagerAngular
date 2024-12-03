@@ -14,11 +14,13 @@ import { ManagePublish } from '../_models/managePublish';
 import { SortOption } from '../_models/sortOption';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
 import { DEFAULT_SORT_OPTION } from '../_framework/constants/defaultSortOption';
+import { AdvertisementHelper } from '../_framework/component/helpers/advertisementHelper';
 @Injectable({
   providedIn: 'root',
 })
 export class AdvertisementService {
   private http = inject(HttpClient);
+  private advertisementHelper = inject(AdvertisementHelper);
   private baseUrl = environment.apiUrl;
   private advertisementCacheService = inject(AdvertisementCacheService);
   private dateHelper = DateHelper;
@@ -110,9 +112,22 @@ export class AdvertisementService {
     return this.selectedAdvListType;
   }
 
-  save(advertisement: Advertisement): Observable<Advertisement> {
+  async save(advertisement: Advertisement): Promise<Observable<Advertisement>> {
+    const formData = new FormData();
+    formData.append('advertisementJson', JSON.stringify(advertisement));
+    if (advertisement.adImage && advertisement.adImage.url) {
+      try {
+        const file = await this.advertisementHelper.getFileFromUrl(
+          advertisement.adImage.url
+        );
+        formData.append('file', file);
+      } catch (error) {
+        console.error('Error fetching or reconstructing file:', error);
+      }
+    }
+
     return this.http
-      .post<Advertisement>(this.baseUrl + 'advertisement/save', advertisement)
+      .post<Advertisement>(this.baseUrl + 'advertisement/save', formData)
       .pipe(
         tap((savedAdvertisement: Advertisement) => {
           savedAdvertisement.updated = this.dateHelper.getUTCTime();
@@ -122,17 +137,36 @@ export class AdvertisementService {
       );
   }
 
-  update(advertisement: Advertisement) {
+  async update(advertisement: Advertisement) {
+    const formData = new FormData();
+    formData.append('advertisementJson', JSON.stringify(advertisement));
+
+    if (
+      advertisement.adImage &&
+      advertisement.adImage.id === 0 &&
+      advertisement.adImage.url
+    ) {
+      try {
+        const file = await this.advertisementHelper.getFileFromUrl(
+          advertisement.adImage.url
+        );
+        formData.append('file', file);
+      } catch (error) {
+        console.error('Error fetching or reconstructing file:', error);
+      }
+    }
     return this.http
-      .put<Advertisement>(this.baseUrl + 'advertisement', advertisement)
+      .put<Advertisement>(this.baseUrl + 'advertisement', formData)
       .pipe(
-        tap(() => {
-          advertisement.updated = this.dateHelper.getUTCTime();
-          this.advertisementCacheService.updateInAllCaches(advertisement);
+        tap((updatedAdvertisement: Advertisement) => {
+          console.log(updatedAdvertisement);
+          this.advertisementCacheService.updateInAllCaches(
+            updatedAdvertisement
+          );
         })
       );
   }
-  // return this.http.get<Advertisement>(this.baseUrl + `advertisement/${id}`);
+
   sendToValidation(advertisement: Advertisement) {
     return this.http
       .post<UpdateAdvertisementStatusRequest>(

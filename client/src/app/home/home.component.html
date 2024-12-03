@@ -1,4 +1,4 @@
-<body class="px-1 py-1" id="page-container">
+<body id="page-container">
   <div class="container-fluid">
     <div
       *ngIf="accountService.currentUser()?.isAdmin"
@@ -32,10 +32,10 @@
 
                 <ng-template #counterTemplate>
                   <div
-                    *ngIf="advertisementsToValidateCount > 0"
+                    *ngIf="advertisementsToValidateCount() > 0"
                     class="text-muted"
                   >
-                    {{ advertisementsToValidateCount }}
+                    {{ advertisementsToValidateCount() }}
                   </div>
                 </ng-template>
                 <span class="material-symbols-outlined text-muted">
@@ -201,8 +201,8 @@
     <app-impressum [onClose]="onImpressumClose"></app-impressum>
   </div>
 
-  <footer id="footer" class="d-flex flex-column">
-    <div id="footer__hr"></div>
+  <div class="footer-hr"></div>
+  <footer class="d-flex flex-column">
     <div class="d-flex justify-content-around">
       <div class="my-info-text impressum-button" (click)="onImpressumClick()">
         Impressum

@@ -4,10 +4,9 @@ import { ToastrService } from 'ngx-toastr';
 import { catchError } from 'rxjs';
 import { Localization } from '../_framework/component/helpers/localization';
 
-
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const toastr = inject(ToastrService);
- 
+
   return next(req).pipe(
     catchError((error) => {
       if (error) {
@@ -26,7 +25,10 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
             }
             break;
           case 401:
-            toastr.error(Localization.getWord('authorization_error'), error.status);
+            toastr.error(
+              Localization.getWord('authorization_error'),
+              error.status
+            );
             break;
           case 404:
             toastr.error(Localization.getWord('page_not_found'));

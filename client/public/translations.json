@@ -283,7 +283,6 @@
     "ru": "Отменить",
     "en": "Cancel"
   },
-
   "updated_label": {
     "ru": "Обновлён:",
     "en": "Updated:"
@@ -548,5 +547,13 @@
   "send_message_question": {
     "ru": "Отправить сообщение?",
     "en": "Send message?"
+  },
+  "invalid_file_type": {
+    "ru": "Неверный тип файла. Пожалуйста, выберите тип файла .jpg, .jpeg или .png.",
+    "en": "Invalid file type. Please select a .jpg, .jpeg, or .png file type."
+  },
+  "file_too_large": {
+    "ru": "Файл слишком большой. Максимально допустимый размер - {size} МБ.",
+    "en": "File is too large. Maximum size allowed is {size} MB."
   }
 }
