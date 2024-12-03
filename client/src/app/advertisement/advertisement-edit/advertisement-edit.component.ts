@@ -197,9 +197,11 @@ export class AdvertisementEditComponent implements OnInit {
         );
         return;
       }
+
       const adImage = {
         id: 0,
         userId: this.accountService.currentUser()?.userId ?? 0,
+        file: input.files[0],
         url: URL.createObjectURL(input.files[0]),
       } as AdImage;
 
