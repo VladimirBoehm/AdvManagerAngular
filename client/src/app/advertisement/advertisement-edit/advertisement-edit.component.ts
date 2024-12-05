@@ -208,7 +208,7 @@ export class AdvertisementEditComponent implements OnInit {
       const clonedAdvertisement = _.cloneDeep(this.advertisement);
       if (clonedAdvertisement) {
         clonedAdvertisement.adImage = adImage;
-        this.advertisement = clonedAdvertisement
+        this.advertisement = clonedAdvertisement;
       }
     }
   }
@@ -222,7 +222,9 @@ export class AdvertisementEditComponent implements OnInit {
   deleteImage() {
     const clonedAdvertisement = _.cloneDeep(this.advertisement);
     if (clonedAdvertisement) {
-      this.advertisement = _.set(clonedAdvertisement, 'adImage', undefined);
+      clonedAdvertisement.adImageId = undefined;
+      clonedAdvertisement.adImage = undefined;
+      this.advertisement = clonedAdvertisement;
     }
   }
 
