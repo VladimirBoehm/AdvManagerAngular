@@ -207,7 +207,8 @@ export class AdvertisementEditComponent implements OnInit {
 
       const clonedAdvertisement = _.cloneDeep(this.advertisement);
       if (clonedAdvertisement) {
-        this.advertisement = _.set(clonedAdvertisement, 'adImage', adImage);
+        clonedAdvertisement.adImage = adImage;
+        this.advertisement = clonedAdvertisement
       }
     }
   }
