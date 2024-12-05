@@ -8,3 +8,8 @@
 .main-info-edit {
   margin-top: $margin-list-from-top-buttons;
 }
+
+input[type="file"] {
+  position: absolute;
+  left: -9999px;
+}
