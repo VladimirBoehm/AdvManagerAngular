@@ -246,4 +246,8 @@ export class AdvertisementEditComponent implements OnInit {
     }
     this.modalRef?.hide();
   }
+
+  get altText(): string {
+    return Localization.getWord('image');
+  }
 }
