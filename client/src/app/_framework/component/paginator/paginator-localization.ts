@@ -15,7 +15,7 @@ import { Localization } from '../helpers/localization';
 
 @Injectable()
 export class MyPaginatorLocalization implements MatPaginatorIntl {
-  changes = new Subject<void>();
+  changes = new Subject<void>(); // TODO Signal
 
   nextPageLabel = Localization.getWord('next_page_label');
   previousPageLabel = Localization.getWord('previous_page_label');

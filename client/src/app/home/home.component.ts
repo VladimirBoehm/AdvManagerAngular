@@ -1,12 +1,10 @@
-import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AdvertisementService } from '../_services/advertisement.service';
-import { NgIf } from '@angular/common';
 import { AdvListType } from '../_framework/constants/advListType';
 import { SharedModule } from '../_framework/modules/sharedModule';
 import { BusyService } from '../_services/busy.service';
 import { AccountService } from '../_services/account.service';
-import { MatRippleModule } from '@angular/material/core';
 import { EMPTY, switchMap } from 'rxjs';
 import { User } from '../_models/user';
 import { Localization } from '../_framework/component/helpers/localization';
@@ -18,8 +16,6 @@ import { ImpressumComponent } from './impressum/impressum.component';
   imports: [
     SharedModule,
     RouterLink,
-    NgIf,
-    MatRippleModule,
     ImpressumComponent,
   ],
   templateUrl: './home.component.html',

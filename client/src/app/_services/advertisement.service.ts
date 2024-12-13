@@ -14,13 +14,11 @@ import { ManagePublish } from '../_models/managePublish';
 import { SortOption } from '../_models/sortOption';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
 import { DEFAULT_SORT_OPTION } from '../_framework/constants/defaultSortOption';
-import { AdvertisementHelper } from '../_framework/component/helpers/advertisementHelper';
 @Injectable({
   providedIn: 'root',
 })
 export class AdvertisementService {
   private http = inject(HttpClient);
-  private advertisementHelper = inject(AdvertisementHelper);
   private baseUrl = environment.apiUrl;
   private advertisementCacheService = inject(AdvertisementCacheService);
   private dateHelper = DateHelper;
@@ -127,8 +125,6 @@ export class AdvertisementService {
       .post<Advertisement>(this.baseUrl + 'advertisement/save', formData)
       .pipe(
         tap((savedAdvertisement: Advertisement) => {
-          savedAdvertisement.updated = this.dateHelper.getUTCTime();
-          savedAdvertisement.created = this.dateHelper.getUTCTime();
           this.advertisementCacheService.add(savedAdvertisement);
         })
       );
