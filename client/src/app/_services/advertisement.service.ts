@@ -17,6 +17,10 @@ import { DEFAULT_SORT_OPTION } from '../_framework/constants/defaultSortOption';
 @Injectable({
   providedIn: 'root',
 })
+
+//#loadingSignal = signal(false)
+//loading  = this.#loadingSignal.asReadOnly();
+
 export class AdvertisementService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;

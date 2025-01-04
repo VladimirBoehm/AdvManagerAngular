@@ -9,8 +9,9 @@ import { AdvertisementEditComponent } from './advertisement/advertisement-edit/a
 import { ChatFilterComponent } from './chat-filter/chat-filter.component';
 import { FeedbackComponent } from './feedback/feedback.component';
 
+//TODO Authguard isAdmin
 export const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
   { path: 'test', component: TestComponent },
   { path: 'adv-list/:state', component: AdvListComponent },
