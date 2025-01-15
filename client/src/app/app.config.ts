@@ -3,6 +3,7 @@ import {
   importProvidersFrom,
   provideZoneChangeDetection,
   isDevMode,
+  APP_INITIALIZER,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideToastr } from 'ngx-toastr';
@@ -16,41 +17,83 @@ import { errorInterceptor } from './_interceptors/error.interceptor';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideStore } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
-import { provideRouterStore } from '@ngrx/router-store';
-import { RouterState } from '@ngrx/router-store';
 import { metaReducers, reducers } from './reducers';
-import {provideEntityData, withEffects} from '@ngrx/data';
-import { entityConfig } from './entity-metadata';
+import { TestResolver } from './ngrx-test/test.resolver';
+import {
+  EntityDataModuleConfig,
+  EntityDataService,
+  EntityMetadataMap,
+  provideEntityData,
+  withEffects,
+} from '@ngrx/data';
+import { TestEntityService } from './ngrx-test/services/test-entity.service';
+import { TestDataService } from './ngrx-test/services/test-data.service';
+
+//New
+const entityMetadata: EntityMetadataMap = {
+  NgRxTestEntity: {},
+};
+//New
+export const entityConfig: EntityDataModuleConfig = {
+  entityMetadata,
+};
+
+export function registerTestDataService(
+  entityDataService: EntityDataService,
+  testDataService: TestDataService
+): () => Promise<void> {
+  return () =>
+    new Promise<void>((resolve) => {
+      console.log('>>> registerTestDataService() called');
+      entityDataService.registerService('NgRxTestEntity', testDataService);
+      resolve(); 
+    });
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
+    TestDataService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: registerTestDataService,
+      deps: [EntityDataService, TestDataService],
+      multi: true,
+    },
     provideRouter(routes),
-    provideHttpClient(withInterceptors([
+    provideEntityData(entityConfig, withEffects()),
+
+    //TestResolver,
+    TestEntityService,
+    provideZoneChangeDetection({ eventCoalescing: true }),
+
+    provideHttpClient(
+      withInterceptors([
         errorInterceptor,
         telegramInitDataInterceptor,
         loadingInterceptor,
-    ])),
+      ])
+    ),
     provideAnimationsAsync(),
     provideAnimations(),
     provideToastr({
-        positionClass: 'toast-top-full-width',
+      positionClass: 'toast-top-full-width',
     }),
     importProvidersFrom(ModalModule.forRoot()),
     provideStore(reducers, {
-        metaReducers,
-        runtimeChecks: {
-            strictStateImmutability: true,
-            strictActionImmutability: true,
-            strictActionSerializability: true,
-            strictStateSerializability: true,
-        },
+      metaReducers,
+      runtimeChecks: {
+        strictStateImmutability: true,
+        strictActionImmutability: true,
+        strictActionSerializability: true,
+        strictStateSerializability: true,
+      },
     }),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
-    provideRouterStore({
-        stateKey: 'router',
-        routerState: RouterState.Minimal,
-    }),
-    provideEntityData(entityConfig, withEffects())
-],
+    //New
+
+    // provideRouterStore({
+    //   stateKey: 'router',
+    //   routerState: RouterState.Full,
+    // }),
+  ],
 };

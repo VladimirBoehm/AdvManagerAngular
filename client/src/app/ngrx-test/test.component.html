@@ -1,0 +1,12 @@
+<div class="testClass">
+  @if (tests$ | async) { @for (test of (tests$ | async); track test.id) {
+  <p>{{ test.value }}</p>
+  } } @else {
+  <div>
+    <p>No data available</p>
+  </div>
+  }
+  <button class="btn empty-button" (click)="edit()">
+    <div class="text-muted">Update</div>
+  </button>
+</div>
