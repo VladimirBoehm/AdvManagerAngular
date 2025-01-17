@@ -1,5 +1,6 @@
 <div class="testClass">
-  @if (tests$ | async) { @for (test of (tests$ | async); track test.id) {
+  @if (store.ngRxTestEntities()) { @for (test of (store.ngRxTestEntities());
+  track test.id) {
   <p>{{ test.value }}</p>
   } } @else {
   <div>

@@ -8,7 +8,6 @@ import { AdvertisementPreviewComponent } from './advertisement/advertisement-pre
 import { AdvertisementEditComponent } from './advertisement/advertisement-edit/advertisement-edit.component';
 import { ChatFilterComponent } from './chat-filter/chat-filter.component';
 import { FeedbackComponent } from './feedback/feedback.component';
-import { TestResolver } from './ngrx-test/test.resolver';
 
 //TODO Authguard isAdmin
 export const routes: Routes = [
