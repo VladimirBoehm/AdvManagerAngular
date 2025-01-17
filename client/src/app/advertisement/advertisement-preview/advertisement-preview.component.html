@@ -172,7 +172,7 @@
     </div>
 
     <!-- No Username error -->
-    <div *ngIf="!accountService.currentUser()?.userName" class="mt-2">
+    <div *ngIf="!appStore.user()?.userName" class="mt-2">
       <div class="alert alert-warning text-center mb-0" role="alert">
         <div
           class="text-center"
@@ -215,8 +215,8 @@
       *ngIf="
         advertisement.adminMessage &&
         advertisement.adminMessage.length &&
-        (accountService.currentUser()?.isAdmin ||
-          accountService.currentUser()?.userId === advertisement.userId)
+        (appStore.user()?.isAdmin ||
+        appStore.user()?.userId === advertisement.userId)
       "
       class="input-group mt-2 pb-4"
     >

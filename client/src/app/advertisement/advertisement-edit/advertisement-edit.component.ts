@@ -26,6 +26,7 @@ import { BusyService } from '../../_services/busy.service';
 import { Localization } from '../../_framework/component/helpers/localization';
 import _ from 'lodash';
 import { ToastrService } from 'ngx-toastr';
+import { AppStore } from '../../app.store';
 
 @Component({
   selector: 'app-advertisement-edit',
@@ -54,7 +55,7 @@ export class AdvertisementEditComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private toastr = inject(ToastrService);
-
+  readonly appStore = inject(AppStore);
   matErrorService = inject(MatErrorService);
   busyService = inject(BusyService);
 
@@ -92,7 +93,7 @@ export class AdvertisementEditComponent implements OnInit {
       } else {
         this.advertisement = {
           id: 0,
-          userId: this.accountService.currentUser()?.userId ?? 0,
+          userId: this.appStore.user()?.userId ?? 0,
           title: '',
           message: '',
           statusId: 0,
@@ -200,7 +201,7 @@ export class AdvertisementEditComponent implements OnInit {
 
       const adImage = {
         id: 0,
-        userId: this.accountService.currentUser()?.userId ?? 0,
+        userId: this.appStore.user()?.userId ?? 0,
         file: input.files[0],
         url: URL.createObjectURL(input.files[0]),
       } as AdImage;

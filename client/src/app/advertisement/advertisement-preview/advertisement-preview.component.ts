@@ -16,6 +16,7 @@ import { SharedModule } from '../../_framework/modules/sharedModule';
 import { AdvertisementMainDataComponent } from '../advertisement-main-data/advertisement-main-data.component';
 import { BusyService } from '../../_services/busy.service';
 import { Localization } from '../../_framework/component/helpers/localization';
+import { AppStore } from '../../app.store';
 
 @Component({
   selector: 'app-advertisement-preview',
@@ -43,7 +44,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   confirmationService = inject(ConfirmationMatDialogService);
   advertisementService = inject(AdvertisementService);
   busyService = inject(BusyService);
-
+  readonly appStore = inject(AppStore);
   advertisementStatus = AdvertisementStatus;
   advListType = AdvListType;
   dateHelper = DateHelper;
@@ -69,8 +70,8 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
 
   shouldShowCancelButton(): boolean {
     return (
-      this.accountService.currentUser()?.isAdmin ||
-      this.accountService.currentUser()?.userId === this.advertisement?.userId
+      this.appStore.user()?.isAdmin ||
+      this.appStore.user()?.userId === this.advertisement?.userId
     );
   }
 
@@ -235,7 +236,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   cancelPublicationDialogShow() {
     console.log(this.advertisementService.getActualSearchType());
     if (
-      this.accountService.currentUser()?.userId === this.advertisement?.userId
+      this.appStore.user()?.userId === this.advertisement?.userId
     ) {
       this.confirmationService
         .confirmDialog({
@@ -250,7 +251,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
         });
       return;
     } else if (
-      this.accountService.currentUser()?.isAdmin &&
+      this.appStore.user()?.isAdmin &&
       this.advertisementService.getActualSearchType() ===
         AdvListType.PendingPublication
     )
@@ -311,7 +312,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
 
   shouldShowForceButton(): boolean {
     let result =
-      this.accountService.currentUser()?.isAdmin &&
+      this.appStore.user()?.isAdmin &&
       this.advertisementService.getActualSearchType() ===
         this.advListType.PendingPublication;
     if (result) return result;

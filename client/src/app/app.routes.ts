@@ -8,8 +8,9 @@ import { AdvertisementEditComponent } from './advertisement/advertisement-edit/a
 import { ChatFilterComponent } from './chat-filter/chat-filter.component';
 import { FeedbackComponent } from './feedback/feedback.component';
 import { HomeResolver } from './_resolvers/home.resolver';
+import { ChatFilterResolver } from './_resolvers/chatFilter.resolver';
 
-//TODO Authguard isAdmin
+//TODO Authguard isAdmin ChatFilterREsolver
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent, resolve: { home: HomeResolver } },
@@ -32,7 +33,7 @@ export const routes: Routes = [
   },
   {
     path: 'app-chat-filter',
-    component: ChatFilterComponent,
+    component: ChatFilterComponent, resolve: { chatFilter: ChatFilterResolver }
   },
   {
     path: 'app-feedback',

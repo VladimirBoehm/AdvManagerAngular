@@ -114,6 +114,38 @@ export class ChatFilterService {
     }
   }
 
+  getAll2(sortOption?: SortOption) {
+    return this.http.get<ChatFilter[]>(this.baseUrl + 'chatFilter', {});
+    //this.updatePaginationParams(undefined, 0, sortOption);
+
+    // if (!this.isLoaded()) {
+    //   this.http.get<ChatFilter[]>(this.baseUrl + 'chatFilter', {}).subscribe({
+    //     next: (result) => {
+    //       console.log('Loaded from DB');
+
+    //      // this.chatFiltersSubject.next(result);
+
+    //       const chatFiltersWithDates = result.map((cf) => ({
+    //         ...cf,
+    //         created: new Date(cf.created),
+    //       }));
+    //       this.chatFilterCacheService.setCache(chatFiltersWithDates);
+    //       this.chatFiltersSubject.next(chatFiltersWithDates);
+    //      // this.isLoaded.set(true);
+    //     },
+    //     error: (err) => {
+    //       console.error('Error when loading chatFilters:', err);
+    //     },
+    //   });
+    // } else {
+    //   const cache = this.chatFilterCacheService.getCache(
+    //     this.paginationParams()
+    //   );
+    //   if (cache) this.chatFiltersSubject.next(cache);
+    //   console.log('Cache taken');
+    // }
+  } 
+
   delete(id: number) {
     this.chatFilterCacheService.deleteItem(id);
     const cache = this.chatFilterCacheService.getCache(this.paginationParams());

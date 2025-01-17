@@ -17,8 +17,7 @@
           <button
             class="btn empty-button"
             [disabled]="
-              (chatFilterService.chatFilters$ | async)!.length >
-                maxItemNumber || !chatFilterService.isLoaded()
+              (chatFilterService.chatFilters$ | async)!.length > maxItemNumber
             "
             (click)="showAddDialog()"
           >
@@ -37,14 +36,13 @@
       </div>
     </div>
 
-    @if(chatFilterService.isLoaded()){
+    @if(!busyService.isLoading()){
     <div class="list-container">
       <mat-list>
         <div class="text-center text-muted mb-1">
           {{ Localization.getWord("chat_filter_title") }}
         </div>
-        @for (item of this.chatFilterService.chatFilters$ | async; track
-        item.id) {
+        @for (item of appStore.chatFilterEntities(); track item.id) {
 
         <div class="d-flex align-items-center">
           <mat-list-item class="flex-grow-1">

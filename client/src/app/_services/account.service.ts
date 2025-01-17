@@ -9,15 +9,10 @@ import { Observable, shareReplay, tap } from 'rxjs';
 export class AccountService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
-  currentUser = signal<User | null>(null);
+
 
   login(): Observable<User> {
     return this.http.get<User>(this.baseUrl + 'account/getLoginData').pipe(
-      tap({
-        next: (user: User) => {
-          this.currentUser.set(user);
-        }
-      }),
       shareReplay()
     );
   }

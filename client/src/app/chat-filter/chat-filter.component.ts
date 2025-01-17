@@ -15,6 +15,7 @@ import { DateHelper } from '../_framework/component/helpers/dateHelper';
 import { Subscription } from 'rxjs';
 import { SkeletonFullScreenComponent } from '../_framework/component/skeleton-full-screen/skeleton-full-screen.component';
 import { Localization } from '../_framework/component/helpers/localization';
+import { AppStore } from '../app.store';
 
 @Component({
   selector: 'app-chat-filter',
@@ -37,6 +38,7 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private formBuilder = inject(FormBuilder);
   private routerSubscription!: Subscription;
+  readonly appStore = inject(AppStore);
   busyService = inject(BusyService);
   chatFilterService = inject(ChatFilterService);
   matErrorService = inject(MatErrorService);
@@ -64,7 +66,7 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
       this.router.navigate(['']);
     });
 
-    this.chatFilterService.getAll();
+    //this.chatFilterService.getAll();
   }
 
   initializeForm() {
@@ -125,7 +127,6 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
   sortChanged($event: SortOption) {
     this.chatFilterService.getAll($event);
   }
-
 
   ngOnDestroy(): void {
     this.backButtonService.removeCloseDialogHandler();
