@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
-import { TestComponent } from './test/test.component';
 import { AdvListComponent } from './adv-list/adv-list.component';
 import { AdvertisementMainDataComponent } from './advertisement/advertisement-main-data/advertisement-main-data.component';
 import { AdvertisementValidateComponent } from './advertisement/advertisement-validate/advertisement-validate.component';
@@ -13,7 +12,6 @@ import { FeedbackComponent } from './feedback/feedback.component';
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
-  { path: 'test', component: TestComponent },
   { path: 'adv-list/:state', component: AdvListComponent },
   {
     path: 'app-advertisement-main-data',
