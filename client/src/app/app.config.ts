@@ -14,13 +14,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { loadingInterceptor } from './_interceptors/loading.interceptor';
 import { errorInterceptor } from './_interceptors/error.interceptor';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideStore } from '@ngrx/store';
-import { provideStoreDevtools } from '@ngrx/store-devtools';
-import { provideRouterStore } from '@ngrx/router-store';
-import { RouterState } from '@ngrx/router-store';
-import { metaReducers, reducers } from './reducers';
-import {provideEntityData, withEffects} from '@ngrx/data';
-import { entityConfig } from './entity-metadata';
+
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -37,20 +31,5 @@ export const appConfig: ApplicationConfig = {
         positionClass: 'toast-top-full-width',
     }),
     importProvidersFrom(ModalModule.forRoot()),
-    provideStore(reducers, {
-        metaReducers,
-        runtimeChecks: {
-            strictStateImmutability: true,
-            strictActionImmutability: true,
-            strictActionSerializability: true,
-            strictStateSerializability: true,
-        },
-    }),
-    provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
-    provideRouterStore({
-        stateKey: 'router',
-        routerState: RouterState.Minimal,
-    }),
-    provideEntityData(entityConfig, withEffects())
 ],
 };
