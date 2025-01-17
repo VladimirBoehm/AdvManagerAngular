@@ -424,13 +424,6 @@ export class AdvertisementService {
       .get<number>(
         this.baseUrl + 'advertisementAdmin/getPendingAdvertisementsCount'
       )
-      .pipe(
-        tap((result) => {
-          this.advertisementCacheService.resetPendingAdvertisementsCache(
-            result
-          );
-        })
-      );
   }
 
   validateAdvertisementAdmin(

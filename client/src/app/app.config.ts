@@ -14,22 +14,24 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { loadingInterceptor } from './_interceptors/loading.interceptor';
 import { errorInterceptor } from './_interceptors/error.interceptor';
 import { provideAnimations } from '@angular/platform-browser/animations';
-
+import { AppStore } from './app.store';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([
+    provideHttpClient(
+      withInterceptors([
         errorInterceptor,
         telegramInitDataInterceptor,
         loadingInterceptor,
-    ])),
+      ])
+    ),
     provideAnimationsAsync(),
     provideAnimations(),
     provideToastr({
-        positionClass: 'toast-top-full-width',
+      positionClass: 'toast-top-full-width',
     }),
     importProvidersFrom(ModalModule.forRoot()),
-],
+  ],
 };

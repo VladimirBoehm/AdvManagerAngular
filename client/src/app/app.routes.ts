@@ -7,11 +7,12 @@ import { AdvertisementPreviewComponent } from './advertisement/advertisement-pre
 import { AdvertisementEditComponent } from './advertisement/advertisement-edit/advertisement-edit.component';
 import { ChatFilterComponent } from './chat-filter/chat-filter.component';
 import { FeedbackComponent } from './feedback/feedback.component';
+import { HomeResolver } from './_resolvers/home.resolver';
 
 //TODO Authguard isAdmin
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: 'home', component: HomeComponent },
+  { path: 'home', component: HomeComponent, resolve: { home: HomeResolver } },
   { path: 'adv-list/:state', component: AdvListComponent },
   {
     path: 'app-advertisement-main-data',
