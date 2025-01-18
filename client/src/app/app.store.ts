@@ -31,6 +31,7 @@ type appState = {
   user: User | null;
   pendingValidationAdvertisementsCount: number;
   chatFilterPaginationParams: PaginationParams;
+  areChatFiltersLoaded: boolean;
 };
 function getDefaultSortOptions(): SortOption {
   return {
@@ -48,6 +49,7 @@ const initialState: appState = {
     pageSize: 999,
     sortOption: getDefaultSortOptions(),
   },
+  areChatFiltersLoaded: false,
 };
 export function withLogger(name: string) {
   return signalStoreFeature(
@@ -95,17 +97,21 @@ export const AppStore = signalStore(
       filteredList.sort((a, b) => {
         let compareResult = 0;
         if (chatFilterPaginationParams().sortOption.field === 'date') {
-          compareResult = new Date(a.created).getTime() - new Date(b.created).getTime(); 
+          compareResult =
+            new Date(a.created).getTime() - new Date(b.created).getTime();
         } else if (chatFilterPaginationParams().sortOption.field === 'title') {
           compareResult = a.value.localeCompare(b.value);
         }
-        return chatFilterPaginationParams().sortOption.order === 'asc' ? compareResult : -compareResult;
+        return chatFilterPaginationParams().sortOption.order === 'asc'
+          ? compareResult
+          : -compareResult;
       });
-  
-      const startIndex = chatFilterPaginationParams().pageNumber  * chatFilterPaginationParams().pageSize;
+
+      const startIndex =
+        chatFilterPaginationParams().pageNumber *
+        chatFilterPaginationParams().pageSize;
       const endIndex = startIndex + chatFilterPaginationParams().pageSize;
       return filteredList.slice(startIndex, endIndex);
-
     }),
   })),
   withMethods(
@@ -136,7 +142,7 @@ export const AppStore = signalStore(
         }
       },
       async loadChatFilters() {
-        if (store.chatFilterEntities().length === 0) {
+        if (store.areChatFiltersLoaded() === false) {
           const chatFilters = await lastValueFrom(chatFilterService.getAll());
           const chatFiltersWithDates = chatFilters.map((cf) => ({
             ...cf,
@@ -146,6 +152,7 @@ export const AppStore = signalStore(
             store,
             addEntities(chatFiltersWithDates, chatFilterConfig)
           );
+          patchState(store, { areChatFiltersLoaded: true });
           console.log('>>> AppStore: chatFilters loaded');
         }
       },

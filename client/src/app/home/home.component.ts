@@ -7,11 +7,17 @@ import { BusyService } from '../_services/busy.service';
 import { Localization } from '../_framework/component/helpers/localization';
 import { ImpressumComponent } from './impressum/impressum.component';
 import { AppStore } from '../app.store';
+import { ThreeDotsLoadingComponent } from '../_framework/component/custom-loading-bar/three-dots-loading.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [SharedModule, RouterLink, ImpressumComponent],
+  imports: [
+    SharedModule,
+    RouterLink,
+    ImpressumComponent,
+    ThreeDotsLoadingComponent,
+  ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
