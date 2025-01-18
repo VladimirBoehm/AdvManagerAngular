@@ -6,7 +6,7 @@
           *ngIf="sortForm.get('selectedSearchType')?.value === 'date'"
           class="scaled-form-field"
         >
-          <mat-label>{{ Localization.getWord('range') }}</mat-label>
+          <mat-label>{{ Localization.getWord("range") }}</mat-label>
           <mat-date-range-input
             [rangePicker]="picker"
             formGroupName="dateRange"
@@ -33,43 +33,61 @@
             *ngIf="sortForm.controls['searchValue'].errors"
             class="text-danger my-info-text"
           >
-            {{ Localization.getFormattedWord('maximum_characters', { maxLength: sortForm.controls['searchValue'].errors['maxlength'].requiredLength }) }}
+            {{
+              Localization.getFormattedWord("maximum_characters", {
+                maxLength:
+                  sortForm.controls["searchValue"].errors["maxlength"]
+                    .requiredLength
+              })
+            }}
           </div>
         </div>
       </div>
       <select class="form-select ms-1" formControlName="selectedSearchType">
-        <option value="date">{{ Localization.getWord('by_date') }}</option>
-        <option value="title">{{ Localization.getWord('by_title') }}</option>
+        <option value="date">{{ Localization.getWord("by_date") }}</option>
+        <option value="title">{{ Localization.getWord("by_title") }}</option>
         <option [hidden]="!data.isAdvertisementList" value="content">
-          {{ Localization.getWord('by_content') }}
+          {{ Localization.getWord("by_content") }}
         </option>
         <option [hidden]="!data.isAdvertisementList" value="username">
-          {{ Localization.getWord('by_username') }}
+          {{ Localization.getWord("by_username") }}
         </option>
         <option [hidden]="!data.isAdvertisementList" value="name">
-          {{ Localization.getWord('by_name') }}
+          {{ Localization.getWord("by_name") }}
         </option>
       </select>
     </div>
 
-    <h6 class="text-muted">{{ Localization.getWord('sort') }}</h6>
+    <h6 class="text-muted">{{ Localization.getWord("sort") }}</h6>
     <section class="d-flex flex-column">
       <mat-radio-group formControlName="selectedSortType">
         <mat-radio-button value="date" class="d-block">
           <div class="d-flex align-items-center">
-            <span class="input-group-text me-1 sortName">{{ Localization.getWord('sort_by_date') }}</span>
+            <span class="input-group-text me-1 sortName">{{
+              Localization.getWord("sort_by_date")
+            }}</span>
             <select class="form-select" formControlName="selectedSortDate">
-              <option value="asc">{{ Localization.getWord('ascending') }}</option>
-              <option value="desc">{{ Localization.getWord('descending') }}</option>
+              <option value="asc">
+                {{ Localization.getWord("ascending") }}
+              </option>
+              <option value="desc">
+                {{ Localization.getWord("descending") }}
+              </option>
             </select>
           </div>
         </mat-radio-button>
         <mat-radio-button value="title" class="mt-1 d-block">
           <div class="d-flex align-items-center">
-            <span class="input-group-text me-1 sortName">{{ Localization.getWord('sort_by_title') }}</span>
+            <span class="input-group-text me-1 sortName">{{
+              Localization.getWord("sort_by_title")
+            }}</span>
             <select class="form-select" formControlName="selectedSortTitle">
-              <option value="asc">{{ Localization.getWord('ascending') }}</option>
-              <option value="desc">{{ Localization.getWord('descending') }}</option>
+              <option value="asc">
+                {{ Localization.getWord("ascending") }}
+              </option>
+              <option value="desc">
+                {{ Localization.getWord("descending") }}
+              </option>
             </select>
           </div>
         </mat-radio-button>
@@ -79,10 +97,16 @@
           class="mt-1 d-block"
         >
           <div class="d-flex align-items-center">
-            <span class="input-group-text me-1 sortName">{{ Localization.getWord('sort_by_username') }}</span>
+            <span class="input-group-text me-1 sortName">{{
+              Localization.getWord("sort_by_username")
+            }}</span>
             <select class="form-select" formControlName="selectedSortUsername">
-              <option value="asc">{{ Localization.getWord('ascending') }}</option>
-              <option value="desc">{{ Localization.getWord('descending') }}</option>
+              <option value="asc">
+                {{ Localization.getWord("ascending") }}
+              </option>
+              <option value="desc">
+                {{ Localization.getWord("descending") }}
+              </option>
             </select>
           </div>
         </mat-radio-button>
@@ -92,10 +116,16 @@
           class="mt-1 d-block"
         >
           <div class="d-flex align-items-center">
-            <span class="input-group-text me-1 sortName">{{ Localization.getWord('sort_by_name') }}</span>
+            <span class="input-group-text me-1 sortName">{{
+              Localization.getWord("sort_by_name")
+            }}</span>
             <select class="form-select" formControlName="selectedSortName">
-              <option value="asc">{{ Localization.getWord('ascending') }}</option>
-              <option value="desc">{{ Localization.getWord('descending') }}</option>
+              <option value="asc">
+                {{ Localization.getWord("ascending") }}
+              </option>
+              <option value="desc">
+                {{ Localization.getWord("descending") }}
+              </option>
             </select>
           </div>
         </mat-radio-button>
@@ -109,10 +139,10 @@
         type="submit"
         [disabled]="sortForm.invalid"
       >
-        <div>{{ Localization.getWord('select') }}</div>
+        <div>{{ Localization.getWord("select") }}</div>
       </button>
-      <button class="btn empty-button" (click)="close()">
-        <div>{{ Localization.getWord('back') }}</div>
+      <button class="btn empty-button" type="button" (click)="close()">
+        <div>{{ Localization.getWord("back") }}</div>
       </button>
     </mat-dialog-actions>
   </form>

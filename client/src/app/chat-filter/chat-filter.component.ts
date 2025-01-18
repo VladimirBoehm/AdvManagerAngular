@@ -5,14 +5,13 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatErrorService } from '../_framework/component/errors/mat-error-service';
 import { TelegramBackButtonService } from '../_framework/telegramBackButtonService';
-import { NavigationStart, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { SharedModule } from '../_framework/modules/sharedModule';
 import { EmptyListPlaceholderComponent } from '../_framework/component/empty-list-placeholder/empty-list-placeholder.component';
 import { ListFilterComponent } from '../_framework/component/adv-list-filter/list-filter.component';
 import { SortOption } from '../_models/sortOption';
 import { BusyService } from '../_services/busy.service';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
-import { Subscription } from 'rxjs';
 import { SkeletonFullScreenComponent } from '../_framework/component/skeleton-full-screen/skeleton-full-screen.component';
 import { Localization } from '../_framework/component/helpers/localization';
 import { AppStore } from '../app.store';
@@ -37,7 +36,6 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
   private backButtonService = inject(TelegramBackButtonService);
   private router = inject(Router);
   private formBuilder = inject(FormBuilder);
-  private routerSubscription!: Subscription;
   readonly appStore = inject(AppStore);
   busyService = inject(BusyService);
   chatFilterService = inject(ChatFilterService);
@@ -52,21 +50,11 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
   Localization = Localization;
 
   ngOnInit(): void {
-    this.routerSubscription = this.router.events.subscribe((event) => {
-      if (event instanceof NavigationStart) {
-        if (event.navigationTrigger === 'popstate') {
-          this.chatFilterService.resetPaginationParams();
-        }
-      }
-    });
-
     this.backButtonService.setCloseDialogHandler(() => this.closeDialog());
     this.backButtonService.setBackButtonHandler(() => {
-      this.chatFilterService.resetPaginationParams();
+      this.appStore.resetChatFilterPaginationParams();
       this.router.navigate(['']);
     });
-
-    //this.chatFilterService.getAll();
   }
 
   initializeForm() {
@@ -98,7 +86,7 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
       value: this.editForm.controls['item']?.value,
       created: this.dateHelper.getUTCTime(),
     } as ChatFilter;
-    this.chatFilterService.save(newChatFiler);
+    this.appStore.addChatFilter(newChatFiler);
     this.editForm.reset();
     this.modalRef?.hide();
   }
@@ -119,20 +107,21 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
   }
 
   deleteChatFilter(chatFilter: ChatFilter) {
-    this.chatFilterService.delete(chatFilter.id);
+    this.appStore.deleteChatFilter(chatFilter);
     this.editForm.reset();
     this.modalRef?.hide();
   }
 
   sortChanged($event: SortOption) {
-    this.chatFilterService.getAll($event);
+    this.appStore.updateChatFilterPaginationParams({
+      pageNumber: 0,
+      pageSize: this.maxItemNumber,
+      sortOption: $event,
+    });
   }
 
   ngOnDestroy(): void {
     this.backButtonService.removeCloseDialogHandler();
     this.backButtonService.removeBackButtonHandler();
-    if (this.routerSubscription) {
-      this.routerSubscription.unsubscribe();
-    }
   }
 }

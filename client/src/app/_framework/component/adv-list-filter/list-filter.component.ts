@@ -1,4 +1,11 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  input,
+  Input,
+  Output,
+} from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
@@ -11,7 +18,6 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialog } from '@angular/material/dialog';
 import { MatListFilterComponentModal } from './mat-adv-list-filter-modal/mat-list-filter-modal.component';
-import { ChatFilterService } from '../../../_services/chat-filter.service';
 import { Localization } from '../helpers/localization';
 
 @Component({
@@ -32,20 +38,22 @@ import { Localization } from '../helpers/localization';
 })
 export class ListFilterComponent {
   @Input({ required: true }) isAdvertisementList = false;
+  sortOptions = input<SortOption>(); // TODO: .required
+
   @Input() disabled = false;
   @Output() onChanged = new EventEmitter<SortOption>();
 
   dialog = inject(MatDialog);
   advertisementService = inject(AdvertisementService);
-  chatFilterService = inject(ChatFilterService);
-  Localization = Localization; 
+
+  Localization = Localization;
 
   onFilterClick() {
     this.dialog
       .open(MatListFilterComponentModal, {
         position: { top: '10px' },
         panelClass: 'custom-dialog-container',
-        data: { isAdvertisementList: this.isAdvertisementList },
+        data: { isAdvertisementList: this.isAdvertisementList, sortOptions: this.sortOptions() },
       })
       .afterClosed()
       .subscribe((result: SortOption | null) => {
@@ -60,7 +68,7 @@ export class ListFilterComponent {
     let field;
     if (this.isAdvertisementList)
       field = this.advertisementService.getCurrentSortOptions()?.field;
-    else field = this.chatFilterService.getCurrentSortOptions()?.field;
+    else field = this.sortOptions()?.field;
 
     switch (field) {
       case 'date':
@@ -82,7 +90,7 @@ export class ListFilterComponent {
   getCurrentSortOptionsText() {
     const order = this.isAdvertisementList
       ? this.advertisementService.getCurrentSortOptions()?.order
-      : this.chatFilterService.getCurrentSortOptions()?.order;
+      : this.sortOptions()?.order;
 
     return order === 'asc'
       ? this.Localization.getWord('ascending_order')

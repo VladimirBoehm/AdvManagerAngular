@@ -2,7 +2,6 @@ import {
   ApplicationConfig,
   importProvidersFrom,
   provideZoneChangeDetection,
-  isDevMode,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideToastr } from 'ngx-toastr';
@@ -14,7 +13,6 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { loadingInterceptor } from './_interceptors/loading.interceptor';
 import { errorInterceptor } from './_interceptors/error.interceptor';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { AppStore } from './app.store';
 
 export const appConfig: ApplicationConfig = {
   providers: [

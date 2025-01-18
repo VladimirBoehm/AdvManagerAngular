@@ -8,6 +8,7 @@
             (onChanged)="sortChanged($event)"
             [disabled]="busyService.isLoading()"
             [isAdvertisementList]="false"
+            [sortOptions]="appStore.chatFilterPaginationParams().sortOption"
           ></app-adv-list-filter>
           }
         </div>
@@ -42,7 +43,7 @@
         <div class="text-center text-muted mb-1">
           {{ Localization.getWord("chat_filter_title") }}
         </div>
-        @for (item of appStore.chatFilterEntities(); track item.id) {
+        @for (item of appStore.sortedChatFilters(); track item.id) {
 
         <div class="d-flex align-items-center">
           <mat-list-item class="flex-grow-1">
