@@ -31,20 +31,22 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   modalDialogForcePublicationAdmin?: any;
   @ViewChild('modalDialogCancelPublicationAdmin')
   modalDialogCancelPublicationAdmin?: any;
-  shouldRejectValidation: boolean = false;
-  adminComment?: string;
-
   private backButtonService = inject(TelegramBackButtonService);
   private modalService = inject(BsModalService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  readonly appStore = inject(AppStore);
+
+  shouldRejectValidation: boolean = false;
+  adminComment?: string;
+
   accountService = inject(AccountService);
   publishService = inject(PublishService);
   advertisementHelper = inject(AdvertisementHelper);
   confirmationService = inject(ConfirmationMatDialogService);
   advertisementService = inject(AdvertisementService);
   busyService = inject(BusyService);
-  readonly appStore = inject(AppStore);
+  
   advertisementStatus = AdvertisementStatus;
   advListType = AdvListType;
   dateHelper = DateHelper;

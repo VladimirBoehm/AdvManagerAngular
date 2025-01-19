@@ -1,14 +1,14 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { Advertisement } from '../_models/advertisement';
 import { environment } from '../../environments/environment';
-import { BehaviorSubject, Observable, of, tap } from 'rxjs';
+import {  Observable, of, tap } from 'rxjs';
 import { UpdateAdvertisementAdminRequest } from '../_models/updateAdvertisementAdminRequest';
 import { UpdateAdvertisementStatusRequest } from '../_models/updateAdvertisementStatusRequest';
 import { AdvertisementCacheService } from './caches/advertisement.cache.service';
 import { PaginationParams } from '../_models/paginationParams';
 import { PaginatedResult } from '../_models/pagination';
-import { setPaginationHeaders } from './paginationHelper';
+import { getPaginationHeaders } from './paginationHelper';
 import { AdvListType } from '../_framework/constants/advListType';
 import { ManagePublish } from '../_models/managePublish';
 import { SortOption } from '../_models/sortOption';
@@ -18,8 +18,6 @@ import { DEFAULT_SORT_OPTION } from '../_framework/constants/defaultSortOption';
   providedIn: 'root',
 })
 
-//#loadingSignal = signal(false)
-//loading  = this.#loadingSignal.asReadOnly();
 
 export class AdvertisementService {
   private http = inject(HttpClient);
@@ -27,11 +25,6 @@ export class AdvertisementService {
   private advertisementCacheService = inject(AdvertisementCacheService);
   private dateHelper = DateHelper;
   private selectedAdvListType?: AdvListType;
-
-  private advertisementsSubject = new BehaviorSubject<
-    PaginatedResult<Advertisement>
-  >(new PaginatedResult<Advertisement>());
-  readonly advertisements$ = this.advertisementsSubject.asObservable();
 
   paginationParamsState: WritableSignal<Map<AdvListType, PaginationParams>>;
 
@@ -43,6 +36,7 @@ export class AdvertisementService {
   private initializePaginationState() {
     const defaultPaginationParams: PaginationParams = {
       pageNumber: 0,
+      totalItems: 0,
       pageSize: 6,
       sortOption: {
         field: DEFAULT_SORT_OPTION.field,
@@ -73,7 +67,7 @@ export class AdvertisementService {
 
   getCurrentSortOptions() {
     if (!this.selectedAdvListType) {
-      console.error('selectedAdvListType is undefined');
+      // console.error('selectedAdvListType is undefined');
       return;
     }
     return this.paginationParamsState().get(this.selectedAdvListType)
@@ -231,31 +225,15 @@ export class AdvertisementService {
   }
 
   // PUBLICATION
-  getPendingPublicationAdvertisements() {
-    const cachedResult = this.getCache(AdvListType.PendingPublication);
-    if (cachedResult) {
-      this.advertisementsSubject.next(cachedResult);
-      return of(cachedResult);
-    }
-
-    const params = setPaginationHeaders(
-      this.paginationParamsState().get(AdvListType.PendingPublication)
+  getPendingPublicationAdvertisements(paginationParams: PaginationParams) {
+    const params = getPaginationHeaders(paginationParams);
+    return this.http.get<Advertisement[]>(
+      this.baseUrl + 'advertisement/getPendingPublicationAdvertisements',
+      {
+        observe: 'response',
+        params,
+      }
     );
-
-    return this.http
-      .get<Advertisement[]>(
-        this.baseUrl + 'advertisement/getPendingPublicationAdvertisements',
-        {
-          observe: 'response',
-          params,
-        }
-      )
-      .pipe(tap((response) => this.handleAdvertisementResponse(response)))
-      .subscribe({
-        error: (err) => {
-          console.error('Error when loading pending publication ads:', err);
-        },
-      });
   }
 
   getCache(advListType: AdvListType): PaginatedResult<Advertisement> | null {
@@ -275,83 +253,36 @@ export class AdvertisementService {
   }
 
   // MY ADVERTISEMENTS
-  getMyAdvertisements() {
-    const cachedResult = this.getCache(AdvListType.MyAdvertisements);
-    if (cachedResult) {
-      this.advertisementsSubject.next(cachedResult);
-      return;
-    }
-
-    const params = setPaginationHeaders(
-      this.paginationParamsState().get(AdvListType.MyAdvertisements)
-    );
-
-    return this.http
-      .get<Advertisement[]>(this.baseUrl + 'advertisement', {
-        observe: 'response',
-        params,
-      })
-      .pipe(tap((response) => this.handleAdvertisementResponse(response)))
-      .subscribe({
-        error: (err) => {
-          console.error('Error when loading ads:', err);
-        },
-      });
+  getMyAdvertisements(paginationParams: PaginationParams) {
+    const params = getPaginationHeaders(paginationParams);
+    return this.http.get<Advertisement[]>(this.baseUrl + 'advertisement', {
+      observe: 'response',
+      params,
+    });
   }
 
   // ALL_HISTORY
-  getAllAdvertisementHistory() {
-    const cachedResult = this.getCache(AdvListType.AllHistory);
-    if (cachedResult) {
-      this.advertisementsSubject.next(cachedResult);
-      return;
-    }
-
-    const params = setPaginationHeaders(
-      this.paginationParamsState().get(AdvListType.AllHistory)
-    );
-
-    this.http
-      .get<Advertisement[]>(this.baseUrl + 'advertisementHistory', {
+  getAdvertisementAllHistory(paginationParams: PaginationParams) {
+    const params = getPaginationHeaders(paginationParams);
+    return this.http.get<Advertisement[]>(
+      this.baseUrl + 'advertisementHistory',
+      {
         observe: 'response',
         params,
-      })
-      .pipe(tap((response) => this.handleAdvertisementResponse(response)))
-      .subscribe({
-        error: (err) => {
-          console.error('Error when loading advertisement history:', err);
-        },
-      });
+      }
+    );
   }
 
   // PRIVATE_HISTORY
-  getPrivateAdvertisementHistory() {
-    const cachedResult = this.getCache(AdvListType.PrivateHistory);
-    if (cachedResult) {
-      this.advertisementsSubject.next(cachedResult);
-      return;
-    }
-    const params = setPaginationHeaders(
-      this.paginationParamsState().get(AdvListType.PrivateHistory)
+  getAdvertisementPrivateHistory(paginationParams: PaginationParams) {
+    const params = getPaginationHeaders(paginationParams);
+    return this.http.get<Advertisement[]>(
+      this.baseUrl + 'advertisementHistory/getAdvertisementPrivateHistory',
+      {
+        observe: 'response',
+        params,
+      }
     );
-
-    return this.http
-      .get<Advertisement[]>(
-        this.baseUrl + 'advertisementHistory/getUserSpecific',
-        {
-          observe: 'response',
-          params,
-        }
-      )
-      .pipe(tap((response) => this.handleAdvertisementResponse(response)))
-      .subscribe({
-        error: (err) => {
-          console.error(
-            'Error when loading private advertisement history:',
-            err
-          );
-        },
-      });
   }
 
   // ADMIN
@@ -392,38 +323,21 @@ export class AdvertisementService {
   }
 
   // VALIDATION
-  getPendingValidationAdvertisements() {
-    const cachedResult = this.getCache(AdvListType.PendingValidation);
-    if (cachedResult) {
-      this.advertisementsSubject.next(cachedResult);
-      return;
-    }
-
-    const params = setPaginationHeaders(
-      this.paginationParamsState().get(AdvListType.PendingValidation)
+  getPendingValidationAdvertisements(paginationParams: PaginationParams) {
+    const params = getPaginationHeaders(paginationParams);
+    return this.http.get<Advertisement[]>(
+      this.baseUrl + 'advertisementAdmin/getPendingAdvertisements',
+      {
+        observe: 'response',
+        params,
+      }
     );
-
-    this.http
-      .get<Advertisement[]>(
-        this.baseUrl + 'advertisementAdmin/getPendingAdvertisements',
-        {
-          observe: 'response',
-          params,
-        }
-      )
-      .pipe(tap((response) => this.handleAdvertisementResponse(response)))
-      .subscribe({
-        error: (err) => {
-          console.error('Error when loading pending validation ads:', err);
-        },
-      });
   }
 
   getPendingValidationAdvertisementsCount(): Observable<number> {
-    return this.http
-      .get<number>(
-        this.baseUrl + 'advertisementAdmin/getPendingAdvertisementsCount'
-      )
+    return this.http.get<number>(
+      this.baseUrl + 'advertisementAdmin/getPendingAdvertisementsCount'
+    );
   }
 
   validateAdvertisementAdmin(
@@ -444,26 +358,5 @@ export class AdvertisementService {
     );
   }
 
-  private handleAdvertisementResponse(response: HttpResponse<Advertisement[]>) {
-    const result = new PaginatedResult<Advertisement>();
-    if (!this.selectedAdvListType) {
-      console.error('advListType is undefined');
-      return result;
-    }
 
-    result.items = response.body as Advertisement[];
-    result.pagination = JSON.parse(response.headers.get('Pagination')!);
-
-    this.advertisementCacheService.setCache(result);
-    console.log('Loaded from DB');
-    this.advertisementsSubject.next(result);
-
-    this.updatePaginationParams(
-      this.selectedAdvListType,
-      result.pagination?.itemsPerPage,
-      result.pagination?.currentPage
-    );
-
-    return result;
-  }
 }

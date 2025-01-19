@@ -16,6 +16,8 @@ import { EmptyListPlaceholderComponent } from '../_framework/component/empty-lis
 import { DatePipe } from '@angular/common';
 import { SkeletonFullScreenComponent } from '../_framework/component/skeleton-full-screen/skeleton-full-screen.component';
 import { Localization } from '../_framework/component/helpers/localization';
+import { AppStore } from '../app.store';
+import { PaginationParams } from '../_models/paginationParams';
 
 @Component({
   selector: 'app-adv-list',
@@ -34,10 +36,13 @@ export class AdvListComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private backButtonService = inject(TelegramBackButtonService);
   private router = inject(Router);
+  readonly appStore = inject(AppStore);
+  advertisementService = inject(AdvertisementService);
+  pagination = signal<PaginationParams>({} as PaginationParams);
+  readonly advertisementsList = signal<Advertisement[]>([]);
   private routerSubscription!: Subscription;
   private paramMapSubscription!: Subscription;
 
-  advertisementService = inject(AdvertisementService);
   advListType = AdvListType;
   dateHelper = DateHelper;
   selectedListType = signal<AdvListType>(AdvListType.MyAdvertisements);
@@ -48,6 +53,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.routerSubscription = this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
+        // TODO refactor events.subscribe
         if (event.navigationTrigger === 'popstate') {
           this.advertisementService.resetPaginationParams();
         }
@@ -79,34 +85,43 @@ export class AdvListComponent implements OnInit, OnDestroy {
   }
 
   handlePageEvent(e: PageEvent) {
-    this.advertisementService.updatePaginationParams(
-      this.selectedListType(),
-      e.pageSize,
-      e.pageIndex
-    );
-    this.initialize();
+    this.initialize(e.pageIndex);
   }
 
-  private initialize() {
+  private async initialize(pageNumber?: number) {
     switch (this.selectedListType()) {
       case AdvListType.PendingValidation: {
-        this.advertisementService.getPendingValidationAdvertisements();
+        await this.appStore.getPendingValidationAdvertisements(pageNumber);
+        this.advertisementsList.set(
+          this.appStore.sortedPendingValidationAdvertisements()
+        );
+        this.pagination.set(this.appStore.pendingValidationPaginationParams());
         break;
       }
       case AdvListType.AllHistory: {
-        this.advertisementService.getAllAdvertisementHistory();
+        await this.appStore.getAdvertisementAllHistory(pageNumber);
+        this.advertisementsList.set(this.appStore.sortedAllHistory());
+        this.pagination.set(this.appStore.allHistoryPaginationParams());
         break;
       }
       case AdvListType.PrivateHistory: {
-        this.advertisementService.getPrivateAdvertisementHistory();
+        await this.appStore.getAdvertisementPrivateHistory(pageNumber);
+        this.advertisementsList.set(this.appStore.sortedPrivateHistory());
+        this.pagination.set(this.appStore.privateHistoryPaginationParams());
         break;
       }
       case AdvListType.MyAdvertisements: {
-        this.advertisementService.getMyAdvertisements();
+        await this.appStore.getMyAdvertisements(pageNumber);
+        this.advertisementsList.set(this.appStore.sortedMyAdvertisements());
+        this.pagination.set(this.appStore.myAdvertisementsPaginationParams());
         break;
       }
       case AdvListType.PendingPublication: {
-        this.advertisementService.getPendingPublicationAdvertisements();
+        await this.appStore.getPendingPublicationAdvertisements(pageNumber);
+        this.advertisementsList.set(
+          this.appStore.sortedPendingPublicationAdvertisements()
+        );
+        this.pagination.set(this.appStore.pendingPublicationPaginationParams());
         break;
       }
       default: {

@@ -5,7 +5,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatErrorService } from '../_framework/component/errors/mat-error-service';
 import { TelegramBackButtonService } from '../_framework/telegramBackButtonService';
-import { Router } from '@angular/router';
+import { NavigationStart, Router } from '@angular/router';
 import { SharedModule } from '../_framework/modules/sharedModule';
 import { EmptyListPlaceholderComponent } from '../_framework/component/empty-list-placeholder/empty-list-placeholder.component';
 import { ListFilterComponent } from '../_framework/component/adv-list-filter/list-filter.component';
@@ -15,6 +15,7 @@ import { DateHelper } from '../_framework/component/helpers/dateHelper';
 import { SkeletonFullScreenComponent } from '../_framework/component/skeleton-full-screen/skeleton-full-screen.component';
 import { Localization } from '../_framework/component/helpers/localization';
 import { AppStore } from '../app.store';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-chat-filter',
@@ -37,6 +38,7 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private formBuilder = inject(FormBuilder);
   readonly appStore = inject(AppStore);
+  private routerSubscription!: Subscription;
   busyService = inject(BusyService);
   chatFilterService = inject(ChatFilterService);
   matErrorService = inject(MatErrorService);
@@ -50,6 +52,13 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
   Localization = Localization;
 
   ngOnInit(): void {
+    this.routerSubscription = this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        if (event.navigationTrigger === 'popstate') {
+          this.appStore.resetChatFilterPaginationParams();
+        }
+      }
+    });
     this.backButtonService.setCloseDialogHandler(() => this.closeDialog());
     this.backButtonService.setBackButtonHandler(() => {
       this.appStore.resetChatFilterPaginationParams();
@@ -115,6 +124,7 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
   sortChanged($event: SortOption) {
     this.appStore.updateChatFilterPaginationParams({
       pageNumber: 0,
+      totalItems:0,
       pageSize: this.maxItemNumber,
       sortOption: $event,
     });
@@ -123,5 +133,9 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.backButtonService.removeCloseDialogHandler();
     this.backButtonService.removeBackButtonHandler();
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
+
   }
 }

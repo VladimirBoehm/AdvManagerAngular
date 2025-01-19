@@ -1,6 +1,6 @@
 <body class="p-1">
   <div class="container-fluid">
-    @if ((advertisementService.advertisements$ | async)?.items) {
+    @if (advertisementsList()) {
     <div class="background-rectangle-panel-shadow">
       <div class="d-flex">
         <div class="col-6 d-flex justify-content-start ps-0">
@@ -14,28 +14,21 @@
 
         <div class="col-6 d-flex justify-content-end align-items-center">
           @if(selectedListType() !== advListType.MyAdvertisements &&
-          (advertisementService.advertisements$ | async)?.pagination &&
-          ((advertisementService.advertisements$ | async)?.pagination)!
-          .totalItems > 0 && ((advertisementService.advertisements$ |
-          async)?.pagination)! .totalItems >
-          ((advertisementService.advertisements$ | async)?.pagination)!
-          .itemsPerPage){
+          pagination().totalItems > 0 && pagination().totalItems >
+          pagination().pageSize){
 
           <paginator-localization
             [disabled]="busyService.isLoading()"
             #paginator
             (page)="handlePageEvent($event)"
             [length]="
-              (advertisementService.advertisements$ | async)?.pagination
-                ?.totalItems ?? 0
+              pagination().totalItems
             "
             [pageSize]="
-              (advertisementService.advertisements$ | async)?.pagination
-                ?.itemsPerPage ?? 0
+              pagination().pageSize 
             "
             [pageIndex]="
-              (advertisementService.advertisements$ | async)?.pagination
-                ?.currentPage ?? 0
+              pagination().pageNumber 
             "
           ></paginator-localization>
           }
@@ -44,8 +37,8 @@
 
       <!-- BUTTONS -->
       <!-- MyAdvertisements -->
-      @if( selectedListType() === advListType.MyAdvertisements &&
-      (advertisementService.advertisements$ | async)?.items){
+      @if(selectedListType() === advListType.MyAdvertisements &&
+      advertisementsList()){
 
       <div class="d-flex flex-column">
         <div class="d-flex">
@@ -64,7 +57,7 @@
               class="btn empty-button"
               (click)="create()"
               [disabled]="
-                ((advertisementService.advertisements$ | async)?.items)!
+                (advertisementsList())!
                   .length > 2
               "
             >
@@ -82,7 +75,7 @@
           <div class="col-6 d-flex align-items-center justify-content-center">
             <div
               *ngIf="
-                ((advertisementService.advertisements$ | async)?.items)!
+                (advertisementsList())!
                   .length > 2
               "
               class="my-info-text text-muted mb-1"
@@ -97,16 +90,15 @@
     } @if(busyService.isLoading()){
     <app-skeleton-full-screen
       [shouldShowHeaderPanel]="
-        (advertisementService.advertisements$ | async)?.items === null ||
-        (advertisementService.advertisements$ | async)?.items === undefined
+        advertisementsList() === null ||
+        advertisementsList() === undefined
       "
     ></app-skeleton-full-screen>
-    } @else { @if ( (advertisementService.advertisements$ | async)?.items) {
+    } @else { @if ( advertisementsList()) {
     <div class="list-container">
       <mat-action-list>
         <div class="text-center text-muted mb-1">{{ getListName() }}</div>
-        @for(advertisement of (advertisementService.advertisements$ | async)
-        ?.items; track advertisement.id){
+        @for(advertisement of advertisementsList(); track advertisement.id){
 
         <!-- Pending validation -->
         @if(selectedListType() === advListType.PendingValidation){
