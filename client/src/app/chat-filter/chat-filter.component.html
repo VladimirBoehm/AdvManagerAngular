@@ -7,8 +7,8 @@
           <app-adv-list-filter
             (onChanged)="sortChanged($event)"
             [disabled]="busyService.isLoading()"
-            [isAdvertisementList]="false"
-            [sortOptions]="appStore.chatFilterPaginationParams().sortOption"
+            [sortOption]="appStore.chatFilterPaginationParams().sortOption"
+            [isExtended]="false"
           ></app-adv-list-filter>
           }
         </div>

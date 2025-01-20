@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { ChatFilter } from '../_models/chatFilter';
-import { PaginationParams } from '../_models/paginationParams';
-import { SortOption } from '../_models/sortOption';
+import { PaginationParams } from '../_entities/paginationParams';
+import { SortOption } from '../_entities/sortOption';
 import { DEFAULT_SORT_OPTION } from '../_framework/constants/defaultSortOption';
 import { BehaviorSubject } from 'rxjs';
 
@@ -16,10 +16,8 @@ export class ChatFilterService {
   private chatFiltersSubject = new BehaviorSubject<ChatFilter[]>([]);
   readonly chatFilters$ = this.chatFiltersSubject.asObservable();
 
-
   save(chatFilter: ChatFilter) {
-   return this.http
-      .post<ChatFilter>(this.baseUrl + 'chatFilter', chatFilter)
+    return this.http.post<ChatFilter>(this.baseUrl + 'chatFilter', chatFilter);
   }
 
   getAll() {
@@ -27,6 +25,6 @@ export class ChatFilterService {
   }
 
   delete(id: number) {
-    return this.http.delete(this.baseUrl + `chatFilter/${id}`)
+    return this.http.delete(this.baseUrl + `chatFilter/${id}`);
   }
 }

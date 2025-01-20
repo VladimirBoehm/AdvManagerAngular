@@ -8,8 +8,8 @@ import { AccountService } from '../../_services/account.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { PublishService } from '../../_services/publish.service';
 import { AdvertisementHelper } from '../../_framework/component/helpers/advertisementHelper';
-import { AdvListType } from '../../_framework/constants/advListType';
-import { ManagePublish } from '../../_models/managePublish';
+import { AppListType } from '../../_framework/constants/advListType';
+import { ManagePublish } from '../../_entities/managePublish';
 import { DateHelper } from '../../_framework/component/helpers/dateHelper';
 import { ConfirmationMatDialogService } from '../../_services/confirmation-mat-dialog.service';
 import { SharedModule } from '../../_framework/modules/sharedModule';
@@ -46,9 +46,9 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   confirmationService = inject(ConfirmationMatDialogService);
   advertisementService = inject(AdvertisementService);
   busyService = inject(BusyService);
-  
+
   advertisementStatus = AdvertisementStatus;
-  advListType = AdvListType;
+  advListType = AppListType;
   dateHelper = DateHelper;
   modalRef?: BsModalRef;
   advertisement?: Advertisement;
@@ -78,14 +78,14 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   }
 
   private getAdvertisementById(id: number) {
-    this.advertisementService.getById(Number(id))?.subscribe({
-      next: (advertisement: Advertisement) => {
-        this.advertisement = advertisement;
-      },
-      error: (err) => {
-        console.error('Error when loading ads:', err);
-      },
-    });
+    // this.advertisementService.getById(Number(id))?.subscribe({
+    //   next: (advertisement: Advertisement) => {
+    //     this.advertisement = advertisement;
+    //   },
+    //   error: (err) => {
+    //     console.error('Error when loading ads:', err);
+    //   },
+    // });
   }
 
   private back() {
@@ -150,7 +150,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
       ?.subscribe({
         next: () => {
           this.modalRef?.hide();
-          this.router.navigate(['/adv-list', AdvListType.PendingPublication]);
+          this.router.navigate(['/adv-list', AppListType.PendingPublication]);
         },
         error: (err) => {
           console.error('Error when cancelPublicationAdmin:', err);
@@ -176,7 +176,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
       ?.subscribe({
         next: () => {
           this.modalRef?.hide();
-          this.router.navigate(['/adv-list', AdvListType.PendingPublication]);
+          this.router.navigate(['/adv-list', AppListType.PendingPublication]);
         },
         error: (err) => {
           console.error('Error when forcePublication:', err);
@@ -237,9 +237,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
 
   cancelPublicationDialogShow() {
     console.log(this.advertisementService.getActualSearchType());
-    if (
-      this.appStore.user()?.userId === this.advertisement?.userId
-    ) {
+    if (this.appStore.user()?.userId === this.advertisement?.userId) {
       this.confirmationService
         .confirmDialog({
           title: this.Localization.getWord('cancel_publication_question'),
@@ -255,7 +253,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
     } else if (
       this.appStore.user()?.isAdmin &&
       this.advertisementService.getActualSearchType() ===
-        AdvListType.PendingPublication
+        AppListType.PendingPublication
     )
       this.modalRef = this.modalService.show(
         this.modalDialogCancelPublicationAdmin

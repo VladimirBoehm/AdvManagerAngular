@@ -1,8 +1,8 @@
 import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
 import { AdImage } from './adImage';
-import { PaginatedItem } from './paginatedItem';
 
-export interface Advertisement extends PaginatedItem {
+export interface Advertisement {
+  id: number;
   isDirty?: boolean;
   isEditable?: boolean;
   userId: number;

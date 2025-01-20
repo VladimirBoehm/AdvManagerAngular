@@ -2,31 +2,28 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { Advertisement } from '../_models/advertisement';
 import { environment } from '../../environments/environment';
-import {  Observable, of, tap } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
 import { UpdateAdvertisementAdminRequest } from '../_models/updateAdvertisementAdminRequest';
 import { UpdateAdvertisementStatusRequest } from '../_models/updateAdvertisementStatusRequest';
 import { AdvertisementCacheService } from './caches/advertisement.cache.service';
-import { PaginationParams } from '../_models/paginationParams';
-import { PaginatedResult } from '../_models/pagination';
+import { PaginationParams } from '../_entities/paginationParams';
 import { getPaginationHeaders } from './paginationHelper';
-import { AdvListType } from '../_framework/constants/advListType';
-import { ManagePublish } from '../_models/managePublish';
-import { SortOption } from '../_models/sortOption';
+import { AppListType } from '../_framework/constants/advListType';
+import { ManagePublish } from '../_entities/managePublish';
+import { SortOption } from '../_entities/sortOption';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
 import { DEFAULT_SORT_OPTION } from '../_framework/constants/defaultSortOption';
 @Injectable({
   providedIn: 'root',
 })
-
-
 export class AdvertisementService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
   private advertisementCacheService = inject(AdvertisementCacheService);
   private dateHelper = DateHelper;
-  private selectedAdvListType?: AdvListType;
+  private selectedAdvListType?: AppListType;
 
-  paginationParamsState: WritableSignal<Map<AdvListType, PaginationParams>>;
+  paginationParamsState: WritableSignal<Map<AppListType, PaginationParams>>;
 
   constructor() {
     const paginationState = this.initializePaginationState();
@@ -46,10 +43,10 @@ export class AdvertisementService {
       },
     };
 
-    const paginationState = new Map<AdvListType, PaginationParams>();
+    const paginationState = new Map<AppListType, PaginationParams>();
 
-    Object.values(AdvListType).forEach((advListType) => {
-      if (advListType === AdvListType.PendingPublication) {
+    Object.values(AppListType).forEach((advListType) => {
+      if (advListType === AppListType.PendingPublication) {
         paginationState.set(advListType, {
           ...defaultPaginationParams,
           sortOption: {
@@ -80,7 +77,7 @@ export class AdvertisementService {
   }
 
   updatePaginationParams(
-    advListType?: AdvListType,
+    advListType?: AppListType,
     pageSize?: number,
     pageNumber?: number,
     sortOption?: SortOption
@@ -104,7 +101,7 @@ export class AdvertisementService {
     }
   }
 
-  getActualSearchType(): AdvListType | undefined {
+  getActualSearchType(): AppListType | undefined {
     return this.selectedAdvListType;
   }
 
@@ -123,7 +120,7 @@ export class AdvertisementService {
       .post<Advertisement>(this.baseUrl + 'advertisement/save', formData)
       .pipe(
         tap((savedAdvertisement: Advertisement) => {
-          this.advertisementCacheService.add(savedAdvertisement);
+          // this.advertisementCacheService.add(savedAdvertisement);
         })
       );
   }
@@ -148,10 +145,10 @@ export class AdvertisementService {
       .put<Advertisement>(this.baseUrl + 'advertisement', formData)
       .pipe(
         tap((updatedAdvertisement: Advertisement) => {
-          console.log(updatedAdvertisement);
-          this.advertisementCacheService.updateInAllCaches(
-            updatedAdvertisement
-          );
+          // console.log(updatedAdvertisement);
+          // this.advertisementCacheService.updateInAllCaches(
+          //   updatedAdvertisement
+          // );
         })
       );
   }
@@ -164,8 +161,8 @@ export class AdvertisementService {
       )
       .pipe(
         tap(() => {
-          advertisement.updated = this.dateHelper.getUTCTime();
-          this.advertisementCacheService.updateInAllCaches(advertisement);
+          // advertisement.updated = this.dateHelper.getUTCTime();
+          // this.advertisementCacheService.updateInAllCaches(advertisement);
         })
       );
   }
@@ -176,7 +173,7 @@ export class AdvertisementService {
       .delete<Advertisement>(this.baseUrl + `advertisement/${id}`)
       .pipe(
         tap(() => {
-          this.advertisementCacheService.delete(id);
+          //this.advertisementCacheService.delete(id);
         })
       );
   }
@@ -189,12 +186,12 @@ export class AdvertisementService {
       )
       .pipe(
         tap(() => {
-          advertisement.updated = this.dateHelper.getUTCTime();
-          this.advertisementCacheService.updateInAllCaches(advertisement);
-          this.advertisementCacheService.deleteByAdvListType(
-            advertisement.id,
-            AdvListType.PendingPublication
-          );
+          // advertisement.updated = this.dateHelper.getUTCTime();
+          // this.advertisementCacheService.updateInAllCaches(advertisement);
+          // this.advertisementCacheService.deleteByAdvListType(
+          //   advertisement.id,
+          //   AdvListType.PendingPublication
+          // );
         })
       );
   }
@@ -204,15 +201,13 @@ export class AdvertisementService {
       console.error('getById: selectedAdvListType is undefined');
       return null;
     }
-    const cachedAdvertisements = this.advertisementCacheService.getCache(
-      this.selectedAdvListType,
-      this.paginationParamsState().get(this.selectedAdvListType)
-    );
+    // const cachedAdvertisements = this.advertisementCacheService.getCache(
+    //   this.selectedAdvListType,
+    //   this.paginationParamsState().get(this.selectedAdvListType)
+    // );
 
-    if (cachedAdvertisements) {
-      const result = cachedAdvertisements.items?.find(
-        (x: Advertisement) => x.id === id
-      );
+    if (true) {
+      const result = 2;
       if (result) {
         console.log('Loaded from cache');
         return of(result);
@@ -236,21 +231,21 @@ export class AdvertisementService {
     );
   }
 
-  getCache(advListType: AdvListType): PaginatedResult<Advertisement> | null {
-    this.selectedAdvListType = advListType;
-    const cachedResponse = this.advertisementCacheService.getCache(
-      advListType,
-      this.paginationParamsState().get(advListType)
-    );
-    if (cachedResponse) {
-      console.log(
-        'Cache returned:',
-        JSON.stringify(this.paginationParamsState().get(advListType))
-      );
-      return cachedResponse;
-    }
-    return null;
-  }
+  // getCache(advListType: AdvListType): PaginatedItem<Advertisement> | null {
+  //   this.selectedAdvListType = advListType;
+  //   const cachedResponse = this.advertisementCacheService.getCache(
+  //     advListType,
+  //     this.paginationParamsState().get(advListType)
+  //   );
+  //   if (cachedResponse) {
+  //     console.log(
+  //       'Cache returned:',
+  //       JSON.stringify(this.paginationParamsState().get(advListType))
+  //     );
+  //     return cachedResponse;
+  //   }
+  //   return null;
+  // }
 
   // MY ADVERTISEMENTS
   getMyAdvertisements(paginationParams: PaginationParams) {
@@ -294,12 +289,12 @@ export class AdvertisementService {
       .put(this.baseUrl + 'advertisementAdmin/cancelPublication', managePublish)
       .pipe(
         tap(() => {
-          advertisement.updated = this.dateHelper.getUTCTime();
-          this.advertisementCacheService.updateInAllCaches(advertisement);
-          this.advertisementCacheService.deleteByAdvListType(
-            advertisement.id,
-            AdvListType.PendingPublication
-          );
+          // advertisement.updated = this.dateHelper.getUTCTime();
+          // this.advertisementCacheService.updateInAllCaches(advertisement);
+          // this.advertisementCacheService.deleteByAdvListType(
+          //   advertisement.id,
+          //   AdvListType.PendingPublication
+          // );
         })
       );
   }
@@ -312,12 +307,12 @@ export class AdvertisementService {
       .put(this.baseUrl + 'advertisementAdmin/forcePublication', managePublish)
       .pipe(
         tap(() => {
-          advertisement.updated = this.dateHelper.getUTCTime();
-          this.advertisementCacheService.updateInAllCaches(advertisement);
-          this.advertisementCacheService.deleteByAdvListType(
-            advertisement.id,
-            AdvListType.PendingPublication
-          );
+          // advertisement.updated = this.dateHelper.getUTCTime();
+          // this.advertisementCacheService.updateInAllCaches(advertisement);
+          // this.advertisementCacheService.deleteByAdvListType(
+          //   advertisement.id,
+          //   AdvListType.PendingPublication
+          // );
         })
       );
   }
@@ -343,20 +338,18 @@ export class AdvertisementService {
   validateAdvertisementAdmin(
     updateAdvertisementAdminRequest: UpdateAdvertisementAdminRequest
   ) {
-    this.advertisementCacheService.deleteByAdvListType(
-      updateAdvertisementAdminRequest.advertisementId,
-      AdvListType.PendingValidation
-    );
-    this.advertisementCacheService.updateStatus(
-      updateAdvertisementAdminRequest.advertisementStatus,
-      updateAdvertisementAdminRequest.advertisementId
-    );
+    // this.advertisementCacheService.deleteByAdvListType(
+    //   updateAdvertisementAdminRequest.advertisementId,
+    //   AdvListType.PendingValidation
+    // );
+    // this.advertisementCacheService.updateStatus(
+    //   updateAdvertisementAdminRequest.advertisementStatus,
+    //   updateAdvertisementAdminRequest.advertisementId
+    // );
 
     return this.http.post(
       this.baseUrl + 'advertisementAdmin',
       updateAdvertisementAdminRequest
     );
   }
-
-
 }

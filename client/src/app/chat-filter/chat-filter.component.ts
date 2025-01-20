@@ -9,7 +9,7 @@ import { NavigationStart, Router } from '@angular/router';
 import { SharedModule } from '../_framework/modules/sharedModule';
 import { EmptyListPlaceholderComponent } from '../_framework/component/empty-list-placeholder/empty-list-placeholder.component';
 import { ListFilterComponent } from '../_framework/component/adv-list-filter/list-filter.component';
-import { SortOption } from '../_models/sortOption';
+import { SortOption } from '../_entities/sortOption';
 import { BusyService } from '../_services/busy.service';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
 import { SkeletonFullScreenComponent } from '../_framework/component/skeleton-full-screen/skeleton-full-screen.component';
@@ -52,16 +52,8 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
   Localization = Localization;
 
   ngOnInit(): void {
-    this.routerSubscription = this.router.events.subscribe((event) => {
-      if (event instanceof NavigationStart) {
-        if (event.navigationTrigger === 'popstate') {
-          this.appStore.resetChatFilterPaginationParams();
-        }
-      }
-    });
     this.backButtonService.setCloseDialogHandler(() => this.closeDialog());
     this.backButtonService.setBackButtonHandler(() => {
-      this.appStore.resetChatFilterPaginationParams();
       this.router.navigate(['']);
     });
   }
@@ -124,7 +116,7 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
   sortChanged($event: SortOption) {
     this.appStore.updateChatFilterPaginationParams({
       pageNumber: 0,
-      totalItems:0,
+      totalItems: 0,
       pageSize: this.maxItemNumber,
       sortOption: $event,
     });
@@ -136,6 +128,5 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
     }
-
   }
 }

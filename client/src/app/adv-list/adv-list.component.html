@@ -8,10 +8,10 @@
             *ngIf="selectedListType() !== advListType.MyAdvertisements"
             (onChanged)="sortChanged($event)"
             [disabled]="busyService.isLoading()"
-            [isAdvertisementList]="true"
+            [sortOption]="pagination().sortOption"
+            [isExtended]="true"
           ></app-adv-list-filter>
         </div>
-
         <div class="col-6 d-flex justify-content-end align-items-center">
           @if(selectedListType() !== advListType.MyAdvertisements &&
           pagination().totalItems > 0 && pagination().totalItems >
@@ -21,15 +21,9 @@
             [disabled]="busyService.isLoading()"
             #paginator
             (page)="handlePageEvent($event)"
-            [length]="
-              pagination().totalItems
-            "
-            [pageSize]="
-              pagination().pageSize 
-            "
-            [pageIndex]="
-              pagination().pageNumber 
-            "
+            [length]="pagination().totalItems"
+            [pageSize]="pagination().pageSize"
+            [pageIndex]="pagination().pageNumber"
           ></paginator-localization>
           }
         </div>
@@ -56,10 +50,7 @@
             <button
               class="btn empty-button"
               (click)="create()"
-              [disabled]="
-                (advertisementsList())!
-                  .length > 2
-              "
+              [disabled]="advertisementsList()!.length > 2"
             >
               <span class="material-symbols-outlined text-muted">
                 add_circle
@@ -74,10 +65,7 @@
           ></div>
           <div class="col-6 d-flex align-items-center justify-content-center">
             <div
-              *ngIf="
-                (advertisementsList())!
-                  .length > 2
-              "
+              *ngIf="advertisementsList()!.length > 2"
               class="my-info-text text-muted mb-1"
             >
               {{ Localization.getWord("maximum_ads") }}
@@ -90,8 +78,7 @@
     } @if(busyService.isLoading()){
     <app-skeleton-full-screen
       [shouldShowHeaderPanel]="
-        advertisementsList() === null ||
-        advertisementsList() === undefined
+        advertisementsList() === null || advertisementsList() === undefined
       "
     ></app-skeleton-full-screen>
     } @else { @if ( advertisementsList()) {

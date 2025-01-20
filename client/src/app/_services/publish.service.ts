@@ -4,7 +4,7 @@ import { environment } from '../../environments/environment';
 import { Observable, tap } from 'rxjs';
 import { AdvertisementCacheService } from './caches/advertisement.cache.service';
 import { Advertisement } from '../_models/advertisement';
-import { AdvListType } from '../_framework/constants/advListType';
+import { AppListType } from '../_framework/constants/advListType';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
 
 @Injectable({
@@ -27,11 +27,11 @@ export class PublishService {
       .post(this.baseUrl + `regularPublish`, advertisement.id)
       .pipe(
         tap(() => {
-          advertisement.updated = this.dateHelper.getUTCTime();
-          this.advertisementCacheService.updateInAllCaches(advertisement);
-          this.advertisementCacheService.resetCache(
-            AdvListType.PendingPublication
-          );
+          // advertisement.updated = this.dateHelper.getUTCTime();
+          // this.advertisementCacheService.updateInAllCaches(advertisement);
+          // this.advertisementCacheService.resetCache(
+          //   AdvListType.PendingPublication
+          // );
         })
       );
   }

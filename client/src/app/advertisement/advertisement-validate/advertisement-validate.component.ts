@@ -9,7 +9,7 @@ import { UpdateAdvertisementAdminRequest } from '../../_models/updateAdvertiseme
 import { AdvertisementStatus } from '../../_framework/constants/advertisementStatus';
 import { MatErrorService } from '../../_framework/component/errors/mat-error-service';
 import { CustomValidators } from '../../_framework/component/validators/customValidators';
-import { AdvListType } from '../../_framework/constants/advListType';
+import { AppListType } from '../../_framework/constants/advListType';
 import { ConfirmationMatDialogService } from '../../_services/confirmation-mat-dialog.service';
 import { SharedModule } from '../../_framework/modules/sharedModule';
 import { AdvertisementMainDataComponent } from '../advertisement-main-data/advertisement-main-data.component';
@@ -50,22 +50,22 @@ export class AdvertisementValidateComponent implements OnInit {
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
-      this.router.navigate(['/adv-list', AdvListType.PendingValidation]);
+      this.router.navigate(['/adv-list', AppListType.PendingValidation]);
     });
 
     this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       if (id) {
-        this.advertisementService.getById(Number(id))?.subscribe({
-          next: (advertisement: Advertisement) => {
-            this.advertisement = advertisement;
-            this.initializeForm();
-            this.updateAdminMessageCounter();
-          },
-          error: (err) => {
-            console.error('Error when loading ads:', err);
-          },
-        });
+        // this.advertisementService.getById(Number(id))?.subscribe({
+        //   next: (advertisement: Advertisement) => {
+        //     this.advertisement = advertisement;
+        //     this.initializeForm();
+        //     this.updateAdminMessageCounter();
+        //   },
+        //   error: (err) => {
+        //     console.error('Error when loading ads:', err);
+        //   },
+        // });
       }
     });
   }
@@ -119,7 +119,7 @@ export class AdvertisementValidateComponent implements OnInit {
       .subscribe({
         error: (error: any) => console.log(error),
       });
-    this.router.navigate(['/adv-list', AdvListType.PendingValidation]);
+    this.router.navigate(['/adv-list', AppListType.PendingValidation]);
   }
 
   reject() {

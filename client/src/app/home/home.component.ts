@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AdvertisementService } from '../_services/advertisement.service';
-import { AdvListType } from '../_framework/constants/advListType';
+import { AppListType } from '../_framework/constants/advListType';
 import { SharedModule } from '../_framework/modules/sharedModule';
 import { BusyService } from '../_services/busy.service';
 import { Localization } from '../_framework/component/helpers/localization';
@@ -22,7 +22,7 @@ import { ThreeDotsLoadingComponent } from '../_framework/component/custom-loadin
   styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit {
-  advListType = AdvListType;
+  advListType = AppListType;
   advertisementService = inject(AdvertisementService);
   busyService = inject(BusyService);
   readonly appStore = inject(AppStore);

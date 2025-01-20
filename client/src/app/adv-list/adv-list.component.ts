@@ -4,9 +4,9 @@ import { AdvertisementService } from '../_services/advertisement.service';
 import { Advertisement } from '../_models/advertisement';
 import { TelegramBackButtonService } from '../_framework/telegramBackButtonService';
 import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
-import { SortOption } from '../_models/sortOption';
+import { SortOption } from '../_entities/sortOption';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
-import { AdvListType } from '../_framework/constants/advListType';
+import { AppListType } from '../_framework/constants/advListType';
 import { Subscription } from 'rxjs';
 import { BusyService } from '../_services/busy.service';
 import { SharedModule } from '../_framework/modules/sharedModule';
@@ -17,7 +17,7 @@ import { DatePipe } from '@angular/common';
 import { SkeletonFullScreenComponent } from '../_framework/component/skeleton-full-screen/skeleton-full-screen.component';
 import { Localization } from '../_framework/component/helpers/localization';
 import { AppStore } from '../app.store';
-import { PaginationParams } from '../_models/paginationParams';
+import { PaginationParams } from '../_entities/paginationParams';
 
 @Component({
   selector: 'app-adv-list',
@@ -42,10 +42,10 @@ export class AdvListComponent implements OnInit, OnDestroy {
   readonly advertisementsList = signal<Advertisement[]>([]);
   private routerSubscription!: Subscription;
   private paramMapSubscription!: Subscription;
-
-  advListType = AdvListType;
+  
+  advListType = AppListType;
   dateHelper = DateHelper;
-  selectedListType = signal<AdvListType>(AdvListType.MyAdvertisements);
+  selectedListType = signal<AppListType>(AppListType.MyAdvertisements);
   busyService = inject(BusyService);
   datePipe = inject(DatePipe);
   Localization = Localization;
@@ -61,7 +61,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
     });
 
     this.paramMapSubscription = this.route.paramMap.subscribe((params) => {
-      this.selectedListType.set(params.get('state') as AdvListType);
+      this.selectedListType.set(params.get('state') as AppListType);
 
       this.initialize();
     });
@@ -69,7 +69,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
     this.backButtonService.setBackButtonHandler(() => {
       this.advertisementService.resetPaginationParams();
 
-      if (this.selectedListType() === AdvListType.PrivateHistory) {
+      if (this.selectedListType() === AppListType.PrivateHistory) {
         this.router.navigate(['/adv-list', this.advListType.MyAdvertisements]);
         this.initialize();
       } else this.router.navigate(['']);
@@ -88,9 +88,9 @@ export class AdvListComponent implements OnInit, OnDestroy {
     this.initialize(e.pageIndex);
   }
 
-  private async initialize(pageNumber?: number) {
+  private async initialize(pageNumber?: number, sortOption?: SortOption) {
     switch (this.selectedListType()) {
-      case AdvListType.PendingValidation: {
+      case AppListType.PendingValidation: {
         await this.appStore.getPendingValidationAdvertisements(pageNumber);
         this.advertisementsList.set(
           this.appStore.sortedPendingValidationAdvertisements()
@@ -98,25 +98,25 @@ export class AdvListComponent implements OnInit, OnDestroy {
         this.pagination.set(this.appStore.pendingValidationPaginationParams());
         break;
       }
-      case AdvListType.AllHistory: {
-        await this.appStore.getAdvertisementAllHistory(pageNumber);
+      case AppListType.AllHistory: {
+        await this.appStore.getAdvertisementAllHistory(pageNumber, sortOption);
         this.advertisementsList.set(this.appStore.sortedAllHistory());
         this.pagination.set(this.appStore.allHistoryPaginationParams());
         break;
       }
-      case AdvListType.PrivateHistory: {
+      case AppListType.PrivateHistory: {
         await this.appStore.getAdvertisementPrivateHistory(pageNumber);
         this.advertisementsList.set(this.appStore.sortedPrivateHistory());
         this.pagination.set(this.appStore.privateHistoryPaginationParams());
         break;
       }
-      case AdvListType.MyAdvertisements: {
+      case AppListType.MyAdvertisements: {
         await this.appStore.getMyAdvertisements(pageNumber);
         this.advertisementsList.set(this.appStore.sortedMyAdvertisements());
         this.pagination.set(this.appStore.myAdvertisementsPaginationParams());
         break;
       }
-      case AdvListType.PendingPublication: {
+      case AppListType.PendingPublication: {
         await this.appStore.getPendingPublicationAdvertisements(pageNumber);
         this.advertisementsList.set(
           this.appStore.sortedPendingPublicationAdvertisements()
@@ -177,27 +177,23 @@ export class AdvListComponent implements OnInit, OnDestroy {
 
   sortChanged($event: SortOption) {
     //reset page number
-    this.advertisementService.updatePaginationParams(
-      this.selectedListType(),
-      undefined,
-      0,
-      $event
-    );
-    this.initialize();
+    this.initialize(0, $event);
   }
 
   getListName(): string {
     switch (this.selectedListType()) {
-      case AdvListType.PendingValidation:
+      case AppListType.PendingValidation:
         return this.Localization.getWord('validate_title');
-      case AdvListType.MyAdvertisements:
+      case AppListType.MyAdvertisements:
         return this.Localization.getWord('my_ads_title');
-      case AdvListType.AllHistory:
+      case AppListType.AllHistory:
         return this.Localization.getWord('history');
-      case AdvListType.PrivateHistory:
+      case AppListType.PrivateHistory:
         return this.Localization.getWord('my_history');
-      case AdvListType.PendingPublication:
+      case AppListType.PendingPublication:
         return this.Localization.getWord('publishing_title');
+      default:
+        return '';
     }
   }
 

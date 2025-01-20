@@ -3,15 +3,14 @@ import {
   EventEmitter,
   inject,
   input,
-  Input,
   Output,
+  signal,
 } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
 import { ReactiveFormsModule } from '@angular/forms';
-import { SortOption } from '../../../_models/sortOption';
-import { AdvertisementService } from '../../../_services/advertisement.service';
+import { SortOption } from '../../../_entities/sortOption';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
@@ -37,15 +36,12 @@ import { Localization } from '../helpers/localization';
   styleUrl: './list-filter.component.scss',
 })
 export class ListFilterComponent {
-  @Input({ required: true }) isAdvertisementList = false;
-  sortOptions = input<SortOption>(); // TODO: .required
-
-  @Input() disabled = false;
+  sortOption = input.required<SortOption>();
+  disabled = input<boolean>(false);
+  isExtended = input.required<boolean>();
   @Output() onChanged = new EventEmitter<SortOption>();
 
   dialog = inject(MatDialog);
-  advertisementService = inject(AdvertisementService);
-
   Localization = Localization;
 
   onFilterClick() {
@@ -53,7 +49,10 @@ export class ListFilterComponent {
       .open(MatListFilterComponentModal, {
         position: { top: '10px' },
         panelClass: 'custom-dialog-container',
-        data: { isAdvertisementList: this.isAdvertisementList, sortOptions: this.sortOptions() },
+        data: {
+          isExtended: this.isExtended(),
+          sortOption: this.sortOption(),
+        },
       })
       .afterClosed()
       .subscribe((result: SortOption | null) => {
@@ -65,11 +64,7 @@ export class ListFilterComponent {
 
   getLabelText() {
     let fieldTranslation = '';
-    let field;
-    if (this.isAdvertisementList)
-      field = this.advertisementService.getCurrentSortOptions()?.field;
-    else field = this.sortOptions()?.field;
-
+    const field = this.sortOption()?.field;
     switch (field) {
       case 'date':
         fieldTranslation = this.Localization.getWord('date_case');
@@ -88,9 +83,7 @@ export class ListFilterComponent {
   }
 
   getCurrentSortOptionsText() {
-    const order = this.isAdvertisementList
-      ? this.advertisementService.getCurrentSortOptions()?.order
-      : this.sortOptions()?.order;
+    const order = this.sortOption()?.order;
 
     return order === 'asc'
       ? this.Localization.getWord('ascending_order')

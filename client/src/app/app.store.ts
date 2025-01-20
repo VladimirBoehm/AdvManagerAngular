@@ -23,20 +23,23 @@ import {
 } from '@ngrx/signals/entities';
 import { ChatFilter } from './_models/chatFilter';
 import { ChatFilterService } from './_services/chat-filter.service';
-import { PaginationParams } from './_models/paginationParams';
+import { PaginationParams } from './_entities/paginationParams';
 import { DEFAULT_SORT_OPTION } from './_framework/constants/defaultSortOption';
-import { SortOption } from './_models/sortOption';
+import { SortOption } from './_entities/sortOption';
 import { Advertisement } from './_models/advertisement';
+import { HashInfo } from './_entities/hashInfo';
 
 const defaultPageSize = 6;
 const chatFilterPageSize = 999;
 
 type appState = {
   user: User | null;
+  selectedAdvertisement: Advertisement | null;
   pendingValidationAdvertisementsCount: number;
   areChatFiltersLoaded: boolean;
   chatFilterPaginationParams: PaginationParams;
   allHistoryPaginationParams: PaginationParams;
+  allHistoryHashInfo: Map<string, HashInfo>;
   privateHistoryPaginationParams: PaginationParams;
   pendingPublicationPaginationParams: PaginationParams;
   pendingValidationPaginationParams: PaginationParams;
@@ -54,6 +57,7 @@ function getDefaultSortOptions(): SortOption {
 
 const initialState: appState = {
   user: null,
+  selectedAdvertisement: null,
   pendingValidationAdvertisementsCount: 0,
   areChatFiltersLoaded: false,
   chatFilterPaginationParams: {
@@ -68,6 +72,7 @@ const initialState: appState = {
     pageSize: defaultPageSize,
     sortOption: getDefaultSortOptions(),
   },
+  allHistoryHashInfo: new Map<string, HashInfo>(),
   privateHistoryPaginationParams: {
     totalItems: 0,
     pageNumber: 0,
@@ -131,6 +136,27 @@ const pendingValidationAdvertisementsConfig = entityConfig({
   collection: 'pendingValidationAdvertisements',
 });
 
+function getHashKey(paginationParams: PaginationParams): string {
+  const clonedParams = JSON.parse(
+    JSON.stringify({ ...paginationParams, totalItems: 0 })
+  );
+  function collectValues(obj: any, values: any[] = []): any[] {
+    if (obj === null || obj === undefined || obj === '') {
+      return values;
+    }
+    if (typeof obj === 'object' && !Array.isArray(obj)) {
+      for (const key of Object.keys(obj)) {
+        collectValues(obj[key], values);
+      }
+    } else {
+      values.push(obj);
+    }
+    return values;
+  }
+  const resultValues = collectValues(clonedParams);
+  return resultValues.join('-');
+}
+
 export const AppStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
@@ -155,6 +181,7 @@ export const AppStore = signalStore(
       myAdvertisementsEntities,
       privateHistoryPaginationParams,
       privateHistoryEntities,
+      allHistoryHashInfo,
     }) => ({
       sortedPrivateHistory: computed(() => {
         const startIndex =
@@ -163,7 +190,6 @@ export const AppStore = signalStore(
         const endIndex = startIndex + privateHistoryPaginationParams().pageSize;
         return privateHistoryEntities().slice(startIndex, endIndex);
       }),
-
       sortedMyAdvertisements: computed(() => {
         const startIndex =
           myAdvertisementsPaginationParams().pageNumber *
@@ -172,7 +198,6 @@ export const AppStore = signalStore(
           startIndex + myAdvertisementsPaginationParams().pageSize;
         return myAdvertisementsEntities().slice(startIndex, endIndex);
       }),
-
       sortedChatFilters: computed(() => {
         let filteredList = [...chatFilterEntities()];
         if (chatFilterPaginationParams().sortOption.searchType === 'title') {
@@ -238,11 +263,20 @@ export const AppStore = signalStore(
         );
       }),
       sortedAllHistory: computed(() => {
-        const startIndex =
-          allHistoryPaginationParams().pageNumber *
-          allHistoryPaginationParams().pageSize;
-        const endIndex = startIndex + allHistoryPaginationParams().pageSize;
-        return allHistoryEntities().slice(startIndex, endIndex);
+        const searchHashKey = getHashKey(allHistoryPaginationParams());
+        if (allHistoryHashInfo().has(searchHashKey)) {
+          const hashInfo = allHistoryHashInfo().get(searchHashKey);
+          if (!hashInfo?.ids) return [];
+          return hashInfo?.ids.map((id) => {
+            return allHistoryEntities().find((ad) => ad.id === id)!;
+          });
+        } else {
+          const startIndex =
+            allHistoryPaginationParams().pageNumber *
+            allHistoryPaginationParams().pageSize;
+          const endIndex = startIndex + allHistoryPaginationParams().pageSize;
+          return allHistoryEntities().slice(startIndex, endIndex);
+        }
       }),
     })
   ),
@@ -253,6 +287,10 @@ export const AppStore = signalStore(
       advertisementService = inject(AdvertisementService),
       chatFilterService = inject(ChatFilterService)
     ) => ({
+      setSelectedAdvertisement(advertisement: Advertisement) {
+        patchState(store, { selectedAdvertisement: advertisement });
+        console.log('>>> AppStore: selectedAdvertisement set');
+      },
       async getAdvertisementPrivateHistory(pageNumber?: number) {
         if (pageNumber !== undefined) {
           patchState(store, {
@@ -279,6 +317,68 @@ export const AppStore = signalStore(
           },
         });
         console.log('>>> AppStore: privateHistory loaded');
+      },
+      async getAdvertisementAllHistory(
+        pageNumber?: number,
+        sortOption?: SortOption
+      ) {
+        if (pageNumber !== undefined) {
+          patchState(store, {
+            allHistoryPaginationParams: {
+              ...store.allHistoryPaginationParams(),
+              pageNumber,
+            },
+          });
+        }
+        if (sortOption) {
+          patchState(store, {
+            allHistoryPaginationParams: {
+              ...store.allHistoryPaginationParams(),
+              sortOption,
+            },
+          });
+        }
+
+        const searchHashKey = getHashKey(store.allHistoryPaginationParams());
+        if (store.allHistoryHashInfo().has(searchHashKey)) {
+          const hashInfo = store.allHistoryHashInfo().get(searchHashKey);
+          patchState(store, {
+            allHistoryPaginationParams: {
+              ...store.allHistoryPaginationParams(),
+              totalItems: hashInfo?.totalItems ?? 0,
+            },
+          });
+          console.log('>>> AppStore: allHistory already loaded');
+          return;
+        }
+
+        const response = await lastValueFrom(
+          advertisementService.getAdvertisementAllHistory(
+            store.allHistoryPaginationParams()
+          )
+        );
+        const advertisements = response.body as Advertisement[];
+        const paginatedResponse = JSON.parse(
+          response.headers.get('Pagination')!
+        );
+
+        patchState(store, addEntities(advertisements, allHistoryConfig));
+        patchState(store, {
+          allHistoryPaginationParams: {
+            ...store.allHistoryPaginationParams(),
+            totalItems: paginatedResponse.totalItems,
+          },
+        });
+        patchState(store, {
+          allHistoryHashInfo: store
+            .allHistoryHashInfo()
+            .set(getHashKey(store.allHistoryPaginationParams()), {
+              totalItems: paginatedResponse.totalItems,
+              ids: advertisements.map((ad) => ad.id),
+            }),
+        });
+
+        console.log('>>> AppStore: allHistory loaded');
       },
       async getMyAdvertisements(pageNumber?: number) {
         if (pageNumber !== undefined) {
@@ -307,7 +407,6 @@ export const AppStore = signalStore(
         });
         console.log('>>> AppStore: myAdvertisements loaded');
       },
-
       async getPendingPublicationAdvertisements(pageNumber?: number) {
         if (pageNumber !== undefined) {
           patchState(store, {
@@ -338,7 +437,6 @@ export const AppStore = signalStore(
         });
         console.log('>>> AppStore: pendingPublicationAdvertisements loaded');
       },
-
       async getPendingValidationAdvertisements(pageNumber?: number) {
         if (pageNumber !== undefined) {
           patchState(store, {
@@ -368,35 +466,6 @@ export const AppStore = signalStore(
           },
         });
         console.log('>>> AppStore: pendingValidationAdvertisements loaded');
-      },
-      async getAdvertisementAllHistory(pageNumber?: number) {
-        if (pageNumber !== undefined) {
-          patchState(store, {
-            allHistoryPaginationParams: {
-              ...store.allHistoryPaginationParams(),
-              pageNumber,
-            },
-          });
-        }
-        const response = await lastValueFrom(
-          advertisementService.getAdvertisementAllHistory(
-            store.allHistoryPaginationParams()
-          )
-        );
-        const advertisements = response.body as Advertisement[];
-        const paginatedResponse = JSON.parse(
-          response.headers.get('Pagination')!
-        );
-
-        patchState(store, addEntities(advertisements, allHistoryConfig));
-        patchState(store, {
-          allHistoryPaginationParams: {
-            ...store.allHistoryPaginationParams(),
-            totalItems: paginatedResponse.totalItems,
-          },
-        });
-
-        console.log('>>> AppStore: allHistory loaded');
       },
       async login() {
         if (!store.user()) {
@@ -436,15 +505,6 @@ export const AppStore = signalStore(
       async updateChatFilterPaginationParams(params: PaginationParams) {
         patchState(store, { chatFilterPaginationParams: params });
         console.log('>>> AppStore: PaginationParams updated');
-      },
-      async resetChatFilterPaginationParams() {
-        patchState(store, {
-          chatFilterPaginationParams: {
-            ...store.chatFilterPaginationParams(),
-            sortOption: getDefaultSortOptions(),
-          },
-        });
-        console.log('>>> AppStore: PaginationParams reset');
       },
       async addChatFilter(chatFilter: ChatFilter) {
         const chatFilterFromServer = await lastValueFrom(

@@ -9,10 +9,12 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
-import { SortOption } from '../../../../_models/sortOption';
+import { SortOption } from '../../../../_entities/sortOption';
 import { TelegramBackButtonService } from '../../../telegramBackButtonService';
 import { SharedModule } from '../../../modules/sharedModule';
 import { Localization } from '../../helpers/localization';
+import { AppListType } from '../../../constants/advListType';
+import { AppStore } from '../../../../app.store';
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -37,16 +39,17 @@ export const MY_DATE_FORMATS = {
 export class MatListFilterComponentModal implements OnInit, OnDestroy {
   private formBuilder = inject(FormBuilder);
   private backButtonService = inject(TelegramBackButtonService);
-
+  readonly appStore = inject(AppStore);
   sortForm: FormGroup = new FormGroup({});
   currentSortOption = signal<SortOption>({} as SortOption);
   Localization = Localization;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { isAdvertisementList: boolean, sortOptions: SortOption },
+    @Inject(MAT_DIALOG_DATA)
+    public data: { isExtended: boolean; sortOption: SortOption },
     private dialogRef: MatDialogRef<MatListFilterComponentModal>
   ) {
-    this.currentSortOption.set({ ...data.sortOptions });
+    this.currentSortOption.set(data.sortOption);
   }
 
   ngOnInit(): void {

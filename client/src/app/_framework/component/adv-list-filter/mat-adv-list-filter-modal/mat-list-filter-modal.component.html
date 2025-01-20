@@ -46,13 +46,13 @@
       <select class="form-select ms-1" formControlName="selectedSearchType">
         <option value="date">{{ Localization.getWord("by_date") }}</option>
         <option value="title">{{ Localization.getWord("by_title") }}</option>
-        <option [hidden]="!data.isAdvertisementList" value="content">
+        <option [hidden]="!data.isExtended" value="content">
           {{ Localization.getWord("by_content") }}
         </option>
-        <option [hidden]="!data.isAdvertisementList" value="username">
+        <option [hidden]="!data.isExtended" value="username">
           {{ Localization.getWord("by_username") }}
         </option>
-        <option [hidden]="!data.isAdvertisementList" value="name">
+        <option [hidden]="!data.isExtended" value="name">
           {{ Localization.getWord("by_name") }}
         </option>
       </select>
@@ -92,7 +92,7 @@
           </div>
         </mat-radio-button>
         <mat-radio-button
-          *ngIf="data.isAdvertisementList"
+          *ngIf="data.isExtended"
           value="username"
           class="mt-1 d-block"
         >
@@ -111,7 +111,7 @@
           </div>
         </mat-radio-button>
         <mat-radio-button
-          *ngIf="data.isAdvertisementList"
+          *ngIf="data.isExtended"
           value="name"
           class="mt-1 d-block"
         >

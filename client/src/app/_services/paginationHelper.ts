@@ -1,5 +1,5 @@
 import { HttpParams } from '@angular/common/http';
-import { PaginationParams } from '../_models/paginationParams';
+import { PaginationParams } from '../_entities/paginationParams';
 
 export function getPaginationHeaders(paginationParams?: PaginationParams) {
   let params = new HttpParams();

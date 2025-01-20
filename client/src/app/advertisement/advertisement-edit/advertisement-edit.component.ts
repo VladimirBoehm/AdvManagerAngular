@@ -19,7 +19,7 @@ import {
 } from './add-advertisement-button-modal/add-advertisement-button-modal.component';
 import { MatErrorService } from '../../_framework/component/errors/mat-error-service';
 import { AdvertisementStatus } from '../../_framework/constants/advertisementStatus';
-import { AdvListType } from '../../_framework/constants/advListType';
+import { AppListType } from '../../_framework/constants/advListType';
 import { SharedModule } from '../../_framework/modules/sharedModule';
 import { ImagePreviewModalComponent } from '../../_framework/component/image-preview-modal/image-preview-modal.component';
 import { BusyService } from '../../_services/busy.service';
@@ -74,22 +74,21 @@ export class AdvertisementEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
-      this.router.navigate(['/adv-list', AdvListType.MyAdvertisements]);
+      this.router.navigate(['/adv-list', AppListType.MyAdvertisements]);
     });
 
     this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       if (id && Number(id) > 0) {
-        this.advertisementService.getById(Number(id))?.subscribe({
-          next: (advertisement: Advertisement) => {
-            this.advertisement = advertisement;
-
-            this.initializeForm();
-          },
-          error: (err) => {
-            console.error('Error when loading ads:', err);
-          },
-        });
+        // this.advertisementService.getById(Number(id))?.subscribe({
+        //   next: (advertisement: Advertisement) => {
+        //     this.advertisement = advertisement;
+        //     this.initializeForm();
+        //   },
+        //   error: (err) => {
+        //     console.error('Error when loading ads:', err);
+        //   },
+        // });
       } else {
         this.advertisement = {
           id: 0,
