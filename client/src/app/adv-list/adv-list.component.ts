@@ -42,7 +42,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
   readonly advertisementsList = signal<Advertisement[]>([]);
   private routerSubscription!: Subscription;
   private paramMapSubscription!: Subscription;
-  
+
   advListType = AppListType;
   dateHelper = DateHelper;
   selectedListType = signal<AppListType>(AppListType.MyAdvertisements);
@@ -91,7 +91,10 @@ export class AdvListComponent implements OnInit, OnDestroy {
   private async initialize(pageNumber?: number, sortOption?: SortOption) {
     switch (this.selectedListType()) {
       case AppListType.PendingValidation: {
-        await this.appStore.getPendingValidationAdvertisements(pageNumber);
+        await this.appStore.getPendingValidationAdvertisements(
+          pageNumber,
+          sortOption
+        );
         this.advertisementsList.set(
           this.appStore.sortedPendingValidationAdvertisements()
         );
@@ -105,7 +108,10 @@ export class AdvListComponent implements OnInit, OnDestroy {
         break;
       }
       case AppListType.PrivateHistory: {
-        await this.appStore.getAdvertisementPrivateHistory(pageNumber);
+        await this.appStore.getAdvertisementPrivateHistory(
+          pageNumber,
+          sortOption
+        );
         this.advertisementsList.set(this.appStore.sortedPrivateHistory());
         this.pagination.set(this.appStore.privateHistoryPaginationParams());
         break;
@@ -117,7 +123,10 @@ export class AdvListComponent implements OnInit, OnDestroy {
         break;
       }
       case AppListType.PendingPublication: {
-        await this.appStore.getPendingPublicationAdvertisements(pageNumber);
+        await this.appStore.getPendingPublicationAdvertisements(
+          pageNumber,
+          sortOption
+        );
         this.advertisementsList.set(
           this.appStore.sortedPendingPublicationAdvertisements()
         );
