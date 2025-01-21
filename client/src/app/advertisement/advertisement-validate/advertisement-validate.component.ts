@@ -1,11 +1,8 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { AdvertisementService } from '../../_services/advertisement.service';
-import { Advertisement } from '../../_models/advertisement';
 import { TelegramBackButtonService } from '../../_framework/telegramBackButtonService';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { UpdateAdvertisementAdminRequest } from '../../_models/updateAdvertisementAdminRequest';
 import { AdvertisementStatus } from '../../_framework/constants/advertisementStatus';
 import { MatErrorService } from '../../_framework/component/errors/mat-error-service';
 import { CustomValidators } from '../../_framework/component/validators/customValidators';
@@ -14,6 +11,7 @@ import { ConfirmationMatDialogService } from '../../_services/confirmation-mat-d
 import { SharedModule } from '../../_framework/modules/sharedModule';
 import { AdvertisementMainDataComponent } from '../advertisement-main-data/advertisement-main-data.component';
 import { Localization } from '../../_framework/component/helpers/localization';
+import { AppStore } from '../../appStore/app.store';
 
 @Component({
   selector: 'app-advertisement-validate',
@@ -28,11 +26,10 @@ export class AdvertisementValidateComponent implements OnInit {
   @ViewChild('modalDialogReject') modalDialogReject?: any;
 
   private backButtonService = inject(TelegramBackButtonService);
-  private route = inject(ActivatedRoute);
   private modalService = inject(BsModalService);
   private formBuilder = inject(FormBuilder);
   private router = inject(Router);
-  private advertisementService = inject(AdvertisementService);
+  readonly appStore = inject(AppStore);
   matErrorService = inject(MatErrorService);
   confirmationService = inject(ConfirmationMatDialogService);
 
@@ -43,7 +40,6 @@ export class AdvertisementValidateComponent implements OnInit {
   advertisementId: number = 0;
   commentCounter: number = 0;
   maxCommentLength: number = 500;
-  advertisement?: Advertisement;
   advertisementStatus = AdvertisementStatus;
   modalRef?: BsModalRef;
   Localization = Localization;
@@ -52,22 +48,8 @@ export class AdvertisementValidateComponent implements OnInit {
     this.backButtonService.setBackButtonHandler(() => {
       this.router.navigate(['/adv-list', AppListType.PendingValidation]);
     });
-
-    this.route.paramMap.subscribe((params) => {
-      const id = params.get('id');
-      if (id) {
-        // this.advertisementService.getById(Number(id))?.subscribe({
-        //   next: (advertisement: Advertisement) => {
-        //     this.advertisement = advertisement;
-        //     this.initializeForm();
-        //     this.updateAdminMessageCounter();
-        //   },
-        //   error: (err) => {
-        //     console.error('Error when loading ads:', err);
-        //   },
-        // });
-      }
-    });
+    this.initializeForm();
+    this.updateAdminMessageCounter();
   }
 
   confirm() {
@@ -84,7 +66,7 @@ export class AdvertisementValidateComponent implements OnInit {
 
     this.editForm = this.formBuilder.group({
       adminMessage: [
-        this.advertisement?.adminMessage,
+        this.appStore.selectedAdvertisement()?.adminMessage,
         [Validators.maxLength(this.maxCommentLength)],
       ],
       frequencyValue: [this.frequencyValue],
@@ -104,21 +86,21 @@ export class AdvertisementValidateComponent implements OnInit {
     this.commentCounter = titleValue.length;
   }
 
-  modalDialogConfirm(advertisementStatus: AdvertisementStatus) {
-    const updateAdvertisementAdminRequest: UpdateAdvertisementAdminRequest = {
-      advertisementId: this.advertisement?.id ?? 0,
-      advertisementStatus: advertisementStatus,
-      publishFrequency:
-        this.editFormModalDialog.controls['frequencyValue']?.value,
-      adminMessage: this.editForm.controls['adminMessage']?.value,
-    };
-    this.modalRef?.hide();
+  async modalDialogConfirm(advertisementStatus: AdvertisementStatus) {
+    const selectedAdvertisement = this.appStore.selectedAdvertisement();
+    if (!selectedAdvertisement || selectedAdvertisement.id === undefined) {
+      console.error('Selected advertisement is invalid');
+      return;
+    }
+    const updatedAdvertisement = { ...selectedAdvertisement };
+    updatedAdvertisement.statusId = advertisementStatus;
+    updatedAdvertisement.publishFrequency =
+      this.editFormModalDialog.controls['frequencyValue']?.value;
+    updatedAdvertisement.adminMessage =
+      this.editForm.controls['adminMessage']?.value;
 
-    this.advertisementService
-      .validateAdvertisementAdmin(updateAdvertisementAdminRequest)
-      .subscribe({
-        error: (error: any) => console.log(error),
-      });
+    this.modalRef?.hide();
+    await this.appStore.validateAdvertisementAdmin(updatedAdvertisement);
     this.router.navigate(['/adv-list', AppListType.PendingValidation]);
   }
 

@@ -20,11 +20,11 @@ export const routes: Routes = [
     component: AdvertisementMainDataComponent,
   },
   {
-    path: 'app-advertisement-validate/:id',
+    path: 'app-advertisement-validate',
     component: AdvertisementValidateComponent,
   },
   {
-    path: 'app-advertisement-preview/:id',
+    path: 'app-advertisement-preview',
     component: AdvertisementPreviewComponent,
   },
   {
@@ -33,7 +33,8 @@ export const routes: Routes = [
   },
   {
     path: 'app-chat-filter',
-    component: ChatFilterComponent, resolve: { chatFilter: ChatFilterResolver }
+    component: ChatFilterComponent,
+    resolve: { chatFilter: ChatFilterResolver },
   },
   {
     path: 'app-feedback',

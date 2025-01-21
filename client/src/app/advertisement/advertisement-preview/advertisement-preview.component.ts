@@ -1,8 +1,8 @@
 import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Advertisement } from '../../_models/advertisement';
 import { AdvertisementService } from '../../_services/advertisement.service';
 import { TelegramBackButtonService } from '../../_framework/telegramBackButtonService';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { AdvertisementStatus } from '../../_framework/constants/advertisementStatus';
 import { AccountService } from '../../_services/account.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
@@ -16,7 +16,7 @@ import { SharedModule } from '../../_framework/modules/sharedModule';
 import { AdvertisementMainDataComponent } from '../advertisement-main-data/advertisement-main-data.component';
 import { BusyService } from '../../_services/busy.service';
 import { Localization } from '../../_framework/component/helpers/localization';
-import { AppStore } from '../../app.store';
+import { AppStore } from '../../appStore/app.store';
 
 @Component({
   selector: 'app-advertisement-preview',
@@ -34,7 +34,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   private backButtonService = inject(TelegramBackButtonService);
   private modalService = inject(BsModalService);
   private router = inject(Router);
-  private route = inject(ActivatedRoute);
+  private location = inject(Location);
   readonly appStore = inject(AppStore);
 
   shouldRejectValidation: boolean = false;
@@ -51,7 +51,6 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   advListType = AppListType;
   dateHelper = DateHelper;
   modalRef?: BsModalRef;
-  advertisement?: Advertisement;
   nextPublishDate?: Date;
   timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   Localization = Localization;
@@ -61,42 +60,25 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
     this.backButtonService.setBackButtonHandler(() => {
       this.back();
     });
-
-    this.route.paramMap.subscribe((params) => {
-      const id = params.get('id');
-      if (id) {
-        this.getAdvertisementById(Number(id));
-      }
-    });
   }
 
   shouldShowCancelButton(): boolean {
     return (
       this.appStore.user()?.isAdmin ||
-      this.appStore.user()?.userId === this.advertisement?.userId
+      this.appStore.user()?.userId ===
+        this.appStore.selectedAdvertisement()?.userId
     );
   }
 
-  private getAdvertisementById(id: number) {
-    // this.advertisementService.getById(Number(id))?.subscribe({
-    //   next: (advertisement: Advertisement) => {
-    //     this.advertisement = advertisement;
-    //   },
-    //   error: (err) => {
-    //     console.error('Error when loading ads:', err);
-    //   },
-    // });
-  }
-
   private back() {
-    this.router.navigate([
-      '/adv-list',
-      this.advertisementService.getActualSearchType(),
-    ]);
+    this.location.back();
   }
 
   edit() {
-    this.router.navigate(['/app-advertisement-edit', this.advertisement?.id]);
+    this.router.navigate([
+      '/app-advertisement-edit',
+      this.appStore.selectedAdvertisement()?.id,
+    ]);
   }
 
   delete() {
@@ -115,7 +97,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
 
   publishDialogShow() {
     this.publishService
-      .getRegularPublishNextDate(this.advertisement?.id ?? 0)
+      .getRegularPublishNextDate(this.appStore.selectedAdvertisement()?.id ?? 0)
       .subscribe({
         next: (result: Date) => {
           this.nextPublishDate = result;
@@ -129,24 +111,27 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   }
 
   cancelPublicationAdmin() {
-    if (!this.advertisement) return;
+    if (!this.appStore.selectedAdvertisement()) return;
 
     const managePublish = {
-      advertisementId: this.advertisement?.id,
+      advertisementId: this.appStore.selectedAdvertisement()?.id,
       comment: this.adminComment,
       shouldRejectValidation: this.shouldRejectValidation,
-      publishId: this.advertisement?.nextPublishId,
+      publishId: this.appStore.selectedAdvertisement()?.nextPublishId,
     } as ManagePublish;
 
-    this.advertisement.nextPublishDate = undefined;
-    if (this.shouldRejectValidation) {
-      this.advertisement.statusId = AdvertisementStatus.rejected;
-    } else {
-      this.advertisement.statusId = AdvertisementStatus.validated;
-    }
+    // this.advertisement.nextPublishDate = undefined;
+    // if (this.shouldRejectValidation) {
+    //   this.advertisement.statusId = AdvertisementStatus.rejected;
+    // } else {
+    //   this.advertisement.statusId = AdvertisementStatus.validated;
+    // }
 
     this.advertisementService
-      .cancelPublicationAdmin(managePublish, this.advertisement)
+      .cancelPublicationAdmin(
+        managePublish,
+        this.appStore.selectedAdvertisement()
+      )
       ?.subscribe({
         next: () => {
           this.modalRef?.hide();
@@ -159,20 +144,21 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   }
 
   forcePublication() {
-    if (!this.advertisement) return;
-
     const managePublish = {
-      advertisementId: this.advertisement.id,
+      advertisementId: this.appStore.selectedAdvertisement()?.id,
       comment: this.adminComment,
-      publishId: this.advertisement?.nextPublishId,
+      publishId: this.appStore.selectedAdvertisement()?.nextPublishId,
       shouldRejectValidation: false,
     } as ManagePublish;
 
-    this.advertisement.nextPublishDate = undefined;
-    this.advertisement.statusId = AdvertisementStatus.validated;
+    // this.advertisement.nextPublishDate = undefined;
+    // this.advertisement.statusId = AdvertisementStatus.validated;
 
     this.advertisementService
-      .forcePublicationAdmin(managePublish, this.advertisement)
+      .forcePublicationAdmin(
+        managePublish,
+        this.appStore.selectedAdvertisement()
+      )
       ?.subscribe({
         next: () => {
           this.modalRef?.hide();
@@ -209,35 +195,33 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
 
   modalDialogDeleteConfirm() {
     this.modalRef?.hide();
-    this.advertisementService.delete(this.advertisement?.id)?.subscribe({
-      next: () => {
-        this.back();
-      },
-      error: (err) => {
-        console.error('Error when deleting ads:', err);
-      },
-    });
+    this.appStore.deleteAdvertisement(
+      this.appStore.selectedAdvertisement()?.id ?? 0
+    );
+    this.back();
   }
 
   cancelPublication() {
-    if (!this.advertisement) return;
-    this.advertisement.nextPublishDate = undefined;
-    this.advertisement.nextPublishId = 0;
-    this.advertisement.statusId = AdvertisementStatus.validated;
-    this.advertisementService.cancelPublication(this.advertisement).subscribe({
-      next: () => {
-        this.modalRef?.hide();
-        this.getAdvertisementById(this.advertisement?.id ?? 0);
-      },
-      error: (err) => {
-        console.error('Error when canceling Publication ', err);
-      },
-    });
+    // this.advertisement.nextPublishDate = undefined;
+    // this.advertisement.nextPublishId = 0;
+    // this.advertisement.statusId = AdvertisementStatus.validated;
+    // this.advertisementService.cancelPublication(this.advertisement).subscribe({
+    //   next: () => {
+    //     this.modalRef?.hide();
+    //     this.getAdvertisementById(this.advertisement?.id ?? 0);
+    //   },
+    //   error: (err) => {
+    //     console.error('Error when canceling Publication ', err);
+    //   },
+    // });
   }
 
   cancelPublicationDialogShow() {
     console.log(this.advertisementService.getActualSearchType());
-    if (this.appStore.user()?.userId === this.advertisement?.userId) {
+    if (
+      this.appStore.user()?.userId ===
+      this.appStore.selectedAdvertisement()?.userId
+    ) {
       this.confirmationService
         .confirmDialog({
           title: this.Localization.getWord('cancel_publication_question'),
@@ -262,36 +246,35 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
 
   modalDialogValidateConfirm() {
     this.modalRef?.hide();
-    if (this.advertisement) {
-      this.advertisement.statusId = AdvertisementStatus.pendingValidation;
-
-      this.advertisementService
-        .sendToValidation(this.advertisement)
-        ?.subscribe({
-          next: () => {
-            this.getAdvertisementById(this.advertisement?.id ?? 0);
-          },
-          error: (err) => {
-            console.error('Error when updating status pendingValidation:', err);
-          },
-        });
+    if (this.appStore.selectedAdvertisement()) {
+      // this.advertisement.statusId = AdvertisementStatus.pendingValidation;
+      // this.advertisementService
+      //   .sendToValidation(this.advertisement)
+      //   ?.subscribe({
+      //     next: () => {
+      //       this.getAdvertisementById(this.advertisement?.id ?? 0);
+      //     },
+      //     error: (err) => {
+      //       console.error('Error when updating status pendingValidation:', err);
+      //     },
+      //   });
     }
   }
 
   modalDialogPublishConfirm() {
-    if (!this.advertisement) return;
-    this.advertisement.statusId = AdvertisementStatus.pendingPublication;
-    this.advertisement.nextPublishDate = this.nextPublishDate;
-    this.modalRef?.hide();
+    if (!this.appStore.selectedAdvertisement()) return;
+    // this.advertisement.statusId = AdvertisementStatus.pendingPublication;
+    // this.advertisement.nextPublishDate = this.nextPublishDate;
+    // this.modalRef?.hide();
 
-    this.publishService.publish(this.advertisement).subscribe({
-      next: () => {
-        this.getAdvertisementById(this.advertisement?.id ?? 0);
-      },
-      error: (err) => {
-        console.error('Error when updating status pendingValidation:', err);
-      },
-    });
+    // this.publishService.publish(this.advertisement).subscribe({
+    //   next: () => {
+    //     this.getAdvertisementById(this.advertisement?.id ?? 0);
+    //   },
+    //   error: (err) => {
+    //     console.error('Error when updating status pendingValidation:', err);
+    //   },
+    // });
   }
 
   getDayWord(frequency: number): string {

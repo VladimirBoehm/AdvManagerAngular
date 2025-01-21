@@ -2,9 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Observable, tap } from 'rxjs';
-import { AdvertisementCacheService } from './caches/advertisement.cache.service';
 import { Advertisement } from '../_models/advertisement';
-import { AppListType } from '../_framework/constants/advListType';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
 
 @Injectable({
@@ -13,7 +11,6 @@ import { DateHelper } from '../_framework/component/helpers/dateHelper';
 export class PublishService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
-  private advertisementCacheService = inject(AdvertisementCacheService);
   private dateHelper = DateHelper;
 
   getRegularPublishNextDate(advertisementId: number): Observable<Date> {

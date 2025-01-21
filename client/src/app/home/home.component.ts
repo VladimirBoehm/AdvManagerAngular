@@ -6,7 +6,7 @@ import { SharedModule } from '../_framework/modules/sharedModule';
 import { BusyService } from '../_services/busy.service';
 import { Localization } from '../_framework/component/helpers/localization';
 import { ImpressumComponent } from './impressum/impressum.component';
-import { AppStore } from '../app.store';
+import { AppStore } from '../appStore/app.store';
 import { ThreeDotsLoadingComponent } from '../_framework/component/custom-loading-bar/three-dots-loading.component';
 
 @Component({

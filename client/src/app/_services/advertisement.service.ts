@@ -5,13 +5,11 @@ import { environment } from '../../environments/environment';
 import { Observable, of, tap } from 'rxjs';
 import { UpdateAdvertisementAdminRequest } from '../_models/updateAdvertisementAdminRequest';
 import { UpdateAdvertisementStatusRequest } from '../_models/updateAdvertisementStatusRequest';
-import { AdvertisementCacheService } from './caches/advertisement.cache.service';
 import { PaginationParams } from '../_entities/paginationParams';
 import { getPaginationHeaders } from './paginationHelper';
 import { AppListType } from '../_framework/constants/advListType';
 import { ManagePublish } from '../_entities/managePublish';
 import { SortOption } from '../_entities/sortOption';
-import { DateHelper } from '../_framework/component/helpers/dateHelper';
 import { DEFAULT_SORT_OPTION } from '../_framework/constants/defaultSortOption';
 @Injectable({
   providedIn: 'root',
@@ -19,8 +17,6 @@ import { DEFAULT_SORT_OPTION } from '../_framework/constants/defaultSortOption';
 export class AdvertisementService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
-  private advertisementCacheService = inject(AdvertisementCacheService);
-  private dateHelper = DateHelper;
   private selectedAdvListType?: AppListType;
 
   paginationParamsState: WritableSignal<Map<AppListType, PaginationParams>>;
@@ -167,21 +163,16 @@ export class AdvertisementService {
       );
   }
 
-  delete(id: number | undefined) {
-    if (!id) return;
-    return this.http
-      .delete<Advertisement>(this.baseUrl + `advertisement/${id}`)
-      .pipe(
-        tap(() => {
-          //this.advertisementCacheService.delete(id);
-        })
-      );
+  delete(id: number ) {
+    return this.http.delete<Advertisement>(
+      this.baseUrl + `advertisement/${id}`
+    );
   }
 
-  cancelPublication(advertisement: Advertisement) {
+  cancelPublication(advertisement: Advertisement | null) {
     return this.http
       .put(
-        this.baseUrl + `advertisement/cancelPublication/${advertisement.id}`,
+        this.baseUrl + `advertisement/cancelPublication/${advertisement?.id}`,
         null
       )
       .pipe(
@@ -231,22 +222,6 @@ export class AdvertisementService {
     );
   }
 
-  // getCache(advListType: AdvListType): PaginatedItem<Advertisement> | null {
-  //   this.selectedAdvListType = advListType;
-  //   const cachedResponse = this.advertisementCacheService.getCache(
-  //     advListType,
-  //     this.paginationParamsState().get(advListType)
-  //   );
-  //   if (cachedResponse) {
-  //     console.log(
-  //       'Cache returned:',
-  //       JSON.stringify(this.paginationParamsState().get(advListType))
-  //     );
-  //     return cachedResponse;
-  //   }
-  //   return null;
-  // }
-
   // MY ADVERTISEMENTS
   getMyAdvertisements(paginationParams: PaginationParams) {
     const params = getPaginationHeaders(paginationParams);
@@ -283,7 +258,7 @@ export class AdvertisementService {
   // ADMIN
   cancelPublicationAdmin(
     managePublish: ManagePublish,
-    advertisement: Advertisement
+    advertisement: Advertisement | null
   ) {
     return this.http
       .put(this.baseUrl + 'advertisementAdmin/cancelPublication', managePublish)
@@ -301,7 +276,7 @@ export class AdvertisementService {
 
   forcePublicationAdmin(
     managePublish: ManagePublish,
-    advertisement: Advertisement
+    advertisement: Advertisement | null
   ) {
     return this.http
       .put(this.baseUrl + 'advertisementAdmin/forcePublication', managePublish)
@@ -335,17 +310,13 @@ export class AdvertisementService {
     );
   }
 
-  validateAdvertisementAdmin(
-    updateAdvertisementAdminRequest: UpdateAdvertisementAdminRequest
-  ) {
-    // this.advertisementCacheService.deleteByAdvListType(
-    //   updateAdvertisementAdminRequest.advertisementId,
-    //   AdvListType.PendingValidation
-    // );
-    // this.advertisementCacheService.updateStatus(
-    //   updateAdvertisementAdminRequest.advertisementStatus,
-    //   updateAdvertisementAdminRequest.advertisementId
-    // );
+  validateAdvertisementAdmin(advertisement: Advertisement) {
+    const updateAdvertisementAdminRequest: UpdateAdvertisementAdminRequest = {
+      advertisementId: advertisement.id,
+      advertisementStatus: advertisement.statusId,
+      publishFrequency: advertisement.publishFrequency,
+      adminMessage: advertisement.adminMessage,
+    };
 
     return this.http.post(
       this.baseUrl + 'advertisementAdmin',

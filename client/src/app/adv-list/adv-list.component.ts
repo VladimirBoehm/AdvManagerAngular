@@ -16,7 +16,7 @@ import { EmptyListPlaceholderComponent } from '../_framework/component/empty-lis
 import { DatePipe } from '@angular/common';
 import { SkeletonFullScreenComponent } from '../_framework/component/skeleton-full-screen/skeleton-full-screen.component';
 import { Localization } from '../_framework/component/helpers/localization';
-import { AppStore } from '../app.store';
+import { AppStore } from '../appStore/app.store';
 import { PaginationParams } from '../_entities/paginationParams';
 
 @Component({
@@ -76,12 +76,14 @@ export class AdvListComponent implements OnInit, OnDestroy {
     });
   }
 
-  onItemClick(advertisementId: number) {
-    this.router.navigate(['/app-advertisement-preview', advertisementId]);
+  onItemClick(advertisement: Advertisement) {
+    this.appStore.setSelectedAdvertisement(advertisement);
+    this.router.navigate(['/app-advertisement-preview']);
   }
 
-  onItemClickValidate(advertisementId: number) {
-    this.router.navigate(['/app-advertisement-validate', advertisementId]);
+  onItemClickValidate(advertisement: Advertisement) {
+    this.appStore.setSelectedAdvertisement(advertisement);
+    this.router.navigate(['/app-advertisement-validate']);
   }
 
   handlePageEvent(e: PageEvent) {

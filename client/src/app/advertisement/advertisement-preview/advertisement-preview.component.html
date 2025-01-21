@@ -1,9 +1,9 @@
 <body class="p-1">
-  @if(advertisement){
+  @if(appStore.selectedAdvertisement()){
   <div class="container-fluid">
     <!-- buttons: status NEW  -->
     <div
-      *ngIf="advertisement.statusId === advertisementStatus.new"
+      *ngIf="appStore.selectedAdvertisement()?.statusId === advertisementStatus.new"
       class="background-rectangle-panel-shadow"
     >
       <div class="d-flex">
@@ -40,7 +40,7 @@
     </div>
 
     <!-- buttons: status VALIDATED  -->
-    <div *ngIf="advertisement.statusId === advertisementStatus.validated">
+    <div *ngIf="appStore.selectedAdvertisement()?.statusId === advertisementStatus.validated">
       <div class="d-flex background-rectangle-panel-shadow">
         <div class="col-6 d-flex align-items-center justify-content-center">
           <ng-container *ngTemplateOutlet="deleteButtonTemplate"></ng-container>
@@ -61,19 +61,19 @@
         </div>
       </div>
       <div
-        *ngIf="advertisement.statusId === advertisementStatus.validated"
+        *ngIf="appStore.selectedAdvertisement()?.statusId === advertisementStatus.validated"
         class="alert alert-success mt-2 mb-0"
         role="alert"
       >
         <div class="text-center">{{ Localization.getWord("confirmed") }}</div>
 
         <div
-          *ngIf="advertisement.publishFrequency; else oneTime"
+          *ngIf="appStore.selectedAdvertisement()?.publishFrequency; else oneTime"
           class="text-center"
         >
           {{ Localization.getWord("posting_frequency") }}
-          {{ advertisement.publishFrequency }}
-          {{ getDayWord(advertisement.publishFrequency) }}.
+          {{ appStore.selectedAdvertisement()?.publishFrequency }}
+          {{ getDayWord(appStore.selectedAdvertisement()?.publishFrequency ?? 0) }}.
         </div>
 
         <ng-template #oneTime>
@@ -86,7 +86,7 @@
 
     <!-- buttons: status PENDING_PUBLICATION  -->
     <div
-      *ngIf="advertisement.statusId === advertisementStatus.pendingPublication"
+      *ngIf="appStore.selectedAdvertisement()?.statusId === advertisementStatus.pendingPublication"
     >
       <div
         *ngIf="shouldShowCancelButton() || shouldShowForceButton()"
@@ -123,16 +123,16 @@
       <div class="alert alert-info text-center mb-0" role="alert">
         <div class="d-flex flex-column">
           <div>{{ Localization.getWord("waiting_for_publication") }}</div>
-          <div *ngIf="!advertisement.placeInQueue; else imageListContent">
+          <div *ngIf="!appStore.selectedAdvertisement()?.placeInQueue; else imageListContent">
             {{ Localization.getWord("will_be_queued") }}
-            {{ advertisement.nextPublishDate | date : "dd.MM.yyyy" }}
+            {{ appStore.selectedAdvertisement()?.nextPublishDate | date : "dd.MM.yyyy" }}
           </div>
         </div>
         <ng-template #imageListContent>
           <div class="d-flex flex-column">
             <div>
               {{ Localization.getWord("queue_position") }}
-              {{ advertisement.placeInQueue }}
+              {{ appStore.selectedAdvertisement()?.placeInQueue }}
             </div>
             <div class="text-muted my-info-text lh-sm mt-1">
               {{ Localization.getWord("placement_depends_on_activity") }}
@@ -143,7 +143,7 @@
     </div>
 
     <!-- buttons: status REJECTED  -->
-    <div *ngIf="advertisement.statusId === advertisementStatus.rejected">
+    <div *ngIf="appStore.selectedAdvertisement()?.statusId === advertisementStatus.rejected">
       <div class="d-flex background-rectangle-panel-shadow">
         <div class="col-6 d-flex align-items-center justify-content-center">
           <ng-container *ngTemplateOutlet="deleteButtonTemplate"></ng-container>
@@ -164,7 +164,7 @@
 
     <!-- buttons: status PENDING_VALIDATION  -->
     <div
-      *ngIf="advertisement.statusId === advertisementStatus.pendingValidation"
+      *ngIf="appStore.selectedAdvertisement()?.statusId === advertisementStatus.pendingValidation"
     >
       <div class="alert alert-info text-center mb-0" role="alert">
         {{ Localization.getWord("sent_to_admin_for_confirmation") }}
@@ -186,37 +186,37 @@
     </div>
 
     <div
-      *ngIf="advertisement.statusId === advertisementStatus.published"
+      *ngIf="appStore.selectedAdvertisement()?.statusId === advertisementStatus.published"
       class="alert alert-success mb-0"
       role="alert"
     >
       <div class="text-center">
         {{ Localization.getWord("published") }}
-        {{ dateHelper.getLocalTime(advertisement.nextPublishDate) }}
+        {{ dateHelper.getLocalTime(appStore.selectedAdvertisement()?.nextPublishDate) }}
       </div>
       <div class="text-center">
         {{ Localization.getWord("author") }}
-        {{ advertisementHelper.getUserDisplayName(advertisement) }}
+        {{ advertisementHelper.getUserDisplayName(appStore.selectedAdvertisement()) }}
       </div>
     </div>
 
     <div class="mt-2">
       <app-advertisement-main-data
-        [title]="advertisement.title"
-        [message]="advertisement.message"
-        [url]="advertisement.adImage?.url"
-        [linkName]="advertisement.linkName"
-        [linkValue]="advertisement.linkValue"
-        [created]="advertisement.created"
-        [updated]="advertisement.updated"
+        [title]="appStore.selectedAdvertisement()?.title"
+        [message]="appStore.selectedAdvertisement()?.message"
+        [url]="appStore.selectedAdvertisement()?.adImage?.url"
+        [linkName]="appStore.selectedAdvertisement()?.linkName"
+        [linkValue]="appStore.selectedAdvertisement()?.linkValue"
+        [created]="appStore.selectedAdvertisement()?.created"
+        [updated]="appStore.selectedAdvertisement()?.updated"
       ></app-advertisement-main-data>
     </div>
     <div
       *ngIf="
-        advertisement.adminMessage &&
-        advertisement.adminMessage.length &&
+        appStore.selectedAdvertisement()?.adminMessage &&
+        appStore.selectedAdvertisement()?.adminMessage?.length &&
         (appStore.user()?.isAdmin ||
-        appStore.user()?.userId === advertisement.userId)
+        appStore.user()?.userId === appStore.selectedAdvertisement()?.userId)
       "
       class="input-group mt-2 pb-4"
     >
@@ -229,7 +229,7 @@
         disabled="true"
         rows="3"
         name="adminMessage"
-        [(ngModel)]="advertisement.adminMessage"
+        [ngModel]="appStore.selectedAdvertisement()?.adminMessage"
       ></textarea>
     </div>
 

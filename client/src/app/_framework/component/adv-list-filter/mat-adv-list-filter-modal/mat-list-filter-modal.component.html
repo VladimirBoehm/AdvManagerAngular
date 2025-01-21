@@ -46,16 +46,17 @@
       <select class="form-select ms-1" formControlName="selectedSearchType">
         <option value="date">{{ Localization.getWord("by_date") }}</option>
         <option value="title">{{ Localization.getWord("by_title") }}</option>
-        <option [hidden]="!data.isExtended" value="content">
+        <option *ngIf="data.isExtended" value="content">
           {{ Localization.getWord("by_content") }}
         </option>
-        <option [hidden]="!data.isExtended" value="username">
+        <option *ngIf="data.isExtended" value="username">
           {{ Localization.getWord("by_username") }}
         </option>
-        <option [hidden]="!data.isExtended" value="name">
+        <option *ngIf="data.isExtended" value="name">
           {{ Localization.getWord("by_name") }}
         </option>
       </select>
+
     </div>
 
     <h6 class="text-muted">{{ Localization.getWord("sort") }}</h6>

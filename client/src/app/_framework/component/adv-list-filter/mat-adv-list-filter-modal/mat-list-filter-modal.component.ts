@@ -13,8 +13,7 @@ import { SortOption } from '../../../../_entities/sortOption';
 import { TelegramBackButtonService } from '../../../telegramBackButtonService';
 import { SharedModule } from '../../../modules/sharedModule';
 import { Localization } from '../../helpers/localization';
-import { AppListType } from '../../../constants/advListType';
-import { AppStore } from '../../../../app.store';
+import { AppStore } from '../../../../appStore/app.store';
 
 export const MY_DATE_FORMATS = {
   parse: {

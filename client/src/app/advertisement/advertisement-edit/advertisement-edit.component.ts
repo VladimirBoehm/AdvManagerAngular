@@ -26,7 +26,7 @@ import { BusyService } from '../../_services/busy.service';
 import { Localization } from '../../_framework/component/helpers/localization';
 import _ from 'lodash';
 import { ToastrService } from 'ngx-toastr';
-import { AppStore } from '../../app.store';
+import { AppStore } from '../../appStore/app.store';
 
 @Component({
   selector: 'app-advertisement-edit',

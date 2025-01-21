@@ -14,7 +14,7 @@ import { BusyService } from '../_services/busy.service';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
 import { SkeletonFullScreenComponent } from '../_framework/component/skeleton-full-screen/skeleton-full-screen.component';
 import { Localization } from '../_framework/component/helpers/localization';
-import { AppStore } from '../app.store';
+import { AppStore } from '../appStore/app.store';
 import { Subscription } from 'rxjs';
 
 @Component({

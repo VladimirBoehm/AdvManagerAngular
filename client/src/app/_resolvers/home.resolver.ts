@@ -5,7 +5,7 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { AppStore } from '../app.store';
+import { AppStore } from '../appStore/app.store';
 
 @Injectable({
   providedIn: 'root',

@@ -1,5 +1,4 @@
 <body class="p-1">
-  @if(advertisement){
   <div class="container-fluid">
     <form
       id="editForm"
@@ -36,13 +35,13 @@
       </div>
       <div class="mt-2">
         <app-advertisement-main-data
-          [title]="advertisement.title"
-          [message]="advertisement.message"
-          [url]="advertisement.adImage?.url"
-          [linkName]="advertisement.linkName"
-          [linkValue]="advertisement.linkValue"
-          [created]="advertisement.created"
-          [updated]="advertisement.updated"
+          [title]="appStore.selectedAdvertisement()?.title"
+          [message]="appStore.selectedAdvertisement()?.message"
+          [url]="appStore.selectedAdvertisement()?.adImage?.url"
+          [linkName]="appStore.selectedAdvertisement()?.linkName"
+          [linkValue]="appStore.selectedAdvertisement()?.linkValue"
+          [created]="appStore.selectedAdvertisement()?.created"
+          [updated]="appStore.selectedAdvertisement()?.updated"
         ></app-advertisement-main-data>
 
         <mat-form-field class="mt-2 w-100 background-rectangle-panel-common">
@@ -107,5 +106,4 @@
       </div>
     </ng-template>
   </div>
-  }
 </body>
