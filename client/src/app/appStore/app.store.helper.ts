@@ -135,13 +135,7 @@ export function getUpdatedSearchRow(
   sameSearch: Map<PaginationParams, number[]>
 ): Map<PaginationParams, number[]> {
   const updatedSearch: Map<PaginationParams, number[]> = new Map();
-  const updatedActualPage = {
-    ...actualPage,
-    totalItems: actualPage.totalItems - 1,
-  };
-  updatedSearch.set(updatedActualPage, []);
-
-  const newActualPageIds: number[] = [];
+  // Previous pages
   forEach(previousPages, (page) => {
     updatedSearch.set(
       { ...page, totalItems: page.totalItems - 1 },
@@ -149,62 +143,65 @@ export function getUpdatedSearchRow(
     );
   });
 
+  // Actual page
+  const updatedActualPage: PaginationParams = {
+    ...actualPage,
+    totalItems: actualPage.totalItems - 1,
+  };
+  
+  const newActualPageIds: number[] = [];
   const actualPageIds = sameSearch.get(actualPage) ?? [];
   for (const actualPageId of actualPageIds) {
     if (actualPageId !== id) {
       newActualPageIds.push(actualPageId);
     }
   }
+  if (newActualPageIds.length > 0) {
+    updatedSearch.set(updatedActualPage, newActualPageIds);
+  }
 
+  // Next pages
   nextPages = nextPages.sort((a, b) => a.pageNumber - b.pageNumber);
-  
   for (let i = 0; i < nextPages.length; i++) {
-    const nextPage = nextPages[i];
     if (i === 0) {
-      const firstIdNextPage = (sameSearch.get(nextPage) ?? []).shift();
+      const firstIdNextPage = (sameSearch.get(nextPages[i]) ?? []).shift();
       if (firstIdNextPage !== undefined) {
         newActualPageIds.push(firstIdNextPage);
         updatedSearch.set(updatedActualPage, newActualPageIds);
         if (
-          (nextPages.length === 1 ||
-            (sameSearch.get(nextPages[i + 1]) ?? []).length === 1) &&
-          (sameSearch.get(nextPage) ?? []).length > 0
+          nextPages.length === 1 &&
+          (sameSearch.get(nextPages[i]) ?? []).length > 0
         ) {
           const updatedKeyNextPage = {
-            ...nextPage,
-            totalItems: nextPage.totalItems - 1,
+            ...nextPages[i],
+            totalItems: nextPages[i].totalItems - 1,
           };
           updatedSearch.set(updatedKeyNextPage, [
-            ...(sameSearch.get(nextPage) ?? []),
+            ...(sameSearch.get(nextPages[i]) ?? []),
           ]);
         }
       }
     } else {
-      if ((sameSearch.get(nextPage) ?? []).length > 1) {
-        const previousPage = nextPages[i - 1];
-        const firstIdNextPage = (sameSearch.get(nextPage) ?? []).shift();
-        const previousPageIds = sameSearch.get(previousPage) ?? [];
-        previousPageIds.push(firstIdNextPage ?? 0);
-        const updatePreviousPage = {
-          ...previousPage,
-          totalItems: previousPage.totalItems - 1,
+      if ((sameSearch.get(nextPages[i]) ?? []).length > 0) {
+        const firstIdActualIPage = (sameSearch.get(nextPages[i]) ?? []).shift();
+        const previousIPageIds = [...(sameSearch.get(nextPages[i - 1]) ?? [])];
+        previousIPageIds.push(firstIdActualIPage ?? 0);
+
+        const updatePreviousIPage = {
+          ...nextPages[i - 1],
+          totalItems: nextPages[i - 1].totalItems - 1,
         };
-        updatedSearch.set(updatePreviousPage, previousPageIds);
-        if (
-          nextPages[i + 1] === undefined ||
-          sameSearch.get(nextPages[i + 1])?.length === 0
-        ) {
-          if (sameSearch.get(nextPages[i])?.length !== 0) {
-            const updatedKeyNextPage = {
-              ...nextPage,
-              totalItems: nextPage.totalItems - 1,
-            };
-            const firstIdNextPage = sameSearch.get(nextPage)?.[0];
-            if (firstIdNextPage !== undefined) {
-              updatedSearch.set(updatedKeyNextPage, [firstIdNextPage]);
-            }
-          }
-        }
+        updatedSearch.set(updatePreviousIPage, previousIPageIds);
+      } else {
+        const updatedKeyNextPage = {
+          ...nextPages[i],
+          totalItems: nextPages[i].totalItems - 1,
+        };
+
+        updatedSearch.set(
+          updatedKeyNextPage,
+          sameSearch.get(nextPages[i]) ?? []
+        );
       }
     }
   }
