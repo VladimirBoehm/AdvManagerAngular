@@ -6,6 +6,7 @@ import { Advertisement } from '../_models/advertisement';
 import { User } from '../_models/user';
 import { PaginationParams } from '../_entities/paginationParams';
 import { HashInfo } from '../_entities/hashInfo';
+import { forEach } from 'lodash';
 
 export function getDefaultSortOptions(): SortOption {
   return {
@@ -60,20 +61,179 @@ export function getHashKey(paginationParams: PaginationParams): string {
   return resultValues.join('-');
 }
 
-export function deleteFromCache(id: number, hashInfo: Map<string, HashInfo>){
-   let keysContainsId: string[] = [];
-    for (const key of hashInfo.keys()) {
-      if (hashInfo.get(key)?.ids.includes(id)) {
-         keysContainsId.push(key);
-      }
-    }
+export function deleteFromCache(
+  id: number,
+  hashInfo: Map<PaginationParams, number[]>
+) {
+  let keysContainsId: PaginationParams[] = getPaginationParamsContainsId(
+    id,
+    hashInfo
+  );
 }
 
-export function updateValues(keyList: string[], hashInfo: Map<string, HashInfo>){
-    for (const key of keyList) {
-        const hash = hashInfo.get(key);
-        if (hash) {
-        hash.totalItems = hash.ids.length;
-        }
+export function getPaginationParamsContainsId(
+  id: number,
+  hashInfo: Map<PaginationParams, number[]>
+): PaginationParams[] {
+  let keysContainsId: PaginationParams[] = [];
+  for (const key of hashInfo.keys()) {
+    if (hashInfo.get(key)?.includes(id)) {
+      keysContainsId.push(key);
     }
+  }
+  return keysContainsId;
+}
+
+//эта функция будет вызываться итеративно
+export function updateValuesIdInSameSearch(
+  id: number,
+  inputKey: PaginationParams,
+  hashInfo: Map<PaginationParams, number[]>
+) {
+  let sameSearch: Map<PaginationParams, number[]> = new Map();
+  for (const key of hashInfo.keys()) {
+    if (areSortOptionEqual(key.sortOption, inputKey.sortOption)) {
+      sameSearch.set(key, hashInfo.get(key) ?? []);
+    }
+  }
+  let previousPages: PaginationParams[] = [];
+  let nextPages: PaginationParams[] = [];
+
+  for (const key of sameSearch.keys()) {
+    if (key.pageNumber < inputKey.pageNumber) previousPages.push(key);
+    if (key.pageNumber > inputKey.pageNumber) {
+      if ((sameSearch.get(key)?.length ?? 0) > 1) nextPages.push(key);
+    }
+  }
+  const updatedSearch: Map<PaginationParams, number[]> = getUpdatedSearchRow(
+    id,
+    previousPages,
+    inputKey,
+    nextPages,
+    sameSearch
+  );
+  for (const page of previousPages) {
+    const updatePage = { ...page, totalItems: page.totalItems - 1 };
+    const updatedIds = sameSearch.get(page) ?? [];
+    hashInfo.set(updatePage, updatedIds);
+    hashInfo.delete(page);
+  }
+
+  for (const key of sameSearch.keys()) {
+    hashInfo.delete(key);
+  }
+  for (const key of updatedSearch.keys()) {
+    hashInfo.set(key, updatedSearch.get(key) ?? []);
+  }
+}
+
+export function getUpdatedSearchRow(
+  id: number,
+  previousPages: PaginationParams[],
+  actualPage: PaginationParams,
+  nextPages: PaginationParams[],
+  sameSearch: Map<PaginationParams, number[]>
+): Map<PaginationParams, number[]> {
+  const updatedSearch: Map<PaginationParams, number[]> = new Map();
+  const updatedActualPage = {
+    ...actualPage,
+    totalItems: actualPage.totalItems - 1,
+  };
+  updatedSearch.set(updatedActualPage, []);
+
+  const newActualPageIds: number[] = [];
+  forEach(previousPages, (page) => {
+    updatedSearch.set(
+      { ...page, totalItems: page.totalItems - 1 },
+      sameSearch.get(page) ?? []
+    );
+  });
+
+  const actualPageIds = sameSearch.get(actualPage) ?? [];
+  for (const actualPageId of actualPageIds) {
+    if (actualPageId !== id) {
+      newActualPageIds.push(actualPageId);
+    }
+  }
+
+  nextPages = nextPages.sort((a, b) => a.pageNumber - b.pageNumber);
+  
+  for (let i = 0; i < nextPages.length; i++) {
+    const nextPage = nextPages[i];
+    if (i === 0) {
+      const firstIdNextPage = (sameSearch.get(nextPage) ?? []).shift();
+      if (firstIdNextPage !== undefined) {
+        newActualPageIds.push(firstIdNextPage);
+        updatedSearch.set(updatedActualPage, newActualPageIds);
+        if (
+          (nextPages.length === 1 ||
+            (sameSearch.get(nextPages[i + 1]) ?? []).length === 1) &&
+          (sameSearch.get(nextPage) ?? []).length > 0
+        ) {
+          const updatedKeyNextPage = {
+            ...nextPage,
+            totalItems: nextPage.totalItems - 1,
+          };
+          updatedSearch.set(updatedKeyNextPage, [
+            ...(sameSearch.get(nextPage) ?? []),
+          ]);
+        }
+      }
+    } else {
+      if ((sameSearch.get(nextPage) ?? []).length > 1) {
+        const previousPage = nextPages[i - 1];
+        const firstIdNextPage = (sameSearch.get(nextPage) ?? []).shift();
+        const previousPageIds = sameSearch.get(previousPage) ?? [];
+        previousPageIds.push(firstIdNextPage ?? 0);
+        const updatePreviousPage = {
+          ...previousPage,
+          totalItems: previousPage.totalItems - 1,
+        };
+        updatedSearch.set(updatePreviousPage, previousPageIds);
+        if (
+          nextPages[i + 1] === undefined ||
+          sameSearch.get(nextPages[i + 1])?.length === 0
+        ) {
+          if (sameSearch.get(nextPages[i])?.length !== 0) {
+            const updatedKeyNextPage = {
+              ...nextPage,
+              totalItems: nextPage.totalItems - 1,
+            };
+            const firstIdNextPage = sameSearch.get(nextPage)?.[0];
+            if (firstIdNextPage !== undefined) {
+              updatedSearch.set(updatedKeyNextPage, [firstIdNextPage]);
+            }
+          }
+        }
+      }
+    }
+  }
+  return updatedSearch;
+}
+
+export function areSortOptionEqual(
+  params1: SortOption,
+  params2: SortOption
+): boolean {
+  return (
+    params1.field === params2.field &&
+    params1.order === params2.order &&
+    params1.searchType === params2.searchType &&
+    params1.searchValue === params2.searchValue &&
+    params1.dateRange?.start?.getTime() ===
+      params2.dateRange?.start?.getTime() &&
+    params1.dateRange?.end?.getTime() === params2.dateRange?.end?.getTime()
+  );
+}
+
+export function arePaginationParamsEqual(
+  params1: PaginationParams,
+  params2: PaginationParams
+): boolean {
+  return (
+    params1.pageNumber === params2.pageNumber &&
+    params1.pageSize === params2.pageSize &&
+    params1.totalItems === params2.totalItems &&
+    areSortOptionEqual(params1.sortOption, params2.sortOption)
+  );
 }

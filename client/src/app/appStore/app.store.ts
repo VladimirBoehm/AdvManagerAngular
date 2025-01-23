@@ -58,7 +58,7 @@ type appState = {
   pendingValidationHashInfo: Map<string, HashInfo>;
 
   myAdvertisementsPaginationParams: PaginationParams;
-  myAdvertisementsHashInfo: Map<string, HashInfo>;
+  myAdvertisementsHashInfo: Map<PaginationParams, number[]>;
 };
 
 const initialState: appState = {
@@ -106,7 +106,7 @@ const initialState: appState = {
     pageSize: defaultPageSize,
     sortOption: getDefaultSortOptions(),
   },
-  myAdvertisementsHashInfo: new Map<string, HashInfo>(),
+  myAdvertisementsHashInfo: new Map<PaginationParams, number[]>(),
 };
 
 const chatFilterConfig = entityConfig({
@@ -198,21 +198,28 @@ export const AppStore = signalStore(
         }
       }),
       sortedMyAdvertisements: computed(() => {
-        const searchHashKey = getHashKey(myAdvertisementsPaginationParams());
-        if (myAdvertisementsHashInfo().has(searchHashKey)) {
-          const hashInfo = myAdvertisementsHashInfo().get(searchHashKey);
-          if (!hashInfo?.ids) return [];
-          return hashInfo?.ids.map((id) => {
-            return myAdvertisementsEntities().find((ad) => ad.id === id)!;
-          });
-        } else {
-          const startIndex =
-            myAdvertisementsPaginationParams().pageNumber *
-            myAdvertisementsPaginationParams().pageSize;
-          const endIndex =
-            startIndex + myAdvertisementsPaginationParams().pageSize;
-          return myAdvertisementsEntities().slice(startIndex, endIndex);
-        }
+        // const searchHashKey = getHashKey(myAdvertisementsPaginationParams());
+        // if (myAdvertisementsHashInfo().has(searchHashKey)) {
+        //   const hashInfo = myAdvertisementsHashInfo().get(searchHashKey);
+        //   if (!hashInfo?.ids) return [];
+        //   return hashInfo?.ids.map((id) => {
+        //     return myAdvertisementsEntities().find((ad) => ad.id === id)!;
+        //   });
+        // } else {
+        //   const startIndex =
+        //     myAdvertisementsPaginationParams().pageNumber *
+        //     myAdvertisementsPaginationParams().pageSize;
+        //   const endIndex =
+        //     startIndex + myAdvertisementsPaginationParams().pageSize;
+        //   return myAdvertisementsEntities().slice(startIndex, endIndex);
+        // }
+
+        const startIndex =
+          myAdvertisementsPaginationParams().pageNumber *
+          myAdvertisementsPaginationParams().pageSize;
+        const endIndex =
+          startIndex + myAdvertisementsPaginationParams().pageSize;
+        return myAdvertisementsEntities().slice(startIndex, endIndex);
       }),
       sortedChatFilters: computed(() => {
         let filteredList = [...chatFilterEntities()];
@@ -460,17 +467,17 @@ export const AppStore = signalStore(
         const searchHashKey = getHashKey(
           store.myAdvertisementsPaginationParams()
         );
-        if (store.myAdvertisementsHashInfo().has(searchHashKey)) {
-          const hashInfo = store.myAdvertisementsHashInfo().get(searchHashKey);
-          patchState(store, {
-            myAdvertisementsPaginationParams: {
-              ...store.myAdvertisementsPaginationParams(),
-              totalItems: hashInfo?.totalItems ?? 0,
-            },
-          });
-          console.log('>>> AppStore: myAdvertisements already loaded');
-          return;
-        }
+        // if (store.myAdvertisementsHashInfo().has(searchHashKey)) {
+        //   const hashInfo = store.myAdvertisementsHashInfo().get(searchHashKey);
+        //   patchState(store, {
+        //     myAdvertisementsPaginationParams: {
+        //       ...store.myAdvertisementsPaginationParams(),
+        //       totalItems: hashInfo?.totalItems ?? 0,
+        //     },
+        //   });
+        //   console.log('>>> AppStore: myAdvertisements already loaded');
+        //   return;
+        // }
 
         const response = await lastValueFrom(
           advertisementService.getMyAdvertisements(
@@ -489,14 +496,14 @@ export const AppStore = signalStore(
           },
         });
 
-        patchState(store, {
-          myAdvertisementsHashInfo: store
-            .myAdvertisementsHashInfo()
-            .set(getHashKey(store.myAdvertisementsPaginationParams()), {
-              totalItems: paginatedResponse.totalItems,
-              ids: advertisements.map((ad) => ad.id),
-            }),
-        });
+        // patchState(store, {
+        //   myAdvertisementsHashInfo: store
+        //     .myAdvertisementsHashInfo()
+        //     .set(getHashKey(store.myAdvertisementsPaginationParams()), {
+        //       totalItems: paginatedResponse.totalItems,
+        //       ids: advertisements.map((ad) => ad.id),
+        //     }),
+        // });
         console.log('>>> AppStore: myAdvertisements loaded');
       },
       async getPendingPublicationAdvertisements(
