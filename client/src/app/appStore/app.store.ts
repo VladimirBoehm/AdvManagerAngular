@@ -27,8 +27,10 @@ import { Advertisement } from '../_models/advertisement';
 import { HashInfo } from '../_entities/hashInfo';
 import { AppListType } from '../_framework/constants/advListType';
 import {
+  arePaginationParamsEqual,
   getDefaultSortOptions,
   getHashKey,
+  getPaginatedResponse,
   getSelectedAdvertisement,
   getUser,
   withLogger,
@@ -52,6 +54,7 @@ type appState = {
 
   pendingPublicationPaginationParams: PaginationParams;
   pendingPublicationHashInfo: Map<string, HashInfo>;
+  pendingValidationHashInfo2: Map<PaginationParams, number[]>;
 
   pendingValidationAdvertisementsCount: number;
   pendingValidationPaginationParams: PaginationParams;
@@ -100,6 +103,7 @@ const initialState: appState = {
     sortOption: getDefaultSortOptions(),
   },
   pendingValidationHashInfo: new Map<string, HashInfo>(),
+  pendingValidationHashInfo2: new Map<PaginationParams, number[]>(),
   myAdvertisementsPaginationParams: {
     totalItems: 0,
     pageNumber: 0,
@@ -156,13 +160,12 @@ export const AppStore = signalStore(
       pendingPublicationAdvertisementsEntities,
       myAdvertisementsPaginationParams,
       myAdvertisementsEntities,
-      myAdvertisementsHashInfo,
       privateHistoryPaginationParams,
       privateHistoryEntities,
       allHistoryHashInfo,
       privateHistoryHashInfo,
       pendingPublicationHashInfo,
-      pendingValidationHashInfo,
+      pendingValidationHashInfo2,
     }) => ({
       sortedAllHistory: computed(() => {
         const searchHashKey = getHashKey(allHistoryPaginationParams());
@@ -198,22 +201,6 @@ export const AppStore = signalStore(
         }
       }),
       sortedMyAdvertisements: computed(() => {
-        // const searchHashKey = getHashKey(myAdvertisementsPaginationParams());
-        // if (myAdvertisementsHashInfo().has(searchHashKey)) {
-        //   const hashInfo = myAdvertisementsHashInfo().get(searchHashKey);
-        //   if (!hashInfo?.ids) return [];
-        //   return hashInfo?.ids.map((id) => {
-        //     return myAdvertisementsEntities().find((ad) => ad.id === id)!;
-        //   });
-        // } else {
-        //   const startIndex =
-        //     myAdvertisementsPaginationParams().pageNumber *
-        //     myAdvertisementsPaginationParams().pageSize;
-        //   const endIndex =
-        //     startIndex + myAdvertisementsPaginationParams().pageSize;
-        //   return myAdvertisementsEntities().slice(startIndex, endIndex);
-        // }
-
         const startIndex =
           myAdvertisementsPaginationParams().pageNumber *
           myAdvertisementsPaginationParams().pageSize;
@@ -264,26 +251,27 @@ export const AppStore = signalStore(
         return filteredList.slice(startIndex, endIndex);
       }),
       sortedPendingValidationAdvertisements: computed(() => {
-        const searchHashKey = getHashKey(pendingValidationPaginationParams());
-        if (pendingValidationHashInfo().has(searchHashKey)) {
-          const hashInfo = pendingValidationHashInfo().get(searchHashKey);
-          if (!hashInfo?.ids) return [];
-          return hashInfo?.ids.map((id) => {
-            return pendingValidationAdvertisementsEntities().find(
-              (ad) => ad.id === id
-            )!;
-          });
-        } else {
-          const startIndex =
-            pendingValidationPaginationParams().pageNumber *
-            pendingValidationPaginationParams().pageSize;
-          const endIndex =
-            startIndex + pendingValidationPaginationParams().pageSize;
-          return pendingValidationAdvertisementsEntities().slice(
-            startIndex,
-            endIndex
-          );
+        for (const key of pendingValidationHashInfo2().keys()) {
+          if (
+            arePaginationParamsEqual(
+              key,
+              pendingValidationPaginationParams(),
+              false
+            )
+          ) {
+            return (
+              pendingValidationHashInfo2()
+                .get(key)
+                ?.map(
+                  (id) =>
+                    pendingValidationAdvertisementsEntities().find(
+                      (ad) => ad.id === id
+                    )!
+                ) ?? []
+            );
+          }
         }
+        return [];
       }),
       sortedPendingPublicationAdvertisements: computed(() => {
         const searchHashKey = getHashKey(pendingPublicationPaginationParams());
@@ -364,10 +352,10 @@ export const AppStore = signalStore(
             store.privateHistoryPaginationParams()
           )
         );
+
         const advertisements = response.body as Advertisement[];
-        const paginatedResponse = JSON.parse(
-          response.headers.get('Pagination')!
-        );
+        const paginatedResponse = getPaginatedResponse(response);
+
         patchState(store, addEntities(advertisements, privateHistoryConfig));
         patchState(store, {
           privateHistoryPaginationParams: {
@@ -425,9 +413,7 @@ export const AppStore = signalStore(
           )
         );
         const advertisements = response.body as Advertisement[];
-        const paginatedResponse = JSON.parse(
-          response.headers.get('Pagination')!
-        );
+        const paginatedResponse = getPaginatedResponse(response);
 
         patchState(store, addEntities(advertisements, allHistoryConfig));
         patchState(store, {
@@ -549,9 +535,8 @@ export const AppStore = signalStore(
           )
         );
         const advertisements = response.body as Advertisement[];
-        const paginatedResponse = JSON.parse(
-          response.headers.get('Pagination')!
-        );
+        const paginatedResponse = getPaginatedResponse(response);
+        
         patchState(
           store,
           addEntities(advertisements, pendingPublicationConfig)
@@ -589,23 +574,27 @@ export const AppStore = signalStore(
           patchState(store, {
             pendingValidationPaginationParams: {
               ...store.pendingValidationPaginationParams(),
-              sortOption,
+              sortOption: { ...sortOption },
             },
           });
         }
-        const searchHashKey = getHashKey(
-          store.pendingValidationPaginationParams()
-        );
-        if (store.pendingValidationHashInfo().has(searchHashKey)) {
-          const hashInfo = store.pendingValidationHashInfo().get(searchHashKey);
-          patchState(store, {
-            pendingValidationPaginationParams: {
-              ...store.pendingValidationPaginationParams(),
-              totalItems: hashInfo?.totalItems ?? 0,
-            },
-          });
-          console.log('>>> AppStore: pendingValidation already loaded');
-          return;
+
+        for (const key of store.pendingValidationHashInfo2().keys()) {
+          if (
+            arePaginationParamsEqual(
+              key,
+              store.pendingValidationPaginationParams(),
+              false
+            )
+          ) {
+            patchState(store, {
+              pendingValidationPaginationParams: {
+                ...key,
+              },
+            });
+            console.log('>>> AppStore: pendingValidation already loaded');
+            return;
+          }
         }
 
         const response = await lastValueFrom(
@@ -614,23 +603,21 @@ export const AppStore = signalStore(
           )
         );
         const advertisements = response.body as Advertisement[];
-        const paginatedResponse = JSON.parse(
-          response.headers.get('Pagination')!
-        );
+        const paginatedResponse = getPaginatedResponse(response);
         patchState(store, addEntities(advertisements, pendingValidationConfig));
+
         patchState(store, {
           pendingValidationPaginationParams: {
             ...store.pendingValidationPaginationParams(),
             totalItems: paginatedResponse.totalItems,
           },
         });
+
         patchState(store, {
-          pendingValidationHashInfo: store
-            .pendingValidationHashInfo()
-            .set(getHashKey(store.pendingValidationPaginationParams()), {
-              totalItems: paginatedResponse.totalItems,
-              ids: advertisements.map((ad) => ad.id),
-            }),
+          pendingValidationHashInfo2: store.pendingValidationHashInfo2().set(
+            store.pendingValidationPaginationParams(),
+            advertisements.map((ad) => ad.id)
+          ),
         });
         console.log('>>> AppStore: pendingValidationAdvertisements loaded');
       },

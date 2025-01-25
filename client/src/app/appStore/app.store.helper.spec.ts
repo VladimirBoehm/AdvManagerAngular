@@ -3,122 +3,14 @@ import {
   getUpdatedSearchRow,
   arePaginationParamsEqual,
   getPaginationParamsContainsId,
+  deleteFromCache,
 } from './app.store.helper';
-
-type HashInfo = {
-  totalItems: number;
-  ids: number[];
-};
 
 describe('deleteFromCache', () => {
   let sameSearch: Map<PaginationParams, number[]>;
-  let allSearch: Map<PaginationParams, number[]>;
-  let paginationParams1: PaginationParams;
-  let paginationParams11: PaginationParams;
-  let paginationParams2: PaginationParams;
-  let paginationParamsDate1: PaginationParams;
-  let paginationParamsDate11: PaginationParams;
-  let paginationParamsDate2: PaginationParams;
-
   beforeEach(() => {
-    paginationParams1 = {
-      pageNumber: 1,
-      pageSize: 10,
-      totalItems: 10,
-      sortOption: {
-        field: 'date',
-        order: 'asc',
-        searchType: 'content',
-        searchValue: 'A',
-      },
-    };
-    paginationParams11 = {
-      pageNumber: 1,
-      pageSize: 10,
-      totalItems: 10,
-      sortOption: {
-        field: 'date',
-        order: 'asc',
-        searchType: 'content',
-        searchValue: 'A',
-      },
-    };
-    paginationParams2 = {
-      pageNumber: 1,
-      pageSize: 10,
-      totalItems: 10,
-      sortOption: {
-        field: 'date',
-        order: 'asc',
-        searchType: 'content',
-        searchValue: 'B',
-      },
-    };
-    paginationParamsDate1 = {
-      pageNumber: 1,
-      pageSize: 10,
-      totalItems: 10,
-      sortOption: {
-        field: 'date',
-        order: 'asc',
-        searchType: 'content',
-        dateRange: {
-          start: new Date('2023-01-01'),
-          end: new Date('2023-03-03'),
-        },
-      },
-    };
-    paginationParamsDate11 = {
-      pageNumber: 1,
-      pageSize: 10,
-      totalItems: 10,
-      sortOption: {
-        field: 'date',
-        order: 'asc',
-        searchType: 'content',
-        dateRange: {
-          start: new Date('2023-01-01'),
-          end: new Date('2023-03-03'),
-        },
-      },
-    };
-    paginationParamsDate2 = {
-      pageNumber: 1,
-      pageSize: 10,
-      totalItems: 10,
-      sortOption: {
-        field: 'date',
-        order: 'asc',
-        searchType: 'content',
-        dateRange: {
-          start: new Date('2023-02-01'),
-          end: new Date('2023-03-03'),
-        },
-      },
-    };
+    sameSearch = new Map();
   });
-
-  it('should return true if paginationParams1 and paginationParams11 are equal', () => {
-    expect(
-      arePaginationParamsEqual(paginationParams1, paginationParams11)
-    ).toBe(true);
-  });
-  it('should return false if paginationParams1 and paginationParams2 are not equal', () => {
-    expect(arePaginationParamsEqual(paginationParams1, paginationParams2)).toBe(
-      false
-    );
-  });
-  it('should return true if paginationParamsDate1 and paginationParamsDate11 are equal', () => {
-    expect(
-      arePaginationParamsEqual(paginationParamsDate1, paginationParamsDate11)
-    ).toBe(true);
-  });
-  it('should return false if paginationParamsDate1 and paginationParamsDate2 are not equal', () => {
-    expect(
-      arePaginationParamsEqual(paginationParamsDate1, paginationParamsDate2)
-    ).toBe(false);
-  });
-  //-------------------------------------
   it('should return PaginationParams that contains selected id', () => {
     const paginationParamsFirstPage1: PaginationParams = {
       pageNumber: 1,
@@ -191,17 +83,6 @@ describe('deleteFromCache', () => {
     };
     const paginationParamsFirstPage3: PaginationParams = {
       pageNumber: 3,
-      pageSize: 5,
-      totalItems: 12,
-      sortOption: {
-        field: 'date',
-        order: 'asc',
-        searchType: 'content',
-        searchValue: 'A',
-      },
-    };
-    const paginationParamsFirstPage4: PaginationParams = {
-      pageNumber: 4,
       pageSize: 5,
       totalItems: 12,
       sortOption: {
@@ -393,7 +274,6 @@ describe('deleteFromCache', () => {
       }
     }
   });
-
   it('should return updated search row without last page', () => {
     sameSearch = new Map<PaginationParams, number[]>();
     const paginationParamsFirstPage1 = {
@@ -791,5 +671,104 @@ describe('deleteFromCache', () => {
     }
 
     expect(updatedSearchRow.size).toEqual(1);
+  });
+  //-------------------------------------
+  it('deleteFromCache should update hashInfo', () => {
+    const hashInfo = new Map<PaginationParams, number[]>();
+    const paginationParamsFirstPage1 = {
+      pageNumber: 1,
+      pageSize: 5,
+      totalItems: 16,
+      sortOption: {
+        field: 'date',
+        order: 'asc',
+        searchType: 'content',
+        searchValue: 'A',
+      },
+    } as PaginationParams;
+    const paginationParamsFirstPage2 = {
+      pageNumber: 2,
+      pageSize: 5,
+      totalItems: 16,
+      sortOption: {
+        field: 'date',
+        order: 'asc',
+        searchType: 'content',
+        searchValue: 'A',
+      },
+    } as PaginationParams;
+    const paginationParamsFirstPage3 = {
+      pageNumber: 3,
+      pageSize: 5,
+      totalItems: 16,
+      sortOption: {
+        field: 'date',
+        order: 'asc',
+        searchType: 'content',
+        searchValue: 'A',
+      },
+    } as PaginationParams;
+    const paginationParamsFirstPage4 = {
+      pageNumber: 4,
+      pageSize: 5,
+      totalItems: 16,
+      sortOption: {
+        field: 'date',
+        order: 'asc',
+        searchType: 'content',
+        searchValue: 'A',
+      },
+    } as PaginationParams;
+    const paginationParamsAnotherSearch = {
+      pageNumber: 1,
+      pageSize: 5,
+      totalItems: 9,
+      sortOption: {
+        field: 'date',
+        order: 'asc',
+        searchType: 'content',
+        searchValue: 'GG',
+      },
+    } as PaginationParams;
+    const paginationParamsAnotherSearch2 = {
+      pageNumber: 2,
+      pageSize: 5,
+      totalItems: 9,
+      sortOption: {
+        field: 'date',
+        order: 'asc',
+        searchType: 'content',
+        searchValue: 'GG',
+      },
+    } as PaginationParams;
+
+    hashInfo.set(paginationParamsFirstPage1, [1, 2, 3, 4, 5]);
+    hashInfo.set(paginationParamsFirstPage2, [6, 7, 8, 9, 10]);
+    hashInfo.set(paginationParamsFirstPage3, [11, 12, 13, 14, 15]);
+    hashInfo.set(paginationParamsFirstPage4, [16]);
+    hashInfo.set(paginationParamsAnotherSearch, [1, 2, 3, 4, 5]);
+    hashInfo.set(paginationParamsAnotherSearch2, [6, 7, 8, 9]);
+    deleteFromCache(11, hashInfo);
+
+    for (const key of hashInfo.keys()) {
+      if (key.pageNumber === 1 && key.sortOption.searchValue === 'A') {
+        expect(hashInfo.get(key)).toEqual([1, 2, 3, 4, 5]);
+        expect(key.totalItems).toEqual(15);
+      }
+      if (key.pageNumber === 2 && key.sortOption.searchValue === 'A') {
+        expect(hashInfo.get(key)).toEqual([6, 7, 8, 9, 10]);
+      }
+      if (key.pageNumber === 3 && key.sortOption.searchValue === 'A') {
+        expect(hashInfo.get(key)).toEqual([12, 13, 14, 15, 16]);
+      }
+      if (key.pageNumber === 1 && key.sortOption.searchValue === 'GG') {
+        expect(hashInfo.get(key)).toEqual([1, 2, 3, 4, 5]);
+      }
+      if (key.pageNumber === 2 && key.sortOption.searchValue === 'GG') {
+        expect(hashInfo.get(key)).toEqual([6, 7, 8, 9]);
+        expect(key.totalItems).toEqual(9);
+      }
+    }
+    expect(hashInfo.size).toEqual(5);
   });
 });

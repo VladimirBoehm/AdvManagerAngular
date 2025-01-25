@@ -51,7 +51,7 @@ export class ListFilterComponent {
         panelClass: 'custom-dialog-container',
         data: {
           isExtended: this.isExtended(),
-          sortOption: this.sortOption(),
+          sortOption: { ...this.sortOption() },
         },
       })
       .afterClosed()

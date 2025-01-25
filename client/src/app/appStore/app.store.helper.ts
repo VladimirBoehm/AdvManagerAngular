@@ -7,6 +7,7 @@ import { User } from '../_models/user';
 import { PaginationParams } from '../_entities/paginationParams';
 import { HashInfo } from '../_entities/hashInfo';
 import { forEach } from 'lodash';
+import { HttpResponse } from '@angular/common/http';
 
 export function getDefaultSortOptions(): SortOption {
   return {
@@ -65,10 +66,13 @@ export function deleteFromCache(
   id: number,
   hashInfo: Map<PaginationParams, number[]>
 ) {
-  let keysContainsId: PaginationParams[] = getPaginationParamsContainsId(
+  const keysContainsId: PaginationParams[] = getPaginationParamsContainsId(
     id,
     hashInfo
   );
+  forEach(keysContainsId, (key) => {
+    updateValuesIdInSameSearch(id, key, hashInfo);
+  });
 }
 
 export function getPaginationParamsContainsId(
@@ -84,7 +88,6 @@ export function getPaginationParamsContainsId(
   return keysContainsId;
 }
 
-//эта функция будет вызываться итеративно
 export function updateValuesIdInSameSearch(
   id: number,
   inputKey: PaginationParams,
@@ -102,9 +105,10 @@ export function updateValuesIdInSameSearch(
   for (const key of sameSearch.keys()) {
     if (key.pageNumber < inputKey.pageNumber) previousPages.push(key);
     if (key.pageNumber > inputKey.pageNumber) {
-      if ((sameSearch.get(key)?.length ?? 0) > 1) nextPages.push(key);
+      if ((sameSearch.get(key)?.length ?? 0) > 0) nextPages.push(key);
     }
   }
+
   const updatedSearch: Map<PaginationParams, number[]> = getUpdatedSearchRow(
     id,
     previousPages,
@@ -112,15 +116,10 @@ export function updateValuesIdInSameSearch(
     nextPages,
     sameSearch
   );
-  for (const page of previousPages) {
-    const updatePage = { ...page, totalItems: page.totalItems - 1 };
-    const updatedIds = sameSearch.get(page) ?? [];
-    hashInfo.set(updatePage, updatedIds);
-    hashInfo.delete(page);
-  }
-
   for (const key of sameSearch.keys()) {
-    hashInfo.delete(key);
+    if (hashInfo.has(key)) {
+      hashInfo.delete(key);
+    }
   }
   for (const key of updatedSearch.keys()) {
     hashInfo.set(key, updatedSearch.get(key) ?? []);
@@ -148,7 +147,7 @@ export function getUpdatedSearchRow(
     ...actualPage,
     totalItems: actualPage.totalItems - 1,
   };
-  
+
   const newActualPageIds: number[] = [];
   const actualPageIds = sameSearch.get(actualPage) ?? [];
   for (const actualPageId of actualPageIds) {
@@ -225,12 +224,17 @@ export function areSortOptionEqual(
 
 export function arePaginationParamsEqual(
   params1: PaginationParams,
-  params2: PaginationParams
+  params2: PaginationParams,
+  compareTotalItems = true
 ): boolean {
   return (
     params1.pageNumber === params2.pageNumber &&
     params1.pageSize === params2.pageSize &&
-    params1.totalItems === params2.totalItems &&
+    (!compareTotalItems || params1.totalItems === params2.totalItems) &&
     areSortOptionEqual(params1.sortOption, params2.sortOption)
   );
+}
+
+export function getPaginatedResponse(response: HttpResponse<any>): PaginationParams {
+  return JSON.parse(response.headers.get('Pagination')!);
 }

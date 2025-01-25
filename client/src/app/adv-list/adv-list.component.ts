@@ -100,13 +100,13 @@ export class AdvListComponent implements OnInit, OnDestroy {
         this.advertisementsList.set(
           this.appStore.sortedPendingValidationAdvertisements()
         );
-        this.pagination.set(this.appStore.pendingValidationPaginationParams());
+        this.pagination.set({...this.appStore.pendingValidationPaginationParams()});
         break;
       }
       case AppListType.AllHistory: {
         await this.appStore.getAdvertisementAllHistory(pageNumber, sortOption);
         this.advertisementsList.set(this.appStore.sortedAllHistory());
-        this.pagination.set(this.appStore.allHistoryPaginationParams());
+        this.pagination.set({...this.appStore.allHistoryPaginationParams()});
         break;
       }
       case AppListType.PrivateHistory: {
@@ -115,13 +115,13 @@ export class AdvListComponent implements OnInit, OnDestroy {
           sortOption
         );
         this.advertisementsList.set(this.appStore.sortedPrivateHistory());
-        this.pagination.set(this.appStore.privateHistoryPaginationParams());
+        this.pagination.set({...this.appStore.privateHistoryPaginationParams()});
         break;
       }
       case AppListType.MyAdvertisements: {
         await this.appStore.getMyAdvertisements(pageNumber);
         this.advertisementsList.set(this.appStore.sortedMyAdvertisements());
-        this.pagination.set(this.appStore.myAdvertisementsPaginationParams());
+        this.pagination.set({...this.appStore.myAdvertisementsPaginationParams()});
         break;
       }
       case AppListType.PendingPublication: {
@@ -132,7 +132,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
         this.advertisementsList.set(
           this.appStore.sortedPendingPublicationAdvertisements()
         );
-        this.pagination.set(this.appStore.pendingPublicationPaginationParams());
+        this.pagination.set({...this.appStore.pendingPublicationPaginationParams()});
         break;
       }
       default: {

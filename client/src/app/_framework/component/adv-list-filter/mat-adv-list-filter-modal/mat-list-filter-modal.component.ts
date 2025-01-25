@@ -128,8 +128,8 @@ export class MatListFilterComponentModal implements OnInit, OnDestroy {
     if (this.currentSortOption().searchType === 'date') {
       const dateRange = this.sortForm.get('dateRange')?.value;
       this.currentSortOption().dateRange = {
-        start: dateRange.start,
-        end: dateRange.end,
+        start: new Date(dateRange.start),
+        end: new Date(dateRange.end),
       };
       // Clear searchValue when searchType is 'date'
       this.currentSortOption().searchValue = undefined;
