@@ -19,6 +19,7 @@ import {
   removeEntity,
   withEntities,
 } from '@ngrx/signals/entities';
+import { withHooks } from '@ngrx/signals';
 import { ChatFilter } from '../_models/chatFilter';
 import { ChatFilterService } from '../_services/api.services/chat-filter.service';
 import { PaginationParams } from '../_entities/paginationParams';
@@ -143,6 +144,14 @@ export const AppStore = signalStore(
   withEntities(pendingPublicationConfig),
   withEntities(pendingValidationConfig),
   withLogger('appState'),
+  withHooks({
+    async onInit(appStore, accountService = inject(AccountService)) {
+      const user = await lastValueFrom(accountService.login());
+      localStorage.setItem('user', JSON.stringify(user));
+      patchState(appStore, { user });
+      console.log('>>> AppStore onInit: user loaded');
+    },
+  }),
   withComputed(
     ({
       chatFilterEntities,
