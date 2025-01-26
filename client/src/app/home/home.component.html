@@ -26,10 +26,10 @@
                 ></app-three-dots-loading>
                 <ng-template #counterTemplate>
                   <div
-                    *ngIf="appStore.pendingValidationAdvertisementsCount() > 0"
+                    *ngIf="appStore.pendingValidationCount() > 0"
                     class="text-muted"
                   >
-                    {{ appStore.pendingValidationAdvertisementsCount() }}
+                    {{ appStore.pendingValidationCount() }}
                   </div>
                 </ng-template>
                 <span class="material-symbols-outlined text-muted">

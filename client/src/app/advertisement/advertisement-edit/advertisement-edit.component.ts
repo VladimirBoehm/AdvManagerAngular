@@ -7,10 +7,7 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TelegramBackButtonService } from '../../_framework/telegramBackButtonService';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Advertisement } from '../../_models/advertisement';
-import { AdvertisementService } from '../../_services/advertisement.service';
-import { AccountService } from '../../_services/account.service';
+import { Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { AdImage } from '../../_models/adImage';
 import {
@@ -24,7 +21,6 @@ import { SharedModule } from '../../_framework/modules/sharedModule';
 import { ImagePreviewModalComponent } from '../../_framework/component/image-preview-modal/image-preview-modal.component';
 import { BusyService } from '../../_services/busy.service';
 import { Localization } from '../../_framework/component/helpers/localization';
-import _ from 'lodash';
 import { ToastrService } from 'ngx-toastr';
 import { AppStore } from '../../appStore/app.store';
 
@@ -48,11 +44,8 @@ export class AdvertisementEditComponent implements OnInit {
 
   private maxImageSizeMb = 5;
   private backButtonService = inject(TelegramBackButtonService);
-  private advertisementService = inject(AdvertisementService);
-  private accountService = inject(AccountService);
   private modalService = inject(BsModalService);
   private formBuilder = inject(FormBuilder);
-  private route = inject(ActivatedRoute);
   private router = inject(Router);
   private toastr = inject(ToastrService);
   readonly appStore = inject(AppStore);
@@ -67,7 +60,6 @@ export class AdvertisementEditComponent implements OnInit {
   messageCounter: number = 0;
   maxMessageLength: number = 650;
   advertisementId: number = 0;
-  advertisement?: Advertisement;
   userImages: AdImage[] = [];
 
   Localization = Localization;
@@ -77,40 +69,17 @@ export class AdvertisementEditComponent implements OnInit {
       this.router.navigate(['/adv-list', AppListType.MyAdvertisements]);
     });
 
-    this.route.paramMap.subscribe((params) => {
-      const id = params.get('id');
-      if (id && Number(id) > 0) {
-        // this.advertisementService.getById(Number(id))?.subscribe({
-        //   next: (advertisement: Advertisement) => {
-        //     this.advertisement = advertisement;
-        //     this.initializeForm();
-        //   },
-        //   error: (err) => {
-        //     console.error('Error when loading ads:', err);
-        //   },
-        // });
-      } else {
-        this.advertisement = {
-          id: 0,
-          userId: this.appStore.user()?.userId ?? 0,
-          title: '',
-          message: '',
-          statusId: 0,
-          adImage: undefined,
-        };
-        this.initializeForm();
-      }
-    });
+    this.initializeForm();
   }
 
   initializeForm() {
     this.editForm = this.formBuilder.group({
       title: [
-        this.advertisement?.title,
+        this.appStore.selectedAdvertisement()?.title,
         [Validators.required, Validators.maxLength(this.maxTitleLength)],
       ],
       message: [
-        this.advertisement?.message,
+        this.appStore.selectedAdvertisement()?.message,
         [Validators.required, Validators.maxLength(this.maxMessageLength)],
       ],
     });
@@ -145,32 +114,22 @@ export class AdvertisementEditComponent implements OnInit {
   }
 
   async save() {
-    if (this.advertisement) {
-      this.advertisement.title = this.editForm.controls['title']?.value;
-      this.advertisement.message = this.editForm.controls['message']?.value;
-      this.advertisement.statusId = AdvertisementStatus.new;
-      if (this.advertisement?.id === 0) {
-        (await this.advertisementService.save(this.advertisement)).subscribe({
-          next: (result: Advertisement) => {
-            this.router.navigate(['app-advertisement-preview', result.id]);
-          },
-          error: (err) => {
-            console.error('Error when saving ads:', err);
-          },
-        });
-      } else {
-        (await this.advertisementService.update(this.advertisement)).subscribe({
-          next: () => {
-            this.router.navigate([
-              'app-advertisement-preview',
-              this.advertisement?.id,
-            ]);
-          },
-          error: (err) => {
-            console.error('Error when updating ads:', err);
-          },
-        });
-      }
+    this.appStore.updateSelectedAdvertisement({
+      title: this.editForm.controls['title']?.value,
+      message: this.editForm.controls['message']?.value,
+      statusId: AdvertisementStatus.new,
+    });
+
+    if (this.appStore.selectedAdvertisement()?.id === 0) {
+      await this.appStore.createAdvertisementAsync(
+        this.appStore.selectedAdvertisement()!
+      );
+      this.router.navigate(['app-advertisement-preview']);
+    } else {
+      await this.appStore.updateAdvertisementAsync(
+        this.appStore.selectedAdvertisement()!
+      );
+      this.router.navigate(['app-advertisement-preview']);
     }
   }
 
@@ -198,18 +157,14 @@ export class AdvertisementEditComponent implements OnInit {
         return;
       }
 
-      const adImage = {
-        id: 0,
-        userId: this.appStore.user()?.userId ?? 0,
-        file: input.files[0],
-        url: URL.createObjectURL(input.files[0]),
-      } as AdImage;
-
-      const clonedAdvertisement = _.cloneDeep(this.advertisement);
-      if (clonedAdvertisement) {
-        clonedAdvertisement.adImage = adImage;
-        this.advertisement = clonedAdvertisement;
-      }
+      this.appStore.updateSelectedAdvertisement({
+        adImage: {
+          id: 0,
+          userId: this.appStore.user()?.userId ?? 0,
+          file: input.files[0],
+          url: URL.createObjectURL(input.files[0]),
+        },
+      });
     }
   }
 
@@ -220,12 +175,10 @@ export class AdvertisementEditComponent implements OnInit {
   }
 
   deleteImage() {
-    const clonedAdvertisement = _.cloneDeep(this.advertisement);
-    if (clonedAdvertisement) {
-      clonedAdvertisement.adImageId = undefined;
-      clonedAdvertisement.adImage = undefined;
-      this.advertisement = clonedAdvertisement;
-    }
+    this.appStore.updateSelectedAdvertisement({
+      adImageId: undefined,
+      adImage: undefined,
+    });
   }
 
   showImage() {
@@ -233,17 +186,17 @@ export class AdvertisementEditComponent implements OnInit {
   }
 
   removeAdvertisementButton() {
-    if (this.advertisement) {
-      this.advertisement.linkName = undefined;
-      this.advertisement.linkValue = undefined;
-    }
+    this.appStore.updateSelectedAdvertisement({
+      linkName: undefined,
+      linkValue: undefined,
+    });
   }
 
   receiveButtonLink(event: ButtonLink) {
-    if (this.advertisement) {
-      this.advertisement.linkName = event.buttonName;
-      this.advertisement.linkValue = event.link;
-    }
+    this.appStore.updateSelectedAdvertisement({
+      linkName: event.buttonName,
+      linkValue: event.link,
+    });
     this.modalRef?.hide();
   }
 

@@ -3,7 +3,9 @@
   <div class="container-fluid">
     <!-- buttons: status NEW  -->
     <div
-      *ngIf="appStore.selectedAdvertisement()?.statusId === advertisementStatus.new"
+      *ngIf="
+        appStore.selectedAdvertisement()?.statusId === advertisementStatus.new
+      "
       class="background-rectangle-panel-shadow"
     >
       <div class="d-flex">
@@ -40,7 +42,12 @@
     </div>
 
     <!-- buttons: status VALIDATED  -->
-    <div *ngIf="appStore.selectedAdvertisement()?.statusId === advertisementStatus.validated">
+    <div
+      *ngIf="
+        appStore.selectedAdvertisement()?.statusId ===
+        advertisementStatus.validated
+      "
+    >
       <div class="d-flex background-rectangle-panel-shadow">
         <div class="col-6 d-flex align-items-center justify-content-center">
           <ng-container *ngTemplateOutlet="deleteButtonTemplate"></ng-container>
@@ -61,19 +68,27 @@
         </div>
       </div>
       <div
-        *ngIf="appStore.selectedAdvertisement()?.statusId === advertisementStatus.validated"
+        *ngIf="
+          appStore.selectedAdvertisement()?.statusId ===
+          advertisementStatus.validated
+        "
         class="alert alert-success mt-2 mb-0"
         role="alert"
       >
         <div class="text-center">{{ Localization.getWord("confirmed") }}</div>
 
         <div
-          *ngIf="appStore.selectedAdvertisement()?.publishFrequency; else oneTime"
+          *ngIf="
+            appStore.selectedAdvertisement()?.publishFrequency;
+            else oneTime
+          "
           class="text-center"
         >
           {{ Localization.getWord("posting_frequency") }}
           {{ appStore.selectedAdvertisement()?.publishFrequency }}
-          {{ getDayWord(appStore.selectedAdvertisement()?.publishFrequency ?? 0) }}.
+          {{
+            getDayWord(appStore.selectedAdvertisement()?.publishFrequency ?? 0)
+          }}.
         </div>
 
         <ng-template #oneTime>
@@ -86,17 +101,20 @@
 
     <!-- buttons: status PENDING_PUBLICATION  -->
     <div
-      *ngIf="appStore.selectedAdvertisement()?.statusId === advertisementStatus.pendingPublication"
+      *ngIf="
+        appStore.selectedAdvertisement()?.statusId ===
+        advertisementStatus.pendingPublication
+      "
     >
       <div
-        *ngIf="shouldShowCancelButton() || shouldShowForceButton()"
+        *ngIf="shouldShowCancelButton() || shouldShowAdminButtons()"
         class="d-flex background-rectangle-panel-shadow mb-2"
       >
         <div
           class="col-6 d-flex flex-column align-items-center justify-content-center"
         >
           <button
-            *ngIf="shouldShowForceButton()"
+            *ngIf="shouldShowAdminButtons()"
             class="btn empty-button"
             (click)="forcePublicationDialogShow()"
           >
@@ -123,9 +141,17 @@
       <div class="alert alert-info text-center mb-0" role="alert">
         <div class="d-flex flex-column">
           <div>{{ Localization.getWord("waiting_for_publication") }}</div>
-          <div *ngIf="!appStore.selectedAdvertisement()?.placeInQueue; else imageListContent">
+          <div
+            *ngIf="
+              !appStore.selectedAdvertisement()?.placeInQueue;
+              else imageListContent
+            "
+          >
             {{ Localization.getWord("will_be_queued") }}
-            {{ appStore.selectedAdvertisement()?.nextPublishDate | date : "dd.MM.yyyy" }}
+            {{
+              appStore.selectedAdvertisement()?.nextPublishDate
+                | date : "dd.MM.yyyy"
+            }}
           </div>
         </div>
         <ng-template #imageListContent>
@@ -143,7 +169,12 @@
     </div>
 
     <!-- buttons: status REJECTED  -->
-    <div *ngIf="appStore.selectedAdvertisement()?.statusId === advertisementStatus.rejected">
+    <div
+      *ngIf="
+        appStore.selectedAdvertisement()?.statusId ===
+        advertisementStatus.rejected
+      "
+    >
       <div class="d-flex background-rectangle-panel-shadow">
         <div class="col-6 d-flex align-items-center justify-content-center">
           <ng-container *ngTemplateOutlet="deleteButtonTemplate"></ng-container>
@@ -164,7 +195,10 @@
 
     <!-- buttons: status PENDING_VALIDATION  -->
     <div
-      *ngIf="appStore.selectedAdvertisement()?.statusId === advertisementStatus.pendingValidation"
+      *ngIf="
+        appStore.selectedAdvertisement()?.statusId ===
+        advertisementStatus.pendingValidation
+      "
     >
       <div class="alert alert-info text-center mb-0" role="alert">
         {{ Localization.getWord("sent_to_admin_for_confirmation") }}
@@ -186,17 +220,28 @@
     </div>
 
     <div
-      *ngIf="appStore.selectedAdvertisement()?.statusId === advertisementStatus.published"
+      *ngIf="
+        appStore.selectedAdvertisement()?.statusId ===
+        advertisementStatus.published
+      "
       class="alert alert-success mb-0"
       role="alert"
     >
       <div class="text-center">
         {{ Localization.getWord("published") }}
-        {{ dateHelper.getLocalTime(appStore.selectedAdvertisement()?.nextPublishDate) }}
+        {{
+          dateHelper.getLocalTime(
+            appStore.selectedAdvertisement()?.nextPublishDate
+          )
+        }}
       </div>
       <div class="text-center">
         {{ Localization.getWord("author") }}
-        {{ advertisementHelper.getUserDisplayName(appStore.selectedAdvertisement()) }}
+        {{
+          advertisementHelper.getUserDisplayName(
+            appStore.selectedAdvertisement()
+          )
+        }}
       </div>
     </div>
 
@@ -216,7 +261,7 @@
         appStore.selectedAdvertisement()?.adminMessage &&
         appStore.selectedAdvertisement()?.adminMessage?.length &&
         (appStore.user()?.isAdmin ||
-        appStore.user()?.userId === appStore.selectedAdvertisement()?.userId)
+          appStore.user()?.userId === appStore.selectedAdvertisement()?.userId)
       "
       class="input-group mt-2 pb-4"
     >
@@ -234,13 +279,14 @@
     </div>
 
     <ng-template #modalDialogCancelPublicationAdmin>
-      <div class="modal-header">
-        <h6 class="modal-title pull-left">
-          {{ Localization.getWord("cancel_publication_question") }}
-        </h6>
-      </div>
       <div class="modal-body">
-        <div class="form-check">
+        <div class="d-flex flex-column">
+          <h6 class="modal-title pull-left text-muted">
+            {{ Localization.getWord("cancel_publication_question") }}
+          </h6>
+          <hr class="m-1" />
+        </div>
+        <div class="form-check mt-2">
           <input
             class="form-check-input"
             type="checkbox"
@@ -248,7 +294,7 @@
             [disabled]="busyService.isLoading()"
             id="blockAdv"
           />
-          <label class="form-check-label" for="blockAdv">
+          <label class="form-check-label text-muted" for="blockAdv">
             {{ Localization.getWord("block_advertisement_question") }}
           </label>
         </div>

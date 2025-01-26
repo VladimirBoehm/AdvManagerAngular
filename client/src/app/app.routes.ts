@@ -28,7 +28,7 @@ export const routes: Routes = [
     component: AdvertisementPreviewComponent,
   },
   {
-    path: 'app-advertisement-edit/:id',
+    path: 'app-advertisement-edit',
     component: AdvertisementEditComponent,
   },
   {

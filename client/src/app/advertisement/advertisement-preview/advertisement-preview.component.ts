@@ -1,5 +1,4 @@
 import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { AdvertisementService } from '../../_services/advertisement.service';
 import { TelegramBackButtonService } from '../../_framework/telegramBackButtonService';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
@@ -44,7 +43,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   publishService = inject(PublishService);
   advertisementHelper = inject(AdvertisementHelper);
   confirmationService = inject(ConfirmationMatDialogService);
-  advertisementService = inject(AdvertisementService);
+
   busyService = inject(BusyService);
 
   advertisementStatus = AdvertisementStatus;
@@ -75,10 +74,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   }
 
   edit() {
-    this.router.navigate([
-      '/app-advertisement-edit',
-      this.appStore.selectedAdvertisement()?.id,
-    ]);
+    this.router.navigate(['/app-advertisement-edit']);
   }
 
   delete() {
@@ -103,7 +99,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
           this.nextPublishDate = result;
         },
         error: (err) => {
-          console.error('Error when getting regularPublishNextDate:', err);
+          console.error('Error by getting regularPublishNextDate:', err);
         },
       });
 
@@ -111,63 +107,18 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   }
 
   cancelPublicationAdmin() {
-    if (!this.appStore.selectedAdvertisement()) return;
-
-    const managePublish = {
-      advertisementId: this.appStore.selectedAdvertisement()?.id,
-      comment: this.adminComment,
-      shouldRejectValidation: this.shouldRejectValidation,
-      publishId: this.appStore.selectedAdvertisement()?.nextPublishId,
-    } as ManagePublish;
-
-    // this.advertisement.nextPublishDate = undefined;
-    // if (this.shouldRejectValidation) {
-    //   this.advertisement.statusId = AdvertisementStatus.rejected;
-    // } else {
-    //   this.advertisement.statusId = AdvertisementStatus.validated;
-    // }
-
-    this.advertisementService
-      .cancelPublicationAdmin(
-        managePublish,
-        this.appStore.selectedAdvertisement()
-      )
-      ?.subscribe({
-        next: () => {
-          this.modalRef?.hide();
-          this.router.navigate(['/adv-list', AppListType.PendingPublication]);
-        },
-        error: (err) => {
-          console.error('Error when cancelPublicationAdmin:', err);
-        },
-      });
+    this.appStore.cancelPublicationAdmin(
+      this.shouldRejectValidation,
+      this.adminComment
+    );
+    this.modalRef?.hide();
+    this.router.navigate(['/adv-list', AppListType.PendingPublication]);
   }
 
   forcePublication() {
-    const managePublish = {
-      advertisementId: this.appStore.selectedAdvertisement()?.id,
-      comment: this.adminComment,
-      publishId: this.appStore.selectedAdvertisement()?.nextPublishId,
-      shouldRejectValidation: false,
-    } as ManagePublish;
-
-    // this.advertisement.nextPublishDate = undefined;
-    // this.advertisement.statusId = AdvertisementStatus.validated;
-
-    this.advertisementService
-      .forcePublicationAdmin(
-        managePublish,
-        this.appStore.selectedAdvertisement()
-      )
-      ?.subscribe({
-        next: () => {
-          this.modalRef?.hide();
-          this.router.navigate(['/adv-list', AppListType.PendingPublication]);
-        },
-        error: (err) => {
-          console.error('Error when forcePublication:', err);
-        },
-      });
+    this.appStore.forcePublication(this.adminComment);
+    this.modalRef?.hide();
+    this.router.navigate(['/adv-list', AppListType.PendingPublication]);
   }
 
   forcePublicationDialogShow() {
@@ -202,22 +153,11 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   }
 
   cancelPublication() {
-    // this.advertisement.nextPublishDate = undefined;
-    // this.advertisement.nextPublishId = 0;
-    // this.advertisement.statusId = AdvertisementStatus.validated;
-    // this.advertisementService.cancelPublication(this.advertisement).subscribe({
-    //   next: () => {
-    //     this.modalRef?.hide();
-    //     this.getAdvertisementById(this.advertisement?.id ?? 0);
-    //   },
-    //   error: (err) => {
-    //     console.error('Error when canceling Publication ', err);
-    //   },
-    // });
+    this.appStore.cancelPublication();
+    this.modalRef?.hide();
   }
 
   cancelPublicationDialogShow() {
-    console.log(this.advertisementService.getActualSearchType());
     if (
       this.appStore.user()?.userId ===
       this.appStore.selectedAdvertisement()?.userId
@@ -233,12 +173,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
             this.cancelPublication();
           }
         });
-      return;
-    } else if (
-      this.appStore.user()?.isAdmin &&
-      this.advertisementService.getActualSearchType() ===
-        AppListType.PendingPublication
-    )
+    } else if (this.shouldShowAdminButtons())
       this.modalRef = this.modalService.show(
         this.modalDialogCancelPublicationAdmin
       );
@@ -246,35 +181,12 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
 
   modalDialogValidateConfirm() {
     this.modalRef?.hide();
-    if (this.appStore.selectedAdvertisement()) {
-      // this.advertisement.statusId = AdvertisementStatus.pendingValidation;
-      // this.advertisementService
-      //   .sendToValidation(this.advertisement)
-      //   ?.subscribe({
-      //     next: () => {
-      //       this.getAdvertisementById(this.advertisement?.id ?? 0);
-      //     },
-      //     error: (err) => {
-      //       console.error('Error when updating status pendingValidation:', err);
-      //     },
-      //   });
-    }
+    this.appStore.sendToValidationAsync();
   }
 
   modalDialogPublishConfirm() {
-    if (!this.appStore.selectedAdvertisement()) return;
-    // this.advertisement.statusId = AdvertisementStatus.pendingPublication;
-    // this.advertisement.nextPublishDate = this.nextPublishDate;
-    // this.modalRef?.hide();
-
-    // this.publishService.publish(this.advertisement).subscribe({
-    //   next: () => {
-    //     this.getAdvertisementById(this.advertisement?.id ?? 0);
-    //   },
-    //   error: (err) => {
-    //     console.error('Error when updating status pendingValidation:', err);
-    //   },
-    // });
+    this.appStore.confirmPublication(this.nextPublishDate);
+    this.modalRef?.hide();
   }
 
   getDayWord(frequency: number): string {
@@ -293,12 +205,16 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
     return this.Localization.getWord('days_plural');
   }
 
-  shouldShowForceButton(): boolean {
-    let result =
+  shouldShowAdminButtons(): boolean {
+    if (
+      this.appStore.selectedAdvertisement()?.statusId ===
+        AdvertisementStatus.pendingPublication &&
       this.appStore.user()?.isAdmin &&
-      this.advertisementService.getActualSearchType() ===
-        this.advListType.PendingPublication;
-    if (result) return result;
+      this.appStore.user()?.userId !==
+        this.appStore.selectedAdvertisement()?.userId
+    ) {
+      return true;
+    }
     return false;
   }
 

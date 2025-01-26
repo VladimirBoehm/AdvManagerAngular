@@ -17,7 +17,7 @@ export class HomeResolver implements Resolve<any> {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Promise<Observable<boolean>> {
-    await this.appStore.login();
+    await this.appStore.loginAsync();
     return of(true);
   }
 }

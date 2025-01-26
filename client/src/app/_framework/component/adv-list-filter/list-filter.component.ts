@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  inject,
-  input,
-  Output,
-  signal,
-} from '@angular/core';
+import { Component, EventEmitter, inject, input, Output } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
@@ -18,7 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDialog } from '@angular/material/dialog';
 import { MatListFilterComponentModal } from './mat-adv-list-filter-modal/mat-list-filter-modal.component';
 import { Localization } from '../helpers/localization';
-
+import cloneDeep from 'lodash/cloneDeep';
 @Component({
   selector: 'app-adv-list-filter',
   standalone: true,
@@ -51,7 +44,7 @@ export class ListFilterComponent {
         panelClass: 'custom-dialog-container',
         data: {
           isExtended: this.isExtended(),
-          sortOption: { ...this.sortOption() },
+          sortOption: cloneDeep(this.sortOption()),
         },
       })
       .afterClosed()

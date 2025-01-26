@@ -17,7 +17,7 @@ export class ChatFilterResolver implements Resolve<any> {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Promise<Observable<boolean>> {
-    this.appStore.loadChatFilters();
+    this.appStore.loadChatFiltersAsync();
     return of(true);
   }
 }

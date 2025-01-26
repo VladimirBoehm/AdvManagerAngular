@@ -2,9 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { ChatFilter } from '../_models/chatFilter';
-import { PaginationParams } from '../_entities/paginationParams';
-import { SortOption } from '../_entities/sortOption';
-import { DEFAULT_SORT_OPTION } from '../_framework/constants/defaultSortOption';
+
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({

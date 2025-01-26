@@ -22,7 +22,7 @@ import { AppStore } from '../../appStore/app.store';
   providers: [MatErrorService],
 })
 export class AdvertisementValidateComponent implements OnInit {
-  @ViewChild('modalDialog') modalDialog?: any;
+  @ViewChild('modalDialogApprove') modalDialogApprove?: any;
   @ViewChild('modalDialogReject') modalDialogReject?: any;
 
   private backButtonService = inject(TelegramBackButtonService);
@@ -53,7 +53,7 @@ export class AdvertisementValidateComponent implements OnInit {
   }
 
   confirm() {
-    this.modalRef = this.modalService.show(this.modalDialog);
+    this.modalRef = this.modalService.show(this.modalDialogApprove);
   }
 
   initializeForm() {
@@ -100,7 +100,7 @@ export class AdvertisementValidateComponent implements OnInit {
       this.editForm.controls['adminMessage']?.value;
 
     this.modalRef?.hide();
-    await this.appStore.validateAdvertisementAdmin(updatedAdvertisement);
+    await this.appStore.validateAdvertisementAdminAsync(updatedAdvertisement);
     this.router.navigate(['/adv-list', AppListType.PendingValidation]);
   }
 

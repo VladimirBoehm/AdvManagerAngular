@@ -87,7 +87,7 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
       value: this.editForm.controls['item']?.value,
       created: this.dateHelper.getUTCTime(),
     } as ChatFilter;
-    this.appStore.addChatFilter(newChatFiler);
+    this.appStore.createChatFilterAsync(newChatFiler);
     this.editForm.reset();
     this.modalRef?.hide();
   }
@@ -108,13 +108,13 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
   }
 
   deleteChatFilter(chatFilter: ChatFilter) {
-    this.appStore.deleteChatFilter(chatFilter);
+    this.appStore.deleteChatFilterAsync(chatFilter);
     this.editForm.reset();
     this.modalRef?.hide();
   }
 
   sortChanged($event: SortOption) {
-    this.appStore.updateChatFilterPaginationParams({
+    this.appStore.updateChatFilterPaginationParamsAsync({
       pageNumber: 0,
       totalItems: 0,
       pageSize: this.maxItemNumber,

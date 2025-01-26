@@ -93,46 +93,57 @@ export class AdvListComponent implements OnInit, OnDestroy {
   private async initialize(pageNumber?: number, sortOption?: SortOption) {
     switch (this.selectedListType()) {
       case AppListType.PendingValidation: {
-        await this.appStore.getPendingValidationAdvertisements(
+        await this.appStore.getPendingValidationAdvertisementsAsync(
           pageNumber,
           sortOption
         );
         this.advertisementsList.set(
           this.appStore.sortedPendingValidationAdvertisements()
         );
-        this.pagination.set({...this.appStore.pendingValidationPaginationParams()});
+        this.pagination.set({
+          ...this.appStore.pendingValidationPaginationParams(),
+        });
         break;
       }
       case AppListType.AllHistory: {
-        await this.appStore.getAdvertisementAllHistory(pageNumber, sortOption);
+        await this.appStore.getAdvertisementAllHistoryAsync(
+          pageNumber,
+          sortOption
+        );
         this.advertisementsList.set(this.appStore.sortedAllHistory());
-        this.pagination.set({...this.appStore.allHistoryPaginationParams()});
+        this.pagination.set({ ...this.appStore.allHistoryPaginationParams() });
         break;
       }
       case AppListType.PrivateHistory: {
-        await this.appStore.getAdvertisementPrivateHistory(
+        await this.appStore.getAdvertisementPrivateHistoryAsync(
           pageNumber,
           sortOption
         );
         this.advertisementsList.set(this.appStore.sortedPrivateHistory());
-        this.pagination.set({...this.appStore.privateHistoryPaginationParams()});
+        this.pagination.set({
+          ...this.appStore.privateHistoryPaginationParams(),
+        });
         break;
       }
       case AppListType.MyAdvertisements: {
-        await this.appStore.getMyAdvertisements(pageNumber);
+        await this.appStore.getMyAdvertisementsAsync();
         this.advertisementsList.set(this.appStore.sortedMyAdvertisements());
-        this.pagination.set({...this.appStore.myAdvertisementsPaginationParams()});
+        this.pagination.set({
+          ...this.appStore.myAdvertisementsPaginationParams(),
+        });
         break;
       }
       case AppListType.PendingPublication: {
-        await this.appStore.getPendingPublicationAdvertisements(
+        await this.appStore.getPendingPublicationAdvertisementsAsync(
           pageNumber,
           sortOption
         );
         this.advertisementsList.set(
           this.appStore.sortedPendingPublicationAdvertisements()
         );
-        this.pagination.set({...this.appStore.pendingPublicationPaginationParams()});
+        this.pagination.set({
+          ...this.appStore.pendingPublicationPaginationParams(),
+        });
         break;
       }
       default: {
@@ -183,7 +194,16 @@ export class AdvListComponent implements OnInit, OnDestroy {
   }
 
   create() {
-    this.router.navigate(['/app-advertisement-edit', 0]);
+    const advertisement = {
+      id: 0,
+      userId: this.appStore.user()?.userId ?? 0,
+      title: '',
+      message: '',
+      statusId: 0,
+      adImage: undefined,
+    };
+    this.appStore.setSelectedAdvertisement(advertisement);
+    this.router.navigate(['/app-advertisement-edit']);
   }
 
   sortChanged($event: SortOption) {

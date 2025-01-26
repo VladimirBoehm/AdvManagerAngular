@@ -35,7 +35,7 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.appStore.getPendingValidationAdvertisementsCount();
+    this.appStore.getPendingValidationCountAsync();
     if (window.Telegram?.WebApp) {
       window.Telegram?.WebApp?.expand();
       window.Telegram?.WebApp?.BackButton?.hide();

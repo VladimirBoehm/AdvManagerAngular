@@ -748,27 +748,27 @@ describe('deleteFromCache', () => {
     hashInfo.set(paginationParamsFirstPage4, [16]);
     hashInfo.set(paginationParamsAnotherSearch, [1, 2, 3, 4, 5]);
     hashInfo.set(paginationParamsAnotherSearch2, [6, 7, 8, 9]);
-    deleteFromCache(11, hashInfo);
+    const result = deleteFromCache(11, hashInfo);
 
-    for (const key of hashInfo.keys()) {
+    for (const key of result.keys()) {
       if (key.pageNumber === 1 && key.sortOption.searchValue === 'A') {
-        expect(hashInfo.get(key)).toEqual([1, 2, 3, 4, 5]);
+        expect(result.get(key)).toEqual([1, 2, 3, 4, 5]);
         expect(key.totalItems).toEqual(15);
       }
       if (key.pageNumber === 2 && key.sortOption.searchValue === 'A') {
-        expect(hashInfo.get(key)).toEqual([6, 7, 8, 9, 10]);
+        expect(result.get(key)).toEqual([6, 7, 8, 9, 10]);
       }
       if (key.pageNumber === 3 && key.sortOption.searchValue === 'A') {
-        expect(hashInfo.get(key)).toEqual([12, 13, 14, 15, 16]);
+        expect(result.get(key)).toEqual([12, 13, 14, 15, 16]);
       }
       if (key.pageNumber === 1 && key.sortOption.searchValue === 'GG') {
-        expect(hashInfo.get(key)).toEqual([1, 2, 3, 4, 5]);
+        expect(result.get(key)).toEqual([1, 2, 3, 4, 5]);
       }
       if (key.pageNumber === 2 && key.sortOption.searchValue === 'GG') {
-        expect(hashInfo.get(key)).toEqual([6, 7, 8, 9]);
+        expect(result.get(key)).toEqual([6, 7, 8, 9]);
         expect(key.totalItems).toEqual(9);
       }
     }
-    expect(hashInfo.size).toEqual(5);
+    expect(result.size).toEqual(5);
   });
 });

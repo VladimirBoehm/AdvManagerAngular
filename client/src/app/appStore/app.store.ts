@@ -24,18 +24,21 @@ import { ChatFilterService } from '../_services/chat-filter.service';
 import { PaginationParams } from '../_entities/paginationParams';
 import { SortOption } from '../_entities/sortOption';
 import { Advertisement } from '../_models/advertisement';
-import { HashInfo } from '../_entities/hashInfo';
 import { AppListType } from '../_framework/constants/advListType';
 import {
   arePaginationParamsEqual,
+  deleteFromCache,
   getDefaultSortOptions,
-  getHashKey,
   getPaginatedResponse,
   getSelectedAdvertisement,
   getUser,
   withLogger,
 } from './app.store.helper';
-
+import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
+import { PublishService } from '../_services/publish.service';
+import { DateHelper } from '../_framework/component/helpers/dateHelper';
+import cloneDeep from 'lodash/cloneDeep';
+import { ManagePublish } from '../_entities/managePublish';
 const defaultPageSize = 6;
 const chatFilterPageSize = 999;
 
@@ -47,27 +50,26 @@ type appState = {
   chatFilterPaginationParams: PaginationParams;
 
   allHistoryPaginationParams: PaginationParams;
-  allHistoryHashInfo: Map<string, HashInfo>;
+  allHistoryCacheInfo: Map<PaginationParams, number[]>;
 
   privateHistoryPaginationParams: PaginationParams;
-  privateHistoryHashInfo: Map<string, HashInfo>;
+  privateHistoryCacheInfo: Map<PaginationParams, number[]>;
 
   pendingPublicationPaginationParams: PaginationParams;
-  pendingPublicationHashInfo: Map<string, HashInfo>;
-  pendingValidationHashInfo2: Map<PaginationParams, number[]>;
+  pendingPublicationCacheInfo: Map<PaginationParams, number[]>;
 
-  pendingValidationAdvertisementsCount: number;
+  pendingValidationCount: number;
   pendingValidationPaginationParams: PaginationParams;
-  pendingValidationHashInfo: Map<string, HashInfo>;
+  pendingValidationCacheInfo: Map<PaginationParams, number[]>;
 
   myAdvertisementsPaginationParams: PaginationParams;
-  myAdvertisementsHashInfo: Map<PaginationParams, number[]>;
+  _pendingValidationCountCache: number;
 };
 
 const initialState: appState = {
   user: getUser(),
   selectedAdvertisement: getSelectedAdvertisement(),
-  pendingValidationAdvertisementsCount: 0,
+  pendingValidationCount: 0,
   areChatFiltersLoaded: false,
   chatFilterPaginationParams: {
     totalItems: 0,
@@ -81,36 +83,37 @@ const initialState: appState = {
     pageSize: defaultPageSize,
     sortOption: getDefaultSortOptions(),
   },
-  allHistoryHashInfo: new Map<string, HashInfo>(),
+  allHistoryCacheInfo: new Map<PaginationParams, number[]>(),
   privateHistoryPaginationParams: {
     totalItems: 0,
     pageNumber: 0,
     pageSize: defaultPageSize,
     sortOption: getDefaultSortOptions(),
   },
-  privateHistoryHashInfo: new Map<string, HashInfo>(),
+  privateHistoryCacheInfo: new Map<PaginationParams, number[]>(),
   pendingPublicationPaginationParams: {
     totalItems: 0,
     pageNumber: 0,
     pageSize: defaultPageSize,
     sortOption: { ...getDefaultSortOptions(), field: 'date', order: 'asc' },
   },
-  pendingPublicationHashInfo: new Map<string, HashInfo>(),
+  pendingPublicationCacheInfo: new Map<PaginationParams, number[]>(),
+
   pendingValidationPaginationParams: {
     totalItems: 0,
     pageNumber: 0,
     pageSize: defaultPageSize,
     sortOption: getDefaultSortOptions(),
   },
-  pendingValidationHashInfo: new Map<string, HashInfo>(),
-  pendingValidationHashInfo2: new Map<PaginationParams, number[]>(),
+
+  pendingValidationCacheInfo: new Map<PaginationParams, number[]>(),
   myAdvertisementsPaginationParams: {
     totalItems: 0,
     pageNumber: 0,
     pageSize: defaultPageSize,
     sortOption: getDefaultSortOptions(),
   },
-  myAdvertisementsHashInfo: new Map<PaginationParams, number[]>(),
+  _pendingValidationCountCache: 0,
 };
 
 const chatFilterConfig = entityConfig({
@@ -158,55 +161,52 @@ export const AppStore = signalStore(
       pendingValidationAdvertisementsEntities,
       pendingPublicationPaginationParams,
       pendingPublicationAdvertisementsEntities,
-      myAdvertisementsPaginationParams,
       myAdvertisementsEntities,
       privateHistoryPaginationParams,
       privateHistoryEntities,
-      allHistoryHashInfo,
-      privateHistoryHashInfo,
-      pendingPublicationHashInfo,
-      pendingValidationHashInfo2,
+      allHistoryCacheInfo: allHistoryCacheInfo,
+      privateHistoryCacheInfo: privateHistoryCacheInfo,
+      pendingValidationCacheInfo: pendingValidationCacheInfo,
+      pendingPublicationCacheInfo: pendingPublicationCacheInfo,
     }) => ({
       sortedAllHistory: computed(() => {
-        const searchHashKey = getHashKey(allHistoryPaginationParams());
-        if (allHistoryHashInfo().has(searchHashKey)) {
-          const hashInfo = allHistoryHashInfo().get(searchHashKey);
-          if (!hashInfo?.ids) return [];
-          return hashInfo?.ids.map((id) => {
-            return allHistoryEntities().find((ad) => ad.id === id)!;
-          });
-        } else {
-          const startIndex =
-            allHistoryPaginationParams().pageNumber *
-            allHistoryPaginationParams().pageSize;
-          const endIndex = startIndex + allHistoryPaginationParams().pageSize;
-          return allHistoryEntities().slice(startIndex, endIndex);
+        for (const key of allHistoryCacheInfo().keys()) {
+          if (
+            arePaginationParamsEqual(key, allHistoryPaginationParams(), false)
+          ) {
+            return (
+              allHistoryCacheInfo()
+                .get(key)
+                ?.map(
+                  (id) => allHistoryEntities().find((ad) => ad.id === id)!
+                ) ?? []
+            );
+          }
         }
+        return [];
       }),
       sortedPrivateHistory: computed(() => {
-        const searchHashKey = getHashKey(privateHistoryPaginationParams());
-        if (privateHistoryHashInfo().has(searchHashKey)) {
-          const hashInfo = privateHistoryHashInfo().get(searchHashKey);
-          if (!hashInfo?.ids) return [];
-          return hashInfo?.ids.map((id) => {
-            return privateHistoryEntities().find((ad) => ad.id === id)!;
-          });
-        } else {
-          const startIndex =
-            privateHistoryPaginationParams().pageNumber *
-            privateHistoryPaginationParams().pageSize;
-          const endIndex =
-            startIndex + privateHistoryPaginationParams().pageSize;
-          return privateHistoryEntities().slice(startIndex, endIndex);
+        for (const key of privateHistoryCacheInfo().keys()) {
+          if (
+            arePaginationParamsEqual(
+              key,
+              privateHistoryPaginationParams(),
+              false
+            )
+          ) {
+            return (
+              privateHistoryCacheInfo()
+                .get(key)
+                ?.map(
+                  (id) => privateHistoryEntities().find((ad) => ad.id === id)!
+                ) ?? []
+            );
+          }
         }
+        return [];
       }),
       sortedMyAdvertisements: computed(() => {
-        const startIndex =
-          myAdvertisementsPaginationParams().pageNumber *
-          myAdvertisementsPaginationParams().pageSize;
-        const endIndex =
-          startIndex + myAdvertisementsPaginationParams().pageSize;
-        return myAdvertisementsEntities().slice(startIndex, endIndex);
+        return myAdvertisementsEntities();
       }),
       sortedChatFilters: computed(() => {
         let filteredList = [...chatFilterEntities()];
@@ -251,7 +251,7 @@ export const AppStore = signalStore(
         return filteredList.slice(startIndex, endIndex);
       }),
       sortedPendingValidationAdvertisements: computed(() => {
-        for (const key of pendingValidationHashInfo2().keys()) {
+        for (const key of pendingValidationCacheInfo().keys()) {
           if (
             arePaginationParamsEqual(
               key,
@@ -260,7 +260,7 @@ export const AppStore = signalStore(
             )
           ) {
             return (
-              pendingValidationHashInfo2()
+              pendingValidationCacheInfo()
                 .get(key)
                 ?.map(
                   (id) =>
@@ -274,495 +274,675 @@ export const AppStore = signalStore(
         return [];
       }),
       sortedPendingPublicationAdvertisements: computed(() => {
-        const searchHashKey = getHashKey(pendingPublicationPaginationParams());
-        if (pendingPublicationHashInfo().has(searchHashKey)) {
-          const hashInfo = pendingPublicationHashInfo().get(searchHashKey);
-          if (!hashInfo?.ids) return [];
-          return hashInfo?.ids.map((id) => {
-            return pendingPublicationAdvertisementsEntities().find(
-              (ad) => ad.id === id
-            )!;
-          });
-        } else {
-          const startIndex =
-            pendingPublicationPaginationParams().pageNumber *
-            pendingPublicationPaginationParams().pageSize;
-          const endIndex =
-            startIndex + pendingPublicationPaginationParams().pageSize;
-          return pendingPublicationAdvertisementsEntities().slice(
-            startIndex,
-            endIndex
-          );
+        for (const key of pendingPublicationCacheInfo().keys()) {
+          if (
+            arePaginationParamsEqual(
+              key,
+              pendingPublicationPaginationParams(),
+              false
+            )
+          ) {
+            return (
+              pendingPublicationCacheInfo()
+                .get(key)
+                ?.map(
+                  (id) =>
+                    pendingPublicationAdvertisementsEntities().find(
+                      (ad) => ad.id === id
+                    )!
+                ) ?? []
+            );
+          }
         }
+        return [];
       }),
     })
   ),
   withMethods(
     (
-      store,
+      appStore,
       accountService = inject(AccountService),
       advertisementService = inject(AdvertisementService),
-      chatFilterService = inject(ChatFilterService)
+      chatFilterService = inject(ChatFilterService),
+      publishService = inject(PublishService)
     ) => ({
+      updateSelectedAdvertisement(advertisement: Partial<Advertisement>) {
+        const updatedAdvertisement: Advertisement = {
+          ...appStore.selectedAdvertisement(),
+          ...advertisement,
+          id: appStore.selectedAdvertisement()?.id ?? 0,
+          userId: appStore.selectedAdvertisement()?.userId ?? 0,
+          title:
+            advertisement.title ??
+            appStore.selectedAdvertisement()?.title ??
+            '',
+          message:
+            advertisement.message ??
+            appStore.selectedAdvertisement()?.message ??
+            '',
+          statusId:
+            advertisement.statusId ??
+            appStore.selectedAdvertisement()?.statusId ??
+            AdvertisementStatus.new,
+        };
+        patchState(appStore, { selectedAdvertisement: updatedAdvertisement });
+        localStorage.setItem(
+          'selectedAdvertisement',
+          JSON.stringify(updatedAdvertisement)
+        );
+        console.log('>>> AppStore: selectedAdvertisement updated');
+      },
       setSelectedAdvertisement(advertisement: Advertisement) {
-        patchState(store, { selectedAdvertisement: advertisement });
+        patchState(appStore, {
+          selectedAdvertisement: cloneDeep(advertisement),
+        });
         localStorage.setItem(
           'selectedAdvertisement',
           JSON.stringify(advertisement)
         );
         console.log('>>> AppStore: selectedAdvertisement set');
       },
-      async getAdvertisementPrivateHistory(
+      async getAdvertisementPrivateHistoryAsync(
         pageNumber?: number,
         sortOption?: SortOption
       ) {
         if (pageNumber !== undefined) {
-          patchState(store, {
+          patchState(appStore, {
             privateHistoryPaginationParams: {
-              ...store.privateHistoryPaginationParams(),
+              ...appStore.privateHistoryPaginationParams(),
               pageNumber,
             },
           });
         }
         if (sortOption) {
-          patchState(store, {
+          patchState(appStore, {
             privateHistoryPaginationParams: {
-              ...store.privateHistoryPaginationParams(),
-              sortOption,
+              ...appStore.privateHistoryPaginationParams(),
+              sortOption: cloneDeep(sortOption),
             },
           });
         }
-        const searchHashKey = getHashKey(
-          store.privateHistoryPaginationParams()
-        );
-        if (store.privateHistoryHashInfo().has(searchHashKey)) {
-          const hashInfo = store.privateHistoryHashInfo().get(searchHashKey);
-          patchState(store, {
-            privateHistoryPaginationParams: {
-              ...store.privateHistoryPaginationParams(),
-              totalItems: hashInfo?.totalItems ?? 0,
-            },
-          });
-          console.log('>>> AppStore: privateHistory already loaded');
-          return;
+
+        for (const key of appStore.privateHistoryCacheInfo().keys()) {
+          if (
+            arePaginationParamsEqual(
+              key,
+              appStore.privateHistoryPaginationParams(),
+              false
+            )
+          ) {
+            patchState(appStore, {
+              privateHistoryPaginationParams: cloneDeep(key),
+            });
+            console.log('>>> AppStore: privateHistory loaded from cache');
+            return;
+          }
         }
 
         const response = await lastValueFrom(
           advertisementService.getAdvertisementPrivateHistory(
-            store.privateHistoryPaginationParams()
+            appStore.privateHistoryPaginationParams()
           )
         );
 
         const advertisements = response.body as Advertisement[];
         const paginatedResponse = getPaginatedResponse(response);
 
-        patchState(store, addEntities(advertisements, privateHistoryConfig));
-        patchState(store, {
+        patchState(appStore, addEntities(advertisements, privateHistoryConfig));
+        patchState(appStore, {
           privateHistoryPaginationParams: {
-            ...store.privateHistoryPaginationParams(),
+            ...cloneDeep(appStore.privateHistoryPaginationParams()),
             totalItems: paginatedResponse.totalItems,
           },
         });
-        patchState(store, {
-          privateHistoryHashInfo: store
-            .privateHistoryHashInfo()
-            .set(getHashKey(store.privateHistoryPaginationParams()), {
-              totalItems: paginatedResponse.totalItems,
-              ids: advertisements.map((ad) => ad.id),
-            }),
+
+        patchState(appStore, {
+          privateHistoryCacheInfo: appStore.privateHistoryCacheInfo().set(
+            appStore.privateHistoryPaginationParams(),
+            advertisements.map((ad) => ad.id)
+          ),
         });
         console.log('>>> AppStore: privateHistory loaded');
       },
-      async getAdvertisementAllHistory(
+      async getAdvertisementAllHistoryAsync(
         pageNumber?: number,
         sortOption?: SortOption
       ) {
         if (pageNumber !== undefined) {
-          patchState(store, {
+          patchState(appStore, {
             allHistoryPaginationParams: {
-              ...store.allHistoryPaginationParams(),
+              ...cloneDeep(appStore.allHistoryPaginationParams()),
               pageNumber,
             },
           });
         }
         if (sortOption) {
-          patchState(store, {
+          patchState(appStore, {
             allHistoryPaginationParams: {
-              ...store.allHistoryPaginationParams(),
-              sortOption,
+              ...cloneDeep(appStore.allHistoryPaginationParams()),
+              sortOption: cloneDeep(sortOption),
             },
           });
         }
 
-        const searchHashKey = getHashKey(store.allHistoryPaginationParams());
-        if (store.allHistoryHashInfo().has(searchHashKey)) {
-          const hashInfo = store.allHistoryHashInfo().get(searchHashKey);
-          patchState(store, {
-            allHistoryPaginationParams: {
-              ...store.allHistoryPaginationParams(),
-              totalItems: hashInfo?.totalItems ?? 0,
-            },
-          });
-          console.log('>>> AppStore: allHistory already loaded');
-          return;
+        for (const key of appStore.allHistoryCacheInfo().keys()) {
+          if (
+            arePaginationParamsEqual(
+              key,
+              appStore.allHistoryPaginationParams(),
+              false
+            )
+          ) {
+            patchState(appStore, {
+              allHistoryPaginationParams: cloneDeep(key),
+            });
+            console.log('>>> AppStore: allHistory loaded from cache');
+            return;
+          }
         }
 
         const response = await lastValueFrom(
           advertisementService.getAdvertisementAllHistory(
-            store.allHistoryPaginationParams()
+            appStore.allHistoryPaginationParams()
           )
         );
         const advertisements = response.body as Advertisement[];
         const paginatedResponse = getPaginatedResponse(response);
 
-        patchState(store, addEntities(advertisements, allHistoryConfig));
-        patchState(store, {
+        patchState(appStore, addEntities(advertisements, allHistoryConfig));
+        patchState(appStore, {
           allHistoryPaginationParams: {
-            ...store.allHistoryPaginationParams(),
+            ...cloneDeep(appStore.allHistoryPaginationParams()),
             totalItems: paginatedResponse.totalItems,
           },
         });
-        patchState(store, {
-          allHistoryHashInfo: store
-            .allHistoryHashInfo()
-            .set(getHashKey(store.allHistoryPaginationParams()), {
-              totalItems: paginatedResponse.totalItems,
-              ids: advertisements.map((ad) => ad.id),
-            }),
+        patchState(appStore, {
+          allHistoryCacheInfo: appStore.allHistoryCacheInfo().set(
+            appStore.allHistoryPaginationParams(),
+            advertisements.map((ad) => ad.id)
+          ),
         });
-
         console.log('>>> AppStore: allHistory loaded');
       },
-      async getMyAdvertisements(pageNumber?: number, sortOption?: SortOption) {
-        if (pageNumber !== undefined) {
-          patchState(store, {
-            myAdvertisementsPaginationParams: {
-              ...store.myAdvertisementsPaginationParams(),
-              pageNumber,
-            },
-          });
+      async getMyAdvertisementsAsync() {
+        if (appStore.myAdvertisementsEntities().length > 0) {
+          console.log('>>> AppStore: myAdvertisements loaded from cache');
+          return;
         }
-        if (sortOption) {
-          patchState(store, {
-            myAdvertisementsPaginationParams: {
-              ...store.myAdvertisementsPaginationParams(),
-              sortOption,
-            },
-          });
-        }
-        const searchHashKey = getHashKey(
-          store.myAdvertisementsPaginationParams()
-        );
-        // if (store.myAdvertisementsHashInfo().has(searchHashKey)) {
-        //   const hashInfo = store.myAdvertisementsHashInfo().get(searchHashKey);
-        //   patchState(store, {
-        //     myAdvertisementsPaginationParams: {
-        //       ...store.myAdvertisementsPaginationParams(),
-        //       totalItems: hashInfo?.totalItems ?? 0,
-        //     },
-        //   });
-        //   console.log('>>> AppStore: myAdvertisements already loaded');
-        //   return;
-        // }
-
         const response = await lastValueFrom(
           advertisementService.getMyAdvertisements(
-            store.myAdvertisementsPaginationParams()
+            appStore.myAdvertisementsPaginationParams()
           )
         );
         const advertisements = response.body as Advertisement[];
-        const paginatedResponse = JSON.parse(
-          response.headers.get('Pagination')!
+        const paginatedResponse = getPaginatedResponse(response);
+
+        patchState(
+          appStore,
+          addEntities(advertisements, myAdvertisementsConfig)
         );
-        patchState(store, addEntities(advertisements, myAdvertisementsConfig));
-        patchState(store, {
+        patchState(appStore, {
           myAdvertisementsPaginationParams: {
-            ...store.myAdvertisementsPaginationParams(),
+            ...cloneDeep(appStore.myAdvertisementsPaginationParams()),
             totalItems: paginatedResponse.totalItems,
           },
         });
 
-        // patchState(store, {
-        //   myAdvertisementsHashInfo: store
-        //     .myAdvertisementsHashInfo()
-        //     .set(getHashKey(store.myAdvertisementsPaginationParams()), {
-        //       totalItems: paginatedResponse.totalItems,
-        //       ids: advertisements.map((ad) => ad.id),
-        //     }),
-        // });
         console.log('>>> AppStore: myAdvertisements loaded');
       },
-      async getPendingPublicationAdvertisements(
+      async getPendingPublicationAdvertisementsAsync(
         pageNumber?: number,
         sortOption?: SortOption
       ) {
         if (pageNumber !== undefined) {
-          patchState(store, {
+          patchState(appStore, {
             pendingPublicationPaginationParams: {
-              ...store.pendingPublicationPaginationParams(),
+              ...cloneDeep(appStore.pendingPublicationPaginationParams()),
               pageNumber,
             },
           });
         }
         if (sortOption) {
-          patchState(store, {
+          patchState(appStore, {
             pendingPublicationPaginationParams: {
-              ...store.pendingPublicationPaginationParams(),
-              sortOption,
+              ...cloneDeep(appStore.pendingPublicationPaginationParams()),
+              sortOption: cloneDeep(sortOption),
             },
           });
         }
-        const searchHashKey = getHashKey(
-          store.pendingPublicationPaginationParams()
-        );
-        if (store.pendingPublicationHashInfo().has(searchHashKey)) {
-          const hashInfo = store
-            .pendingPublicationHashInfo()
-            .get(searchHashKey);
-          patchState(store, {
-            pendingPublicationPaginationParams: {
-              ...store.pendingPublicationPaginationParams(),
-              totalItems: hashInfo?.totalItems ?? 0,
-            },
-          });
-          console.log('>>> AppStore: pendingPublication already loaded');
-          return;
+
+        for (const key of appStore.pendingPublicationCacheInfo().keys()) {
+          if (
+            arePaginationParamsEqual(
+              key,
+              appStore.pendingPublicationPaginationParams(),
+              false
+            )
+          ) {
+            patchState(appStore, {
+              pendingPublicationPaginationParams: cloneDeep(key),
+            });
+            console.log('>>> AppStore: pendingPublication loaded from cache');
+            return;
+          }
         }
 
         const response = await lastValueFrom(
           advertisementService.getPendingPublicationAdvertisements(
-            store.pendingPublicationPaginationParams()
+            appStore.pendingPublicationPaginationParams()
           )
         );
         const advertisements = response.body as Advertisement[];
         const paginatedResponse = getPaginatedResponse(response);
-        
+
         patchState(
-          store,
+          appStore,
           addEntities(advertisements, pendingPublicationConfig)
         );
-        patchState(store, {
+        patchState(appStore, {
           pendingPublicationPaginationParams: {
-            ...store.pendingPublicationPaginationParams(),
+            ...cloneDeep(appStore.pendingPublicationPaginationParams()),
             totalItems: paginatedResponse.totalItems,
           },
         });
 
-        patchState(store, {
-          pendingPublicationHashInfo: store
-            .pendingPublicationHashInfo()
-            .set(getHashKey(store.pendingPublicationPaginationParams()), {
-              totalItems: paginatedResponse.totalItems,
-              ids: advertisements.map((ad) => ad.id),
-            }),
+        patchState(appStore, {
+          pendingPublicationCacheInfo: appStore
+            .pendingPublicationCacheInfo()
+            .set(
+              appStore.pendingPublicationPaginationParams(),
+              advertisements.map((ad) => ad.id)
+            ),
         });
         console.log('>>> AppStore: pendingPublicationAdvertisements loaded');
       },
-      async getPendingValidationAdvertisements(
+      async getPendingValidationAdvertisementsAsync(
         pageNumber?: number,
         sortOption?: SortOption
       ) {
         if (pageNumber !== undefined) {
-          patchState(store, {
+          patchState(appStore, {
             pendingValidationPaginationParams: {
-              ...store.pendingValidationPaginationParams(),
+              ...cloneDeep(appStore.pendingValidationPaginationParams()),
               pageNumber,
             },
           });
         }
         if (sortOption) {
-          patchState(store, {
+          patchState(appStore, {
             pendingValidationPaginationParams: {
-              ...store.pendingValidationPaginationParams(),
-              sortOption: { ...sortOption },
+              ...cloneDeep(appStore.pendingValidationPaginationParams()),
+              sortOption: cloneDeep(sortOption),
             },
           });
         }
 
-        for (const key of store.pendingValidationHashInfo2().keys()) {
+        for (const key of appStore.pendingValidationCacheInfo().keys()) {
           if (
             arePaginationParamsEqual(
               key,
-              store.pendingValidationPaginationParams(),
+              appStore.pendingValidationPaginationParams(),
               false
             )
           ) {
-            patchState(store, {
-              pendingValidationPaginationParams: {
-                ...key,
-              },
+            patchState(appStore, {
+              pendingValidationPaginationParams: cloneDeep(key),
             });
-            console.log('>>> AppStore: pendingValidation already loaded');
+            console.log('>>> AppStore: pendingValidation loaded from cache');
             return;
           }
         }
 
         const response = await lastValueFrom(
           advertisementService.getPendingValidationAdvertisements(
-            store.pendingValidationPaginationParams()
+            appStore.pendingValidationPaginationParams()
           )
         );
         const advertisements = response.body as Advertisement[];
         const paginatedResponse = getPaginatedResponse(response);
-        patchState(store, addEntities(advertisements, pendingValidationConfig));
 
-        patchState(store, {
+        patchState(
+          appStore,
+          addEntities(advertisements, pendingValidationConfig)
+        );
+
+        patchState(appStore, {
           pendingValidationPaginationParams: {
-            ...store.pendingValidationPaginationParams(),
+            ...cloneDeep(appStore.pendingValidationPaginationParams()),
             totalItems: paginatedResponse.totalItems,
           },
         });
 
-        patchState(store, {
-          pendingValidationHashInfo2: store.pendingValidationHashInfo2().set(
-            store.pendingValidationPaginationParams(),
+        patchState(appStore, {
+          pendingValidationCacheInfo: appStore.pendingValidationCacheInfo().set(
+            appStore.pendingValidationPaginationParams(),
             advertisements.map((ad) => ad.id)
           ),
         });
         console.log('>>> AppStore: pendingValidationAdvertisements loaded');
       },
-      async login() {
-        if (!store.user()) {
+      async loginAsync() {
+        if (!appStore.user()) {
           const user = await lastValueFrom(accountService.login());
           localStorage.setItem('user', JSON.stringify(user));
-          patchState(store, { user });
+          patchState(appStore, { user });
           console.log('>>> AppStore: user loaded');
         }
       },
-      async getPendingValidationAdvertisementsCount() {
-        if (store.user()?.isAdmin) {
+      async getPendingValidationCountAsync() {
+        if (appStore.user()?.isAdmin) {
           const pendingCounter = await lastValueFrom(
             advertisementService.getPendingValidationAdvertisementsCount()
           );
-          patchState(store, {
-            pendingValidationAdvertisementsCount: pendingCounter,
+          patchState(appStore, {
+            pendingValidationCount: pendingCounter,
+          });
+          if (pendingCounter !== appStore._pendingValidationCountCache()) {
+            this.clearCacheInfo(AppListType.PendingValidation);
+          }
+          patchState(appStore, {
+            _pendingValidationCountCache: pendingCounter,
           });
           console.log(
             '>>> AppStore: pendingValidationAdvertisementsCount loaded'
           );
         }
       },
-      async loadChatFilters() {
-        if (store.areChatFiltersLoaded() === false) {
+      async loadChatFiltersAsync() {
+        if (appStore.areChatFiltersLoaded() === false) {
           const chatFilters = await lastValueFrom(chatFilterService.getAll());
           const chatFiltersWithDates = chatFilters.map((cf) => ({
             ...cf,
             created: new Date(cf.created),
           }));
           patchState(
-            store,
+            appStore,
             addEntities(chatFiltersWithDates, chatFilterConfig)
           );
-          patchState(store, { areChatFiltersLoaded: true });
+          patchState(appStore, { areChatFiltersLoaded: true });
           console.log('>>> AppStore: chatFilters loaded');
         }
       },
-      async updateChatFilterPaginationParams(params: PaginationParams) {
-        patchState(store, { chatFilterPaginationParams: params });
+      async updateChatFilterPaginationParamsAsync(params: PaginationParams) {
+        patchState(appStore, { chatFilterPaginationParams: params });
         console.log('>>> AppStore: PaginationParams updated');
       },
-      async addChatFilter(chatFilter: ChatFilter) {
-        const chatFilterFromServer = await lastValueFrom(
+      async createChatFilterAsync(chatFilter: ChatFilter) {
+        const chatFilterResponse = await lastValueFrom(
           chatFilterService.save(chatFilter)
         );
-        patchState(store, addEntity(chatFilterFromServer, chatFilterConfig));
+        patchState(appStore, addEntity(chatFilterResponse, chatFilterConfig));
         console.log('>>> AppStore: ChatFilter saved');
       },
-      async deleteChatFilter(chatFilter: ChatFilter) {
+      async deleteChatFilterAsync(chatFilter: ChatFilter) {
         lastValueFrom(chatFilterService.delete(chatFilter.id));
-        patchState(store, removeEntity(chatFilter.id, chatFilterConfig));
+        patchState(appStore, removeEntity(chatFilter.id, chatFilterConfig));
         console.log('>>> AppStore: ChatFilter deleted');
       },
-      async deleteAdvertisement(id: number) {
-        await lastValueFrom(advertisementService.delete(id));
+      deleteAdvertisement(id: number) {
+        lastValueFrom(advertisementService.delete(id));
         this.deleteAdvertisementFromList(AppListType.PendingPublication, id);
-        this.clearHashInfo(AppListType.PendingPublication);
         this.deleteAdvertisementFromList(AppListType.PendingValidation, id);
-        this.clearHashInfo(AppListType.PendingValidation);
         this.deleteAdvertisementFromList(AppListType.MyAdvertisements, id);
-        this.clearHashInfo(AppListType.MyAdvertisements);
-
         console.log('>>> AppStore: Advertisement deleted');
       },
       deleteAdvertisementFromList(appListType: AppListType, id: number) {
+        let updatedCacheInfo = new Map<PaginationParams, number[]>();
         switch (appListType) {
           case AppListType.AllHistory:
-            patchState(store, removeEntity(id, allHistoryConfig));
+            console.error(">>> AppStore: history shouldn't be deleted");
             break;
           case AppListType.PrivateHistory:
-            patchState(store, removeEntity(id, privateHistoryConfig));
+            console.error(">>> AppStore: history shouldn't be deleted");
             break;
           case AppListType.PendingPublication:
-            patchState(store, removeEntity(id, pendingPublicationConfig));
+            patchState(appStore, removeEntity(id, pendingPublicationConfig));
+            updatedCacheInfo = deleteFromCache(
+              id,
+              appStore.pendingPublicationCacheInfo()
+            );
+            patchState(appStore, {
+              pendingPublicationCacheInfo: updatedCacheInfo,
+            });
             break;
           case AppListType.PendingValidation:
-            patchState(store, removeEntity(id, pendingValidationConfig));
+            patchState(appStore, removeEntity(id, pendingValidationConfig));
+            updatedCacheInfo = deleteFromCache(
+              id,
+              appStore.pendingValidationCacheInfo()
+            );
+            patchState(appStore, {
+              pendingValidationCacheInfo: updatedCacheInfo,
+            });
             break;
           case AppListType.MyAdvertisements:
-            patchState(store, removeEntity(id, myAdvertisementsConfig));
+            patchState(appStore, removeEntity(id, myAdvertisementsConfig));
             break;
         }
         console.log(
           `>>> AppStore: Advertisement deleted from list ${appListType}`
         );
       },
-      updateAdvertisementInAllLists(advertisement: Advertisement) {
-        patchState(
-          store,
-          updateEntity(
-            { id: advertisement.id, changes: { ...advertisement } },
-            myAdvertisementsConfig
-          )
-        );
-        patchState(
-          store,
-          updateEntity(
-            { id: advertisement.id, changes: { ...advertisement } },
-            pendingPublicationConfig
-          )
-        );
-        patchState(
-          store,
-          updateEntity(
-            { id: advertisement.id, changes: { ...advertisement } },
-            pendingValidationConfig
-          )
-        );
+      updateAdvertisementInList(
+        appListType: AppListType,
+        advertisement: Advertisement
+      ) {
+        const clonedAdvertisement = cloneDeep(advertisement);
+        clonedAdvertisement.updated = DateHelper.getUTCTime();
+        switch (appListType) {
+          case AppListType.PendingPublication:
+            patchState(
+              appStore,
+              updateEntity(
+                { id: advertisement.id, changes: clonedAdvertisement },
+                pendingPublicationConfig
+              )
+            );
+            break;
+          case AppListType.PendingValidation:
+            patchState(
+              appStore,
+              updateEntity(
+                { id: advertisement.id, changes: clonedAdvertisement },
+                pendingValidationConfig
+              )
+            );
+            break;
+          case AppListType.MyAdvertisements:
+            patchState(
+              appStore,
+              updateEntity(
+                { id: advertisement.id, changes: clonedAdvertisement },
+                myAdvertisementsConfig
+              )
+            );
+            break;
+        }
         console.log('>>> AppStore: Advertisement updated in all lists');
       },
-      async validateAdvertisementAdmin(advertisement: Advertisement) {
-        if (!store.user()?.isAdmin) {
-          console.error('User is not admin');
+      async validateAdvertisementAdminAsync(advertisement: Advertisement) {
+        if (!appStore.user()?.isAdmin) {
+          console.error('>>> AppStore: user is not admin');
           return;
         }
-
-        await lastValueFrom(
-          advertisementService.validateAdvertisementAdmin(advertisement)
-        );
-
         this.deleteAdvertisementFromList(
           AppListType.PendingValidation,
           advertisement.id
         );
-        this.clearHashInfo(AppListType.PendingValidation);
-        this.updateAdvertisementInAllLists(advertisement);
+        this.updateAdvertisementInList(
+          AppListType.MyAdvertisements,
+          advertisement
+        );
+        lastValueFrom(
+          advertisementService.validateAdvertisementAdmin(advertisement)
+        );
       },
-      clearHashInfo(appListType: AppListType) {
+      clearCacheInfo(appListType: AppListType) {
         switch (appListType) {
           case AppListType.AllHistory:
-            patchState(store, { allHistoryHashInfo: new Map() });
+            patchState(appStore, { allHistoryCacheInfo: new Map() });
             break;
           case AppListType.PrivateHistory:
-            patchState(store, { privateHistoryHashInfo: new Map() });
+            patchState(appStore, { privateHistoryCacheInfo: new Map() });
             break;
           case AppListType.PendingPublication:
-            patchState(store, { pendingPublicationHashInfo: new Map() });
+            patchState(appStore, { pendingPublicationCacheInfo: new Map() });
             break;
           case AppListType.PendingValidation:
-            patchState(store, { pendingValidationHashInfo: new Map() });
+            patchState(appStore, { pendingValidationCacheInfo: new Map() });
             break;
         }
-        console.log(`>>> AppStore: HashInfo cleared for ${appListType}`);
+        console.log(`>>> AppStore: CacheInfo cleared for ${appListType}`);
+      },
+      cancelPublication() {
+        const selectedAdvertisement = appStore.selectedAdvertisement();
+        if (selectedAdvertisement) {
+          this.deleteAdvertisementFromList(
+            AppListType.PendingPublication,
+            selectedAdvertisement.id
+          );
+          selectedAdvertisement.nextPublishDate = undefined;
+          selectedAdvertisement.nextPublishId = 0;
+          selectedAdvertisement.statusId = AdvertisementStatus.validated;
+          this.updateAdvertisementInList(
+            AppListType.MyAdvertisements,
+            selectedAdvertisement
+          );
+
+          const updatedAdvertisement = appStore
+            .myAdvertisementsEntities()
+            .find((ad) => ad.id === selectedAdvertisement.id)!;
+          this.setSelectedAdvertisement(updatedAdvertisement);
+          lastValueFrom(
+            advertisementService.cancelPublication(selectedAdvertisement.id)
+          );
+        }
+      },
+      confirmPublication(nextPublishDate?: Date) {
+        if (nextPublishDate === undefined) {
+          console.error('>>> AppStore: nextPublishDate is not defined');
+          return;
+        }
+        patchState(
+          appStore,
+          updateEntity(
+            {
+              id: appStore.selectedAdvertisement()?.id!,
+              changes: {
+                nextPublishDate: nextPublishDate,
+                statusId: AdvertisementStatus.pendingPublication,
+                updated: DateHelper.getUTCTime(),
+              },
+            },
+            myAdvertisementsConfig
+          )
+        );
+        const updatedAdvertisement = appStore
+          .myAdvertisementsEntities()
+          .find((ad) => ad.id === appStore.selectedAdvertisement()?.id!)!;
+        this.setSelectedAdvertisement(updatedAdvertisement);
+        this.clearCacheInfo(AppListType.PendingPublication);
+        lastValueFrom(publishService.publish(updatedAdvertisement));
+      },
+      async createAdvertisementAsync(advertisement: Advertisement) {
+        const advertisementResponse = await lastValueFrom(
+          await advertisementService.save(advertisement)
+        );
+        patchState(
+          appStore,
+          addEntity(advertisementResponse, myAdvertisementsConfig)
+        );
+        console.log('>>> AppStore: advertisementResponse created');
+      },
+      async updateAdvertisementAsync(advertisement: Advertisement) {
+        const advertisementResponse = await lastValueFrom(
+          await advertisementService.update(advertisement)
+        );
+        this.updateAdvertisementInList(
+          AppListType.MyAdvertisements,
+          advertisementResponse
+        );
+        console.log('>>> AppStore: advertisement updated');
+      },
+      async sendToValidationAsync() {
+        const selectedAdvertisement = appStore.selectedAdvertisement();
+        if (selectedAdvertisement) {
+          selectedAdvertisement.statusId =
+            AdvertisementStatus.pendingValidation;
+          this.updateAdvertisementInList(
+            AppListType.MyAdvertisements,
+            selectedAdvertisement
+          );
+          this.updateSelectedAdvertisement(selectedAdvertisement);
+
+          lastValueFrom(
+            advertisementService.sendToValidation(selectedAdvertisement.id)
+          );
+
+          this.clearCacheInfo(AppListType.PendingValidation);
+          console.log('>>> AppStore: advertisement sent to validation');
+        }
+      },
+      forcePublication(adminComment?: string) {
+        if (!appStore.user()?.isAdmin) {
+          console.error('>>> AppStore: user is not admin');
+          return;
+        }
+        const managePublish = {
+          advertisementId: appStore.selectedAdvertisement()?.id,
+          comment: adminComment,
+          publishId: appStore.selectedAdvertisement()?.nextPublishId,
+          shouldRejectValidation: false,
+        } as ManagePublish;
+
+        lastValueFrom(
+          advertisementService.forcePublicationAdmin(managePublish)
+        );
+        this.deleteAdvertisementFromList(
+          AppListType.PendingPublication,
+          appStore.selectedAdvertisement()?.id!
+        );
+        if (
+          appStore
+            .myAdvertisementsIds()
+            .includes(appStore.selectedAdvertisement()?.id!)
+        ) {
+          const updatedAdvertisement = cloneDeep(
+            appStore.selectedAdvertisement()
+          );
+          if (updatedAdvertisement) {
+            updatedAdvertisement.nextPublishDate = undefined;
+            updatedAdvertisement.statusId = AdvertisementStatus.validated;
+
+            this.updateAdvertisementInList(
+              AppListType.MyAdvertisements,
+              updatedAdvertisement
+            );
+          }
+        }
+      },
+      cancelPublicationAdmin(
+        shouldRejectValidation: boolean,
+        adminComment?: string
+      ) {
+        if (!appStore.user()?.isAdmin) {
+          console.error('>>> AppStore: user is not admin');
+          return;
+        }
+        const managePublish = {
+          advertisementId: appStore.selectedAdvertisement()?.id,
+          comment: adminComment,
+          publishId: appStore.selectedAdvertisement()?.nextPublishId,
+          shouldRejectValidation,
+        } as ManagePublish;
+
+        lastValueFrom(
+          advertisementService.cancelPublicationAdmin(managePublish)
+        );
+        this.deleteAdvertisementFromList(
+          AppListType.PendingPublication,
+          appStore.selectedAdvertisement()?.id!
+        );
       },
     })
   )

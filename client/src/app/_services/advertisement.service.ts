@@ -112,13 +112,10 @@ export class AdvertisementService {
       }
     }
 
-    return this.http
-      .post<Advertisement>(this.baseUrl + 'advertisement/save', formData)
-      .pipe(
-        tap((savedAdvertisement: Advertisement) => {
-          // this.advertisementCacheService.add(savedAdvertisement);
-        })
-      );
+    return this.http.post<Advertisement>(
+      this.baseUrl + 'advertisement/save',
+      formData
+    );
   }
 
   async update(advertisement: Advertisement) {
@@ -137,54 +134,30 @@ export class AdvertisementService {
           console.error('Error fetching or reconstructing file:', error);
         }
     }
-    return this.http
-      .put<Advertisement>(this.baseUrl + 'advertisement', formData)
-      .pipe(
-        tap((updatedAdvertisement: Advertisement) => {
-          // console.log(updatedAdvertisement);
-          // this.advertisementCacheService.updateInAllCaches(
-          //   updatedAdvertisement
-          // );
-        })
-      );
+    return this.http.put<Advertisement>(
+      this.baseUrl + 'advertisement',
+      formData
+    );
   }
 
-  sendToValidation(advertisement: Advertisement) {
-    return this.http
-      .post<UpdateAdvertisementStatusRequest>(
-        this.baseUrl + 'advertisement/sendToValidation',
-        { id: advertisement.id }
-      )
-      .pipe(
-        tap(() => {
-          // advertisement.updated = this.dateHelper.getUTCTime();
-          // this.advertisementCacheService.updateInAllCaches(advertisement);
-        })
-      );
+  sendToValidation(id: number) {
+    return this.http.post<UpdateAdvertisementStatusRequest>(
+      this.baseUrl + 'advertisement/sendToValidation',
+      { id }
+    );
   }
 
-  delete(id: number ) {
+  delete(id: number) {
     return this.http.delete<Advertisement>(
       this.baseUrl + `advertisement/${id}`
     );
   }
 
-  cancelPublication(advertisement: Advertisement | null) {
-    return this.http
-      .put(
-        this.baseUrl + `advertisement/cancelPublication/${advertisement?.id}`,
-        null
-      )
-      .pipe(
-        tap(() => {
-          // advertisement.updated = this.dateHelper.getUTCTime();
-          // this.advertisementCacheService.updateInAllCaches(advertisement);
-          // this.advertisementCacheService.deleteByAdvListType(
-          //   advertisement.id,
-          //   AdvListType.PendingPublication
-          // );
-        })
-      );
+  cancelPublication(id: number) {
+    return this.http.put(
+      this.baseUrl + `advertisement/cancelPublication/${id}`,
+      null
+    );
   }
 
   getById(id: number) {
@@ -256,40 +229,18 @@ export class AdvertisementService {
   }
 
   // ADMIN
-  cancelPublicationAdmin(
-    managePublish: ManagePublish,
-    advertisement: Advertisement | null
-  ) {
-    return this.http
-      .put(this.baseUrl + 'advertisementAdmin/cancelPublication', managePublish)
-      .pipe(
-        tap(() => {
-          // advertisement.updated = this.dateHelper.getUTCTime();
-          // this.advertisementCacheService.updateInAllCaches(advertisement);
-          // this.advertisementCacheService.deleteByAdvListType(
-          //   advertisement.id,
-          //   AdvListType.PendingPublication
-          // );
-        })
-      );
+  cancelPublicationAdmin(managePublish: ManagePublish) {
+    return this.http.put(
+      this.baseUrl + 'advertisementAdmin/cancelPublication',
+      managePublish
+    );
   }
 
-  forcePublicationAdmin(
-    managePublish: ManagePublish,
-    advertisement: Advertisement | null
-  ) {
-    return this.http
-      .put(this.baseUrl + 'advertisementAdmin/forcePublication', managePublish)
-      .pipe(
-        tap(() => {
-          // advertisement.updated = this.dateHelper.getUTCTime();
-          // this.advertisementCacheService.updateInAllCaches(advertisement);
-          // this.advertisementCacheService.deleteByAdvListType(
-          //   advertisement.id,
-          //   AdvListType.PendingPublication
-          // );
-        })
-      );
+  forcePublicationAdmin(managePublish: ManagePublish) {
+    return this.http.put(
+      this.baseUrl + 'advertisementAdmin/forcePublication',
+      managePublish
+    );
   }
 
   // VALIDATION

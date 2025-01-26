@@ -5,7 +5,6 @@ import { DEFAULT_SORT_OPTION } from '../_framework/constants/defaultSortOption';
 import { Advertisement } from '../_models/advertisement';
 import { User } from '../_models/user';
 import { PaginationParams } from '../_entities/paginationParams';
-import { HashInfo } from '../_entities/hashInfo';
 import { forEach } from 'lodash';
 import { HttpResponse } from '@angular/common/http';
 
@@ -20,7 +19,15 @@ export function getDefaultSortOptions(): SortOption {
 
 export function getSelectedAdvertisement(): Advertisement | null {
   const selectedAdvertisement = localStorage.getItem('selectedAdvertisement');
-  return selectedAdvertisement ? JSON.parse(selectedAdvertisement) : null;
+  if (selectedAdvertisement) {
+    try {
+      return JSON.parse(selectedAdvertisement);
+    } catch (e) {
+      console.error('Error parsing selectedAdvertisement:', e);
+      return null;
+    }
+  }
+  return null;
 }
 
 export function getUser(): User | null {
@@ -65,14 +72,26 @@ export function getHashKey(paginationParams: PaginationParams): string {
 export function deleteFromCache(
   id: number,
   hashInfo: Map<PaginationParams, number[]>
-) {
+): Map<PaginationParams, number[]> {
+  const clonedHashInfo = new Map<PaginationParams, number[]>();
+  for (const [key, value] of hashInfo) {
+    const clonedKey: PaginationParams = {
+      ...key,
+      sortOption: { ...key.sortOption },
+    };
+    const clonedValue = [...value];
+    clonedHashInfo.set(clonedKey, clonedValue);
+  }
+
   const keysContainsId: PaginationParams[] = getPaginationParamsContainsId(
     id,
-    hashInfo
+    clonedHashInfo
   );
   forEach(keysContainsId, (key) => {
-    updateValuesIdInSameSearch(id, key, hashInfo);
+    updateValuesIdInSameSearch(id, key, clonedHashInfo);
   });
+
+  return clonedHashInfo;
 }
 
 export function getPaginationParamsContainsId(
@@ -207,6 +226,14 @@ export function getUpdatedSearchRow(
   return updatedSearch;
 }
 
+function areValuesEqual(value1: any, value2: any): boolean {
+  return (
+    ((value1 === '' || value1 === undefined || value1 === null) &&
+      (value2 === '' || value2 === undefined || value2 === null)) ||
+    value1 === value2
+  );
+}
+
 export function areSortOptionEqual(
   params1: SortOption,
   params2: SortOption
@@ -215,7 +242,7 @@ export function areSortOptionEqual(
     params1.field === params2.field &&
     params1.order === params2.order &&
     params1.searchType === params2.searchType &&
-    params1.searchValue === params2.searchValue &&
+    areValuesEqual(params1.searchValue, params2.searchValue) &&
     params1.dateRange?.start?.getTime() ===
       params2.dateRange?.start?.getTime() &&
     params1.dateRange?.end?.getTime() === params2.dateRange?.end?.getTime()
@@ -235,6 +262,8 @@ export function arePaginationParamsEqual(
   );
 }
 
-export function getPaginatedResponse(response: HttpResponse<any>): PaginationParams {
+export function getPaginatedResponse(
+  response: HttpResponse<any>
+): PaginationParams {
   return JSON.parse(response.headers.get('Pagination')!);
 }
