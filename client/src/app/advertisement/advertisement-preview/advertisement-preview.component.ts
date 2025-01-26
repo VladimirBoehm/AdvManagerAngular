@@ -3,7 +3,6 @@ import { TelegramBackButtonService } from '../../_services/telegramBackButton.se
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { AdvertisementStatus } from '../../_framework/constants/advertisementStatus';
-import { AccountService } from '../../_services/api.services/account.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { PublishService } from '../../_services/api.services/publish.service';
 import { AdvertisementHelper } from '../../_framework/component/helpers/advertisementHelper';
@@ -38,7 +37,6 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   shouldRejectValidation: boolean = false;
   adminComment?: string;
 
-  accountService = inject(AccountService);
   publishService = inject(PublishService);
   advertisementHelper = inject(AdvertisementHelper);
   confirmationService = inject(ConfirmationMatDialogService);

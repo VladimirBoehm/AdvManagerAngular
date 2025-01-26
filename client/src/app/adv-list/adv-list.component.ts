@@ -1,6 +1,5 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AdvertisementService } from '../_services/api.services/advertisement.service';
 import { Advertisement } from '../_models/advertisement';
 import { TelegramBackButtonService } from '../_services/telegramBackButton.service';
 import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
@@ -37,7 +36,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
   private backButtonService = inject(TelegramBackButtonService);
   private router = inject(Router);
   readonly appStore = inject(AppStore);
-  advertisementService = inject(AdvertisementService);
+ 
   pagination = signal<PaginationParams>({} as PaginationParams);
   readonly advertisementsList = signal<Advertisement[]>([]);
 

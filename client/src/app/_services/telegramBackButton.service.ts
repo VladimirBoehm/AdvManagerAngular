@@ -27,7 +27,6 @@ export class TelegramBackButtonService {
     }
   }
 
-
   setCloseDialogHandler(handler: () => void): void {
     this.closeDialogHandler = handler;
   }

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FeedbackService } from '../_services/api.services/feedback.service';
 import {
   FormBuilder,
@@ -11,7 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TelegramBackButtonService } from '../_services/telegramBackButton.service';
 import { Router } from '@angular/router';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { Feedback } from '../_models/feedback';
 import { NgIf } from '@angular/common';
 import { ConfirmationMatDialogService } from '../_services/confirmation-mat-dialog.service';
@@ -30,7 +30,6 @@ export class FeedbackComponent implements OnInit {
   private feedbackService = inject(FeedbackService);
   private formBuilder = inject(FormBuilder);
   private router = inject(Router);
-  private modalService = inject(BsModalService);
   matErrorService = inject(MatErrorService);
   confirmationService = inject(ConfirmationMatDialogService);
   isSend: boolean = false;

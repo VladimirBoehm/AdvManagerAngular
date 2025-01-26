@@ -45,23 +45,17 @@ const chatFilterPageSize = 999;
 type appState = {
   user: User | null;
   selectedAdvertisement: Advertisement | null;
-
   areChatFiltersLoaded: boolean;
   chatFilterPaginationParams: PaginationParams;
-
   allHistoryPaginationParams: PaginationParams;
   allHistoryCacheInfo: Map<PaginationParams, number[]>;
-
   privateHistoryPaginationParams: PaginationParams;
   privateHistoryCacheInfo: Map<PaginationParams, number[]>;
-
   pendingPublicationPaginationParams: PaginationParams;
   pendingPublicationCacheInfo: Map<PaginationParams, number[]>;
-
   pendingValidationCount: number;
   pendingValidationPaginationParams: PaginationParams;
   pendingValidationCacheInfo: Map<PaginationParams, number[]>;
-
   myAdvertisementsPaginationParams: PaginationParams;
   _pendingValidationCountCache: number;
 };
@@ -98,14 +92,12 @@ const initialState: appState = {
     sortOption: { ...getDefaultSortOptions(), field: 'date', order: 'asc' },
   },
   pendingPublicationCacheInfo: new Map<PaginationParams, number[]>(),
-
   pendingValidationPaginationParams: {
     totalItems: 0,
     pageNumber: 0,
     pageSize: defaultPageSize,
     sortOption: getDefaultSortOptions(),
   },
-
   pendingValidationCacheInfo: new Map<PaginationParams, number[]>(),
   myAdvertisementsPaginationParams: {
     totalItems: 0,

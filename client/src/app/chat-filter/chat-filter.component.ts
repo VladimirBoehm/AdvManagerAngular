@@ -1,11 +1,10 @@
 import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ChatFilterService } from '../_services/api.services/chat-filter.service';
 import { ChatFilter } from '../_models/chatFilter';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatErrorService } from '../_framework/component/errors/mat-error-service';
 import { TelegramBackButtonService } from '../_services/telegramBackButton.service';
-import { NavigationStart, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { SharedModule } from '../_framework/modules/sharedModule';
 import { EmptyListPlaceholderComponent } from '../_framework/component/empty-list-placeholder/empty-list-placeholder.component';
 import { ListFilterComponent } from '../_framework/component/adv-list-filter/list-filter.component';
@@ -40,7 +39,6 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
   readonly appStore = inject(AppStore);
   private routerSubscription!: Subscription;
   busyService = inject(BusyService);
-  chatFilterService = inject(ChatFilterService);
   matErrorService = inject(MatErrorService);
   editForm: FormGroup = new FormGroup({});
   dateHelper = DateHelper;
