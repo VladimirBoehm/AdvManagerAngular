@@ -6,7 +6,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TelegramBackButtonService } from '../../_framework/telegramBackButtonService';
+import { TelegramBackButtonService } from '../../_services/telegramBackButton.service';
 import { Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { AdImage } from '../../_models/adImage';

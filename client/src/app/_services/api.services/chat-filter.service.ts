@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { environment } from '../../environments/environment';
-import { ChatFilter } from '../_models/chatFilter';
+import { environment } from '../../../environments/environment';
+import { ChatFilter } from '../../_models/chatFilter';
 
 import { BehaviorSubject } from 'rxjs';
 

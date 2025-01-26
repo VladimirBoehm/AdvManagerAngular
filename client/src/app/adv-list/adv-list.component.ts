@@ -1,8 +1,8 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
-import { AdvertisementService } from '../_services/advertisement.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AdvertisementService } from '../_services/api.services/advertisement.service';
 import { Advertisement } from '../_models/advertisement';
-import { TelegramBackButtonService } from '../_framework/telegramBackButtonService';
+import { TelegramBackButtonService } from '../_services/telegramBackButton.service';
 import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
 import { SortOption } from '../_entities/sortOption';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
@@ -40,7 +40,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
   advertisementService = inject(AdvertisementService);
   pagination = signal<PaginationParams>({} as PaginationParams);
   readonly advertisementsList = signal<Advertisement[]>([]);
-  private routerSubscription!: Subscription;
+
   private paramMapSubscription!: Subscription;
 
   advListType = AppListType;
@@ -51,15 +51,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
   Localization = Localization;
 
   ngOnInit(): void {
-    this.routerSubscription = this.router.events.subscribe((event) => {
-      if (event instanceof NavigationStart) {
-        // TODO refactor events.subscribe
-        if (event.navigationTrigger === 'popstate') {
-          this.advertisementService.resetPaginationParams();
-        }
-      }
-    });
-
+    // TODO refactor subscribe
     this.paramMapSubscription = this.route.paramMap.subscribe((params) => {
       this.selectedListType.set(params.get('state') as AppListType);
 
@@ -67,8 +59,6 @@ export class AdvListComponent implements OnInit, OnDestroy {
     });
 
     this.backButtonService.setBackButtonHandler(() => {
-      this.advertisementService.resetPaginationParams();
-
       if (this.selectedListType() === AppListType.PrivateHistory) {
         this.router.navigate(['/adv-list', this.advListType.MyAdvertisements]);
         this.initialize();
@@ -267,9 +257,6 @@ export class AdvListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.backButtonService.removeBackButtonHandler();
-    if (this.routerSubscription) {
-      this.routerSubscription.unsubscribe();
-    }
     this.paramMapSubscription.unsubscribe();
   }
 }

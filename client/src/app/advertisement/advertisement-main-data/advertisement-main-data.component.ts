@@ -3,7 +3,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { SharedModule } from '../../_framework/modules/sharedModule';
 import { ImagePreviewModalComponent } from '../../_framework/component/image-preview-modal/image-preview-modal.component';
 import { DateHelper } from '../../_framework/component/helpers/dateHelper';
-import { TelegramBackButtonService } from '../../_framework/telegramBackButtonService';
+import { TelegramBackButtonService } from '../../_services/telegramBackButton.service';
 import { Localization } from '../../_framework/component/helpers/localization';
 
 @Component({

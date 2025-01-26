@@ -10,7 +10,7 @@ import { inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
 import { SortOption } from '../../../../_entities/sortOption';
-import { TelegramBackButtonService } from '../../../telegramBackButtonService';
+import { TelegramBackButtonService } from '../../../../_services/telegramBackButton.service';
 import { SharedModule } from '../../../modules/sharedModule';
 import { Localization } from '../../helpers/localization';
 import { AppStore } from '../../../../appStore/app.store';

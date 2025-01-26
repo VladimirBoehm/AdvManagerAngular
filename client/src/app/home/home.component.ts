@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { AdvertisementService } from '../_services/advertisement.service';
+import { AdvertisementService } from '../_services/api.services/advertisement.service';
 import { AppListType } from '../_framework/constants/advListType';
 import { SharedModule } from '../_framework/modules/sharedModule';
 import { BusyService } from '../_services/busy.service';

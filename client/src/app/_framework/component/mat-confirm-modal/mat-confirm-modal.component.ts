@@ -15,7 +15,7 @@ import {
 } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { ConfirmDialogData } from '../../../_entities/confirm-dialog-data';
-import { TelegramBackButtonService } from '../../telegramBackButtonService';
+import { TelegramBackButtonService } from '../../../_services/telegramBackButton.service';
 
 @Component({
   selector: 'app-mat-confirm-modal',

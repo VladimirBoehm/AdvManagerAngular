@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { TelegramBackButtonService } from '../../_framework/telegramBackButtonService';
+import { TelegramBackButtonService } from '../../_services/telegramBackButton.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';

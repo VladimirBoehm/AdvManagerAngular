@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { FeedbackService } from '../_services/feedbackService';
+import { FeedbackService } from '../_services/api.services/feedback.service';
 import {
   FormBuilder,
   FormGroup,
@@ -9,7 +9,7 @@ import {
 import { MatErrorService } from '../_framework/component/errors/mat-error-service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { TelegramBackButtonService } from '../_framework/telegramBackButtonService';
+import { TelegramBackButtonService } from '../_services/telegramBackButton.service';
 import { Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Feedback } from '../_models/feedback';

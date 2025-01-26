@@ -9,8 +9,8 @@ import {
 } from '@ngrx/signals';
 import { lastValueFrom } from 'rxjs';
 import { User } from '../_models/user';
-import { AccountService } from '../_services/account.service';
-import { AdvertisementService } from '../_services/advertisement.service';
+import { AccountService } from '../_services/api.services/account.service';
+import { AdvertisementService } from '../_services/api.services/advertisement.service';
 import {
   addEntities,
   addEntity,
@@ -20,7 +20,7 @@ import {
   withEntities,
 } from '@ngrx/signals/entities';
 import { ChatFilter } from '../_models/chatFilter';
-import { ChatFilterService } from '../_services/chat-filter.service';
+import { ChatFilterService } from '../_services/api.services/chat-filter.service';
 import { PaginationParams } from '../_entities/paginationParams';
 import { SortOption } from '../_entities/sortOption';
 import { Advertisement } from '../_models/advertisement';
@@ -35,7 +35,7 @@ import {
   withLogger,
 } from './app.store.helper';
 import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
-import { PublishService } from '../_services/publish.service';
+import { PublishService } from '../_services/api.services/publish.service';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
 import cloneDeep from 'lodash/cloneDeep';
 import { ManagePublish } from '../_entities/managePublish';
