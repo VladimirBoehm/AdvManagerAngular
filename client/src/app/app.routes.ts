@@ -7,13 +7,10 @@ import { AdvertisementPreviewComponent } from './advertisement/advertisement-pre
 import { AdvertisementEditComponent } from './advertisement/advertisement-edit/advertisement-edit.component';
 import { ChatFilterComponent } from './chat-filter/chat-filter.component';
 import { FeedbackComponent } from './feedback/feedback.component';
-import { HomeResolver } from './_resolvers/home.resolver';
-import { ChatFilterResolver } from './_resolvers/chatFilter.resolver';
 
-//TODO Authguard isAdmin ChatFilterREsolver
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: 'home', component: HomeComponent, resolve: { home: HomeResolver } },
+  { path: 'home', component: HomeComponent },
   { path: 'adv-list/:state', component: AdvListComponent },
   {
     path: 'app-advertisement-main-data',
@@ -33,8 +30,7 @@ export const routes: Routes = [
   },
   {
     path: 'app-chat-filter',
-    component: ChatFilterComponent,
-    resolve: { chatFilter: ChatFilterResolver },
+    component: ChatFilterComponent
   },
   {
     path: 'app-feedback',
