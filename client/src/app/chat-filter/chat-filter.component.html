@@ -3,14 +3,12 @@
     <div class="background-rectangle-panel-shadow">
       <div class="d-flex">
         <div class="col-6">
-          @if(chatFilterService.chatFilters$ | async){
           <app-adv-list-filter
             (onChanged)="sortChanged($event)"
             [disabled]="busyService.isLoading()"
             [sortOption]="appStore.chatFilterPaginationParams().sortOption"
             [isExtended]="false"
           ></app-adv-list-filter>
-          }
         </div>
         <div
           class="col-6 d-flex flex-column align-items-center justify-content-center"
@@ -18,7 +16,7 @@
           <button
             class="btn empty-button"
             [disabled]="
-              (chatFilterService.chatFilters$ | async)!.length > maxItemNumber
+              appStore.chatFilterIds.length > maxItemNumber
             "
             (click)="showAddDialog()"
           >
@@ -26,7 +24,7 @@
               add_circle
             </span>
             <div class="text-muted">{{ Localization.getWord("create") }}</div>
-            @if((chatFilterService.chatFilters$ | async)!.length >
+            @if(appStore.chatFilterIds.length >
             maxItemNumber){
             <div class="my-info-text text-danger">
               {{ Localization.getWord("maximum") }} {{ maxItemNumber }}
