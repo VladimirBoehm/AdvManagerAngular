@@ -99,10 +99,6 @@ a {
   display: block;
 }
 
-.list-group-item {
-  cursor: pointer;
-}
-
 .errorMessage {
   color: $red;
 }
@@ -201,8 +197,23 @@ mat-progress-spinner {
   background-color: #a02405e7 !important;
   color: #ffffff !important;
 }
-.container-fluid{
+.container-fluid {
   padding-left: 0;
   padding-right: 0;
 }
 
+.icon-default-shadow {
+  text-shadow: 0px 2px 2px rgba(0, 0, 0, 0.4);
+}
+
+.icon-rejected-shadow {
+  text-shadow: 0px 2px 2px rgba(150, 97, 97, 1);
+}
+
+.icon-pending-publication-shadow {
+  text-shadow: 0px 2px 2px rgb(98, 127, 158);
+}
+
+.icon-validated-shadow {
+  text-shadow: 0px 2px 2px rgb(132, 155, 107);
+}

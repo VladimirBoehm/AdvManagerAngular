@@ -1,0 +1,78 @@
+<body class="p-1">
+  <div class="container-fluid">
+    <div class="background-rectangle-panel-shadow">
+      <div class="d-flex">
+        <div class="col-6 d-flex justify-content-start ps-0">
+          <app-adv-list-filter
+            (onChanged)="sortChanged($event)"
+            [disabled]="busyService.isLoading()"
+            [sortOption]="appStore.privateHistoryPaginationParams().sortOption"
+            [isExtended]="true"
+          ></app-adv-list-filter>
+        </div>
+        <div class="col-6 d-flex justify-content-end align-items-center">
+          @if( appStore.privateHistoryPaginationParams().totalItems > 0 &&
+          appStore.privateHistoryPaginationParams().totalItems >
+          appStore.privateHistoryPaginationParams().pageSize){
+
+          <paginator-localization
+            [disabled]="busyService.isLoading()"
+            #paginator
+            (page)="handlePageEvent($event)"
+            [length]="appStore.privateHistoryPaginationParams().totalItems"
+            [pageSize]="appStore.privateHistoryPaginationParams().pageSize"
+            [pageIndex]="appStore.privateHistoryPaginationParams().pageNumber"
+          ></paginator-localization>
+          }
+        </div>
+      </div>
+    </div>
+    @if(busyService.isLoading()){
+    <app-skeleton-full-screen
+      [shouldShowHeaderPanel]="false"
+    ></app-skeleton-full-screen>
+    } @else {
+    <div class="list-container">
+      <mat-action-list>
+        <div class="text-center text-muted mb-1">
+          {{ Localization.getWord("my_history") }}
+        </div>
+        @for(advertisement of appStore.sortedPrivateHistory(); track
+        advertisement.id){
+
+        <div
+          class="d-flex align-items-center"
+          (click)="advListHelper.onItemClick(advertisement)"
+        >
+          <mat-list-item class="flex-grow-1">
+            <mat-icon matListItemIcon>
+              <span
+                class="material-symbols-outlined me-3"
+                [ngClass]="advListHelper.getShadowIconClass(advertisement)"
+              >
+                sticky_note_2
+              </span></mat-icon
+            >
+            <div matListItemTitle>{{ advertisement.title }}</div>
+            <div matListItemLine class="mt-2">
+              <!--
+      -->{{ advListHelper.getMatListItemHistoryInfo(advertisement) }}
+            </div>
+            <div matListItemLine>
+              <!--
+      -->{{ advListHelper.getUserDisplayName(advertisement) }}
+            </div>
+          </mat-list-item>
+          <span class="material-symbols-outlined text-muted">
+            chevron_right
+          </span>
+        </div>
+        <mat-divider></mat-divider>
+        } @empty {
+        <app-empty-list-placeholder></app-empty-list-placeholder>
+        }
+      </mat-action-list>
+    </div>
+    }
+  </div>
+</body>

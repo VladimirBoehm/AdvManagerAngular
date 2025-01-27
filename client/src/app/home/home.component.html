@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <div *ngIf="appStore.user()?.isAdmin" class="button-container mb-1">
       <a
-        [routerLink]="['/adv-list', advListType.PendingValidation]"
+        [routerLink]="['/app-adv-list-pending-validation']"
         style="text-decoration: none; color: inherit"
       >
         <mat-card class="button-card" matRipple>
@@ -73,7 +73,7 @@
 
     <div class="button-container mb-1">
       <a
-        [routerLink]="['/adv-list', advListType.MyAdvertisements]"
+        [routerLink]="['/app-adv-list-my-advertisements']"
         style="text-decoration: none; color: inherit"
       >
         <mat-card class="button-card" matRipple>
@@ -102,7 +102,7 @@
 
     <div class="button-container mb-1">
       <a
-        [routerLink]="['/adv-list', advListType.PendingPublication]"
+        [routerLink]="['/app-adv-list-pending-publication']"
         style="text-decoration: none; color: inherit"
       >
         <mat-card class="button-card" matRipple>
@@ -131,7 +131,7 @@
 
     <div class="button-container mb-1">
       <a
-        [routerLink]="['/adv-list', advListType.AllHistory]"
+        [routerLink]="['/app-adv-list-all-history']"
         style="text-decoration: none; color: inherit"
       >
         <mat-card class="button-card" matRipple>
@@ -187,9 +187,7 @@
       </a>
     </div>
   </div>
-  <div style="color: aliceblue">
-
-  </div>
+  <div style="color: aliceblue"></div>
 
   <div id="impressumInfo" [ngClass]="{ isOpen: isImpressumInfoShown() }">
     <app-impressum [onClose]="onImpressumClose"></app-impressum>
