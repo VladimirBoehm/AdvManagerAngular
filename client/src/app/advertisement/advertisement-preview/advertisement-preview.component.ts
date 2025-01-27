@@ -1,7 +1,6 @@
 import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { TelegramBackButtonService } from '../../_services/telegramBackButton.service';
 import { Router } from '@angular/router';
-import { Location } from '@angular/common';
 import { AdvertisementStatus } from '../../_framework/constants/advertisementStatus';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { PublishService } from '../../_services/api.services/publish.service';
@@ -31,7 +30,6 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   private backButtonService = inject(TelegramBackButtonService);
   private modalService = inject(BsModalService);
   private router = inject(Router);
-  private location = inject(Location);
   readonly appStore = inject(AppStore);
 
   shouldRejectValidation: boolean = false;
@@ -67,7 +65,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   }
 
   private back() {
-    this.location.back();
+    this.router.navigate(['/adv-list', this.appStore.selectedListType()]);
   }
 
   edit() {
