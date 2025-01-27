@@ -59,6 +59,7 @@ type appState = {
   pendingValidationCacheInfo: Map<PaginationParams, number[]>;
   myAdvertisementsPaginationParams: PaginationParams;
   _pendingValidationCountCache: number;
+  arePendingValidationAdvertisementsLoaded: boolean;
   selectedListType: AppListType | undefined;
 };
 
@@ -109,6 +110,7 @@ const initialState: appState = {
     sortOption: getDefaultSortOptions(),
   },
   _pendingValidationCountCache: 0,
+  arePendingValidationAdvertisementsLoaded: false,
 };
 
 const chatFilterConfig = entityConfig({
@@ -331,6 +333,7 @@ export const AppStore = signalStore(
             advertisement.statusId ??
             appStore.selectedAdvertisement()?.statusId ??
             AdvertisementStatus.new,
+          updated: DateHelper.getUTCTime(),
         };
         patchState(appStore, { selectedAdvertisement: updatedAdvertisement });
         localStorage.setItem(
@@ -596,6 +599,11 @@ export const AppStore = signalStore(
               pendingValidationPaginationParams: cloneDeep(key),
             });
             console.log('>>> AppStore: pendingValidation loaded from cache');
+
+            patchState(appStore, {
+              arePendingValidationAdvertisementsLoaded: true,
+            });
+
             return;
           }
         }
@@ -863,6 +871,7 @@ export const AppStore = signalStore(
         console.log('>>> AppStore: advertisementResponse created');
       },
       async updateAdvertisementAsync(advertisement: Advertisement) {
+        this.updateSelectedAdvertisement(advertisement);
         const advertisementResponse = await lastValueFrom(
           await advertisementService.update(advertisement)
         );
