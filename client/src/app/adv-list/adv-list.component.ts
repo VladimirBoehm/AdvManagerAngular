@@ -36,7 +36,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
   private backButtonService = inject(TelegramBackButtonService);
   private router = inject(Router);
   readonly appStore = inject(AppStore);
- 
+
   pagination = signal<PaginationParams>({} as PaginationParams);
   readonly advertisementsList = signal<Advertisement[]>([]);
 
@@ -53,7 +53,7 @@ export class AdvListComponent implements OnInit, OnDestroy {
     // TODO refactor subscribe
     this.paramMapSubscription = this.route.paramMap.subscribe((params) => {
       this.selectedListType.set(params.get('state') as AppListType);
-
+      this.appStore.setSelectedAppListType(this.selectedListType());
       this.initialize();
     });
 

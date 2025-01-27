@@ -59,10 +59,12 @@ type appState = {
   pendingValidationCacheInfo: Map<PaginationParams, number[]>;
   myAdvertisementsPaginationParams: PaginationParams;
   _pendingValidationCountCache: number;
+  selectedListType: AppListType | undefined;
 };
 
 const initialState: appState = {
   user: getUser(),
+  selectedListType: undefined,
   selectedAdvertisement: getSelectedAdvertisement(),
   pendingValidationCount: 0,
   areChatFiltersLoaded: false,
@@ -307,6 +309,10 @@ export const AppStore = signalStore(
       chatFilterService = inject(ChatFilterService),
       publishService = inject(PublishService)
     ) => ({
+      setSelectedAppListType(appListType: AppListType) {
+        patchState(appStore, { selectedListType: appListType });
+        console.log('>>> AppStore: selectedListType set to', appListType);
+      },
       updateSelectedAdvertisement(advertisement: Partial<Advertisement>) {
         const updatedAdvertisement: Advertisement = {
           ...appStore.selectedAdvertisement(),
