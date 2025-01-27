@@ -28,6 +28,7 @@ export class AdvertisementMainDataComponent {
   dateHelper = DateHelper;
   Localization = Localization;
 
+
   showImage() {
     this.backButtonService.setCloseDialogHandler(() => this.modalRef?.hide());
     this.modalRef = this.modalService.show(this.imageShowTemplate);

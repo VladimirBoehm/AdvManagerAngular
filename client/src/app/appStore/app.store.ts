@@ -859,6 +859,7 @@ export const AppStore = signalStore(
           appStore,
           addEntity(advertisementResponse, myAdvertisementsConfig)
         );
+        this.setSelectedAdvertisement(advertisementResponse);
         console.log('>>> AppStore: advertisementResponse created');
       },
       async updateAdvertisementAsync(advertisement: Advertisement) {
