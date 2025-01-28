@@ -11,6 +11,7 @@ import { BusyService } from '../../_services/busy.service';
 import { TelegramBackButtonService } from '../../_services/telegramBackButton.service';
 import { AppStore } from '../../appStore/app.store';
 import { AdvListHelper } from '../adv-list.helper';
+import { AppListType } from '../../_framework/constants/advListType';
 
 @Component({
   selector: 'app-adv-list-all-history',
@@ -34,6 +35,7 @@ export class AdvListAllHistoryComponent implements OnInit, OnDestroy {
 
 
   async ngOnInit() {
+    this.appStore.setSelectedAppListType(AppListType.AllHistory);
     this.backButtonService.setBackButtonHandler(() => {
       this.router.navigate(['']);
     });

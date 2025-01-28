@@ -1,5 +1,4 @@
 import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Location } from '@angular/common';
 import { TelegramBackButtonService } from '../../_services/telegramBackButton.service';
 import { Router } from '@angular/router';
 import { AdvertisementStatus } from '../../_framework/constants/advertisementStatus';
@@ -14,12 +13,16 @@ import { AdvertisementMainDataComponent } from '../advertisement-main-data/adver
 import { BusyService } from '../../_services/busy.service';
 import { Localization } from '../../_framework/component/helpers/localization';
 import { AppStore } from '../../appStore/app.store';
-import { ThreeDotsLoadingComponent } from "../../_framework/component/custom-loading-bar/three-dots-loading.component";
+import { ThreeDotsLoadingComponent } from '../../_framework/component/custom-loading-bar/three-dots-loading.component';
 
 @Component({
   selector: 'app-advertisement-preview',
   standalone: true,
-  imports: [SharedModule, AdvertisementMainDataComponent, ThreeDotsLoadingComponent],
+  imports: [
+    SharedModule,
+    AdvertisementMainDataComponent,
+    ThreeDotsLoadingComponent,
+  ],
   templateUrl: './advertisement-preview.component.html',
   styleUrl: './advertisement-preview.component.scss',
 })
@@ -38,7 +41,6 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   advertisementHelper = inject(AdvertisementHelper);
   confirmationService = inject(ConfirmationMatDialogService);
   busyService = inject(BusyService);
-  location = inject(Location);
 
   shouldRejectValidation: boolean = false;
   adminComment?: string;
@@ -49,12 +51,11 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   nextPublishDate?: Date;
   timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   Localization = Localization;
-  
 
   ngOnInit(): void {
     this.backButtonService.setCloseDialogHandler(() => this.modalRef?.hide());
     this.backButtonService.setBackButtonHandler(() => {
-      this.location.back();
+      this.back();
     });
   }
 
@@ -142,7 +143,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
     this.appStore.deleteAdvertisement(
       this.appStore.selectedAdvertisement()?.id ?? 0
     );
-    this.location.back();
+    this.back();
   }
 
   cancelPublication() {
@@ -209,6 +210,29 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
       return true;
     }
     return false;
+  }
+
+  back() {
+    switch (this.appStore.selectedListType()) {
+      case AppListType.MyAdvertisements:
+        this.router.navigate(['/app-adv-list-my-advertisements']);
+        break;
+      case AppListType.PendingPublication:
+        this.router.navigate(['/app-adv-list-pending-publication']);
+        break;
+      case AppListType.PendingValidation:
+        this.router.navigate(['/app-adv-list-pending-validation']);
+        break;
+      case AppListType.AllHistory:
+        this.router.navigate(['/app-adv-list-all-history']);
+        break;
+      case AppListType.PrivateHistory:
+        this.router.navigate(['/app-adv-list-private-history']);
+        break;
+      default:
+        this.router.navigate(['']);
+        break;
+    }
   }
 
   ngOnDestroy(): void {

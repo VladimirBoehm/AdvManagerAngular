@@ -13,6 +13,7 @@ import { SortOption } from '../../_entities/sortOption';
 import { PageEvent } from '@angular/material/paginator';
 import { DatePipe } from '@angular/common';
 import { AdvListHelper } from '../adv-list.helper';
+import { AppListType } from '../../_framework/constants/advListType';
 
 @Component({
   selector: 'app-adv-list-private-history',
@@ -37,6 +38,7 @@ export class AdvListPrivateHistoryComponent implements OnInit, OnDestroy {
   dateHelper = DateHelper;
 
   async ngOnInit() {
+    this.appStore.setSelectedAppListType(AppListType.PrivateHistory);
     this.backButtonService.setBackButtonHandler(() => {
       this.router.navigate(['/app-adv-list-my-advertisements']);
     });

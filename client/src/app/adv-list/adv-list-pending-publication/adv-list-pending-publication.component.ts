@@ -13,6 +13,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { Advertisement } from '../../_models/advertisement';
 import { DatePipe } from '@angular/common';
 import { AdvListHelper } from '../adv-list.helper';
+import { AppListType } from '../../_framework/constants/advListType';
 
 @Component({
   selector: 'app-adv-list-pending-publication',
@@ -37,6 +38,7 @@ export class AdvListPendingPublicationComponent implements OnInit, OnDestroy {
   Localization = Localization;
   
   async ngOnInit() {
+    this.appStore.setSelectedAppListType(AppListType.PendingPublication);
     this.backButtonService.setBackButtonHandler(() => {
       this.router.navigate(['']);
     });

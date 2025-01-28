@@ -11,6 +11,7 @@ import { EmptyListPlaceholderComponent } from '../../_framework/component/empty-
 import { SkeletonFullScreenComponent } from '../../_framework/component/skeleton-full-screen/skeleton-full-screen.component';
 import { DateHelper } from '../../_framework/component/helpers/dateHelper';
 import { AdvListHelper } from '../adv-list.helper';
+import { AppListType } from '../../_framework/constants/advListType';
 
 @Component({
   selector: 'app-adv-list-my-advertisements',
@@ -33,6 +34,7 @@ export class AdvListMyAdvertisementsComponent implements OnInit, OnDestroy {
   dateHelper = DateHelper;
 
   async ngOnInit() {
+    this.appStore.setSelectedAppListType(AppListType.MyAdvertisements);
     this.backButtonService.setBackButtonHandler(() => {
       this.router.navigate(['']);
     });

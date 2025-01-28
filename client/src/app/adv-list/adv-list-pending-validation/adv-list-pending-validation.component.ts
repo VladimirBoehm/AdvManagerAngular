@@ -13,6 +13,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { ListFilterComponent } from '../../_framework/component/adv-list-filter/list-filter.component';
 import { Advertisement } from '../../_models/advertisement';
 import { AdvListHelper } from '../adv-list.helper';
+import { AppListType } from '../../_framework/constants/advListType';
 
 @Component({
   selector: 'app-adv-list-pending-validation',
@@ -36,6 +37,7 @@ export class AdvListPendingValidationComponent implements OnInit, OnDestroy {
   dateHelper = DateHelper;
 
   async ngOnInit() {
+    this.appStore.setSelectedAppListType(AppListType.PendingValidation);
     this.backButtonService.setBackButtonHandler(() => {
       this.router.navigate(['']);
     });
