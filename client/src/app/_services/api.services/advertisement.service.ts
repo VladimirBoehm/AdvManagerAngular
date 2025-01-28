@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Advertisement } from '../../_models/advertisement';
 import { environment } from '../../../environments/environment';
-import { Observable } from 'rxjs';
+import { catchError, Observable, retry } from 'rxjs';
 import { UpdateAdvertisementAdminRequest } from '../../_models/updateAdvertisementAdminRequest';
 import { UpdateAdvertisementStatusRequest } from '../../_models/updateAdvertisementStatusRequest';
 import { PaginationParams } from '../../_entities/paginationParams';
@@ -29,6 +29,12 @@ export class AdvertisementService {
     return this.http.post<Advertisement>(
       this.baseUrl + 'advertisement/save',
       formData
+    ).pipe(
+      retry(3), 
+      catchError((error) => {
+        console.error('Error saving advertisement:', error);
+        throw error;
+      })
     );
   }
 
@@ -51,6 +57,12 @@ export class AdvertisementService {
     return this.http.put<Advertisement>(
       this.baseUrl + 'advertisement',
       formData
+    ).pipe(
+      retry(3), 
+      catchError((error) => {
+        console.error('Error updating advertisement:', error);
+        throw error;
+      })
     );
   }
 
