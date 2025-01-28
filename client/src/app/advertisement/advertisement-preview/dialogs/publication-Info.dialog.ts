@@ -49,7 +49,7 @@ import { SharedModule } from '../../../_framework/modules/sharedModule';
   imports: [ThreeDotsLoadingComponent, SharedModule],
   standalone: true,
 })
-export class ModalDialogPublicationInfo {
+export class PublicationInfoDialog {
   Localization = Localization;
   busyService = inject(BusyService);
 

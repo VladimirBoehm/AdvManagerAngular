@@ -247,13 +247,6 @@
 
     <div class="mt-2">
       <app-advertisement-main-data
-        [title]="appStore.selectedAdvertisement()?.title"
-        [message]="appStore.selectedAdvertisement()?.message"
-        [url]="appStore.selectedAdvertisement()?.adImage?.url"
-        [linkName]="appStore.selectedAdvertisement()?.linkName"
-        [linkValue]="appStore.selectedAdvertisement()?.linkValue"
-        [created]="appStore.selectedAdvertisement()?.created"
-        [updated]="appStore.selectedAdvertisement()?.updated"
       ></app-advertisement-main-data>
     </div>
     <div
@@ -280,15 +273,13 @@
 
     <ng-template #modalDialogCancelPublicationAdmin>
       <modal-dialog-cancel-publication-admin
-      [hideDialog]="hideDialog"
-      [cancelPublicationAdmin]="cancelPublicationAdmin"
-      (shouldRejectValidationOutput)="shouldRejectValidation"
-      (adminCommentOutput)="adminComment"
+        [hideDialog]="hideDialog"
+        [cancelPublicationAdmin]="cancelPublicationAdmin"
       ></modal-dialog-cancel-publication-admin>
     </ng-template>
 
     <ng-template #modalDialogForcePublicationAdmin>
-      <div class="modal-body">
+      <!-- <div class="modal-body">
         <div class="d-flex flex-column">
           <h6 class="modal-title pull-left text-muted">
             {{ Localization.getWord("publish_ad_immediately_question") }}
@@ -331,7 +322,7 @@
           mode="buffer"
           style="width: 90%"
         ></mat-progress-bar>
-      </div>
+      </div> -->
     </ng-template>
 
     <ng-template #modalDialogPublicationInfo>

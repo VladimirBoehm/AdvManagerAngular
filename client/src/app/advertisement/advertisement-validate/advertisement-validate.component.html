@@ -34,15 +34,7 @@
         </div>
       </div>
       <div class="mt-2">
-        <app-advertisement-main-data
-          [title]="appStore.selectedAdvertisement()?.title"
-          [message]="appStore.selectedAdvertisement()?.message"
-          [url]="appStore.selectedAdvertisement()?.adImage?.url"
-          [linkName]="appStore.selectedAdvertisement()?.linkName"
-          [linkValue]="appStore.selectedAdvertisement()?.linkValue"
-          [created]="appStore.selectedAdvertisement()?.created"
-          [updated]="appStore.selectedAdvertisement()?.updated"
-        ></app-advertisement-main-data>
+        <app-advertisement-main-data></app-advertisement-main-data>
 
         <mat-form-field class="mt-2 w-100 background-rectangle-panel-common">
           <mat-label>{{ Localization.getWord("admin_comment") }}</mat-label>

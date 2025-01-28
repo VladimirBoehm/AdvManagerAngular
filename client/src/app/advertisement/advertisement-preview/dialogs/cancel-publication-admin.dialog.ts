@@ -17,7 +17,7 @@ import { SharedModule } from '../../../_framework/modules/sharedModule';
         <input
           class="form-check-input"
           type="checkbox"
-          [(ngModel)]="shouldRejectValidationValue"
+          [(ngModel)]="shouldRejectValidation"
           [disabled]="busyService.isLoading()"
           id="blockAdv"
         />
@@ -25,7 +25,7 @@ import { SharedModule } from '../../../_framework/modules/sharedModule';
           {{ Localization.getWord('block_advertisement_question') }}
         </label>
       </div>
-      <div *ngIf="shouldRejectValidationValue" class="text-muted my-info-text">
+      <div *ngIf="shouldRejectValidation" class="text-muted my-info-text">
         {{ Localization.getWord('validation_will_be_revoked') }}
       </div>
       <mat-form-field class="mt-3 w-100">
@@ -35,7 +35,7 @@ import { SharedModule } from '../../../_framework/modules/sharedModule';
           rows="3"
           name="adminMessage"
           maxlength="200"
-          [(ngModel)]="adminCommentValue"
+          [(ngModel)]="adminComment"
           [readonly]="busyService.isLoading()"
         ></textarea>
       </mat-form-field>
@@ -43,7 +43,9 @@ import { SharedModule } from '../../../_framework/modules/sharedModule';
       <div class="d-flex justify-content-end">
         <button
           class="btn empty-button me-4"
-          (click)="cancelPublicationAdmin()()"
+          (click)="
+            cancelPublicationAdmin()(shouldRejectValidation, adminComment)
+          "
           [disabled]="busyService.isLoading()"
         >
           <div>{{ Localization.getWord('yes') }}</div>
@@ -69,35 +71,19 @@ import { SharedModule } from '../../../_framework/modules/sharedModule';
   imports: [SharedModule],
   standalone: true,
 })
-export class ModalDialogCancelPublicationAdmin {
+export class CancelPublicationAdminDialog {
   hideDialog = input.required<() => void>();
-  cancelPublicationAdmin = input.required<() => void>();
-
-  shouldRejectValidationOutput = output<boolean>();
-  adminCommentOutput = output<string | undefined>();
+  cancelPublicationAdmin =
+    input.required<
+      (
+        shouldRejectValidation: boolean,
+        adminComment: string | undefined
+      ) => void
+    >();
 
   Localization = Localization;
   busyService = inject(BusyService);
 
-  private shouldRejectValidation: boolean = false;
-  private adminComment: string | undefined;
-
-  get shouldRejectValidationValue() {
-    return this.shouldRejectValidation;
-  }
-
-  set shouldRejectValidationValue(value: boolean) {
-    this.shouldRejectValidation = value;
-    this.shouldRejectValidationOutput.emit(value);
-  }
-
-  get adminCommentValue() {
-    return this.adminComment;
-  }
-  set adminCommentValue(value: string | undefined) {
-    this.adminComment = value;
-    this.adminCommentOutput.emit(value);
-  }
-
-
+  shouldRejectValidation: boolean = false;
+  adminComment: string | undefined;
 }

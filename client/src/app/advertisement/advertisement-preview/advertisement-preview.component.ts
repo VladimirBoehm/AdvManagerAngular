@@ -13,8 +13,8 @@ import { AdvertisementMainDataComponent } from '../advertisement-main-data/adver
 import { BusyService } from '../../_services/busy.service';
 import { Localization } from '../../_framework/component/helpers/localization';
 import { AppStore } from '../../appStore/app.store';
-import { ModalDialogPublicationInfo } from './templates/modal-dialog-publication-Info.dialog';
-import { ModalDialogCancelPublicationAdmin } from "./templates/modal-dialog-cancel-publication-admin.dialog";
+import { PublicationInfoDialog } from './dialogs/publication-Info.dialog';
+import { CancelPublicationAdminDialog } from './dialogs/cancel-publication-admin.dialog';
 
 @Component({
   selector: 'app-advertisement-preview',
@@ -22,9 +22,9 @@ import { ModalDialogCancelPublicationAdmin } from "./templates/modal-dialog-canc
   imports: [
     SharedModule,
     AdvertisementMainDataComponent,
-    ModalDialogPublicationInfo,
-    ModalDialogCancelPublicationAdmin
-],
+    PublicationInfoDialog,
+    CancelPublicationAdminDialog,
+  ],
   templateUrl: './advertisement-preview.component.html',
   styleUrl: './advertisement-preview.component.scss',
 })
@@ -44,8 +44,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   confirmationService = inject(ConfirmationMatDialogService);
   busyService = inject(BusyService);
 
-  shouldRejectValidation: boolean = false;
-  adminComment?: string;
+ 
   advertisementStatus = AdvertisementStatus;
   advListType = AppListType;
   dateHelper = DateHelper;
@@ -102,17 +101,17 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
     this.modalRef = this.modalService.show(this.modalDialogPublicationInfo);
   }
 
-  cancelPublicationAdmin() {
+  cancelPublicationAdmin = (shouldRejectValidation : boolean, adminComment?: string  ) => {
     this.appStore.cancelPublicationAdmin(
-      this.shouldRejectValidation,
-      this.adminComment
+      shouldRejectValidation,
+      adminComment
     );
     this.modalRef?.hide();
     this.back();
-  }
+  };
 
-  forcePublication() {
-    this.appStore.forcePublication(this.adminComment);
+  forcePublication = (adminComment?: string) =>  {
+    this.appStore.forcePublication(adminComment);
     this.modalRef?.hide();
     this.back();
   }

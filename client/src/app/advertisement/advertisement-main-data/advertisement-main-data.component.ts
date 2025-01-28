@@ -5,6 +5,7 @@ import { ImagePreviewModalComponent } from '../../_framework/component/image-pre
 import { DateHelper } from '../../_framework/component/helpers/dateHelper';
 import { TelegramBackButtonService } from '../../_services/telegramBackButton.service';
 import { Localization } from '../../_framework/component/helpers/localization';
+import { AppStore } from '../../appStore/app.store';
 
 @Component({
   selector: 'app-advertisement-main-data',
@@ -17,17 +18,11 @@ export class AdvertisementMainDataComponent {
   @ViewChild('imageShowTemplate') imageShowTemplate?: any;
   private modalService = inject(BsModalService);
   private backButtonService = inject(TelegramBackButtonService);
-  title = input.required<string | undefined>();
-  message = input.required<string | undefined>();
-  url = input<string | undefined>();
-  linkName = input<string | undefined>();
-  linkValue = input<string | undefined>();
-  created = input<Date | undefined>();
-  updated = input<Date | undefined>();
+  appStore = inject(AppStore);
+
   modalRef?: BsModalRef;
   dateHelper = DateHelper;
   Localization = Localization;
-
 
   showImage() {
     this.backButtonService.setCloseDialogHandler(() => this.modalRef?.hide());
