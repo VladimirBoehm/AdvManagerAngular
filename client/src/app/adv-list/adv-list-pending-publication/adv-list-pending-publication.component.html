@@ -5,7 +5,7 @@
         <div class="col-6 d-flex justify-content-start ps-0">
           <app-adv-list-filter
             (onChanged)="sortChanged($event)"
-            [disabled]="busyService.isLoading()"
+            [disabled]="appStore.isAdvertisementListLoading()"
             [sortOption]="
               appStore.pendingPublicationPaginationParams().sortOption
             "
@@ -18,7 +18,7 @@
           appStore.pendingPublicationPaginationParams().pageSize){
 
           <paginator-localization
-            [disabled]="busyService.isLoading()"
+            [disabled]="appStore.isAdvertisementListLoading()"
             #paginator
             (page)="handlePageEvent($event)"
             [length]="appStore.pendingPublicationPaginationParams().totalItems"
@@ -31,7 +31,7 @@
         </div>
       </div>
     </div>
-    @if(busyService.isLoading()){
+    @if(appStore.isAdvertisementListLoading()){
     <app-skeleton-full-screen
       [shouldShowHeaderPanel]="false"
     ></app-skeleton-full-screen>

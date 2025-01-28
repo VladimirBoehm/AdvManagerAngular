@@ -17,6 +17,18 @@ export function getDefaultSortOptions(): SortOption {
   };
 }
 
+export function getDefaultPaginationParams(
+  defaultPageSize: number,
+  sortOptions?: SortOption
+): PaginationParams {
+  return {
+    totalItems: 0,
+    pageNumber: 0,
+    pageSize: defaultPageSize,
+    sortOption: sortOptions ?? getDefaultSortOptions(),
+  };
+}
+
 export function getSelectedAdvertisement(): Advertisement | null {
   const selectedAdvertisement = localStorage.getItem('selectedAdvertisement');
   if (selectedAdvertisement) {
@@ -71,7 +83,8 @@ export function getHashKey(paginationParams: PaginationParams): string {
 
 export function deleteFromCache(
   id: number,
-  hashInfo: Map<PaginationParams, number[]>
+  hashInfo: Map<PaginationParams, number[]>,
+  defaultPaginationParams: PaginationParams
 ): Map<PaginationParams, number[]> {
   const clonedHashInfo = new Map<PaginationParams, number[]>();
   for (const [key, value] of hashInfo) {
@@ -90,6 +103,10 @@ export function deleteFromCache(
   forEach(keysContainsId, (key) => {
     updateValuesIdInSameSearch(id, key, clonedHashInfo);
   });
+
+  if (clonedHashInfo.size === 0) {
+    clonedHashInfo.set(defaultPaginationParams, []);
+  }
 
   return clonedHashInfo;
 }

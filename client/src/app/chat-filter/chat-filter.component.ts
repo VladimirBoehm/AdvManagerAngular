@@ -50,7 +50,7 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
   Localization = Localization;
 
   ngOnInit(): void {
-    this.appStore.loadChatFiltersAsync();
+    this.appStore.getChatFiltersAsync();
     this.backButtonService.setCloseDialogHandler(() => this.closeDialog());
     this.backButtonService.setBackButtonHandler(() => {
       this.router.navigate(['']);

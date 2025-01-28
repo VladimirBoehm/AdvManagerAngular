@@ -4,6 +4,7 @@ import {
   arePaginationParamsEqual,
   getPaginationParamsContainsId,
   deleteFromCache,
+  getDefaultPaginationParams,
 } from './app.store.helper';
 
 describe('deleteFromCache', () => {
@@ -742,13 +743,14 @@ describe('deleteFromCache', () => {
       },
     } as PaginationParams;
 
+    const defaultPaginationParams = getDefaultPaginationParams(8);
     hashInfo.set(paginationParamsFirstPage1, [1, 2, 3, 4, 5]);
     hashInfo.set(paginationParamsFirstPage2, [6, 7, 8, 9, 10]);
     hashInfo.set(paginationParamsFirstPage3, [11, 12, 13, 14, 15]);
     hashInfo.set(paginationParamsFirstPage4, [16]);
     hashInfo.set(paginationParamsAnotherSearch, [1, 2, 3, 4, 5]);
     hashInfo.set(paginationParamsAnotherSearch2, [6, 7, 8, 9]);
-    const result = deleteFromCache(11, hashInfo);
+    const result = deleteFromCache(11, hashInfo, defaultPaginationParams);
 
     for (const key of result.keys()) {
       if (key.pageNumber === 1 && key.sortOption.searchValue === 'A') {
@@ -770,5 +772,34 @@ describe('deleteFromCache', () => {
       }
     }
     expect(result.size).toEqual(5);
+  });
+  it('deleteFromCache should return default paginationParams', () => {
+    const hashInfo = new Map<PaginationParams, number[]>();
+    const paginationParamsFirstPage1 = {
+      pageNumber: 1,
+      pageSize: 5,
+      totalItems: 1,
+      sortOption: {
+        field: 'date',
+        order: 'asc',
+        searchType: 'content',
+        searchValue: 'A',
+      },
+    } as PaginationParams;
+
+    const defaultPaginationParams = getDefaultPaginationParams(8);
+    hashInfo.set(paginationParamsFirstPage1, [1]);
+    const result = deleteFromCache(1, hashInfo, defaultPaginationParams);
+
+    const singleKey = result.keys().next().value;
+    expect(singleKey).toBeDefined();
+    if (singleKey) {
+      expect(result.get(singleKey)).toEqual([]);
+      expect(singleKey.totalItems).toEqual(0);
+      expect(
+        arePaginationParamsEqual(singleKey, defaultPaginationParams)
+      ).toEqual(true);
+      expect(result.size).toEqual(1);
+    }
   });
 });
