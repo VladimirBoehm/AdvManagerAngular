@@ -13,7 +13,8 @@ import { AdvertisementMainDataComponent } from '../advertisement-main-data/adver
 import { BusyService } from '../../_services/busy.service';
 import { Localization } from '../../_framework/component/helpers/localization';
 import { AppStore } from '../../appStore/app.store';
-import { ThreeDotsLoadingComponent } from '../../_framework/component/custom-loading-bar/three-dots-loading.component';
+import { ModalDialogPublicationInfo } from './templates/modal-dialog-publication-Info.dialog';
+import { ModalDialogCancelPublicationAdmin } from "./templates/modal-dialog-cancel-publication-admin.dialog";
 
 @Component({
   selector: 'app-advertisement-preview',
@@ -21,8 +22,9 @@ import { ThreeDotsLoadingComponent } from '../../_framework/component/custom-loa
   imports: [
     SharedModule,
     AdvertisementMainDataComponent,
-    ThreeDotsLoadingComponent,
-  ],
+    ModalDialogPublicationInfo,
+    ModalDialogCancelPublicationAdmin
+],
   templateUrl: './advertisement-preview.component.html',
   styleUrl: './advertisement-preview.component.scss',
 })
@@ -178,10 +180,10 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
     this.appStore.sendToValidationAsync();
   }
 
-  modalDialogPublishConfirm() {
+  modalDialogPublishConfirm = () => {
     this.appStore.confirmPublication(this.nextPublishDate);
     this.modalRef?.hide();
-  }
+  };
 
   getDayWord(frequency: number): string {
     const lastDigit = frequency % 10;
@@ -234,6 +236,10 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
         break;
     }
   }
+
+  hideDialog = () => {
+    this.modalRef?.hide();
+  };
 
   ngOnDestroy(): void {
     this.backButtonService.removeCloseDialogHandler();
