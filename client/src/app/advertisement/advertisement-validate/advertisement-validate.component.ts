@@ -46,7 +46,7 @@ export class AdvertisementValidateComponent implements OnInit {
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
-      this.router.navigate(['/adv-list', AppListType.PendingValidation]);
+      this.router.navigate(['/app-adv-list-pending-validation']);
     });
     this.initializeForm();
     this.updateAdminMessageCounter();
