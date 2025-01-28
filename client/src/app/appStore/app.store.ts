@@ -824,10 +824,7 @@ export const AppStore = signalStore(
             selectedAdvertisement
           );
 
-          const updatedAdvertisement = appStore
-            .myAdvertisementsEntities()
-            .find((ad) => ad.id === selectedAdvertisement.id)!;
-          this.setSelectedAdvertisement(updatedAdvertisement);
+          this.setSelectedAdvertisement(selectedAdvertisement);
           lastValueFrom(
             advertisementService.cancelPublication(selectedAdvertisement.id)
           );
@@ -838,26 +835,31 @@ export const AppStore = signalStore(
           console.error('>>> AppStore: nextPublishDate is not defined');
           return;
         }
-        patchState(
-          appStore,
-          updateEntity(
-            {
-              id: appStore.selectedAdvertisement()?.id!,
-              changes: {
-                nextPublishDate: nextPublishDate,
-                statusId: AdvertisementStatus.pendingPublication,
-                updated: DateHelper.getUTCTime(),
+
+        const updatedAdvertisement = appStore.selectedAdvertisement();
+        if (updatedAdvertisement) {
+          updatedAdvertisement.nextPublishDate = nextPublishDate;
+          updatedAdvertisement.statusId =
+            AdvertisementStatus.pendingPublication;
+          updatedAdvertisement.updated = DateHelper.getUTCTime();
+
+          patchState(
+            appStore,
+            updateEntity(
+              {
+                id: appStore.selectedAdvertisement()?.id!,
+                changes: {
+                  ...updatedAdvertisement,
+                },
               },
-            },
-            myAdvertisementsConfig
-          )
-        );
-        const updatedAdvertisement = appStore
-          .myAdvertisementsEntities()
-          .find((ad) => ad.id === appStore.selectedAdvertisement()?.id!)!;
-        this.setSelectedAdvertisement(updatedAdvertisement);
-        this.clearCacheInfo(AppListType.PendingPublication);
-        lastValueFrom(publishService.publish(updatedAdvertisement));
+              myAdvertisementsConfig
+            )
+          );
+
+          this.setSelectedAdvertisement(updatedAdvertisement);
+          this.clearCacheInfo(AppListType.PendingPublication);
+          lastValueFrom(publishService.publish(updatedAdvertisement));
+        }
       },
       async createAdvertisementAsync(advertisement: Advertisement) {
         const advertisementResponse = await lastValueFrom(
