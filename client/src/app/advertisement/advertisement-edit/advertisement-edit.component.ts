@@ -66,7 +66,7 @@ export class AdvertisementEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
-      this.router.navigate(['/adv-list', AppListType.MyAdvertisements]);
+      this.router.navigate(['app-adv-list-my-advertisements']);
     });
 
     this.initializeForm();

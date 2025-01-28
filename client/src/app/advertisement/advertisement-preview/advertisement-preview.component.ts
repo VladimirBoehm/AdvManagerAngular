@@ -106,13 +106,13 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
       this.adminComment
     );
     this.modalRef?.hide();
-    this.router.navigate(['/adv-list', AppListType.PendingPublication]);
+    this.back();
   }
 
   forcePublication() {
     this.appStore.forcePublication(this.adminComment);
     this.modalRef?.hide();
-    this.router.navigate(['/adv-list', AppListType.PendingPublication]);
+    this.back();
   }
 
   forcePublicationDialogShow() {
