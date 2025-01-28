@@ -64,6 +64,7 @@ type appState = {
   arePendingValidationAdvertisementsLoaded: boolean;
   selectedListType: AppListType | undefined;
   isAdvertisementListLoading: boolean;
+  areMyAdvertisementsLoaded: boolean;
 };
 
 const pendingPublicationDefaultPaginationParams = getDefaultPaginationParams(
@@ -91,6 +92,7 @@ const initialState: appState = {
   _pendingValidationCountCache: 0,
   arePendingValidationAdvertisementsLoaded: false,
   isAdvertisementListLoading: false,
+  areMyAdvertisementsLoaded: false,
 };
 
 const chatFilterConfig = entityConfig({
@@ -466,7 +468,7 @@ export const AppStore = signalStore(
       },
       // ------- getMyAdvertisementsAsync -------
       async getMyAdvertisementsAsync() {
-        if (appStore.myAdvertisementsEntities().length > 0) {
+        if (appStore.areMyAdvertisementsLoaded()) {
           console.log('>>> AppStore: myAdvertisements loaded from cache');
           return;
         }
@@ -496,6 +498,7 @@ export const AppStore = signalStore(
         console.log('>>> AppStore: myAdvertisements loaded');
         patchState(appStore, {
           isAdvertisementListLoading: false,
+          areMyAdvertisementsLoaded: true,
         });
       },
       // ------- getPendingPublicationAdvertisementsAsync -------
