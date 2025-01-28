@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { Advertisement } from '../../_models/advertisement';
 import { AdvertisementStatus } from '../../_framework/constants/advertisementStatus';
 import { Localization } from '../../_framework/component/helpers/localization';
-import { BusyService } from '../../_services/busy.service';
 import { SharedModule } from '../../_framework/modules/sharedModule';
 import { EmptyListPlaceholderComponent } from '../../_framework/component/empty-list-placeholder/empty-list-placeholder.component';
 import { SkeletonFullScreenComponent } from '../../_framework/component/skeleton-full-screen/skeleton-full-screen.component';
@@ -28,7 +27,7 @@ export class AdvListMyAdvertisementsComponent implements OnInit, OnDestroy {
   private backButtonService = inject(TelegramBackButtonService);
   readonly appStore = inject(AppStore);
   private router = inject(Router);
-  busyService = inject(BusyService);
+
   advListHelper = inject(AdvListHelper);
   Localization = Localization;
   dateHelper = DateHelper;

@@ -668,7 +668,12 @@ export const AppStore = signalStore(
           patchState(appStore, {
             pendingValidationCount: pendingCounter,
           });
-          if (pendingCounter !== appStore._pendingValidationCountCache()) {
+          //TODO SignalR refactoring
+          if (
+            pendingCounter !== appStore._pendingValidationCountCache() &&
+            pendingCounter !==
+              appStore.pendingValidationAdvertisementsEntities().length
+          ) {
             this.clearCacheInfo(AppListType.PendingValidation);
           }
           patchState(appStore, {

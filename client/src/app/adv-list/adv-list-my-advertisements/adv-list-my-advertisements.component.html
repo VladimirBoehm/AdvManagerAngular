@@ -20,7 +20,7 @@
               (click)="create()"
               [disabled]="
                 appStore.sortedMyAdvertisements().length > 2 ||
-                busyService.isLoading()
+                appStore.isAdvertisementListLoading()
               "
             >
               <span class="material-symbols-outlined text-muted">
