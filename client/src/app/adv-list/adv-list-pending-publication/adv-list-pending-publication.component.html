@@ -1,7 +1,7 @@
 <body class="p-1">
   <div class="container-fluid">
     <div class="background-rectangle-panel-shadow">
-      <div class="d-flex header-button-slide-in">
+      <div class="d-flex">
         <div class="col-6 d-flex justify-content-start ps-0">
           <app-adv-list-filter
             (onChanged)="sortChanged($event)"
@@ -41,9 +41,8 @@
         <div class="text-center text-muted mb-1">
           {{ Localization.getWord("publishing_title") }}
         </div>
-        @for(advertisement of
-        appStore.sortedPendingPublicationAdvertisements(); track
-        advertisement.id){
+        @for(advertisement of appStore.sortedPendingPublicationAdvertisements();
+        track advertisement.id){
 
         <div
           class="d-flex align-items-center"
