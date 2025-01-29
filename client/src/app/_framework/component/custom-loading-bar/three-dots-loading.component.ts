@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component} from '@angular/core';
 
 @Component({
   selector: 'app-three-dots-loading',
@@ -6,6 +6,4 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./three-dots-loading.component.scss'],
   standalone: true,
 })
-export class ThreeDotsLoadingComponent {
-  @Input() color = '#fa00e5';
-}
+export class ThreeDotsLoadingComponent {}

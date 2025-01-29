@@ -22,7 +22,7 @@ import { ThreeDotsLoadingComponent } from '../_framework/component/custom-loadin
 })
 export class HomeComponent implements OnInit {
   advListType = AppListType;
-  
+
   busyService = inject(BusyService);
   readonly appStore = inject(AppStore);
   Localization = Localization;
@@ -30,7 +30,7 @@ export class HomeComponent implements OnInit {
   isImpressumInfoShown = signal<boolean>(false);
 
   constructor() {
-    this.onImpressumClose = this.onImpressumClose.bind(this);
+    this.impressumClose = this.impressumClose.bind(this);
   }
 
   ngOnInit(): void {
@@ -45,7 +45,7 @@ export class HomeComponent implements OnInit {
     this.isImpressumInfoShown.set(true);
   }
 
-  onImpressumClose() {
+  impressumClose = () => {
     this.isImpressumInfoShown.set(false);
-  }
+  };
 }

@@ -1,4 +1,4 @@
-import { Component, inject, input, ViewChild } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { SharedModule } from '../../_framework/modules/sharedModule';
 import { ImagePreviewModalComponent } from '../../_framework/component/image-preview-modal/image-preview-modal.component';
@@ -28,4 +28,8 @@ export class AdvertisementMainDataComponent {
     this.backButtonService.setCloseDialogHandler(() => this.modalRef?.hide());
     this.modalRef = this.modalService.show(this.imageShowTemplate);
   }
+
+  closeDialog = () => {
+    this.modalRef?.hide();
+  };
 }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, input, Output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
@@ -32,7 +32,7 @@ export class ListFilterComponent {
   sortOption = input.required<SortOption>();
   disabled = input<boolean>(false);
   isExtended = input.required<boolean>();
-  @Output() onChanged = new EventEmitter<SortOption>();
+  onChanged = output<SortOption>();
 
   dialog = inject(MatDialog);
   Localization = Localization;

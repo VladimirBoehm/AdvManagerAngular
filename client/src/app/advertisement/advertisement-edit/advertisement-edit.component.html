@@ -206,11 +206,10 @@
   <ng-template #imageShowTemplate>
     <app-image-preview-modal
       [imageUrl]="this.appStore.selectedAdvertisement()?.adImage?.url"
-      [modalRef]="modalRef"
+      [close]="closeDialog"
     ></app-image-preview-modal>
   </ng-template>
 
- 
   <ng-template #modalAddAdvertisementButtonDialog>
     <app-add-advertisement-button-modal
       [close]="closeDialog"

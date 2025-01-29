@@ -1,7 +1,4 @@
 <div class="d-flex flex-column skeleton">
-  <div
-    *ngIf="shouldShowHeaderPanel"
-    class="header-buttons-panel"
-  ></div>
-  <div class="list-panel" ></div>
+  <div *ngIf="shouldShowHeaderPanel()" class="header-buttons-panel"></div>
+  <div class="list-panel"></div>
 </div>

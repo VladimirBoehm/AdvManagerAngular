@@ -1,5 +1,4 @@
-import { Component, Input } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap/modal';
+import { Component, input } from '@angular/core';
 import { Localization } from '../helpers/localization';
 
 @Component({
@@ -10,11 +9,7 @@ import { Localization } from '../helpers/localization';
   styleUrl: './image-preview-modal.component.scss',
 })
 export class ImagePreviewModalComponent {
-  @Input() imageUrl?: string = '';
-  @Input() modalRef?: BsModalRef;
+  imageUrl = input<string | undefined>('');
+  close = input.required<() => void>();
   Localization = Localization;
-
-  closeModal() {
-    this.modalRef?.hide();
-  }
 }

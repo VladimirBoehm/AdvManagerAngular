@@ -42,7 +42,7 @@
     <ng-template #imageShowTemplate>
       <app-image-preview-modal
         [imageUrl]="appStore.selectedAdvertisement()?.adImage?.url"
-        [modalRef]="modalRef"
+        [close]="closeDialog"
       ></app-image-preview-modal>
     </ng-template>
 

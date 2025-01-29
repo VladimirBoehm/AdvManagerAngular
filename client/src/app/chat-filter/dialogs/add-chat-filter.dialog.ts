@@ -49,7 +49,6 @@ import { MatErrorService } from '../../_framework/component/errors/mat-error-ser
 })
 export class AddChatFilterDialog implements OnInit {
   close = input.required<() => void>();
-
   confirm = input.required<(value: string) => void>();
 
   busyService = inject(BusyService);
