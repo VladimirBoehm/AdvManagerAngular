@@ -5,7 +5,10 @@
       <div class="d-flex flex-column">
         <div class="d-flex">
           <div class="col-6 d-flex align-items-center justify-content-center">
-            <button class="btn empty-button" (click)="openPrivateHistory()">
+            <button
+              class="btn empty-button header-button-slide-in"
+              (click)="openPrivateHistory()"
+            >
               <span class="material-symbols-outlined text-muted">
                 history_edu
               </span>
@@ -16,7 +19,7 @@
           </div>
           <div class="col-6 d-flex align-items-center justify-content-center">
             <button
-              class="btn empty-button"
+              class="btn empty-button header-button-slide-in"
               (click)="create()"
               [disabled]="
                 appStore.sortedMyAdvertisements().length > 2 ||
@@ -34,7 +37,7 @@
           <div
             class="col-6 d-flex align-items-center justify-content-center"
           ></div>
-          <div class="col-6 d-flex align-items-center justify-content-center">
+          <div class="col-6 d-flex align-items-center justify-content-center header-button-slide-in">
             <div
               *ngIf="appStore.sortedMyAdvertisements().length > 2"
               class="my-info-text text-muted mb-1"
