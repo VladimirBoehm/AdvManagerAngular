@@ -272,14 +272,14 @@
 
     <ng-template #modalDialogCancelPublicationAdmin>
       <modal-dialog-cancel-publication-admin
-        [close]="hideDialog"
+        [close]="closeDialog"
         [confirm]="cancelPublicationAdmin"
       ></modal-dialog-cancel-publication-admin>
     </ng-template>
 
     <ng-template #modalDialogForcePublicationAdmin>
       <modal-dialog-force-publication-admin
-        [close]="hideDialog"
+        [close]="closeDialog"
         [confirm]="forcePublication"
       ></modal-dialog-force-publication-admin>
     </ng-template>
@@ -287,7 +287,7 @@
     <ng-template #modalDialogPublicationInfo>
       <modal-dialog-publication-info
         [nextPublishDate]="nextPublishDate"
-        [close]="hideDialog"
+        [close]="closeDialog"
         [confirm]="modalDialogPublishConfirm"
       ></modal-dialog-publication-info>
     </ng-template>

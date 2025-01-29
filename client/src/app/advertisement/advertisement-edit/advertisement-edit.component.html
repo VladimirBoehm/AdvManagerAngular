@@ -210,11 +210,10 @@
     ></app-image-preview-modal>
   </ng-template>
 
-  <!-- Add button dialog -->
-
+ 
   <ng-template #modalAddAdvertisementButtonDialog>
     <app-add-advertisement-button-modal
-      [modalRef]="modalRef"
+      [close]="closeDialog"
       [buttonName]="appStore.selectedAdvertisement()?.linkName"
       [link]="appStore.selectedAdvertisement()?.linkValue"
       (onSave)="receiveButtonLink($event)"

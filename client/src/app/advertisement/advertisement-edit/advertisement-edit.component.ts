@@ -197,8 +197,12 @@ export class AdvertisementEditComponent implements OnInit {
       linkName: event.buttonName,
       linkValue: event.link,
     });
-    this.modalRef?.hide();
+    this.closeDialog();
   }
+
+  closeDialog = () => {
+    this.modalRef?.hide();
+  };
 
   get altText(): string {
     return Localization.getWord('image');

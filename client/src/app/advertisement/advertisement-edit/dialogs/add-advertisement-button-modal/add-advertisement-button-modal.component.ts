@@ -1,12 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  inject,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap/modal';
+import { Component, inject, input, OnInit, output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatErrorService } from '../../../../_framework/component/errors/mat-error-service';
 import { CustomValidators } from '../../../../_framework/component/validators/customValidators';
@@ -25,10 +17,11 @@ export interface ButtonLink {
   providers: [MatErrorService],
 })
 export class AddAdvertisementButtonModalComponent implements OnInit {
-  @Input({ required: true }) modalRef?: BsModalRef;
-  @Input({ required: true }) buttonName?: string;
-  @Input({ required: true }) link?: string;
-  @Output() onSave = new EventEmitter<ButtonLink>();
+
+  close = input.required<() => void>();
+  buttonName = input.required<string | undefined>();
+  link = input.required<string | undefined>();
+  onSave = output<ButtonLink>();
 
   private formBuilder = inject(FormBuilder);
   matErrorService = inject(MatErrorService);
@@ -48,11 +41,11 @@ export class AddAdvertisementButtonModalComponent implements OnInit {
   initializeForm() {
     this.editForm = this.formBuilder.group({
       buttonName: [
-        this.buttonName,
+        this.buttonName(),
         [Validators.required, Validators.maxLength(this.maxButtonNameLength)],
       ],
       link: [
-        this.link,
+        this.link(),
         [
           Validators.required,
           Validators.maxLength(this.maxLinkLength),
@@ -87,9 +80,7 @@ export class AddAdvertisementButtonModalComponent implements OnInit {
     this.linkCounter = linkValue.length;
   }
 
-  closeModal() {
-    this.modalRef?.hide();
-  }
+
 
   save() {
     this.onSave.emit({

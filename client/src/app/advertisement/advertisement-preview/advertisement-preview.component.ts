@@ -237,7 +237,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
     }
   }
 
-  hideDialog = () => {
+  closeDialog = () => {
     this.modalRef?.hide();
   };
 
