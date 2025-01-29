@@ -246,8 +246,7 @@
     </div>
 
     <div class="mt-2">
-      <app-advertisement-main-data
-      ></app-advertisement-main-data>
+      <app-advertisement-main-data></app-advertisement-main-data>
     </div>
     <div
       *ngIf="
@@ -273,63 +272,23 @@
 
     <ng-template #modalDialogCancelPublicationAdmin>
       <modal-dialog-cancel-publication-admin
-        [hideDialog]="hideDialog"
-        [cancelPublicationAdmin]="cancelPublicationAdmin"
+        [close]="hideDialog"
+        [confirm]="cancelPublicationAdmin"
       ></modal-dialog-cancel-publication-admin>
     </ng-template>
 
     <ng-template #modalDialogForcePublicationAdmin>
-      <!-- <div class="modal-body">
-        <div class="d-flex flex-column">
-          <h6 class="modal-title pull-left text-muted">
-            {{ Localization.getWord("publish_ad_immediately_question") }}
-          </h6>
-          <hr class="m-1" />
-        </div>
-        <mat-form-field class="mt-2 w-100">
-          <mat-label>{{ Localization.getWord("comment_short") }}</mat-label>
-          <textarea
-            matInput
-            rows="3"
-            name="adminMessage"
-            maxlength="200"
-            [readonly]="busyService.isLoading()"
-            [(ngModel)]="adminComment"
-          ></textarea>
-        </mat-form-field>
-
-        <div class="d-flex justify-content-end">
-          <button
-            class="btn empty-button me-4"
-            (click)="forcePublication()"
-            [disabled]="busyService.isLoading()"
-          >
-            <div>{{ Localization.getWord("yes") }}</div>
-          </button>
-          <button
-            class="btn empty-button"
-            (click)="modalRef?.hide()"
-            [disabled]="busyService.isLoading()"
-          >
-            <div>{{ Localization.getWord("no") }}</div>
-          </button>
-        </div>
-      </div>
-
-      <div class="d-flex justify-content-center">
-        <mat-progress-bar
-          *ngIf="busyService.isLoading()"
-          mode="buffer"
-          style="width: 90%"
-        ></mat-progress-bar>
-      </div> -->
+      <modal-dialog-force-publication-admin
+        [close]="hideDialog"
+        [confirm]="forcePublication"
+      ></modal-dialog-force-publication-admin>
     </ng-template>
 
     <ng-template #modalDialogPublicationInfo>
       <modal-dialog-publication-info
         [nextPublishDate]="nextPublishDate"
-        [hideDialog]="hideDialog"
-        [modalDialogPublishConfirm]="modalDialogPublishConfirm"
+        [close]="hideDialog"
+        [confirm]="modalDialogPublishConfirm"
       ></modal-dialog-publication-info>
     </ng-template>
   </div>

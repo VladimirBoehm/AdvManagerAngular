@@ -35,12 +35,12 @@ import { SharedModule } from '../../../_framework/modules/sharedModule';
       <div class="d-flex justify-content-end">
         <button
           class="btn empty-button me-4"
-          (click)="modalDialogPublishConfirm()()"
+          (click)="confirm()()"
           [disabled]="busyService.isLoading()"
         >
           <div>{{ Localization.getWord('confirm') }}</div>
         </button>
-        <button class="btn empty-button" (click)="hideDialog()()">
+        <button class="btn empty-button" (click)="close()()">
           <div>{{ Localization.getWord('back') }}</div>
         </button>
       </div>
@@ -54,6 +54,6 @@ export class PublicationInfoDialog {
   busyService = inject(BusyService);
 
   nextPublishDate = input.required<Date | undefined>();
-  modalDialogPublishConfirm = input.required<() => void>();
-  hideDialog = input.required<() => void>();
+  confirm = input.required<() => void>();
+  close = input.required<() => void>();
 }

@@ -15,17 +15,14 @@
         >
           <button
             class="btn empty-button"
-            [disabled]="
-              appStore.chatFilterIds.length > maxItemNumber
-            "
+            [disabled]="appStore.chatFilterIds.length > maxItemNumber"
             (click)="showAddDialog()"
           >
             <span class="material-symbols-outlined text-muted">
               add_circle
             </span>
             <div class="text-muted">{{ Localization.getWord("create") }}</div>
-            @if(appStore.chatFilterIds.length >
-            maxItemNumber){
+            @if(appStore.chatFilterIds.length > maxItemNumber){
             <div class="my-info-text text-danger">
               {{ Localization.getWord("maximum") }} {{ maxItemNumber }}
             </div>
@@ -75,41 +72,10 @@
     }
 
     <ng-template #addFilterDialog>
-      <div class="modal-body">
-        <div class="container d-flex flex-column align-items-start">
-          <h6 class="text-muted mt-1 mb-1">
-            {{ Localization.getWord("create") }}
-          </h6>
-          <div class="text-muted my-info-text">
-            {{ Localization.getWord("message_delete_info") }}
-          </div>
-        </div>
-        <hr class="mt-1 mb-3" />
-        <mat-form-field class="w-100">
-          <mat-label>{{ Localization.getWord("value") }}</mat-label>
-          <input matInput [formControl]="$any(editForm.controls['item'])" />
-          @if (matErrorService.getHasError(editForm.controls['item'])){
-          <mat-error>{{
-            matErrorService.getErrorMessage(editForm.controls["item"], "item")
-          }}</mat-error>
-          }
-          <mat-hint [align]="'end'">
-            {{ itemLengthCounter }}/{{ maxItemLength }}</mat-hint
-          >
-        </mat-form-field>
-
-        <div class="d-flex justify-content-end">
-          <button
-            class="btn empty-button"
-            (click)="addChatFilterDialogConfirm()"
-            [disabled]="editForm.invalid"
-          >
-            <div>{{ Localization.getWord("save") }}</div></button
-          ><button class="btn empty-button" (click)="closeDialog()">
-            <div>{{ Localization.getWord("back") }}</div>
-          </button>
-        </div>
-      </div>
+      <modal-dialog-add-chat-filter
+        [close]="closeDialog"
+        [confirm]="addChatFilterDialogConfirm"
+      ></modal-dialog-add-chat-filter>
     </ng-template>
   </div>
 </body>

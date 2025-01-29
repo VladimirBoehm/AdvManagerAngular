@@ -15,6 +15,7 @@ import { Localization } from '../../_framework/component/helpers/localization';
 import { AppStore } from '../../appStore/app.store';
 import { PublicationInfoDialog } from './dialogs/publication-Info.dialog';
 import { CancelPublicationAdminDialog } from './dialogs/cancel-publication-admin.dialog';
+import { ForcePublicationAdminDialog } from './dialogs/force-publication-admin.dialog';
 
 @Component({
   selector: 'app-advertisement-preview',
@@ -24,6 +25,7 @@ import { CancelPublicationAdminDialog } from './dialogs/cancel-publication-admin
     AdvertisementMainDataComponent,
     PublicationInfoDialog,
     CancelPublicationAdminDialog,
+    ForcePublicationAdminDialog,
   ],
   templateUrl: './advertisement-preview.component.html',
   styleUrl: './advertisement-preview.component.scss',
@@ -44,7 +46,6 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   confirmationService = inject(ConfirmationMatDialogService);
   busyService = inject(BusyService);
 
- 
   advertisementStatus = AdvertisementStatus;
   advListType = AppListType;
   dateHelper = DateHelper;
@@ -101,20 +102,20 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
     this.modalRef = this.modalService.show(this.modalDialogPublicationInfo);
   }
 
-  cancelPublicationAdmin = (shouldRejectValidation : boolean, adminComment?: string  ) => {
-    this.appStore.cancelPublicationAdmin(
-      shouldRejectValidation,
-      adminComment
-    );
+  cancelPublicationAdmin = (
+    shouldRejectValidation: boolean,
+    adminComment?: string
+  ) => {
+    this.appStore.cancelPublicationAdmin(shouldRejectValidation, adminComment);
     this.modalRef?.hide();
     this.back();
   };
 
-  forcePublication = (adminComment?: string) =>  {
+  forcePublication = (adminComment?: string) => {
     this.appStore.forcePublication(adminComment);
     this.modalRef?.hide();
     this.back();
-  }
+  };
 
   forcePublicationDialogShow() {
     this.modalRef = this.modalService.show(

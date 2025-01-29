@@ -5,18 +5,17 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { AdvertisementStatus } from '../../_framework/constants/advertisementStatus';
 import { MatErrorService } from '../../_framework/component/errors/mat-error-service';
-import { CustomValidators } from '../../_framework/component/validators/customValidators';
-import { AppListType } from '../../_framework/constants/advListType';
 import { ConfirmationMatDialogService } from '../../_services/confirmation-mat-dialog.service';
 import { SharedModule } from '../../_framework/modules/sharedModule';
 import { AdvertisementMainDataComponent } from '../advertisement-main-data/advertisement-main-data.component';
 import { Localization } from '../../_framework/component/helpers/localization';
 import { AppStore } from '../../appStore/app.store';
+import { ApproveValidationDialog } from "./dialogs/approve-validation.dialog";
 
 @Component({
   selector: 'app-advertisement-validate',
   standalone: true,
-  imports: [SharedModule, AdvertisementMainDataComponent],
+  imports: [SharedModule, AdvertisementMainDataComponent, ApproveValidationDialog],
   templateUrl: './advertisement-validate.component.html',
   styleUrl: './advertisement-validate.component.scss',
   providers: [MatErrorService],
@@ -34,9 +33,6 @@ export class AdvertisementValidateComponent implements OnInit {
   confirmationService = inject(ConfirmationMatDialogService);
 
   editForm: FormGroup = new FormGroup({});
-  editFormModalDialog: FormGroup = new FormGroup({});
-
-  frequencyValue: number = 10;
   advertisementId: number = 0;
   commentCounter: number = 0;
   maxCommentLength: number = 500;
@@ -57,19 +53,11 @@ export class AdvertisementValidateComponent implements OnInit {
   }
 
   initializeForm() {
-    this.editFormModalDialog = this.formBuilder.group({
-      frequencyValue: [
-        this.frequencyValue,
-        [Validators.max(100), CustomValidators.numeric()],
-      ],
-    });
-
     this.editForm = this.formBuilder.group({
       adminMessage: [
         this.appStore.selectedAdvertisement()?.adminMessage,
         [Validators.maxLength(this.maxCommentLength)],
       ],
-      frequencyValue: [this.frequencyValue],
     });
 
     this.editForm.controls['adminMessage']?.valueChanges.subscribe(() => {
@@ -79,14 +67,16 @@ export class AdvertisementValidateComponent implements OnInit {
     this.matErrorService.addErrorsInfo('adminMessage', {
       maxLength: this.maxCommentLength,
     });
-    this.matErrorService.addErrorsInfo('frequencyValue', { max: 100 });
   }
   updateAdminMessageCounter() {
     const titleValue = this.editForm.controls['adminMessage']?.value || '';
     this.commentCounter = titleValue.length;
   }
 
-  async modalDialogConfirm(advertisementStatus: AdvertisementStatus) {
+  modalDialogConfirm = (
+    advertisementStatus: AdvertisementStatus,
+    frequency?: number
+  ) => {
     const selectedAdvertisement = this.appStore.selectedAdvertisement();
     if (!selectedAdvertisement || selectedAdvertisement.id === undefined) {
       console.error('Selected advertisement is invalid');
@@ -94,16 +84,18 @@ export class AdvertisementValidateComponent implements OnInit {
     }
     const updatedAdvertisement = { ...selectedAdvertisement };
     updatedAdvertisement.statusId = advertisementStatus;
-    updatedAdvertisement.publishFrequency =
-      this.editFormModalDialog.controls['frequencyValue']?.value;
+    updatedAdvertisement.publishFrequency = frequency;
     updatedAdvertisement.adminMessage =
       this.editForm.controls['adminMessage']?.value;
 
-    this.modalRef?.hide();
-    await this.appStore.validateAdvertisementAdminAsync(updatedAdvertisement);
+    this.hideDialog();
+    this.appStore.validateAdvertisementAdmin(updatedAdvertisement);
     this.back();
-  }
+  };
 
+  hideDialog = () => {
+    this.modalRef?.hide();
+  };
   back() {
     this.router.navigate(['/app-adv-list-pending-validation']);
   }

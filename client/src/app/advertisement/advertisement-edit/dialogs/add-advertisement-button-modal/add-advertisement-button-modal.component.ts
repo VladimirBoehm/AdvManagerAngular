@@ -8,10 +8,10 @@ import {
 } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatErrorService } from '../../../_framework/component/errors/mat-error-service';
-import { CustomValidators } from '../../../_framework/component/validators/customValidators';
-import { SharedModule } from '../../../_framework/modules/sharedModule';
-import { Localization } from '../../../_framework/component/helpers/localization';
+import { MatErrorService } from '../../../../_framework/component/errors/mat-error-service';
+import { CustomValidators } from '../../../../_framework/component/validators/customValidators';
+import { SharedModule } from '../../../../_framework/modules/sharedModule';
+import { Localization } from '../../../../_framework/component/helpers/localization';
 export interface ButtonLink {
   buttonName: string;
   link: string;
@@ -22,7 +22,6 @@ export interface ButtonLink {
   standalone: true,
   imports: [SharedModule],
   templateUrl: './add-advertisement-button-modal.component.html',
-  styleUrl: './add-advertisement-button-modal.component.scss',
   providers: [MatErrorService],
 })
 export class AddAdvertisementButtonModalComponent implements OnInit {

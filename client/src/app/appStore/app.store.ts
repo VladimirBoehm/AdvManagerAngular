@@ -806,7 +806,7 @@ export const AppStore = signalStore(
         console.log('>>> AppStore: Advertisement updated in all lists');
       },
       // ------- validateAdvertisementAdminAsync -------
-      async validateAdvertisementAdminAsync(advertisement: Advertisement) {
+      validateAdvertisementAdmin(advertisement: Advertisement) {
         if (!appStore.user()?.isAdmin) {
           console.error('>>> AppStore: user is not admin');
           return;

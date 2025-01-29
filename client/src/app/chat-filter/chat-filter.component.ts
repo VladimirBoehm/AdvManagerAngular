@@ -1,7 +1,6 @@
 import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ChatFilter } from '../_models/chatFilter';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatErrorService } from '../_framework/component/errors/mat-error-service';
 import { TelegramBackButtonService } from '../_services/telegramBackButton.service';
 import { Router } from '@angular/router';
@@ -15,6 +14,7 @@ import { SkeletonFullScreenComponent } from '../_framework/component/skeleton-fu
 import { Localization } from '../_framework/component/helpers/localization';
 import { AppStore } from '../appStore/app.store';
 import { Subscription } from 'rxjs';
+import { AddChatFilterDialog } from './dialogs/add-chat-filter.dialog';
 
 @Component({
   selector: 'app-chat-filter',
@@ -24,6 +24,7 @@ import { Subscription } from 'rxjs';
     EmptyListPlaceholderComponent,
     ListFilterComponent,
     SkeletonFullScreenComponent,
+    AddChatFilterDialog,
   ],
   templateUrl: './chat-filter.component.html',
   styleUrl: './chat-filter.component.scss',
@@ -35,18 +36,15 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
   private modalService = inject(BsModalService);
   private backButtonService = inject(TelegramBackButtonService);
   private router = inject(Router);
-  private formBuilder = inject(FormBuilder);
   readonly appStore = inject(AppStore);
   private routerSubscription!: Subscription;
   busyService = inject(BusyService);
-  matErrorService = inject(MatErrorService);
-  editForm: FormGroup = new FormGroup({});
+
   dateHelper = DateHelper;
   modalRef?: BsModalRef;
-  maxItemLength: number = 50;
+
   maxItemNumber: number = 30;
-  minItemLength: number = 3;
-  itemLengthCounter: number = 0;
+
   Localization = Localization;
 
   ngOnInit(): void {
@@ -57,58 +55,26 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
     });
   }
 
-  initializeForm() {
-    this.editForm = this.formBuilder.group({
-      item: [
-        undefined,
-        [
-          Validators.required,
-          Validators.maxLength(this.maxItemLength),
-          Validators.minLength(this.minItemLength),
-        ],
-      ],
-    });
-
-    this.editForm.controls['item'].valueChanges.subscribe(() => {
-      this.updateChatFilterCounter();
-    });
-
-    this.matErrorService.addErrorsInfo('item', {
-      maxLength: this.maxItemLength,
-      minLength: this.minItemLength,
-    });
-
-    this.updateChatFilterCounter();
-  }
-
-  addChatFilterDialogConfirm() {
+  addChatFilterDialogConfirm = (value: string) => {
     const newChatFiler = {
-      value: this.editForm.controls['item']?.value,
+      value: value,
       created: this.dateHelper.getUTCTime(),
     } as ChatFilter;
     this.appStore.createChatFilterAsync(newChatFiler);
-    this.editForm.reset();
-    this.modalRef?.hide();
-  }
 
-  closeDialog() {
     this.modalRef?.hide();
-    this.editForm.reset();
-  }
+  };
 
-  updateChatFilterCounter() {
-    const itemValue = this.editForm.controls['item']?.value || '';
-    this.itemLengthCounter = itemValue.length;
-  }
+  closeDialog = () => {
+    this.modalRef?.hide();
+  };
 
   showAddDialog() {
-    this.initializeForm();
     this.modalRef = this.modalService.show(this.addFilterDialog);
   }
 
   deleteChatFilter(chatFilter: ChatFilter) {
     this.appStore.deleteChatFilterAsync(chatFilter);
-    this.editForm.reset();
     this.modalRef?.hide();
   }
 

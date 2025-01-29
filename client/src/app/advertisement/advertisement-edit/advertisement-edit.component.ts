@@ -13,7 +13,7 @@ import { AdImage } from '../../_models/adImage';
 import {
   AddAdvertisementButtonModalComponent,
   ButtonLink,
-} from './add-advertisement-button-modal/add-advertisement-button-modal.component';
+} from './dialogs/add-advertisement-button-modal/add-advertisement-button-modal.component';
 import { MatErrorService } from '../../_framework/component/errors/mat-error-service';
 import { AdvertisementStatus } from '../../_framework/constants/advertisementStatus';
 import { AppListType } from '../../_framework/constants/advListType';
