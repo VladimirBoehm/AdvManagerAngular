@@ -26,3 +26,11 @@
   text-align: center;
   text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.137);
 }
+
+.placeholder-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+}
