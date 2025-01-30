@@ -1,18 +1,5 @@
 @import "../../../../theme.scss";
 
-.placeholder-panel {
-  display: flex;
-  flex-direction: column;
-  height: 300px;
-}
-
-.placeholder-body {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .empty-list-placeholder {
   width: 150px;
   height: 150px;
@@ -20,6 +7,7 @@
   position: relative;
   overflow: hidden;
   border-color: $soft-beige-background-opacity;
+
 }
 
 .placeholder-image {
@@ -38,4 +26,13 @@
   color: $neutral-gray-opacity;
   text-align: center;
   text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.137);
+}
+
+.placeholder-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
 }

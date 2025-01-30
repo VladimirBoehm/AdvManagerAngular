@@ -27,16 +27,15 @@
         </div>
       </div>
     </div>
-    @if(busyService.isLoading()){
-    <app-skeleton-full-screen
-      [shouldShowHeaderPanel]="false"
-    ></app-skeleton-full-screen>
-    } @else {
+
     <div class="list-container">
-      <mat-action-list>
-        <div class="text-center text-muted mb-1">
-          {{ this.Localization.getWord("my_history") }}
-        </div>
+      <div class="text-center text-muted mb-1">
+        {{ this.Localization.getWord("my_history") }}
+      </div>
+      @if(busyService.isLoading()){
+      <div class="skeleton-panel mt-2"></div>
+      } @else {
+      <mat-action-list class="flex-grow-1">
         @for(advertisement of appStore.sortedAllHistory(); track
         advertisement.id){
 
@@ -72,7 +71,7 @@
         <app-empty-list-placeholder></app-empty-list-placeholder>
         }
       </mat-action-list>
+      }
     </div>
-    }
   </div>
 </body>

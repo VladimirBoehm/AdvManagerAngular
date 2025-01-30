@@ -16,7 +16,7 @@
           </div>
           <div class="col-6 d-flex align-items-center justify-content-center">
             <button
-              class="btn empty-button slide-in-animation"
+              class="btn empty-button"
               (click)="create()"
               [disabled]="
                 appStore.sortedMyAdvertisements().length > 2 ||
@@ -45,16 +45,15 @@
         </div>
       </div>
     </div>
-    @if(appStore.isAdvertisementListLoading()){
-    <app-skeleton-full-screen
-      [shouldShowHeaderPanel]="false"
-    ></app-skeleton-full-screen>
-    } @else {
+
     <div class="list-container">
-      <mat-action-list>
-        <div class="text-center text-muted mb-1">
-          {{ Localization.getWord("my_ads_title") }}
-        </div>
+      <div class="text-center text-muted mb-1">
+        {{ Localization.getWord("my_ads_title") }}
+      </div>
+      @if(appStore.isAdvertisementListLoading()){
+      <div class="skeleton-panel mt-2"></div>
+      } @else {
+      <mat-action-list class="flex-grow-1">
         @for(advertisement of appStore.sortedMyAdvertisements(); track
         advertisement.id){
 
@@ -62,7 +61,7 @@
           class="d-flex align-items-center"
           (click)="advListHelper.onItemClick(advertisement)"
         >
-          <mat-list-item class="flex-grow-1">
+          <mat-list-item>
             <mat-icon matListItemIcon>
               <span
                 class="material-symbols-outlined me-3"
@@ -93,7 +92,7 @@
         <app-empty-list-placeholder></app-empty-list-placeholder>
         }
       </mat-action-list>
+      }
     </div>
-    }
   </div>
 </body>
