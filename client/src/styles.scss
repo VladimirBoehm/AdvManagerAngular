@@ -28,6 +28,14 @@ body {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   max-width: 100%;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 85vh;
+  app-skeleton-full-screen {
+    flex: 1;
+    display: flex;
+    width: 100%;
+  }
 }
 
 .home-symbols-outlined {
@@ -97,10 +105,6 @@ a {
   height: auto;
   object-fit: cover;
   display: block;
-}
-
-.list-group-item {
-  cursor: pointer;
 }
 
 .errorMessage {
@@ -201,8 +205,63 @@ mat-progress-spinner {
   background-color: #a02405e7 !important;
   color: #ffffff !important;
 }
-.container-fluid{
+.container-fluid {
   padding-left: 0;
   padding-right: 0;
 }
 
+.icon-default-shadow {
+  text-shadow: 0px 2px 2px rgba(0, 0, 0, 0.4);
+}
+
+.icon-rejected-shadow {
+  text-shadow: 0px 2px 2px rgba(150, 97, 97, 1);
+}
+
+.icon-pending-publication-shadow {
+  text-shadow: 0px 2px 2px rgb(98, 127, 158);
+}
+
+.icon-validated-shadow {
+  text-shadow: 0px 2px 2px rgb(132, 155, 107);
+}
+
+.slide-in-animation {
+  opacity: 0;
+  animation: slide-down 0.4s ease-in-out forwards;
+}
+
+@keyframes slide-down {
+  0% {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.skeleton-panel {
+  width: 100%;
+  height: 92%;
+  background: linear-gradient(
+    135deg,
+    $soft-beige-background-opacity 15%,
+    $very-dark-brown-opacity 50%,
+    $soft-beige-background-opacity 85%
+  );
+  background-size: 500% 100%;
+  border-radius: 8px;
+  animation: wave 18s linear infinite;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 1);
+}
+
+@keyframes wave {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

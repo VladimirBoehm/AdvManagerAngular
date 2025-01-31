@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { SharedModule } from '../../modules/sharedModule';
 
 @Component({
@@ -9,5 +9,5 @@ import { SharedModule } from '../../modules/sharedModule';
   styleUrl: './skeleton-full-screen.component.scss',
 })
 export class SkeletonFullScreenComponent {
-  @Input() shouldShowHeaderPanel?: boolean = true;
+  shouldShowHeaderPanel = input<boolean>(true);
 }

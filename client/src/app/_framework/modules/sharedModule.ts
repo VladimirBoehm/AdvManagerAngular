@@ -63,4 +63,5 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     MatDatepickerModule,
   ],
 })
-export class SharedModule {}
+export class SharedModule {
+}

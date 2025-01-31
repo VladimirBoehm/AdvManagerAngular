@@ -1,0 +1,41 @@
+@import "../../../../theme";
+
+.dots-container {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .dot {
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    margin: 0 3px;
+    background-color: $very-dark-brown;
+    animation: dotRun 0.8s infinite linear alternate;
+  }
+  
+  #dot4 {
+    animation-delay: 0s;
+  }
+  #dot3 {
+    animation-delay: 0.2s;
+  }
+  #dot2 {
+    animation-delay: 0.4s;
+  }
+  #dot1 {
+    animation-delay: 0.6s;
+  }
+  
+  @keyframes dotRun {
+    0% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(-10px); 
+      opacity: 0.3;
+    }
+  }
+  

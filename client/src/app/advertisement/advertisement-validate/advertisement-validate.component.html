@@ -1,5 +1,4 @@
 <body class="p-1">
-  @if(advertisement){
   <div class="container-fluid">
     <form
       id="editForm"
@@ -35,15 +34,7 @@
         </div>
       </div>
       <div class="mt-2">
-        <app-advertisement-main-data
-          [title]="advertisement.title"
-          [message]="advertisement.message"
-          [url]="advertisement.adImage?.url"
-          [linkName]="advertisement.linkName"
-          [linkValue]="advertisement.linkValue"
-          [created]="advertisement.created"
-          [updated]="advertisement.updated"
-        ></app-advertisement-main-data>
+        <app-advertisement-main-data></app-advertisement-main-data>
 
         <mat-form-field class="mt-2 w-100 background-rectangle-panel-common">
           <mat-label>{{ Localization.getWord("admin_comment") }}</mat-label>
@@ -65,47 +56,11 @@
         </mat-form-field>
       </div>
     </form>
-    <ng-template #modalDialog>
-      <div class="modal-body">
-        <div class="d-flex flex-column">
-          <h6 class="modal-title pull-left mb-0">
-            {{ Localization.getWord("approve_advertisement_question") }}
-          </h6>
-          <hr />
-        </div>
-        <div>{{ Localization.getWord("set_allowed_posting_frequency") }}</div>
-        <mat-form-field floatLabel="always" class="w-100 mt-3">
-          <mat-label>{{ Localization.getWord("days") }}</mat-label>
-          <input
-            matInput
-            type="number"
-            [placeholder]="Localization.getWord('one_time_posting')"
-            step="1"
-            min="0"
-            name="frequencyValue"
-            [formControl]="$any(editFormModalDialog.controls['frequencyValue'])"
-          />
-          <mat-error>{{
-            matErrorService.getErrorMessage(
-              editFormModalDialog.controls["frequencyValue"],
-              "frequencyValue"
-            )
-          }}</mat-error>
-        </mat-form-field>
-
-        <div class="d-flex justify-content-end">
-          <button
-            class="btn empty-button"
-            (click)="modalDialogConfirm(advertisementStatus.validated)"
-            [disabled]="editFormModalDialog.invalid"
-          >
-            <div>{{ Localization.getWord("approve") }}</div></button
-          ><button class="btn empty-button" (click)="modalRef?.hide()">
-            <div>{{ Localization.getWord("back") }}</div>
-          </button>
-        </div>
-      </div>
+    <ng-template #modalDialogApprove>
+      <modal-dialog-approve-validation-admin
+        [confirm]="modalDialogConfirm"
+        [close]="hideDialog"
+      ></modal-dialog-approve-validation-admin>
     </ng-template>
   </div>
-  }
 </body>

@@ -1,11 +1,8 @@
 <body id="page-container">
   <div class="container-fluid">
-    <div
-      *ngIf="accountService.currentUser()?.isAdmin"
-      class="button-container mb-1"
-    >
+    <div *ngIf="appStore.user()?.isAdmin" class="button-container mb-1">
       <a
-        [routerLink]="['/adv-list', advListType.PendingValidation]"
+        [routerLink]="['/app-adv-list-pending-validation']"
         style="text-decoration: none; color: inherit"
       >
         <mat-card class="button-card" matRipple>
@@ -24,18 +21,15 @@
                 </p>
               </div>
               <div class="d-flex justify-content-end align-items-center">
-                <mat-progress-bar
+                <app-three-dots-loading
                   *ngIf="busyService.isLoading(); else counterTemplate"
-                  mode="buffer"
-                  style="width: 2rem"
-                ></mat-progress-bar>
-
+                ></app-three-dots-loading>
                 <ng-template #counterTemplate>
                   <div
-                    *ngIf="advertisementsToValidateCount() > 0"
+                    *ngIf="appStore.pendingValidationCount() > 0"
                     class="text-muted"
                   >
-                    {{ advertisementsToValidateCount() }}
+                    {{ appStore.pendingValidationCount() }}
                   </div>
                 </ng-template>
                 <span class="material-symbols-outlined text-muted">
@@ -48,10 +42,7 @@
       </a>
     </div>
 
-    <div
-      *ngIf="accountService.currentUser()?.isAdmin"
-      class="button-container mb-1"
-    >
+    <div *ngIf="appStore.user()?.isAdmin" class="button-container mb-1">
       <a
         [routerLink]="['/app-chat-filter']"
         style="text-decoration: none; color: inherit"
@@ -82,7 +73,7 @@
 
     <div class="button-container mb-1">
       <a
-        [routerLink]="['/adv-list', advListType.MyAdvertisements]"
+        [routerLink]="['/app-adv-list-my-advertisements']"
         style="text-decoration: none; color: inherit"
       >
         <mat-card class="button-card" matRipple>
@@ -111,7 +102,7 @@
 
     <div class="button-container mb-1">
       <a
-        [routerLink]="['/adv-list', advListType.PendingPublication]"
+        [routerLink]="['/app-adv-list-pending-publication']"
         style="text-decoration: none; color: inherit"
       >
         <mat-card class="button-card" matRipple>
@@ -140,7 +131,7 @@
 
     <div class="button-container mb-1">
       <a
-        [routerLink]="['/adv-list', advListType.AllHistory]"
+        [routerLink]="['/app-adv-list-all-history']"
         style="text-decoration: none; color: inherit"
       >
         <mat-card class="button-card" matRipple>
@@ -196,9 +187,10 @@
       </a>
     </div>
   </div>
+  <div style="color: aliceblue"></div>
 
   <div id="impressumInfo" [ngClass]="{ isOpen: isImpressumInfoShown() }">
-    <app-impressum [onClose]="onImpressumClose"></app-impressum>
+    <app-impressum [close]="impressumClose"></app-impressum>
   </div>
 
   <div class="footer-hr"></div>
@@ -207,7 +199,7 @@
       <div class="my-info-text impressum-button" (click)="onImpressumClick()">
         Impressum
       </div>
-      <div class="my-info-text">© 2024 All rights reserved</div>
+      <div class="my-info-text">© 2025 All rights reserved</div>
     </div>
   </footer>
 </body>

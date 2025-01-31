@@ -1,6 +1,5 @@
-import { PaginatedItem } from './paginatedItem';
-
-export interface ChatFilter extends PaginatedItem {
+export interface ChatFilter {
+  id: number;
   value: string;
   created: Date;
 }

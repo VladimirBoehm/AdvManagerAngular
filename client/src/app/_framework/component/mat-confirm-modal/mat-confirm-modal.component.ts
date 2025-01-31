@@ -14,8 +14,8 @@ import {
   MatDialogActions,
 } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
-import { ConfirmDialogData } from '../../../_models/confirm-dialog-data';
-import { TelegramBackButtonService } from '../../telegramBackButtonService';
+import { ConfirmDialogData } from '../../../_entities/confirm-dialog-data';
+import { TelegramBackButtonService } from '../../../_services/telegramBackButton.service';
 
 @Component({
   selector: 'app-mat-confirm-modal',
@@ -36,7 +36,7 @@ export class MatConfirmModalComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<MatConfirmModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ConfirmDialogData
   ) {}
-  
+
   ngOnInit(): void {
     this.backButtonService.setCloseDialogHandler(() => this.close());
   }

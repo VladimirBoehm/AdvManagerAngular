@@ -3,12 +3,14 @@ import { inject } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { catchError } from 'rxjs';
 import { Localization } from '../_framework/component/helpers/localization';
+import { environment } from '../../environments/environment';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const toastr = inject(ToastrService);
 
   return next(req).pipe(
     catchError((error) => {
+      if (!environment.isProd) console.error(error);
       if (error) {
         switch (error.status) {
           case 400:

@@ -1,5 +1,4 @@
 <body class="p-1">
-  @if(advertisement){
   <form
     id="editForm"
     [formGroup]="editForm"
@@ -78,7 +77,7 @@
           <div class="d-flex flex-column align-items-start mt-1">
             <div class="d-flex">
               <button
-                *ngIf="!this.advertisement.adImage"
+                *ngIf="!this.appStore.selectedAdvertisement()?.adImage"
                 class="btn empty-button p-0 text-start"
                 type="button"
                 (click)="triggerFileInput()"
@@ -104,7 +103,7 @@
               </button>
 
               <button
-                *ngIf="this.advertisement.adImage"
+                *ngIf="this.appStore.selectedAdvertisement()?.adImage"
                 class="btn empty-button ps-0 text-start"
                 type="button"
                 (click)="deleteImage()"
@@ -122,12 +121,12 @@
               </button>
 
               <div
-                *ngIf="this.advertisement.adImage"
+                *ngIf="this.appStore.selectedAdvertisement()?.adImage"
                 class="image-container"
                 style="width: 100px"
               >
                 <img
-                  [src]="this.advertisement.adImage.url"
+                  [src]="this.appStore.selectedAdvertisement()?.adImage?.url"
                   (click)="showImage()"
                   [alt]="altText"
                   class="preview-image rounded"
@@ -138,7 +137,7 @@
             <button
               type="button"
               class="btn empty-button p-0"
-              *ngIf="!advertisement.linkName"
+              *ngIf="!appStore.selectedAdvertisement()?.linkName"
               (click)="showAddAdvertisementButtonDialog()"
               [disabled]="busyService.isLoading()"
             >
@@ -156,18 +155,26 @@
             </button>
           </div>
 
-          <div class="d-flex flex-column mt-2" *ngIf="advertisement.linkName">
+          <div
+            class="d-flex flex-column mt-2"
+            *ngIf="appStore.selectedAdvertisement()?.linkName"
+          >
             <div
               class="background-rectangle-panel-common p-2 d-flex flex-column"
             >
               <div class="d-flex">
                 <div>{{ Localization.getWord("button_label") }}</div>
-                <div class="ms-1 linkName">{{ advertisement.linkName }}</div>
+                <div class="ms-1 linkName">
+                  {{ appStore.selectedAdvertisement()?.linkName }}
+                </div>
               </div>
               <div class="d-flex">
                 <div>{{ Localization.getWord("link_label") }}</div>
-                <a [href]="advertisement.linkValue" class="ms-1">
-                  {{ advertisement.linkValue }}
+                <a
+                  [href]="appStore.selectedAdvertisement()?.linkValue"
+                  class="ms-1"
+                >
+                  {{ appStore.selectedAdvertisement()?.linkValue }}
                 </a>
               </div>
             </div>
@@ -198,22 +205,18 @@
 
   <ng-template #imageShowTemplate>
     <app-image-preview-modal
-      [imageUrl]="this.advertisement.adImage?.url"
-      [modalRef]="modalRef"
+      [imageUrl]="this.appStore.selectedAdvertisement()?.adImage?.url"
+      [close]="closeDialog"
     ></app-image-preview-modal>
   </ng-template>
 
-  <!-- Add button dialog -->
-
   <ng-template #modalAddAdvertisementButtonDialog>
     <app-add-advertisement-button-modal
-      [modalRef]="modalRef"
-      [buttonName]="advertisement.linkName"
-      [link]="advertisement.linkValue"
+      [close]="closeDialog"
+      [buttonName]="appStore.selectedAdvertisement()?.linkName"
+      [link]="appStore.selectedAdvertisement()?.linkValue"
       (onSave)="receiveButtonLink($event)"
     >
     </app-add-advertisement-button-modal>
   </ng-template>
-
-  }
 </body>

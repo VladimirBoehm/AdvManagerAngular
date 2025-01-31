@@ -1,9 +1,8 @@
 import {
   Component,
   Injectable,
-  Input,
-  Output,
-  EventEmitter,
+  input,
+  output,
 } from '@angular/core';
 import {
   MatPaginatorIntl,
@@ -15,7 +14,7 @@ import { Localization } from '../helpers/localization';
 
 @Injectable()
 export class MyPaginatorLocalization implements MatPaginatorIntl {
-  changes = new Subject<void>();
+  changes = new Subject<void>(); // TODO Signal
 
   nextPageLabel = Localization.getWord('next_page_label');
   previousPageLabel = Localization.getWord('previous_page_label');
@@ -45,11 +44,12 @@ export class MyPaginatorLocalization implements MatPaginatorIntl {
   providers: [{ provide: MatPaginatorIntl, useClass: MyPaginatorLocalization }],
 })
 export class PaginatorLocalization {
-  @Input() disabled = false;
-  @Input({ required: true }) length: number = 0;
-  @Input({ required: true }) pageSize: number = 5;
-  @Input({ required: true }) pageIndex: number = 0;
-  @Output() page: EventEmitter<PageEvent> = new EventEmitter<PageEvent>();
+  disabled = input<boolean>();
+  length = input.required<number>();
+  pageSize = input.required<number>();
+  pageIndex = input.required<number>();
+
+  page = output<PageEvent>();
 
   handlePageEvent(event: PageEvent): void {
     this.page.emit(event);

@@ -1,13 +1,13 @@
 <mat-paginator
   class="mainPaginator"
   style="background-color: rgba(255, 255, 255, 0)"
-  [length]="length"
-  [pageSize]="pageSize"
-  [pageIndex]="pageIndex"
+  [length]="length()"
+  [pageSize]="pageSize()"
+  [pageIndex]="pageIndex()"
   (page)="handlePageEvent($event)"
   [hidePageSize]="true"
   [showFirstLastButtons]="false"
   aria-label="Select page"
-  [disabled]="disabled"
+  [disabled]="disabled()"
 >
 </mat-paginator>

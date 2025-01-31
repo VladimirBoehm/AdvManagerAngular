@@ -1,9 +1,11 @@
 <body class="p-1">
-  @if(advertisement){
+  @if(appStore.selectedAdvertisement()){
   <div class="container-fluid">
     <!-- buttons: status NEW  -->
     <div
-      *ngIf="advertisement.statusId === advertisementStatus.new"
+      *ngIf="
+        appStore.selectedAdvertisement()?.statusId === advertisementStatus.new
+      "
       class="background-rectangle-panel-shadow"
     >
       <div class="d-flex">
@@ -26,7 +28,7 @@
           class="col-4 d-flex flex-column align-items-center justify-content-center"
         >
           <button
-            class="btn empty-button"
+            class="btn empty-button slide-in-animation"
             (click)="sendToValidateDialogShow()"
             [disabled]="busyService.isLoading()"
           >
@@ -40,7 +42,12 @@
     </div>
 
     <!-- buttons: status VALIDATED  -->
-    <div *ngIf="advertisement.statusId === advertisementStatus.validated">
+    <div
+      *ngIf="
+        appStore.selectedAdvertisement()?.statusId ===
+        advertisementStatus.validated
+      "
+    >
       <div class="d-flex background-rectangle-panel-shadow">
         <div class="col-6 d-flex align-items-center justify-content-center">
           <ng-container *ngTemplateOutlet="deleteButtonTemplate"></ng-container>
@@ -61,19 +68,27 @@
         </div>
       </div>
       <div
-        *ngIf="advertisement.statusId === advertisementStatus.validated"
+        *ngIf="
+          appStore.selectedAdvertisement()?.statusId ===
+          advertisementStatus.validated
+        "
         class="alert alert-success mt-2 mb-0"
         role="alert"
       >
         <div class="text-center">{{ Localization.getWord("confirmed") }}</div>
 
         <div
-          *ngIf="advertisement.publishFrequency; else oneTime"
+          *ngIf="
+            appStore.selectedAdvertisement()?.publishFrequency;
+            else oneTime
+          "
           class="text-center"
         >
           {{ Localization.getWord("posting_frequency") }}
-          {{ advertisement.publishFrequency }}
-          {{ getDayWord(advertisement.publishFrequency) }}.
+          {{ appStore.selectedAdvertisement()?.publishFrequency }}
+          {{
+            getDayWord(appStore.selectedAdvertisement()?.publishFrequency ?? 0)
+          }}.
         </div>
 
         <ng-template #oneTime>
@@ -86,17 +101,20 @@
 
     <!-- buttons: status PENDING_PUBLICATION  -->
     <div
-      *ngIf="advertisement.statusId === advertisementStatus.pendingPublication"
+      *ngIf="
+        appStore.selectedAdvertisement()?.statusId ===
+        advertisementStatus.pendingPublication
+      "
     >
       <div
-        *ngIf="shouldShowCancelButton() || shouldShowForceButton()"
+        *ngIf="shouldShowCancelButton() || shouldShowAdminButtons()"
         class="d-flex background-rectangle-panel-shadow mb-2"
       >
         <div
           class="col-6 d-flex flex-column align-items-center justify-content-center"
         >
           <button
-            *ngIf="shouldShowForceButton()"
+            *ngIf="shouldShowAdminButtons()"
             class="btn empty-button"
             (click)="forcePublicationDialogShow()"
           >
@@ -123,16 +141,24 @@
       <div class="alert alert-info text-center mb-0" role="alert">
         <div class="d-flex flex-column">
           <div>{{ Localization.getWord("waiting_for_publication") }}</div>
-          <div *ngIf="!advertisement.placeInQueue; else imageListContent">
+          <div
+            *ngIf="
+              !appStore.selectedAdvertisement()?.placeInQueue;
+              else imageListContent
+            "
+          >
             {{ Localization.getWord("will_be_queued") }}
-            {{ advertisement.nextPublishDate | date : "dd.MM.yyyy" }}
+            {{
+              appStore.selectedAdvertisement()?.nextPublishDate
+                | date : "dd.MM.yyyy"
+            }}
           </div>
         </div>
         <ng-template #imageListContent>
           <div class="d-flex flex-column">
             <div>
               {{ Localization.getWord("queue_position") }}
-              {{ advertisement.placeInQueue }}
+              {{ appStore.selectedAdvertisement()?.placeInQueue }}
             </div>
             <div class="text-muted my-info-text lh-sm mt-1">
               {{ Localization.getWord("placement_depends_on_activity") }}
@@ -143,7 +169,12 @@
     </div>
 
     <!-- buttons: status REJECTED  -->
-    <div *ngIf="advertisement.statusId === advertisementStatus.rejected">
+    <div
+      *ngIf="
+        appStore.selectedAdvertisement()?.statusId ===
+        advertisementStatus.rejected
+      "
+    >
       <div class="d-flex background-rectangle-panel-shadow">
         <div class="col-6 d-flex align-items-center justify-content-center">
           <ng-container *ngTemplateOutlet="deleteButtonTemplate"></ng-container>
@@ -164,7 +195,10 @@
 
     <!-- buttons: status PENDING_VALIDATION  -->
     <div
-      *ngIf="advertisement.statusId === advertisementStatus.pendingValidation"
+      *ngIf="
+        appStore.selectedAdvertisement()?.statusId ===
+        advertisementStatus.pendingValidation
+      "
     >
       <div class="alert alert-info text-center mb-0" role="alert">
         {{ Localization.getWord("sent_to_admin_for_confirmation") }}
@@ -172,7 +206,7 @@
     </div>
 
     <!-- No Username error -->
-    <div *ngIf="!accountService.currentUser()?.userName" class="mt-2">
+    <div *ngIf="!appStore.user()?.userName" class="mt-2">
       <div class="alert alert-warning text-center mb-0" role="alert">
         <div
           class="text-center"
@@ -186,37 +220,40 @@
     </div>
 
     <div
-      *ngIf="advertisement.statusId === advertisementStatus.published"
+      *ngIf="
+        appStore.selectedAdvertisement()?.statusId ===
+        advertisementStatus.published
+      "
       class="alert alert-success mb-0"
       role="alert"
     >
       <div class="text-center">
         {{ Localization.getWord("published") }}
-        {{ dateHelper.getLocalTime(advertisement.nextPublishDate) }}
+        {{
+          dateHelper.getLocalTime(
+            appStore.selectedAdvertisement()?.nextPublishDate
+          )
+        }}
       </div>
       <div class="text-center">
         {{ Localization.getWord("author") }}
-        {{ advertisementHelper.getUserDisplayName(advertisement) }}
+        {{
+          advertisementHelper.getUserDisplayName(
+            appStore.selectedAdvertisement()
+          )
+        }}
       </div>
     </div>
 
     <div class="mt-2">
-      <app-advertisement-main-data
-        [title]="advertisement.title"
-        [message]="advertisement.message"
-        [url]="advertisement.adImage?.url"
-        [linkName]="advertisement.linkName"
-        [linkValue]="advertisement.linkValue"
-        [created]="advertisement.created"
-        [updated]="advertisement.updated"
-      ></app-advertisement-main-data>
+      <app-advertisement-main-data></app-advertisement-main-data>
     </div>
     <div
       *ngIf="
-        advertisement.adminMessage &&
-        advertisement.adminMessage.length &&
-        (accountService.currentUser()?.isAdmin ||
-          accountService.currentUser()?.userId === advertisement.userId)
+        appStore.selectedAdvertisement()?.adminMessage &&
+        appStore.selectedAdvertisement()?.adminMessage?.length &&
+        (appStore.user()?.isAdmin ||
+          appStore.user()?.userId === appStore.selectedAdvertisement()?.userId)
       "
       class="input-group mt-2 pb-4"
     >
@@ -229,158 +266,30 @@
         disabled="true"
         rows="3"
         name="adminMessage"
-        [(ngModel)]="advertisement.adminMessage"
+        [ngModel]="appStore.selectedAdvertisement()?.adminMessage"
       ></textarea>
     </div>
 
     <ng-template #modalDialogCancelPublicationAdmin>
-      <div class="modal-header">
-        <h6 class="modal-title pull-left">
-          {{ Localization.getWord("cancel_publication_question") }}
-        </h6>
-      </div>
-      <div class="modal-body">
-        <div class="form-check">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            [(ngModel)]="shouldRejectValidation"
-            [disabled]="busyService.isLoading()"
-            id="blockAdv"
-          />
-          <label class="form-check-label" for="blockAdv">
-            {{ Localization.getWord("block_advertisement_question") }}
-          </label>
-        </div>
-        <div *ngIf="shouldRejectValidation" class="text-muted my-info-text">
-          {{ Localization.getWord("validation_will_be_revoked") }}
-        </div>
-        <mat-form-field class="mt-3 w-100">
-          <mat-label>{{ Localization.getWord("comment_short") }}</mat-label>
-          <textarea
-            matInput
-            rows="3"
-            name="adminMessage"
-            maxlength="200"
-            [(ngModel)]="adminComment"
-            [readonly]="busyService.isLoading()"
-          ></textarea>
-        </mat-form-field>
-
-        <div class="d-flex justify-content-end">
-          <button
-            class="btn empty-button me-4"
-            (click)="cancelPublicationAdmin()"
-            [disabled]="busyService.isLoading()"
-          >
-            <div>{{ Localization.getWord("yes") }}</div>
-          </button>
-          <button
-            class="btn empty-button"
-            (click)="modalRef?.hide()"
-            [disabled]="busyService.isLoading()"
-          >
-            <div>{{ Localization.getWord("no") }}</div>
-          </button>
-        </div>
-      </div>
-
-      <div class="d-flex justify-content-center">
-        <mat-progress-bar
-          *ngIf="busyService.isLoading()"
-          mode="buffer"
-          style="width: 90%"
-        ></mat-progress-bar>
-      </div>
+      <modal-dialog-cancel-publication-admin
+        [close]="closeDialog"
+        [confirm]="cancelPublicationAdmin"
+      ></modal-dialog-cancel-publication-admin>
     </ng-template>
 
     <ng-template #modalDialogForcePublicationAdmin>
-      <div class="modal-body">
-        <div class="d-flex flex-column">
-          <h6 class="modal-title pull-left text-muted">
-            {{ Localization.getWord("publish_ad_immediately_question") }}
-          </h6>
-          <hr class="m-1" />
-        </div>
-        <mat-form-field class="mt-2 w-100">
-          <mat-label>{{ Localization.getWord("comment_short") }}</mat-label>
-          <textarea
-            matInput
-            rows="3"
-            name="adminMessage"
-            maxlength="200"
-            [readonly]="busyService.isLoading()"
-            [(ngModel)]="adminComment"
-          ></textarea>
-        </mat-form-field>
-
-        <div class="d-flex justify-content-end">
-          <button
-            class="btn empty-button me-4"
-            (click)="forcePublication()"
-            [disabled]="busyService.isLoading()"
-          >
-            <div>{{ Localization.getWord("yes") }}</div>
-          </button>
-          <button
-            class="btn empty-button"
-            (click)="modalRef?.hide()"
-            [disabled]="busyService.isLoading()"
-          >
-            <div>{{ Localization.getWord("no") }}</div>
-          </button>
-        </div>
-      </div>
-
-      <div class="d-flex justify-content-center">
-        <mat-progress-bar
-          *ngIf="busyService.isLoading()"
-          mode="buffer"
-          style="width: 90%"
-        ></mat-progress-bar>
-      </div>
+      <modal-dialog-force-publication-admin
+        [close]="closeDialog"
+        [confirm]="forcePublication"
+      ></modal-dialog-force-publication-admin>
     </ng-template>
 
     <ng-template #modalDialogPublicationInfo>
-      <div class="modal-body">
-        <div class="text-center mb-2">
-          {{ Localization.getWord("ad_will_be_queued") }}
-        </div>
-        <div class="d-flex justify-content-center align-items-center">
-          <div class="text-center mb-2 me-2">
-            {{ Localization.getWord("starting_from") }}
-          </div>
-          <mat-progress-bar
-            *ngIf="
-              busyService.isLoading() && !nextPublishDate;
-              else nextPublishDateTemplate
-            "
-            mode="buffer"
-            style="width: 5rem"
-          ></mat-progress-bar>
-          <ng-template #nextPublishDateTemplate>
-            <div class="text-center mb-2">
-              {{ nextPublishDate | date : "dd.MM.yyyy" }}
-            </div>
-          </ng-template>
-        </div>
-
-        <div class="text-center text-muted mb-2 my-info-text lh-sm mt-1">
-          {{ Localization.getWord("placement_depends_on_activity") }}
-        </div>
-        <div class="d-flex justify-content-end">
-          <button
-            class="btn empty-button me-4"
-            (click)="modalDialogPublishConfirm()"
-            [disabled]="busyService.isLoading()"
-          >
-            <div>{{ Localization.getWord("confirm") }}</div>
-          </button>
-          <button class="btn empty-button" (click)="modalRef?.hide()">
-            <div>{{ Localization.getWord("back") }}</div>
-          </button>
-        </div>
-      </div>
+      <modal-dialog-publication-info
+        [nextPublishDate]="nextPublishDate"
+        [close]="closeDialog"
+        [confirm]="modalDialogPublishConfirm"
+      ></modal-dialog-publication-info>
     </ng-template>
   </div>
   }

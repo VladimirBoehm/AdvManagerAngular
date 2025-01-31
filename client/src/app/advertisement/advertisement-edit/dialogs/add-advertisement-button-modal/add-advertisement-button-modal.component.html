@@ -1,0 +1,82 @@
+<div class="modal-body">
+  <form
+    id="editForm"
+    [formGroup]="editForm"
+    (ngSubmit)="save()"
+    autocomplete="off"
+  >
+    <div class="d-flex flex-column">
+      <div class="d-flex">
+        <div class="d-flex col-6 flex-column justify-content-center">
+          <h6 class="text-muted">{{ Localization.getWord("button") }}</h6>
+        </div>
+        <div class="d-flex col-6 justify-content-end">
+          <button
+            type="submit"
+            class="btn empty-button"
+            aria-label="Close"
+            [disabled]="editForm.invalid"
+          >
+            <span class="material-symbols-outlined text-muted">
+              check_circle
+            </span>
+            <div class="text-muted my-info-text">
+              {{ Localization.getWord("save") }}
+            </div>
+          </button>
+          <button
+            type="button"
+            class="btn empty-button ms-2"
+            (click)="close()()"
+          >
+            <span class="material-symbols-outlined text-muted"> close </span>
+            <div class="text-muted my-info-text">
+              {{ Localization.getWord("close") }}
+            </div>
+          </button>
+        </div>
+      </div>
+      <div class="text-muted my-info-text text-left">
+        {{ Localization.getWord("placed_under_advertisement") }}
+      </div>
+    </div>
+    <hr class="mt-1 mb-2" />
+    <div class="d-flex flex-column">
+      <mat-form-field>
+        <mat-label>{{ Localization.getWord("button_name") }}</mat-label>
+        <input matInput required formControlName="buttonName" />
+        @if (matErrorService.getHasError(editForm.controls['buttonName'])){
+        <mat-error>{{
+          matErrorService.getErrorMessage(
+            editForm.controls["buttonName"],
+            "buttonName"
+          )
+        }}</mat-error>
+        }
+        <mat-hint [align]="'end'">
+          {{ buttonNameCounter }}/{{ maxButtonNameLength }}</mat-hint
+        >
+      </mat-form-field>
+
+      <mat-form-field class="mt-3">
+        <mat-label>{{ Localization.getWord("link") }}</mat-label>
+        <textarea
+          matInput
+          required
+          type="text"
+          name="link"
+          formControlName="link"
+          id="floatingLink"
+        ></textarea>
+        @if (matErrorService.getHasError(editForm.controls['link'])){
+        <mat-error>{{
+          matErrorService.getErrorMessage(editForm.controls["link"], "link")
+        }}</mat-error>
+        }
+        <mat-hint [align]="'end'">
+          {{ linkCounter }}/{{ maxLinkLength }}</mat-hint
+        >
+      </mat-form-field>
+    </div>
+  </form>
+</div>

@@ -9,13 +9,11 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
-import { SortOption } from '../../../../_models/sortOption';
-import { AdvertisementService } from '../../../../_services/advertisement.service';
-import { ChatFilterService } from '../../../../_services/chat-filter.service';
-import { DEFAULT_SORT_OPTION } from '../../../constants/defaultSortOption';
-import { TelegramBackButtonService } from '../../../telegramBackButtonService';
+import { SortOption } from '../../../../_entities/sortOption';
+import { TelegramBackButtonService } from '../../../../_services/telegramBackButton.service';
 import { SharedModule } from '../../../modules/sharedModule';
 import { Localization } from '../../helpers/localization';
+import { AppStore } from '../../../../appStore/app.store';
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -39,36 +37,22 @@ export const MY_DATE_FORMATS = {
 })
 export class MatListFilterComponentModal implements OnInit, OnDestroy {
   private formBuilder = inject(FormBuilder);
-  private advertisementService = inject(AdvertisementService);
-  private chatFilterService = inject(ChatFilterService);
   private backButtonService = inject(TelegramBackButtonService);
+  readonly appStore = inject(AppStore);
   sortForm: FormGroup = new FormGroup({});
-  currentSortOption = signal<SortOption>({
-    field: DEFAULT_SORT_OPTION.field,
-    order: DEFAULT_SORT_OPTION.order,
-    searchType: DEFAULT_SORT_OPTION.searchType,
-    searchValue: DEFAULT_SORT_OPTION.searchValue,
-  } as SortOption);
+  currentSortOption = signal<SortOption>({} as SortOption);
   Localization = Localization;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { isAdvertisementList: boolean },
+    @Inject(MAT_DIALOG_DATA)
+    public data: { isExtended: boolean; sortOption: SortOption },
     private dialogRef: MatDialogRef<MatListFilterComponentModal>
-  ) {}
+  ) {
+    this.currentSortOption.set(data.sortOption);
+  }
 
   ngOnInit(): void {
     this.backButtonService.setCloseDialogHandler(() => this.close());
-    if (this.data.isAdvertisementList) {
-      const currentSortOptions =
-        this.advertisementService.getCurrentSortOptions();
-      if (currentSortOptions)
-        this.currentSortOption.set({ ...currentSortOptions });
-    } else {
-      const currentSortOptions = this.chatFilterService.getCurrentSortOptions();
-      if (currentSortOptions)
-        this.currentSortOption.set({ ...currentSortOptions });
-    }
-
     this.sortForm = this.formBuilder.group({
       selectedSortType: [this.currentSortOption().field, Validators.required],
       selectedSortDate: ['desc', Validators.required],
@@ -144,8 +128,8 @@ export class MatListFilterComponentModal implements OnInit, OnDestroy {
     if (this.currentSortOption().searchType === 'date') {
       const dateRange = this.sortForm.get('dateRange')?.value;
       this.currentSortOption().dateRange = {
-        start: dateRange.start,
-        end: dateRange.end,
+        start: new Date(dateRange.start),
+        end: new Date(dateRange.end),
       };
       // Clear searchValue when searchType is 'date'
       this.currentSortOption().searchValue = undefined;
@@ -163,7 +147,7 @@ export class MatListFilterComponentModal implements OnInit, OnDestroy {
   }
 
   close(): void {
-    this.dialogRef.close();
+    this.dialogRef.close(null);
   }
 
   ngOnDestroy(): void {

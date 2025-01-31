@@ -1,16 +1,12 @@
-import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { AdvertisementService } from '../_services/advertisement.service';
-import { NgIf } from '@angular/common';
-import { AdvListType } from '../_framework/constants/advListType';
+import { AppListType } from '../_framework/constants/advListType';
 import { SharedModule } from '../_framework/modules/sharedModule';
 import { BusyService } from '../_services/busy.service';
-import { AccountService } from '../_services/account.service';
-import { MatRippleModule } from '@angular/material/core';
-import { EMPTY, switchMap } from 'rxjs';
-import { User } from '../_models/user';
 import { Localization } from '../_framework/component/helpers/localization';
 import { ImpressumComponent } from './impressum/impressum.component';
+import { AppStore } from '../appStore/app.store';
+import { ThreeDotsLoadingComponent } from '../_framework/component/custom-loading-bar/three-dots-loading.component';
 
 @Component({
   selector: 'app-home',
@@ -18,51 +14,27 @@ import { ImpressumComponent } from './impressum/impressum.component';
   imports: [
     SharedModule,
     RouterLink,
-    NgIf,
-    MatRippleModule,
     ImpressumComponent,
+    ThreeDotsLoadingComponent,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit {
-  advListType = AdvListType;
-  advertisementService = inject(AdvertisementService);
+  advListType = AppListType;
+
   busyService = inject(BusyService);
-  accountService = inject(AccountService);
-  advertisementsToValidateCount = signal<number>(0);
+  readonly appStore = inject(AppStore);
   Localization = Localization;
 
   isImpressumInfoShown = signal<boolean>(false);
 
   constructor() {
-    this.onImpressumClose = this.onImpressumClose.bind(this);
-
-    this.accountService
-      .login()
-      .pipe(
-        switchMap((user: User) => {
-          if (user.isAdmin) {
-            return this.advertisementService.getPendingValidationAdvertisementsCount();
-          } else {
-            return EMPTY;
-          }
-        })
-      )
-      .subscribe({
-        next: (result: number) => {
-          this.advertisementsToValidateCount.set(result);
-        },
-        error: (err) => {
-          console.error(
-            'Error during login or loading PendingValidationAdvertisementsCount:',
-            err
-          );
-        },
-      });
+    this.impressumClose = this.impressumClose.bind(this);
   }
 
   ngOnInit(): void {
+    this.appStore.getPendingValidationCountAsync();
     if (window.Telegram?.WebApp) {
       window.Telegram?.WebApp?.expand();
       window.Telegram?.WebApp?.BackButton?.hide();
@@ -73,8 +45,7 @@ export class HomeComponent implements OnInit {
     this.isImpressumInfoShown.set(true);
   }
 
-  onImpressumClose() {
+  impressumClose = () => {
     this.isImpressumInfoShown.set(false);
-  }
-
+  };
 }

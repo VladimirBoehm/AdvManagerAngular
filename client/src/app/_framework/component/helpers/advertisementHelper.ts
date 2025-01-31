@@ -5,7 +5,8 @@ import { Advertisement } from '../../../_models/advertisement';
   providedIn: 'root',
 })
 export class AdvertisementHelper {
-  getUserDisplayName(advertisement: Advertisement): string {
+  getUserDisplayName(advertisement: Advertisement | null): string {
+    if (!advertisement) return '';
     const userName = advertisement.userName ? `@${advertisement.userName}` : '';
     const firstName = advertisement.firstName ? advertisement.firstName : '';
     const lastName = advertisement.lastName ? advertisement.lastName : '';
@@ -13,7 +14,7 @@ export class AdvertisementHelper {
     return `${userName} ${firstName || lastName}`.trim();
   }
 
- async getFileFromUrl(url: string): Promise<File> {
+  async getFileFromUrl(url: string): Promise<File> {
     const response = await fetch(url);
     const blob = await response.blob();
     return new File([blob], 'reconstructedFile');

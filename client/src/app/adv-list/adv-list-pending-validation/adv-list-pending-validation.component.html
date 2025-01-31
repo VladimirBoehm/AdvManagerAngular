@@ -1,0 +1,82 @@
+<body class="p-1">
+  <div class="container-fluid">
+    <div class="background-rectangle-panel-shadow">
+      <div class="d-flex">
+        <div class="col-6 d-flex justify-content-start ps-0">
+          <app-adv-list-filter
+            (onChanged)="sortChanged($event)"
+            [disabled]="appStore.isAdvertisementListLoading()"
+            [sortOption]="
+              appStore.pendingValidationPaginationParams().sortOption
+            "
+            [isExtended]="true"
+          ></app-adv-list-filter>
+        </div>
+        <div class="col-6 d-flex justify-content-end align-items-center">
+          @if( appStore.pendingValidationPaginationParams().totalItems > 0 &&
+          appStore.pendingValidationPaginationParams().totalItems >
+          appStore.pendingValidationPaginationParams().pageSize){
+
+          <paginator-localization
+            [disabled]="appStore.isAdvertisementListLoading()"
+            #paginator
+            (page)="handlePageEvent($event)"
+            [length]="appStore.pendingValidationPaginationParams().totalItems"
+            [pageSize]="appStore.pendingValidationPaginationParams().pageSize"
+            [pageIndex]="
+              appStore.pendingValidationPaginationParams().pageNumber
+            "
+          ></paginator-localization>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="list-container">
+      <div class="text-center text-muted mb-1">
+        {{ Localization.getWord("validate_title") }}
+      </div>
+      @if(appStore.isAdvertisementListLoading()){
+      <div class="skeleton-panel mt-2"></div>
+      } @else {
+      <mat-action-list class="flex-grow-1">
+        @for(advertisement of appStore.sortedPendingValidationAdvertisements();
+        track advertisement.id){
+
+        <div
+          class="d-flex align-items-center"
+          (click)="onItemClickValidate(advertisement)"
+        >
+          <mat-list-item>
+            <mat-icon matListItemIcon>
+              <span
+                class="material-symbols-outlined me-3"
+                [ngClass]="advListHelper.getShadowIconClass(advertisement)"
+              >
+                sticky_note_2
+              </span></mat-icon
+            >
+            <div matListItemTitle>{{ advertisement.title }}</div>
+            <div class="d-flex justify-content-start mt-2" matListItemLine>
+              {{ Localization.getWord("from") }}
+              {{ advListHelper.getUserDisplayName(advertisement) }}
+            </div>
+            <div class="d-flex justify-content-start" matListItemLine>
+              {{ Localization.getWord("received") }}:
+              {{ dateHelper.getLocalTime(advertisement.updated) }}
+            </div>
+          </mat-list-item>
+          <span class="material-symbols-outlined text-muted">
+            chevron_right
+          </span>
+        </div>
+        <mat-divider></mat-divider>
+
+        } @empty {
+        <app-empty-list-placeholder></app-empty-list-placeholder>
+        }
+      </mat-action-list>
+      }
+    </div>
+  </div>
+</body>

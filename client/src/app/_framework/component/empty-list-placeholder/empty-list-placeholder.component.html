@@ -1,19 +1,13 @@
-<div class="d-flex flex-column justify-content-center align-items-center mt-5">
-  <ng-container *ngIf="customContent; else defaultContent">
-    <ng-container *ngTemplateOutlet="customContent"></ng-container>
-  </ng-container>
+<div class="placeholder-panel">
+  <div class="empty-list-placeholder">
+    <img
+      class="placeholder-image"
+      [src]="imageUrl()"
+      alt="{{ Localization.getWord('icon') }}"
+    />
+  </div>
 
-  <ng-template #defaultContent>
-    <div class="empty-list-placeholder">
-      <img
-        class="placeholder-image"
-        [src]="imageUrl"
-        alt="{{ Localization.getWord('icon') }}"
-      />
-    </div>
-
-    <div class="empty-list-text">
-      {{ Localization.getWord("list_is_empty") }}
-    </div>
-  </ng-template>
+  <div class="empty-list-text">
+    {{ Localization.getWord("list_is_empty") }}
+  </div>
 </div>

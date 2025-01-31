@@ -1,0 +1,81 @@
+<body class="p-1">
+  <div class="container-fluid">
+    <div class="background-rectangle-panel-shadow">
+      <div class="d-flex">
+        <div class="col-6 d-flex justify-content-start ps-0">
+          <app-adv-list-filter
+            (onChanged)="sortChanged($event)"
+            [disabled]="appStore.isAdvertisementListLoading()"
+            [sortOption]="
+              appStore.pendingPublicationPaginationParams().sortOption
+            "
+            [isExtended]="true"
+          ></app-adv-list-filter>
+        </div>
+        <div class="col-6 d-flex justify-content-end align-items-center">
+          @if( appStore.pendingPublicationPaginationParams().totalItems > 0 &&
+          appStore.pendingPublicationPaginationParams().totalItems >
+          appStore.pendingPublicationPaginationParams().pageSize){
+
+          <paginator-localization
+            [disabled]="appStore.isAdvertisementListLoading()"
+            #paginator
+            (page)="handlePageEvent($event)"
+            [length]="appStore.pendingPublicationPaginationParams().totalItems"
+            [pageSize]="appStore.pendingPublicationPaginationParams().pageSize"
+            [pageIndex]="
+              appStore.pendingPublicationPaginationParams().pageNumber
+            "
+          ></paginator-localization>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="list-container">
+      <div class="text-center text-muted mb-1">
+        {{ Localization.getWord("publishing_title") }}
+      </div>
+      @if(appStore.isAdvertisementListLoading()){
+      <div class="skeleton-panel mt-2"></div>
+      } @else {
+      <mat-action-list class="flex-grow-1">
+        @for(advertisement of appStore.sortedPendingPublicationAdvertisements();
+        track advertisement.id){
+
+        <div
+          class="d-flex align-items-center"
+          (click)="advListHelper.onItemClick(advertisement)"
+        >
+          <mat-list-item>
+            <mat-icon matListItemIcon>
+              <span
+                class="material-symbols-outlined me-3"
+                [ngClass]="advListHelper.getShadowIconClass(advertisement)"
+              >
+                sticky_note_2
+              </span></mat-icon
+            >
+            <div matListItemTitle>{{ advertisement.title }}</div>
+            <div matListItemLine class="mt-2">
+              <!--
+      -->{{ getMatListItemInfo(advertisement) }}
+            </div>
+            <div matListItemLine>
+              <!--
+      -->{{ advListHelper.getUserDisplayName(advertisement) }}
+            </div>
+          </mat-list-item>
+          <span class="material-symbols-outlined text-muted">
+            chevron_right
+          </span>
+        </div>
+        <mat-divider></mat-divider>
+        } @empty {
+        <app-empty-list-placeholder></app-empty-list-placeholder>
+        }
+      </mat-action-list>
+      }
+    </div>
+  </div>
+</body>
