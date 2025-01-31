@@ -1,0 +1,7 @@
+{
+  "platforms": {
+    "nodejs": {
+      "version": "22"
+    }
+  }
+}
