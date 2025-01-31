@@ -5,7 +5,7 @@ import { DEFAULT_SORT_OPTION } from '../_framework/constants/defaultSortOption';
 import { Advertisement } from '../_models/advertisement';
 import { User } from '../_models/user';
 import { PaginationParams } from '../_entities/paginationParams';
-import { forEach } from 'lodash';
+import { forEach } from 'lodash-es';
 import { HttpResponse } from '@angular/common/http';
 
 export function getDefaultSortOptions(): SortOption {
