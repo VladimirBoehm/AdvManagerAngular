@@ -18,7 +18,7 @@ import { SharedModule } from '../../../_framework/modules/sharedModule';
         <app-three-dots-loading
           class="ms-2"
           *ngIf="
-            busyService.isLoading() && !nextPublishDate;
+            busyService.isLoading() && !nextPublishDate();
             else nextPublishDateTemplate
           "
         ></app-three-dots-loading>
