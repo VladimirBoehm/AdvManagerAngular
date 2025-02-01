@@ -53,6 +53,8 @@ export class MatListFilterComponentModal implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.backButtonService.setCloseDialogHandler(() => this.close());
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
     this.sortForm = this.formBuilder.group({
       selectedSortType: [this.currentSortOption().field, Validators.required],
       selectedSortDate: ['desc', Validators.required],
@@ -67,9 +69,10 @@ export class MatListFilterComponentModal implements OnInit, OnDestroy {
         this.currentSortOption().searchValue,
         Validators.maxLength(200),
       ],
+
       dateRange: this.formBuilder.group({
-        start: [this.currentSortOption().dateRange?.start || null],
-        end: [this.currentSortOption().dateRange?.end || null],
+        start: [this.currentSortOption().dateRange?.start || currentDate],
+        end: [this.currentSortOption().dateRange?.end || currentDate],
       }),
     });
 
