@@ -71,7 +71,7 @@ const pendingPublicationDefaultPaginationParams = getDefaultPaginationParams(
   defaultPageSize,
   { ...getDefaultSortOptions(), field: 'date', order: 'asc' }
 );
-//test
+
 const initialState: appState = {
   user: getUser(),
   selectedListType: undefined,
