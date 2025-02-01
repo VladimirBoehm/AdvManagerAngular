@@ -11,7 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDialog } from '@angular/material/dialog';
 import { MatListFilterComponentModal } from './mat-adv-list-filter-modal/mat-list-filter-modal.component';
 import { Localization } from '../helpers/localization';
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from 'lodash-es/cloneDeep';
 @Component({
   selector: 'app-adv-list-filter',
   standalone: true,

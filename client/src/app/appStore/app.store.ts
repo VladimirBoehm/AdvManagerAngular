@@ -39,7 +39,7 @@ import {
 import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
 import { PublishService } from '../_services/api.services/publish.service';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from 'lodash-es/cloneDeep';
 import { ManagePublish } from '../_entities/managePublish';
 
 const defaultPageSize = 6;
@@ -71,7 +71,7 @@ const pendingPublicationDefaultPaginationParams = getDefaultPaginationParams(
   defaultPageSize,
   { ...getDefaultSortOptions(), field: 'date', order: 'asc' }
 );
-
+//test
 const initialState: appState = {
   user: getUser(),
   selectedListType: undefined,
