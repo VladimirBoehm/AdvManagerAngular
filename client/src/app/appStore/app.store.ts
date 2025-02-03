@@ -41,6 +41,7 @@ import { PublishService } from '../_services/api.services/publish.service';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
 import cloneDeep from 'lodash-es/cloneDeep';
 import { ManagePublish } from '../_entities/managePublish';
+import { SignalRService } from '../_services/signalRService';
 
 const defaultPageSize = 6;
 const chatFilterPageSize = 999;
@@ -131,11 +132,15 @@ export const AppStore = signalStore(
   withEntities(pendingValidationConfig),
   withLogger('appState'),
   withHooks({
-    async onInit(appStore, accountService = inject(AccountService)) {
+    async onInit(
+      appStore,
+      accountService = inject(AccountService),
+      signalRService = inject(SignalRService)
+    ) {
       const user = await lastValueFrom(accountService.login());
       localStorage.setItem('user', JSON.stringify(user));
       patchState(appStore, { user });
-      console.log('>>> AppStore onInit: user loaded');
+      signalRService.createHubConnection();
     },
   }),
   withComputed(
@@ -744,9 +749,40 @@ export const AppStore = signalStore(
               appStore.pendingPublicationCacheInfo(),
               pendingPublicationDefaultPaginationParams
             );
-            patchState(appStore, {
-              pendingPublicationCacheInfo: updatedCacheInfo,
-            });
+            {
+              const currentParams =
+                appStore.pendingPublicationPaginationParams();
+              const allKeys = Array.from(updatedCacheInfo.keys());
+              let isCurrentPaginationParamsContainsInCache = false;
+              for (let i = 0; i < allKeys.length; i++) {
+                const key = allKeys[i];
+                if (arePaginationParamsEqual(key, currentParams, false)) {
+                  isCurrentPaginationParamsContainsInCache = true;
+                  break;
+                }
+              }
+              if (
+                !isCurrentPaginationParamsContainsInCache &&
+                currentParams.pageNumber >= 1
+              ) {
+                const newPaginationParams = cloneDeep(currentParams);
+                newPaginationParams.pageNumber =
+                  newPaginationParams.pageNumber - 1;
+                patchState(appStore, {
+                  pendingPublicationCacheInfo: updatedCacheInfo,
+                  pendingPublicationPaginationParams: newPaginationParams,
+                });
+                console.log(
+                  '>>> AppStore: pendingPublication updated, changed to previous page due to empty cache'
+                );
+              } else {
+                patchState(appStore, {
+                  pendingPublicationCacheInfo: updatedCacheInfo,
+                  pendingPublicationPaginationParams: cloneDeep(currentParams),
+                });
+                console.log('>>> AppStore: pendingPublication updated');
+              }
+            }
             break;
           case AppListType.PendingValidation:
             patchState(appStore, removeEntity(id, pendingValidationConfig));
@@ -755,9 +791,41 @@ export const AppStore = signalStore(
               appStore.pendingValidationCacheInfo(),
               getDefaultPaginationParams(defaultPageSize)
             );
-            patchState(appStore, {
-              pendingValidationCacheInfo: updatedCacheInfo,
-            });
+            {
+              const currentParams =
+                appStore.pendingValidationPaginationParams();
+              const allKeys = Array.from(updatedCacheInfo.keys());
+              let isCurrentPaginationParamsContainsInCache = false;
+              for (let i = 0; i < allKeys.length; i++) {
+                const key = allKeys[i];
+                if (arePaginationParamsEqual(key, currentParams, false)) {
+                  isCurrentPaginationParamsContainsInCache = true;
+                  break;
+                }
+              }
+
+              if (
+                !isCurrentPaginationParamsContainsInCache &&
+                currentParams.pageNumber >= 1
+              ) {
+                const newPaginationParams = cloneDeep(currentParams);
+                newPaginationParams.pageNumber =
+                  newPaginationParams.pageNumber - 1;
+                patchState(appStore, {
+                  pendingValidationCacheInfo: updatedCacheInfo,
+                  pendingValidationPaginationParams: newPaginationParams,
+                });
+                console.log(
+                  '>>> AppStore: pendingValidation updated, changed to previous page due to empty cache'
+                );
+              } else {
+                patchState(appStore, {
+                  pendingValidationCacheInfo: updatedCacheInfo,
+                  pendingValidationPaginationParams: cloneDeep(currentParams),
+                });
+                console.log('>>> AppStore: pendingValidation updated');
+              }
+            }
             break;
           case AppListType.MyAdvertisements:
             patchState(appStore, removeEntity(id, myAdvertisementsConfig));
@@ -803,7 +871,7 @@ export const AppStore = signalStore(
             );
             break;
         }
-        console.log('>>> AppStore: Advertisement updated in all lists');
+        console.log('>>> AppStore: Advertisement updated in list', appListType);
       },
       // ------- validateAdvertisementAdminAsync -------
       validateAdvertisementAdmin(advertisement: Advertisement) {
