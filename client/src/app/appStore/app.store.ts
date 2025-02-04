@@ -41,7 +41,6 @@ import { PublishService } from '../_services/api.services/publish.service';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
 import cloneDeep from 'lodash-es/cloneDeep';
 import { ManagePublish } from '../_entities/managePublish';
-import { SignalRService } from '../_services/signalRService';
 
 const defaultPageSize = 6;
 const chatFilterPageSize = 999;
@@ -135,12 +134,10 @@ export const AppStore = signalStore(
     async onInit(
       appStore,
       accountService = inject(AccountService),
-      signalRService = inject(SignalRService)
     ) {
       const user = await lastValueFrom(accountService.login());
       localStorage.setItem('user', JSON.stringify(user));
       patchState(appStore, { user });
-      signalRService.createHubConnection();
     },
   }),
   withComputed(
@@ -1069,6 +1066,24 @@ export const AppStore = signalStore(
           AppListType.PendingPublication,
           appStore.selectedAdvertisement()?.id!
         );
+      },
+      // ------- SIGNALR -------
+      advertisementValidatedSignalR(
+        advertisementId: number,
+      ) {
+        const updatedAdvertisement = appStore.myAdvertisementsEntities().find(
+          (ad) => ad.id === advertisementId
+        );
+        if (updatedAdvertisement) {
+          updatedAdvertisement.statusId = AdvertisementStatus.validated;
+          this.updateAdvertisementInList(
+            AppListType.MyAdvertisements,
+            updatedAdvertisement
+          );
+        }
+        if (appStore.selectedAdvertisement()?.id === advertisementId) {
+          this.setSelectedAdvertisement(updatedAdvertisement!);
+        }
       },
     })
   )

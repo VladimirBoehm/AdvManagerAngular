@@ -3,6 +3,10 @@
     "ru": "Валидировать",
     "en": "Validate"
   },
+  "advertisement_validated": {
+    "ru": "Объявление подтверждено!",
+    "en": "Advertisement validated!"
+  },
   "validate_subtitle": {
     "ru": "Объявления для валидации",
     "en": "Advertisements for validation"

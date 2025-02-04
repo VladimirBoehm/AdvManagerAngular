@@ -3,6 +3,7 @@ import { Router, RouterOutlet } from '@angular/router';
 import { Localization } from './_framework/component/helpers/localization';
 import { DatePipe } from '@angular/common';
 import { AdvListHelper } from './adv-list/adv-list.helper';
+import { SignalRService } from './_services/signalRService';
 
 @Component({
   selector: 'app-root',
@@ -15,9 +16,11 @@ import { AdvListHelper } from './adv-list/adv-list.helper';
 export class AppComponent {
   Localization = Localization;
   router = inject(Router);
+  signalRService = inject(SignalRService);
   title = 'Chatbot';
 
   constructor() {
+    this.signalRService.createHubConnection();
     this.Localization.setLanguage(
       window.Telegram.WebApp.initDataUnsafe?.user?.language_code ?? 'en'
     );
