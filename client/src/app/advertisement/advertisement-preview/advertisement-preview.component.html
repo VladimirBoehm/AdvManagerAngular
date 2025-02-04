@@ -296,19 +296,8 @@
 
   <!-- Delete Button Template -->
   <ng-template #deleteButtonTemplate>
-    <button
-      class="btn empty-button"
-      (click)="delete()"
-      [disabled]="busyService.isLoading()"
-    >
-      <ng-container *ngIf="busyService.isLoading(); else defaultIcon">
-        <mat-spinner [diameter]="24"></mat-spinner>
-      </ng-container>
-      <ng-template #defaultIcon>
-        <span class="material-symbols-outlined text-muted">
-          delete_forever
-        </span>
-      </ng-template>
+    <button class="btn empty-button" (click)="delete()">
+      <span class="material-symbols-outlined text-muted"> delete_forever </span>
       <div class="text-muted">{{ Localization.getWord("delete") }}</div>
     </button>
   </ng-template>

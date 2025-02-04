@@ -10,7 +10,6 @@ import { ListFilterComponent } from '../_framework/component/adv-list-filter/lis
 import { SortOption } from '../_entities/sortOption';
 import { BusyService } from '../_services/busy.service';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
-import { SkeletonFullScreenComponent } from '../_framework/component/skeleton-full-screen/skeleton-full-screen.component';
 import { Localization } from '../_framework/component/helpers/localization';
 import { AppStore } from '../appStore/app.store';
 import { Subscription } from 'rxjs';
@@ -23,7 +22,6 @@ import { AddChatFilterDialog } from './dialogs/add-chat-filter.dialog';
     SharedModule,
     EmptyListPlaceholderComponent,
     ListFilterComponent,
-    SkeletonFullScreenComponent,
     AddChatFilterDialog,
   ],
   templateUrl: './chat-filter.component.html',
