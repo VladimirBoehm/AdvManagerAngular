@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { Localization } from './_framework/component/helpers/localization';
 import { DatePipe } from '@angular/common';
@@ -13,16 +13,25 @@ import { SignalRService } from './_services/signalRService';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   Localization = Localization;
   router = inject(Router);
   signalRService = inject(SignalRService);
   title = 'Chatbot';
-
   constructor() {
     this.signalRService.createHubConnection();
     this.Localization.setLanguage(
       window.Telegram.WebApp.initDataUnsafe?.user?.language_code ?? 'en'
     );
+  }
+ async ngOnInit() {
+    await this.initializeHubConnection() 
+  }
+
+  async initializeHubConnection() {
+    while (!window?.Telegram?.WebApp?.initData) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+    this.signalRService.createHubConnection();
   }
 }
