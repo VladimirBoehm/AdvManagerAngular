@@ -4,6 +4,7 @@ import { Localization } from './_framework/component/helpers/localization';
 import { DatePipe } from '@angular/common';
 import { AdvListHelper } from './adv-list/adv-list.helper';
 import { SignalRService } from './_services/signalRService';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -19,16 +20,19 @@ export class AppComponent implements OnInit {
   signalRService = inject(SignalRService);
   title = 'Chatbot';
   constructor() {
-    this.signalRService.createHubConnection();
     this.Localization.setLanguage(
       window.Telegram.WebApp.initDataUnsafe?.user?.language_code ?? 'en'
     );
   }
- async ngOnInit() {
-    await this.initializeHubConnection() 
+  async ngOnInit() {
+    await this.initializeHubConnection();
   }
 
   async initializeHubConnection() {
+    if (environment.isLocal) {
+      this.signalRService.createHubConnection();
+      return;
+    }
     while (!window?.Telegram?.WebApp?.initData) {
       await new Promise((resolve) => setTimeout(resolve, 100));
     }

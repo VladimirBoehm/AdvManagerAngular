@@ -20,4 +20,5 @@ export const environment = {
   apiUrl: determineApiUrl(),
   hubUrl: determineApiUrl() + 'hubs/',
   isProd: isProd(),
+  isLocal: window.location.href.includes('localhost:4200'),
 };
