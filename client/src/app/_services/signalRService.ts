@@ -56,5 +56,25 @@ export class SignalRService {
           });
       }
     );
+
+    this.hubConnection.on(
+      'AdvertisementRejected',
+      (advertisementId: number) => {
+        this.appStore.advertisementRejectedSignalR(advertisementId);
+
+        this.toastr
+          .warning(Localization.getWord('advertisement_rejected'))
+          .onTap.pipe(take(1))
+          .subscribe(() => {
+            var advertisement = this.appStore
+              .myAdvertisementsEntities()
+              .find((x) => x.id === advertisementId);
+            if (advertisement) {
+              this.appStore.setSelectedAdvertisement(advertisement);
+              this.router.navigateByUrl('/app-advertisement-preview');
+            }
+          });
+      }
+    );
   }
 }

@@ -1085,6 +1085,21 @@ export const AppStore = signalStore(
           this.setSelectedAdvertisement(updatedAdvertisement!);
         }
       },
+      advertisementRejectedSignalR(advertisementId: number, adminComment?: string) {
+        const updatedAdvertisement = appStore.myAdvertisementsEntities().find(
+          (ad) => ad.id === advertisementId
+        );
+        if (updatedAdvertisement) {
+          updatedAdvertisement.statusId = AdvertisementStatus.rejected;
+          this.updateAdvertisementInList(
+            AppListType.MyAdvertisements,
+            updatedAdvertisement
+          );
+        }
+        if (appStore.selectedAdvertisement()?.id === advertisementId) {
+          this.setSelectedAdvertisement(updatedAdvertisement!);
+        }
+      }
     })
   )
 );

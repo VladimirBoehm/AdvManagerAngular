@@ -7,6 +7,10 @@
     "ru": "Объявление подтверждено!",
     "en": "Advertisement validated!"
   },
+  "advertisement_rejected": {
+    "ru": "Объявление отклонено!",
+    "en": "Advertisement rejected!"
+  },
   "validate_subtitle": {
     "ru": "Объявления для валидации",
     "en": "Advertisements for validation"
@@ -210,10 +214,6 @@
   "placement_depends_on_activity": {
     "ru": "*Размещение объявлений зависит от активности в группе",
     "en": "*Advertisement placement depends on group activity"
-  },
-  "advertisement_rejected": {
-    "ru": "Объявление отклонено!",
-    "en": "Advertisement rejected!"
   },
   "sent_to_admin_for_confirmation": {
     "ru": "Отправлено администратору для подтверждения!",
