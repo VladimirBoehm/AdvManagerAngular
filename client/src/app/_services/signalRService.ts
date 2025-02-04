@@ -4,12 +4,15 @@ import { inject, Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { AppStore } from '../appStore/app.store';
 import { Localization } from '../_framework/component/helpers/localization';
+import { take } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 export class SignalRService {
   private hubConnection?: HubConnection;
   readonly appStore = inject(AppStore);
   private toastr = inject(ToastrService);
+  private router = inject(Router);
   Localization = Localization;
 
   async createHubConnection() {
@@ -39,15 +42,19 @@ export class SignalRService {
       (advertisementId: number) => {
         this.appStore.advertisementValidatedSignalR(advertisementId);
 
-        this.toastr.success(Localization.getWord('advertisement_validated'));
+        this.toastr
+          .success(Localization.getWord('advertisement_validated'))
+          .onTap.pipe(take(1))
+          .subscribe(() => {
+            var advertisement = this.appStore
+              .myAdvertisementsEntities()
+              .find((x) => x.id === advertisementId);
+            if (advertisement) {
+              this.appStore.setSelectedAdvertisement(advertisement);
+              this.router.navigateByUrl('/app-advertisement-preview');
+            }
+          });
       }
     );
   }
 }
-
-// this.hubConnection.on('NewMessageReceived', ({username, knownAs}) => {
-//   this.toastr.info(knownAs + ' has sent you a new message!  Click me to see it')
-//     .onTap
-//     .pipe(take(1))
-//     .subscribe(() => this.router.navigateByUrl('/members/' + username + '?tab=Messages'))
-// })

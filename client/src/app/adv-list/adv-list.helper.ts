@@ -16,7 +16,7 @@ export class AdvListHelper {
 
   onItemClick(advertisement: Advertisement): void {
     this.appStore.setSelectedAdvertisement(advertisement);
-    this.router.navigate(['/app-advertisement-preview']);
+    this.router.navigateByUrl('/app-advertisement-preview');
   }
 
   getUserDisplayName(advertisement: Advertisement): string {
@@ -48,6 +48,4 @@ export class AdvListHelper {
 
     return `${this.Localization.getWord('posted_label')} ${formattedDate}`;
   }
-
-  
 }
