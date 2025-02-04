@@ -12,9 +12,19 @@ export class SignalRService {
   private toastr = inject(ToastrService);
   Localization = Localization;
 
-  createHubConnection() {
+  async createHubConnection() {
+    if (!environment.isLocal) {
+      while (!window?.Telegram?.WebApp?.initData) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+    }
+    const params = new URLSearchParams();
+    params.append('initData', window?.Telegram?.WebApp?.initData);
+
     this.hubConnection = new HubConnectionBuilder()
-      .withUrl(environment.hubUrl + 'advertisementsHub')
+      .withUrl(
+        environment.hubUrl + 'advertisementsHub' + `?${params.toString()}`
+      )
       .withAutomaticReconnect()
       .build();
 

@@ -19,23 +19,13 @@ export class AppComponent implements OnInit {
   router = inject(Router);
   signalRService = inject(SignalRService);
   title = 'Chatbot';
-  constructor() {
+
+  async ngOnInit() {
     this.Localization.setLanguage(
       window.Telegram.WebApp.initDataUnsafe?.user?.language_code ?? 'en'
     );
-  }
-  async ngOnInit() {
-    await this.initializeHubConnection();
+    await this.signalRService.createHubConnection();
   }
 
-  async initializeHubConnection() {
-    if (environment.isLocal) {
-      this.signalRService.createHubConnection();
-      return;
-    }
-    while (!window?.Telegram?.WebApp?.initData) {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    }
-    this.signalRService.createHubConnection();
-  }
+
 }
