@@ -170,6 +170,7 @@ export class SignalRService {
     this.hubConnection.on(
       'AdvertisementForced',
       (advertisement: Advertisement) => {
+        console.log('AdvertisementForced1');
         this.placementNotificationHandler(advertisement, true);
       }
     );
@@ -204,6 +205,7 @@ export class SignalRService {
     let message;
     if (isForced) {
       message = Localization.getWord('advertisement_forced');
+      console.log('AdvertisementForced2');
     } else {
       message = Localization.getWord('advertisement_placed');
     }
