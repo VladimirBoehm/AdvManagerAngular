@@ -144,7 +144,7 @@
           <div
             *ngIf="
               !appStore.selectedAdvertisement()?.placeInQueue;
-              else imageListContent
+              else queuePosition
             "
           >
             {{ Localization.getWord("will_be_queued") }}
@@ -154,7 +154,7 @@
             }}
           </div>
         </div>
-        <ng-template #imageListContent>
+        <ng-template #queuePosition>
           <div class="d-flex flex-column">
             <div>
               {{ Localization.getWord("queue_position") }}

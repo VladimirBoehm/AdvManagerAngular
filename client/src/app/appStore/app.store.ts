@@ -66,6 +66,7 @@ type appState = {
   selectedListType: AppListType | undefined;
   isAdvertisementListLoading: boolean;
   areMyAdvertisementsLoaded: boolean;
+  listUpdatedViaSignalR: AppListType | undefined;
 };
 
 const pendingPublicationDefaultPaginationParams = getDefaultPaginationParams(
@@ -94,6 +95,7 @@ const initialState: appState = {
   arePendingValidationAdvertisementsLoaded: false,
   isAdvertisementListLoading: false,
   areMyAdvertisementsLoaded: false,
+  listUpdatedViaSignalR: undefined,
 };
 
 const chatFilterConfig = entityConfig({

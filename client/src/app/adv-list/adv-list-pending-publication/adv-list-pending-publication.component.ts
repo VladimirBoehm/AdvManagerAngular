@@ -1,4 +1,11 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  effect,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { SharedModule } from '../../_framework/modules/sharedModule';
 import { ListFilterComponent } from '../../_framework/component/adv-list-filter/list-filter.component';
 import { EmptyListPlaceholderComponent } from '../../_framework/component/empty-list-placeholder/empty-list-placeholder.component';
@@ -14,15 +21,12 @@ import { Advertisement } from '../../_models/advertisement';
 import { DatePipe } from '@angular/common';
 import { AdvListHelper } from '../adv-list.helper';
 import { AppListType } from '../../_framework/constants/advListType';
+import { patchState } from '@ngrx/signals';
 
 @Component({
   selector: 'app-adv-list-pending-publication',
   standalone: true,
-  imports: [
-    SharedModule,
-    EmptyListPlaceholderComponent,
-    ListFilterComponent,
-  ],
+  imports: [SharedModule, EmptyListPlaceholderComponent, ListFilterComponent],
   providers: [DatePipe],
   templateUrl: './adv-list-pending-publication.component.html',
   styleUrl: './adv-list-pending-publication.component.scss',
@@ -35,7 +39,18 @@ export class AdvListPendingPublicationComponent implements OnInit, OnDestroy {
   datePipe = inject(DatePipe);
   advListHelper = inject(AdvListHelper);
   Localization = Localization;
-  
+  shouldShowRefreshInfo = signal(false);
+
+  constructor() {
+    effect(() => {
+      if (
+        this.appStore.listUpdatedViaSignalR() === AppListType.PendingPublication
+      ) {
+        this.shouldShowRefreshInfo.set(true);
+      }
+    });
+  }
+
   async ngOnInit() {
     this.appStore.setSelectedAppListType(AppListType.PendingPublication);
     this.backButtonService.setBackButtonHandler(() => {
@@ -49,6 +64,14 @@ export class AdvListPendingPublicationComponent implements OnInit, OnDestroy {
       sortOption
     );
   }
+
+  refresh() {
+    this.shouldShowRefreshInfo.set(false);
+    patchState(this.appStore as any, {
+      listUpdatedViaSignalR: undefined,
+    });
+  }
+
   sortChanged($event: SortOption) {
     //reset page number
     this.initialize(0, $event);

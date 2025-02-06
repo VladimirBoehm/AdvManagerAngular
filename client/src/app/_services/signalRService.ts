@@ -207,6 +207,14 @@ export class SignalRService {
         );
       }
     );
+    this.hubConnection.on(
+      'UpdateClientList',
+      (listType: AppListType) => {
+        patchState(this.appStore as any, {
+          listUpdatedViaSignalR: listType,
+        });
+      }
+    );
   }
 
   //  ----------- Helpers -----------
