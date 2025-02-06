@@ -24,7 +24,7 @@
     "ru": "Объявление размещено преждевременно!",
     "en": "Advertisement placed prematurely!"
   },
-  "advertisement_rejected_by_admin": {
+  "cancel_publication_admin": {
     "ru": "Объявление снято с размещения администратором!",
     "en": "Advertisement removed from placement by administrator!"
   },

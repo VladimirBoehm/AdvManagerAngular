@@ -173,7 +173,7 @@ export class SignalRService {
       }
     );
     this.hubConnection.on(
-      'AdvertisementRejectedByAdmin',
+      'CancelPublicationAdmin',
       (advertisement: Advertisement) => {
         this.appStore.updateAdvertisementInList(
           AppListType.MyAdvertisements,
@@ -189,7 +189,7 @@ export class SignalRService {
         }
 
         this.toastr
-          .warning(Localization.getWord('advertisement_rejected_by_admin'))
+          .warning(Localization.getWord('cancel_publication_admin'))
           .onTap.pipe(take(1))
           .subscribe(() => {
             this.appStore.setSelectedAdvertisement(advertisement);
