@@ -159,7 +159,6 @@ export class SignalRService {
         }
       }
     );
-
     this.hubConnection.on(
       'AdvertisementPlaced',
       (advertisement: Advertisement) => {
@@ -170,8 +169,33 @@ export class SignalRService {
     this.hubConnection.on(
       'AdvertisementForced',
       (advertisement: Advertisement) => {
-        console.log('AdvertisementForced1');
         this.placementNotificationHandler(advertisement, true);
+      }
+    );
+    this.hubConnection.on(
+      'AdvertisementRejectedByAdmin',
+      (advertisement: Advertisement) => {
+        this.appStore.updateAdvertisementInList(
+          AppListType.MyAdvertisements,
+          advertisement
+        );
+        this.appStore.deleteAdvertisementFromList(
+          AppListType.PendingPublication,
+          advertisement.id
+        );
+    
+        if (this.appStore.selectedAdvertisement()?.id === advertisement.id) {
+          this.appStore.updateSelectedAdvertisement(advertisement);
+        }
+
+        this.toastr
+          .success(Localization.getWord('advertisement_rejected_by_admin'))
+          .onTap.pipe(take(1))
+          .subscribe(() => {
+            this.appStore.setSelectedAdvertisement(advertisement);
+            this.appStore.getMyAdvertisementsAsync();
+            this.router.navigateByUrl('/app-advertisement-preview');
+          });
       }
     );
   }
@@ -205,7 +229,6 @@ export class SignalRService {
     let message;
     if (isForced) {
       message = Localization.getWord('advertisement_forced');
-      console.log('AdvertisementForced2');
     } else {
       message = Localization.getWord('advertisement_placed');
     }

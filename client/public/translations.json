@@ -24,6 +24,10 @@
     "ru": "Объявление размещено преждевременно!",
     "en": "Advertisement placed prematurely!"
   },
+  "advertisement_rejected_by_admin": {
+    "ru": "Объявление снято с размещения администратором!",
+    "en": "Advertisement removed from placement by administrator!"
+  },
 
   "validate_subtitle": {
     "ru": "Объявления для валидации",
