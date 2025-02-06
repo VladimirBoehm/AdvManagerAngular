@@ -33,9 +33,7 @@
     </div>
 
     @if(shouldShowRefreshInfo()){
-    <div class="alert alert-info text-center mb-0" role="alert">
-      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-    </div>
+    <refresh-list-notification [refresh]="refresh"></refresh-list-notification>
     }
 
     <div class="list-container">

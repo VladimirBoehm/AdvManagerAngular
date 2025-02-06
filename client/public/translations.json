@@ -577,5 +577,13 @@
   "file_too_large": {
     "ru": "Файл слишком большой. Максимально допустимый размер - {size} МБ.",
     "en": "File is too large. Maximum size allowed is {size} MB."
-  }
+  },
+  "refresh": {
+    "ru": "Обновить",
+    "en": "Refresh"
+  },
+  "new_advertisements": {
+  "ru": "Появились новые объявления!",
+  "en": "New advertisements have appeared!"
+}
 }

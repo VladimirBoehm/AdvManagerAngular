@@ -22,11 +22,17 @@ import { DatePipe } from '@angular/common';
 import { AdvListHelper } from '../adv-list.helper';
 import { AppListType } from '../../_framework/constants/advListType';
 import { patchState } from '@ngrx/signals';
+import { RefreshListNotification } from '../refreshListNotification';
 
 @Component({
   selector: 'app-adv-list-pending-publication',
   standalone: true,
-  imports: [SharedModule, EmptyListPlaceholderComponent, ListFilterComponent],
+  imports: [
+    SharedModule,
+    EmptyListPlaceholderComponent,
+    ListFilterComponent,
+    RefreshListNotification,
+  ],
   providers: [DatePipe],
   templateUrl: './adv-list-pending-publication.component.html',
   styleUrl: './adv-list-pending-publication.component.scss',
@@ -42,13 +48,17 @@ export class AdvListPendingPublicationComponent implements OnInit, OnDestroy {
   shouldShowRefreshInfo = signal(false);
 
   constructor() {
-    effect(() => {
-      if (
-        this.appStore.listUpdatedViaSignalR() === AppListType.PendingPublication
-      ) {
-        this.shouldShowRefreshInfo.set(true);
-      }
-    });
+    effect(
+      () => {
+        if (
+          this.appStore.listUpdatedViaSignalR() ===
+          AppListType.PendingPublication
+        ) {
+          this.shouldShowRefreshInfo.set(true);
+        }
+      },
+      { allowSignalWrites: true }
+    );
   }
 
   async ngOnInit() {
@@ -65,12 +75,14 @@ export class AdvListPendingPublicationComponent implements OnInit, OnDestroy {
     );
   }
 
-  refresh() {
+  refresh = () => {
     this.shouldShowRefreshInfo.set(false);
     patchState(this.appStore as any, {
       listUpdatedViaSignalR: undefined,
     });
-  }
+    this.appStore.clearCacheInfo(AppListType.PendingPublication);
+    this.initialize();
+  };
 
   sortChanged($event: SortOption) {
     //reset page number
