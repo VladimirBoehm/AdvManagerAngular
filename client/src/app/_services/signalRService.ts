@@ -198,7 +198,18 @@ export class SignalRService {
           });
       }
     );
+    this.hubConnection.on(
+      'CancelPublicationUser',
+      (advertisement: Advertisement) => {
+        this.appStore.deleteAdvertisementFromList(
+          AppListType.PendingPublication,
+          advertisement.id
+        );
+      }
+    );
   }
+
+  //  ----------- Helpers -----------
 
   placementNotificationHandler = (
     advertisement: Advertisement,
