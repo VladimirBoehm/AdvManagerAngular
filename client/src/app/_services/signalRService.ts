@@ -183,13 +183,13 @@ export class SignalRService {
           AppListType.PendingPublication,
           advertisement.id
         );
-    
+
         if (this.appStore.selectedAdvertisement()?.id === advertisement.id) {
           this.appStore.updateSelectedAdvertisement(advertisement);
         }
 
         this.toastr
-          .success(Localization.getWord('advertisement_rejected_by_admin'))
+          .warning(Localization.getWord('advertisement_rejected_by_admin'))
           .onTap.pipe(take(1))
           .subscribe(() => {
             this.appStore.setSelectedAdvertisement(advertisement);
