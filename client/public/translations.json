@@ -11,6 +11,20 @@
     "ru": "Объявление отклонено!",
     "en": "Advertisement rejected!"
   },
+  "validation_request": {
+    "ru": "Новый запрос на валидацию!",
+    "en": "New validation request!"
+  },
+  "advertisement_placed": {
+    "ru": "Объявление размещено!",
+    "en": "Advertisement placed!"
+  },
+
+  "advertisement_forced": {
+    "ru": "Объявление размещено преждевременно!",
+    "en": "Advertisement placed prematurely!"
+  },
+
   "validate_subtitle": {
     "ru": "Объявления для валидации",
     "en": "Advertisements for validation"

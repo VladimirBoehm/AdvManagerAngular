@@ -19,7 +19,6 @@ import { AppListType } from '../../_framework/constants/advListType';
   imports: [
     SharedModule,
     EmptyListPlaceholderComponent,
-    SkeletonFullScreenComponent,
     ListFilterComponent,
   ],
   templateUrl: './adv-list-all-history.component.html',

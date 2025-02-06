@@ -21,7 +21,6 @@ import { AppListType } from '../../_framework/constants/advListType';
   imports: [
     SharedModule,
     EmptyListPlaceholderComponent,
-    SkeletonFullScreenComponent,
     ListFilterComponent,
   ],
   providers: [DatePipe],

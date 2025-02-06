@@ -18,7 +18,6 @@ import { AppListType } from '../../_framework/constants/advListType';
   imports: [
     SharedModule,
     EmptyListPlaceholderComponent,
-    SkeletonFullScreenComponent,
   ],
   templateUrl: './adv-list-my-advertisements.component.html',
   styleUrl: './adv-list-my-advertisements.component.scss',

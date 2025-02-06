@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Advertisement } from '../_models/advertisement';
 import { AppStore } from '../appStore/app.store';

@@ -18,6 +18,7 @@ import {
   entityConfig,
   removeEntity,
   withEntities,
+  removeAllEntities,
 } from '@ngrx/signals/entities';
 import { withHooks } from '@ngrx/signals';
 import { ChatFilter } from '../_models/chatFilter';
@@ -42,7 +43,7 @@ import { DateHelper } from '../_framework/component/helpers/dateHelper';
 import cloneDeep from 'lodash-es/cloneDeep';
 import { ManagePublish } from '../_entities/managePublish';
 
-const defaultPageSize = 6;
+export const defaultPageSize = 6;
 const chatFilterPageSize = 999;
 
 type appState = {
@@ -115,7 +116,7 @@ const pendingPublicationConfig = entityConfig({
   entity: type<Advertisement>(),
   collection: 'pendingPublicationAdvertisements',
 });
-const pendingValidationConfig = entityConfig({
+export const pendingValidationConfig = entityConfig({
   entity: type<Advertisement>(),
   collection: 'pendingValidationAdvertisements',
 });
@@ -131,10 +132,7 @@ export const AppStore = signalStore(
   withEntities(pendingValidationConfig),
   withLogger('appState'),
   withHooks({
-    async onInit(
-      appStore,
-      accountService = inject(AccountService),
-    ) {
+    async onInit(appStore, accountService = inject(AccountService)) {
       const user = await lastValueFrom(accountService.login());
       localStorage.setItem('user', JSON.stringify(user));
       patchState(appStore, { user });
@@ -670,7 +668,7 @@ export const AppStore = signalStore(
           patchState(appStore, {
             pendingValidationCount: pendingCounter,
           });
-          //TODO SignalR refactoring
+
           if (
             pendingCounter !== appStore._pendingValidationCountCache() &&
             pendingCounter !==
@@ -892,16 +890,36 @@ export const AppStore = signalStore(
       clearCacheInfo(appListType: AppListType) {
         switch (appListType) {
           case AppListType.AllHistory:
+            patchState(appStore, {
+              allHistoryPaginationParams:
+                getDefaultPaginationParams(defaultPageSize),
+            });
             patchState(appStore, { allHistoryCacheInfo: new Map() });
+            patchState(appStore, removeAllEntities(allHistoryConfig));
             break;
           case AppListType.PrivateHistory:
+            patchState(appStore, {
+              privateHistoryPaginationParams:
+                getDefaultPaginationParams(defaultPageSize),
+            });
             patchState(appStore, { privateHistoryCacheInfo: new Map() });
+            patchState(appStore, removeAllEntities(privateHistoryConfig));
             break;
           case AppListType.PendingPublication:
+            patchState(appStore, {
+              pendingPublicationPaginationParams:
+                getDefaultPaginationParams(defaultPageSize),
+            });
             patchState(appStore, { pendingPublicationCacheInfo: new Map() });
+            patchState(appStore, removeAllEntities(pendingPublicationConfig));
             break;
           case AppListType.PendingValidation:
+            patchState(appStore, {
+              pendingValidationPaginationParams:
+                getDefaultPaginationParams(defaultPageSize),
+            });
             patchState(appStore, { pendingValidationCacheInfo: new Map() });
+            patchState(appStore, removeAllEntities(pendingValidationConfig));
             break;
         }
         console.log(`>>> AppStore: CacheInfo cleared for ${appListType}`);
@@ -1067,39 +1085,6 @@ export const AppStore = signalStore(
           appStore.selectedAdvertisement()?.id!
         );
       },
-      // ------- SIGNALR -------
-      advertisementValidatedSignalR(
-        advertisementId: number,
-      ) {
-        const updatedAdvertisement = appStore.myAdvertisementsEntities().find(
-          (ad) => ad.id === advertisementId
-        );
-        if (updatedAdvertisement) {
-          updatedAdvertisement.statusId = AdvertisementStatus.validated;
-          this.updateAdvertisementInList(
-            AppListType.MyAdvertisements,
-            updatedAdvertisement
-          );
-        }
-        if (appStore.selectedAdvertisement()?.id === advertisementId) {
-          this.setSelectedAdvertisement(updatedAdvertisement!);
-        }
-      },
-      advertisementRejectedSignalR(advertisementId: number, adminComment?: string) {
-        const updatedAdvertisement = appStore.myAdvertisementsEntities().find(
-          (ad) => ad.id === advertisementId
-        );
-        if (updatedAdvertisement) {
-          updatedAdvertisement.statusId = AdvertisementStatus.rejected;
-          this.updateAdvertisementInList(
-            AppListType.MyAdvertisements,
-            updatedAdvertisement
-          );
-        }
-        if (appStore.selectedAdvertisement()?.id === advertisementId) {
-          this.setSelectedAdvertisement(updatedAdvertisement!);
-        }
-      }
     })
   )
 );
