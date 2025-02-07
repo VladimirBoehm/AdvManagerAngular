@@ -14,7 +14,7 @@ import { Localization } from '../_framework/component/helpers/localization';
 import { AppStore } from '../appStore/app.store';
 import { Subscription } from 'rxjs';
 import { AddChatFilterDialog } from './dialogs/add-chat-filter.dialog';
-import { AppStoreChatFilter } from '../appStore/app.store.chat-filter';
+
 
 @Component({
   selector: 'app-chat-filter',
@@ -36,7 +36,6 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
   private backButtonService = inject(TelegramBackButtonService);
   private router = inject(Router);
   readonly appStore = inject(AppStore);
-  readonly appStoreChatFilter = inject(AppStoreChatFilter);
 
   private routerSubscription!: Subscription;
   busyService = inject(BusyService);
@@ -49,7 +48,7 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
   Localization = Localization;
 
   ngOnInit(): void {
-    this.appStoreChatFilter.getChatFiltersAsync();
+    this.appStore.getChatFiltersAsync();
     this.backButtonService.setCloseDialogHandler(() => this.closeDialog());
     this.backButtonService.setBackButtonHandler(() => {
       this.router.navigate(['']);

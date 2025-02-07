@@ -686,6 +686,21 @@ export const AppStore = signalStore(
           );
         }
       },
+      async getChatFiltersAsync() {
+        if (appStore.areChatFiltersLoaded() === false) {
+          const chatFilters = await lastValueFrom(chatFilterService.getAll());
+          const chatFiltersWithDates = chatFilters.map((cf) => ({
+            ...cf,
+            created: new Date(cf.created),
+          }));
+          patchState(
+            appStore as any,
+            addEntities(chatFiltersWithDates, chatFilterConfig)
+          );
+          patchState(appStore as any, { areChatFiltersLoaded: true });
+          console.log('>>> AppStore: chatFilters loaded');
+        }
+      },
       // ------- updateChatFilterPaginationParamsAsync -------
       async updateChatFilterPaginationParamsAsync(params: PaginationParams) {
         patchState(appStore, { chatFilterPaginationParams: params });
