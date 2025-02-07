@@ -2,10 +2,8 @@
   <form [formGroup]="sortForm" (ngSubmit)="save()">
     <div class="d-flex align-items-end mb-2 search-container">
       <div class="d-flex">
-        <mat-form-field
-          *ngIf="sortForm.get('selectedSearchType')?.value === 'date'"
-          class="scaled-form-field"
-        >
+        @if(sortForm.get('selectedSearchType')?.value === 'date') {
+        <mat-form-field class="scaled-form-field">
           <mat-label>{{ Localization.getWord("range") }}</mat-label>
           <mat-date-range-input
             [rangePicker]="picker"
@@ -20,8 +18,8 @@
           ></mat-datepicker-toggle>
           <mat-date-range-picker #picker></mat-date-range-picker>
         </mat-form-field>
-
-        <div *ngIf="sortForm.get('selectedSearchType')?.value !== 'date'">
+        } @if(sortForm.get('selectedSearchType')?.value !== 'date') {
+        <div>
           <input
             type="text"
             class="form-control searchInput"
@@ -29,10 +27,8 @@
             aria-label="Text input with dropdown button"
             formControlName="searchValue"
           />
-          <div
-            *ngIf="sortForm.controls['searchValue'].errors"
-            class="text-danger my-info-text"
-          >
+          @if(sortForm.controls['searchValue'].errors) {
+          <div class="text-danger my-info-text">
             {{
               Localization.getFormattedWord("maximum_characters", {
                 maxLength:
@@ -41,22 +37,23 @@
               })
             }}
           </div>
+          }
         </div>
+        }
       </div>
       <select class="form-select ms-1" formControlName="selectedSearchType">
         <option value="date">{{ Localization.getWord("by_date") }}</option>
         <option value="title">{{ Localization.getWord("by_title") }}</option>
-        <option *ngIf="data.isExtended" value="content">
+        @if(data.isExtended) {
+        <option value="content">
           {{ Localization.getWord("by_content") }}
         </option>
-        <option *ngIf="data.isExtended" value="username">
+        <option value="username">
           {{ Localization.getWord("by_username") }}
         </option>
-        <option *ngIf="data.isExtended" value="name">
-          {{ Localization.getWord("by_name") }}
-        </option>
+        <option value="name">{{ Localization.getWord("by_name") }}</option>
+        }
       </select>
-
     </div>
 
     <h6 class="text-muted">{{ Localization.getWord("sort") }}</h6>
@@ -64,9 +61,9 @@
       <mat-radio-group formControlName="selectedSortType">
         <mat-radio-button value="date" class="d-block">
           <div class="d-flex align-items-center">
-            <span class="input-group-text me-1 sortName">{{
-              Localization.getWord("sort_by_date")
-            }}</span>
+            <span class="input-group-text me-1 sortName">
+              {{ Localization.getWord("sort_by_date") }}
+            </span>
             <select class="form-select" formControlName="selectedSortDate">
               <option value="asc">
                 {{ Localization.getWord("ascending") }}
@@ -79,9 +76,9 @@
         </mat-radio-button>
         <mat-radio-button value="title" class="mt-1 d-block">
           <div class="d-flex align-items-center">
-            <span class="input-group-text me-1 sortName">{{
-              Localization.getWord("sort_by_title")
-            }}</span>
+            <span class="input-group-text me-1 sortName">
+              {{ Localization.getWord("sort_by_title") }}
+            </span>
             <select class="form-select" formControlName="selectedSortTitle">
               <option value="asc">
                 {{ Localization.getWord("ascending") }}
@@ -92,15 +89,12 @@
             </select>
           </div>
         </mat-radio-button>
-        <mat-radio-button
-          *ngIf="data.isExtended"
-          value="username"
-          class="mt-1 d-block"
-        >
+        @if(data.isExtended) {
+        <mat-radio-button value="username" class="mt-1 d-block">
           <div class="d-flex align-items-center">
-            <span class="input-group-text me-1 sortName">{{
-              Localization.getWord("sort_by_username")
-            }}</span>
+            <span class="input-group-text me-1 sortName">
+              {{ Localization.getWord("sort_by_username") }}
+            </span>
             <select class="form-select" formControlName="selectedSortUsername">
               <option value="asc">
                 {{ Localization.getWord("ascending") }}
@@ -111,15 +105,11 @@
             </select>
           </div>
         </mat-radio-button>
-        <mat-radio-button
-          *ngIf="data.isExtended"
-          value="name"
-          class="mt-1 d-block"
-        >
+        <mat-radio-button value="name" class="mt-1 d-block">
           <div class="d-flex align-items-center">
-            <span class="input-group-text me-1 sortName">{{
-              Localization.getWord("sort_by_name")
-            }}</span>
+            <span class="input-group-text me-1 sortName">
+              {{ Localization.getWord("sort_by_name") }}
+            </span>
             <select class="form-select" formControlName="selectedSortName">
               <option value="asc">
                 {{ Localization.getWord("ascending") }}
@@ -130,6 +120,7 @@
             </select>
           </div>
         </mat-radio-button>
+        }
       </mat-radio-group>
     </section>
     <hr />

@@ -157,6 +157,7 @@ export class AdvertisementEditComponent implements OnInit {
         return;
       }
 
+      console.log('>>> file input', input.files[0]);
       this.appStore.updateSelectedAdvertisement({
         adImage: {
           id: 0,

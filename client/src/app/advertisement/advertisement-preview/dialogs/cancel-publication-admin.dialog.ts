@@ -25,9 +25,11 @@ import { SharedModule } from '../../../_framework/modules/sharedModule';
           {{ Localization.getWord('block_advertisement_question') }}
         </label>
       </div>
-      <div *ngIf="shouldRejectValidation" class="text-muted my-info-text">
+      @if(shouldRejectValidation) {
+      <div class="text-muted my-info-text">
         {{ Localization.getWord('validation_will_be_revoked') }}
       </div>
+      }
       <mat-form-field class="mt-3 w-100">
         <mat-label>{{ Localization.getWord('comment_short') }}</mat-label>
         <textarea
@@ -43,9 +45,7 @@ import { SharedModule } from '../../../_framework/modules/sharedModule';
       <div class="d-flex justify-content-end">
         <button
           class="btn empty-button me-4"
-          (click)="
-            confirm()(shouldRejectValidation, adminComment)
-          "
+          (click)="confirm()(shouldRejectValidation, adminComment)"
           [disabled]="busyService.isLoading()"
         >
           <div>{{ Localization.getWord('yes') }}</div>
@@ -60,13 +60,11 @@ import { SharedModule } from '../../../_framework/modules/sharedModule';
       </div>
     </div>
 
+    @if(busyService.isLoading()) {
     <div class="d-flex justify-content-center">
-      <mat-progress-bar
-        *ngIf="busyService.isLoading()"
-        mode="buffer"
-        style="width: 90%"
-      ></mat-progress-bar>
+      <mat-progress-bar mode="buffer" style="width: 90%"></mat-progress-bar>
     </div>
+    }
   `,
   imports: [SharedModule],
   standalone: true,

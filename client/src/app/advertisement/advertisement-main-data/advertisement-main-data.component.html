@@ -8,10 +8,8 @@
         {{ appStore.selectedAdvertisement()?.message }}
       </p>
     </div>
-    <div
-      *ngIf="appStore.selectedAdvertisement()?.adImage?.url"
-      class="image-container col-4"
-    >
+    @if(appStore.selectedAdvertisement()?.adImage?.url) {
+    <div class="image-container col-4">
       <img
         [src]="appStore.selectedAdvertisement()?.adImage?.url"
         (click)="showImage()"
@@ -19,10 +17,8 @@
         class="preview-image rounded"
       />
     </div>
-    <div
-      *ngIf="appStore.selectedAdvertisement()?.linkName"
-      class="background-rectangle-panel-common mt-2 p-2"
-    >
+    } @if(appStore.selectedAdvertisement()?.linkName) {
+    <div class="background-rectangle-panel-common mt-2 p-2">
       <div class="d-flex flex-column">
         <div class="d-flex">
           <div>{{ Localization.getWord("button_label") }}</div>
@@ -38,6 +34,7 @@
         </div>
       </div>
     </div>
+    }
 
     <ng-template #imageShowTemplate>
       <app-image-preview-modal

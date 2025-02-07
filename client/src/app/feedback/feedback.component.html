@@ -1,7 +1,7 @@
 <body class="p-1">
   <div class="container-fluid">
+    @if(!isSend) {
     <form
-      *ngIf="!isSend"
       id="editForm"
       [formGroup]="editForm"
       (ngSubmit)="onSendClick()"
@@ -42,19 +42,18 @@
             )
           }}</mat-error>
           <mat-hint [align]="'end'">
-            {{ feedbackCounter }}/{{ maxFeedbackLength }}</mat-hint
-          >
+            {{ feedbackCounter }}/{{ maxFeedbackLength }}
+          </mat-hint>
         </mat-form-field>
       </div>
     </form>
-
-    <ng-template [ngIf]="isSend">
-      <div class="alert alert-success" role="alert">
-        <div class="d-flex w-100 justify-content-center text-muted">
-          <span class="material-symbols-outlined text-muted"> done_all </span>
-          {{ Localization.getWord("sent") }}
-        </div>
+    } @else {
+    <div class="alert alert-success" role="alert">
+      <div class="d-flex w-100 justify-content-center text-muted">
+        <span class="material-symbols-outlined text-muted"> done_all </span>
+        {{ Localization.getWord("sent") }}
       </div>
-    </ng-template>
+    </div>
+    }
   </div>
 </body>

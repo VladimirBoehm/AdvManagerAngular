@@ -9,7 +9,6 @@ import { Router } from '@angular/router';
 import { Advertisement } from '../_models/advertisement';
 import { patchState } from '@ngrx/signals';
 import { AppListType } from '../_framework/constants/advListType';
-import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
 
 @Injectable({ providedIn: 'root' })
 export class SignalRService {
@@ -97,6 +96,15 @@ export class SignalRService {
           .info(Localization.getWord('validation_request'))
           .onTap.pipe(take(1))
           .subscribe(() => {
+            patchState(this.appStore as any, {
+              listsToRefresh: this.appStore
+                .listsToRefresh()
+                ?.filter(
+                  (listType: AppListType) =>
+                    listType !== AppListType.PendingValidation
+                ),
+            });
+            this.appStore.clearCacheInfo(AppListType.PendingValidation);
             this.appStore.getPendingValidationAdvertisementsAsync();
             this.appStore.setSelectedAdvertisement(advertisement);
             this.router.navigateByUrl('/app-advertisement-validate');

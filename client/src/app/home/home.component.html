@@ -1,6 +1,7 @@
 <body id="page-container">
   <div class="container-fluid">
-    <div *ngIf="appStore.user()?.isAdmin" class="button-container mb-1">
+    @if(appStore.user()?.isAdmin) {
+    <div class="button-container mb-1">
       <a
         [routerLink]="['/app-adv-list-pending-validation']"
         style="text-decoration: none; color: inherit"
@@ -13,7 +14,6 @@
               >
                 verified
               </span>
-
               <div class="very-dark-brown flex-grow-1">
                 <h6>{{ Localization.getWord("validate_title") }}</h6>
                 <p class="mb-2">
@@ -41,8 +41,8 @@
         </mat-card>
       </a>
     </div>
-
-    <div *ngIf="appStore.user()?.isAdmin" class="button-container mb-1">
+    } @if(appStore.user()?.isAdmin) {
+    <div class="button-container mb-1">
       <a
         [routerLink]="['/app-chat-filter']"
         style="text-decoration: none; color: inherit"
@@ -61,7 +61,6 @@
                   {{ Localization.getWord("chat_filter_subtitle") }}
                 </p>
               </div>
-
               <span class="material-symbols-outlined text-muted">
                 chevron_right
               </span>
@@ -70,6 +69,7 @@
         </mat-card>
       </a>
     </div>
+    }
 
     <div class="button-container mb-1">
       <a
@@ -90,7 +90,6 @@
                   {{ Localization.getWord("my_ads_subtitle") }}
                 </p>
               </div>
-
               <span class="material-symbols-outlined text-muted">
                 chevron_right
               </span>
@@ -119,7 +118,6 @@
                   {{ Localization.getWord("publishing_subtitle") }}
                 </p>
               </div>
-
               <span class="material-symbols-outlined text-muted">
                 chevron_right
               </span>
@@ -148,7 +146,6 @@
                   {{ Localization.getWord("history_subtitle") }}
                 </p>
               </div>
-
               <span class="material-symbols-outlined text-muted">
                 chevron_right
               </span>
@@ -177,7 +174,6 @@
                   {{ Localization.getWord("feedback_subtitle") }}
                 </p>
               </div>
-
               <span class="material-symbols-outlined text-muted">
                 chevron_right
               </span>
@@ -188,11 +184,9 @@
     </div>
   </div>
   <div style="color: aliceblue"></div>
-
   <div id="impressumInfo" [ngClass]="{ isOpen: isImpressumInfoShown() }">
     <app-impressum [close]="impressumClose"></app-impressum>
   </div>
-
   <div class="footer-hr"></div>
   <footer class="d-flex flex-column">
     <div class="d-flex justify-content-around">
