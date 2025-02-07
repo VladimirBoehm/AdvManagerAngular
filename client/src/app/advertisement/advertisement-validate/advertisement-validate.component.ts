@@ -97,7 +97,7 @@ export class AdvertisementValidateComponent implements OnInit {
     this.modalRef?.hide();
   };
   back() {
-    this.router.navigate(['/app-adv-list-pending-validation']);
+    this.router.navigateByUrl('/app-adv-list-pending-validation');
   }
 
   reject() {

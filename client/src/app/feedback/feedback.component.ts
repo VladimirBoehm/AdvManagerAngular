@@ -41,7 +41,7 @@ export class FeedbackComponent implements OnInit {
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
-      this.router.navigate(['']);
+      this.router.navigateByUrl('');
     });
 
     this.initializeForm();

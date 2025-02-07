@@ -66,7 +66,7 @@ export class AdvertisementEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
-      this.router.navigate(['app-adv-list-my-advertisements']);
+      this.router.navigateByUrl('app-adv-list-my-advertisements');
     });
 
     this.initializeForm();
@@ -124,12 +124,12 @@ export class AdvertisementEditComponent implements OnInit {
       await this.appStore.createAdvertisementAsync(
         this.appStore.selectedAdvertisement()!
       );
-      this.router.navigate(['app-advertisement-preview']);
+      this.router.navigateByUrl('app-advertisement-preview');
     } else {
       await this.appStore.updateAdvertisementAsync(
         this.appStore.selectedAdvertisement()!
       );
-      this.router.navigate(['app-advertisement-preview']);
+      this.router.navigateByUrl('app-advertisement-preview');
     }
   }
 

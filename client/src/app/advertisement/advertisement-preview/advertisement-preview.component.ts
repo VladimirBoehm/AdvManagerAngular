@@ -70,7 +70,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   }
 
   edit() {
-    this.router.navigate(['/app-advertisement-edit']);
+    this.router.navigateByUrl('/app-advertisement-edit');
   }
 
   delete() {
@@ -217,22 +217,22 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   back() {
     switch (this.appStore.selectedListType()) {
       case AppListType.MyAdvertisements:
-        this.router.navigate(['/app-adv-list-my-advertisements']);
+        this.router.navigateByUrl('/app-adv-list-my-advertisements');
         break;
       case AppListType.PendingPublication:
-        this.router.navigate(['/app-adv-list-pending-publication']);
+        this.router.navigateByUrl('/app-adv-list-pending-publication');
         break;
       case AppListType.PendingValidation:
-        this.router.navigate(['/app-adv-list-pending-validation']);
+        this.router.navigateByUrl('/app-adv-list-pending-validation');
         break;
       case AppListType.AllHistory:
-        this.router.navigate(['/app-adv-list-all-history']);
+        this.router.navigateByUrl('/app-adv-list-all-history');
         break;
       case AppListType.PrivateHistory:
-        this.router.navigate(['/app-adv-list-private-history']);
+        this.router.navigateByUrl('/app-adv-list-private-history');
         break;
       default:
-        this.router.navigate(['']);
+        this.router.navigateByUrl('');
         break;
     }
   }

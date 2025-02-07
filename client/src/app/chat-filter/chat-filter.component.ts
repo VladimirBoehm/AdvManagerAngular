@@ -51,7 +51,7 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
     this.appStore.getChatFiltersAsync();
     this.backButtonService.setCloseDialogHandler(() => this.closeDialog());
     this.backButtonService.setBackButtonHandler(() => {
-      this.router.navigate(['']);
+      this.router.navigateByUrl('');
     });
   }
 

@@ -34,7 +34,7 @@ export class AdvListMyAdvertisementsComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.appStore.setSelectedAppListType(AppListType.MyAdvertisements);
     this.backButtonService.setBackButtonHandler(() => {
-      this.router.navigate(['']);
+      this.router.navigateByUrl('');
     });
     await this.appStore.getMyAdvertisementsAsync();
   }
@@ -63,7 +63,7 @@ export class AdvListMyAdvertisementsComponent implements OnInit, OnDestroy {
   }
 
   openPrivateHistory() {
-    this.router.navigate(['app-adv-list-private-history']);
+    this.router.navigateByUrl('app-adv-list-private-history');
   }
 
   create() {
@@ -76,7 +76,7 @@ export class AdvListMyAdvertisementsComponent implements OnInit, OnDestroy {
       adImage: undefined,
     };
     this.appStore.setSelectedAdvertisement(advertisement);
-    this.router.navigate(['/app-advertisement-edit']);
+    this.router.navigateByUrl('/app-advertisement-edit');
   }
 
   getCreationDate(advertisement: Advertisement): string {

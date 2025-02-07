@@ -67,7 +67,7 @@ export class AdvListPendingPublicationComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.appStore.setSelectedAppListType(AppListType.PendingPublication);
     this.backButtonService.setBackButtonHandler(() => {
-      this.router.navigate(['']);
+      this.router.navigateByUrl('');
     });
     this.initialize();
   }

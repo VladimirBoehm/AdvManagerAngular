@@ -95,7 +95,7 @@ export class AdvListPendingValidationComponent implements OnInit, OnDestroy {
 
   onItemClickValidate(advertisement: Advertisement) {
     this.appStore.setSelectedAdvertisement(advertisement);
-    this.router.navigate(['/app-advertisement-validate']);
+    this.router.navigateByUrl('/app-advertisement-validate');
   }
 
   handlePageEvent(e: PageEvent) {

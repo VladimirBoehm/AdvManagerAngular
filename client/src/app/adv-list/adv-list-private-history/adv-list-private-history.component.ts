@@ -65,7 +65,7 @@ export class AdvListPrivateHistoryComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.appStore.setSelectedAppListType(AppListType.PrivateHistory);
     this.backButtonService.setBackButtonHandler(() => {
-      this.router.navigate(['/app-adv-list-my-advertisements']);
+      this.router.navigateByUrl('/app-adv-list-my-advertisements');
     });
     this.initialize();
   }

@@ -60,7 +60,7 @@ export class AdvListAllHistoryComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.appStore.setSelectedAppListType(AppListType.AllHistory);
     this.backButtonService.setBackButtonHandler(() => {
-      this.router.navigate(['']);
+      this.router.navigateByUrl('');
     });
     this.initialize();
   }
