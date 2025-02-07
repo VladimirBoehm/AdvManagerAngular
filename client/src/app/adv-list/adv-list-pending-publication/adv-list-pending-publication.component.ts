@@ -11,7 +11,6 @@ import { ListFilterComponent } from '../../_framework/component/adv-list-filter/
 import { EmptyListPlaceholderComponent } from '../../_framework/component/empty-list-placeholder/empty-list-placeholder.component';
 import { Localization } from '../../_framework/component/helpers/localization';
 import { Router } from '@angular/router';
-import { BusyService } from '../../_services/busy.service';
 import { TelegramBackButtonService } from '../../_services/telegramBackButton.service';
 import { AppStore } from '../../appStore/app.store';
 import { SortOption } from '../../_entities/sortOption';
@@ -40,11 +39,11 @@ export class AdvListPendingPublicationComponent implements OnInit, OnDestroy {
   private backButtonService = inject(TelegramBackButtonService);
   readonly appStore = inject(AppStore);
   private router = inject(Router);
-  busyService = inject(BusyService);
   datePipe = inject(DatePipe);
   advListHelper = inject(AdvListHelper);
   Localization = Localization;
   shouldShowRefreshInfo = signal(false);
+  isLoading = signal(false);
 
   constructor() {
     if (this.appStore.pendingPublicationCacheInfo().size === 0) {
@@ -72,10 +71,12 @@ export class AdvListPendingPublicationComponent implements OnInit, OnDestroy {
     this.initialize();
   }
   private async initialize(pageNumber?: number, sortOption?: SortOption) {
+    this.isLoading.set(true);
     await this.appStore.getPendingPublicationAdvertisementsAsync(
       pageNumber,
       sortOption
     );
+    this.isLoading.set(false);
   }
 
   refresh = () => {

@@ -12,9 +12,7 @@ import { SortOption } from '../../_entities/sortOption';
 import { ListFilterComponent } from '../../_framework/component/adv-list-filter/list-filter.component';
 import { EmptyListPlaceholderComponent } from '../../_framework/component/empty-list-placeholder/empty-list-placeholder.component';
 import { Localization } from '../../_framework/component/helpers/localization';
-import { SkeletonFullScreenComponent } from '../../_framework/component/skeleton-full-screen/skeleton-full-screen.component';
 import { SharedModule } from '../../_framework/modules/sharedModule';
-import { BusyService } from '../../_services/busy.service';
 import { TelegramBackButtonService } from '../../_services/telegramBackButton.service';
 import { AppStore } from '../../appStore/app.store';
 import { AdvListHelper } from '../adv-list.helper';
@@ -38,10 +36,10 @@ export class AdvListAllHistoryComponent implements OnInit, OnDestroy {
   private backButtonService = inject(TelegramBackButtonService);
   readonly appStore = inject(AppStore);
   private router = inject(Router);
-  busyService = inject(BusyService);
   advListHelper = inject(AdvListHelper);
   Localization = Localization;
   shouldShowRefreshInfo = signal(false);
+  isLoading = signal(false);
 
   constructor() {
     if (this.appStore.allHistoryCacheInfo().size === 0) {
@@ -66,7 +64,9 @@ export class AdvListAllHistoryComponent implements OnInit, OnDestroy {
   }
 
   private async initialize(pageNumber?: number, sortOption?: SortOption) {
+    this.isLoading.set(true);
     await this.appStore.getAdvertisementAllHistoryAsync(pageNumber, sortOption);
+    this.isLoading.set(false);
   }
 
   refresh = () => {

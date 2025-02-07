@@ -12,7 +12,6 @@ import { EmptyListPlaceholderComponent } from '../../_framework/component/empty-
 import { DateHelper } from '../../_framework/component/helpers/dateHelper';
 import { Localization } from '../../_framework/component/helpers/localization';
 import { SharedModule } from '../../_framework/modules/sharedModule';
-import { BusyService } from '../../_services/busy.service';
 import { TelegramBackButtonService } from '../../_services/telegramBackButton.service';
 import { AppStore } from '../../appStore/app.store';
 import { SortOption } from '../../_entities/sortOption';
@@ -40,11 +39,11 @@ export class AdvListPrivateHistoryComponent implements OnInit, OnDestroy {
   private backButtonService = inject(TelegramBackButtonService);
   readonly appStore = inject(AppStore);
   private router = inject(Router);
-  busyService = inject(BusyService);
   advListHelper = inject(AdvListHelper);
   Localization = Localization;
   dateHelper = DateHelper;
   shouldShowRefreshInfo = signal(false);
+  isLoading = signal(false);
 
   constructor() {
     if (this.appStore.privateHistoryCacheInfo().size === 0) {
@@ -71,10 +70,12 @@ export class AdvListPrivateHistoryComponent implements OnInit, OnDestroy {
   }
 
   private async initialize(pageNumber?: number, sortOption?: SortOption) {
+    this.isLoading.set(true);
     await this.appStore.getAdvertisementPrivateHistoryAsync(
       pageNumber,
       sortOption
     );
+    this.isLoading.set(false);
   }
 
   refresh = () => {
@@ -93,7 +94,7 @@ export class AdvListPrivateHistoryComponent implements OnInit, OnDestroy {
         ),
     });
   }
-  
+
   sortChanged($event: SortOption) {
     //reset page number
     this.initialize(0, $event);

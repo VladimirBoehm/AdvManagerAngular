@@ -64,7 +64,7 @@ type appState = {
   _pendingValidationCountCache: number;
   arePendingValidationAdvertisementsLoaded: boolean;
   selectedListType: AppListType | undefined;
-  isAdvertisementListLoading: boolean;
+
   areMyAdvertisementsLoaded: boolean;
   listsToRefresh: AppListType[];
 };
@@ -93,7 +93,6 @@ const initialState: appState = {
   myAdvertisementsPaginationParams: getDefaultPaginationParams(defaultPageSize),
   _pendingValidationCountCache: 0,
   arePendingValidationAdvertisementsLoaded: false,
-  isAdvertisementListLoading: false,
   areMyAdvertisementsLoaded: false,
   listsToRefresh: [],
 };
@@ -484,9 +483,6 @@ export const AppStore = signalStore(
           return;
         }
 
-        patchState(appStore, {
-          isAdvertisementListLoading: true,
-        });
         const response = await lastValueFrom(
           advertisementService.getMyAdvertisements(
             appStore.myAdvertisementsPaginationParams()
@@ -508,7 +504,6 @@ export const AppStore = signalStore(
 
         console.log('>>> AppStore: myAdvertisements loaded');
         patchState(appStore, {
-          isAdvertisementListLoading: false,
           areMyAdvertisementsLoaded: true,
         });
       },
@@ -549,9 +544,7 @@ export const AppStore = signalStore(
             return;
           }
         }
-        patchState(appStore, {
-          isAdvertisementListLoading: true,
-        });
+
         const response = await lastValueFrom(
           advertisementService.getPendingPublicationAdvertisements(
             appStore.pendingPublicationPaginationParams()
@@ -580,9 +573,6 @@ export const AppStore = signalStore(
             ),
         });
         console.log('>>> AppStore: pendingPublicationAdvertisements loaded');
-        patchState(appStore, {
-          isAdvertisementListLoading: false,
-        });
       },
       // ------- getPendingValidationAdvertisementsAsync -------
       async getPendingValidationAdvertisementsAsync(
@@ -627,9 +617,6 @@ export const AppStore = signalStore(
           }
         }
 
-        patchState(appStore, {
-          isAdvertisementListLoading: true,
-        });
         const response = await lastValueFrom(
           advertisementService.getPendingValidationAdvertisements(
             appStore.pendingValidationPaginationParams()
@@ -657,9 +644,6 @@ export const AppStore = signalStore(
           ),
         });
         console.log('>>> AppStore: pendingValidationAdvertisements loaded');
-        patchState(appStore, {
-          isAdvertisementListLoading: false,
-        });
       },
       // ------- getPendingValidationCountAsync -------
       async getPendingValidationCountAsync() {

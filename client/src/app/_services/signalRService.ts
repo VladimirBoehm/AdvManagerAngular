@@ -2,20 +2,13 @@ import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { environment } from '../../environments/environment';
 import { inject, Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import {
-  AppStore,
-  defaultPageSize,
-  pendingValidationConfig,
-} from '../appStore/app.store';
+import { AppStore } from '../appStore/app.store';
 import { Localization } from '../_framework/component/helpers/localization';
 import { take } from 'rxjs';
 import { Router } from '@angular/router';
 import { Advertisement } from '../_models/advertisement';
 import { patchState } from '@ngrx/signals';
-import { addEntity } from '@ngrx/signals/entities';
-import cloneDeep from 'lodash-es/cloneDeep';
 import { AppListType } from '../_framework/constants/advListType';
-import { getDefaultPaginationParams } from '../appStore/app.store.helper';
 import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
 
 @Injectable({ providedIn: 'root' })
@@ -47,62 +40,45 @@ export class SignalRService {
     // ------------ METHODS ------------
     this.hubConnection.on(
       'AdvertisementValidated',
-      (advertisementId: number) => {
-        const updatedAdvertisement = this.appStore
-          .myAdvertisementsEntities()
-          .find((ad) => ad.id === advertisementId);
-        if (updatedAdvertisement) {
-          updatedAdvertisement.statusId = AdvertisementStatus.validated;
-          this.appStore.updateAdvertisementInList(
-            AppListType.MyAdvertisements,
-            updatedAdvertisement
-          );
-        }
-        if (this.appStore.selectedAdvertisement()?.id === advertisementId) {
-          this.appStore.setSelectedAdvertisement(updatedAdvertisement!);
+      (advertisement: Advertisement) => {
+        this.appStore.updateAdvertisementInList(
+          AppListType.MyAdvertisements,
+          advertisement
+        );
+
+        if (this.appStore.selectedAdvertisement()?.id === advertisement.id) {
+          this.appStore.updateSelectedAdvertisement(advertisement);
         }
         this.toastr
           .success(Localization.getWord('advertisement_validated'))
           .onTap.pipe(take(1))
           .subscribe(() => {
-            var advertisement = this.appStore
-              .myAdvertisementsEntities()
-              .find((x) => x.id === advertisementId);
-            if (advertisement) {
-              this.appStore.setSelectedAdvertisement(advertisement);
-              this.router.navigateByUrl('/app-advertisement-preview');
-            }
+            this.appStore.getMyAdvertisementsAsync();
+            this.appStore.setSelectedAdvertisement(advertisement);
+            this.router.navigateByUrl('/app-advertisement-preview');
           });
       }
     );
 
     this.hubConnection.on(
       'AdvertisementRejected',
-      (advertisementId: number) => {
-        const updatedAdvertisement = this.appStore
-          .myAdvertisementsEntities()
-          .find((ad) => ad.id === advertisementId);
-        if (updatedAdvertisement) {
-          updatedAdvertisement.statusId = AdvertisementStatus.rejected;
-          this.appStore.updateAdvertisementInList(
-            AppListType.MyAdvertisements,
-            updatedAdvertisement
-          );
+      (advertisement: Advertisement) => {
+        this.appStore.updateAdvertisementInList(
+          AppListType.MyAdvertisements,
+          advertisement
+        );
+
+        if (this.appStore.selectedAdvertisement()?.id === advertisement.id) {
+          this.appStore.updateSelectedAdvertisement(advertisement);
         }
-        if (this.appStore.selectedAdvertisement()?.id === advertisementId) {
-          this.appStore.setSelectedAdvertisement(updatedAdvertisement!);
-        }
+
         this.toastr
           .warning(Localization.getWord('advertisement_rejected'))
           .onTap.pipe(take(1))
           .subscribe(() => {
-            var advertisement = this.appStore
-              .myAdvertisementsEntities()
-              .find((x) => x.id === advertisementId);
-            if (advertisement) {
-              this.appStore.setSelectedAdvertisement(advertisement);
-              this.router.navigateByUrl('/app-advertisement-preview');
-            }
+            this.appStore.getMyAdvertisementsAsync();
+            this.appStore.setSelectedAdvertisement(advertisement);
+            this.router.navigateByUrl('/app-advertisement-preview');
           });
       }
     );
@@ -121,10 +97,9 @@ export class SignalRService {
           .info(Localization.getWord('validation_request'))
           .onTap.pipe(take(1))
           .subscribe(() => {
-            if (advertisement) {
-              this.appStore.getPendingValidationAdvertisementsAsync();
-              this.router.navigateByUrl('/app-adv-list-pending-validation');
-            }
+            this.appStore.getPendingValidationAdvertisementsAsync();
+            this.appStore.setSelectedAdvertisement(advertisement);
+            this.router.navigateByUrl('/app-advertisement-validate');
           });
       }
     );

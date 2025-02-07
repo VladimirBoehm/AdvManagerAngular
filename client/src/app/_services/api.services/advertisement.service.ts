@@ -26,16 +26,15 @@ export class AdvertisementService {
       }
     }
 
-    return this.http.post<Advertisement>(
-      this.baseUrl + 'advertisement/save',
-      formData
-    ).pipe(
-      retry(3), 
-      catchError((error) => {
-        console.error('Error saving advertisement:', error);
-        throw error;
-      })
-    );
+    return this.http
+      .post<Advertisement>(this.baseUrl + 'advertisement/save', formData)
+      .pipe(
+        retry(3),
+        catchError((error) => {
+          console.error('Error saving advertisement:', error);
+          throw error;
+        })
+      );
   }
 
   async update(advertisement: Advertisement) {
@@ -54,22 +53,21 @@ export class AdvertisementService {
           console.error('Error fetching or reconstructing file:', error);
         }
     }
-    return this.http.put<Advertisement>(
-      this.baseUrl + 'advertisement',
-      formData
-    ).pipe(
-      retry(3), 
-      catchError((error) => {
-        console.error('Error updating advertisement:', error);
-        throw error;
-      })
-    );
+    return this.http
+      .put<Advertisement>(this.baseUrl + 'advertisement', formData)
+      .pipe(
+        retry(3),
+        catchError((error) => {
+          console.error('Error updating advertisement:', error);
+          throw error;
+        })
+      );
   }
 
   sendToValidation(id: number) {
     return this.http.post<UpdateAdvertisementStatusRequest>(
-      this.baseUrl + 'advertisement/sendToValidation',
-      { id }
+      this.baseUrl + `advertisement/sendToValidation/${id}`,
+      null
     );
   }
 
