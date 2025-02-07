@@ -28,6 +28,10 @@
       </div>
     </div>
 
+    @if(shouldShowRefreshInfo()){
+      <refresh-list-notification [refresh]="refresh"></refresh-list-notification>
+      }
+
     <div class="list-container">
       <div class="text-center text-muted mb-1">
         {{ Localization.getWord("my_history") }}

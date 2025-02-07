@@ -66,7 +66,7 @@ type appState = {
   selectedListType: AppListType | undefined;
   isAdvertisementListLoading: boolean;
   areMyAdvertisementsLoaded: boolean;
-  listUpdatedViaSignalR: AppListType | undefined;
+  listsToRefresh: AppListType[];
 };
 
 const pendingPublicationDefaultPaginationParams = getDefaultPaginationParams(
@@ -95,10 +95,10 @@ const initialState: appState = {
   arePendingValidationAdvertisementsLoaded: false,
   isAdvertisementListLoading: false,
   areMyAdvertisementsLoaded: false,
-  listUpdatedViaSignalR: undefined,
+  listsToRefresh: [],
 };
 
-const chatFilterConfig = entityConfig({
+export const chatFilterConfig = entityConfig({
   entity: type<ChatFilter>(),
   collection: 'chatFilter',
 });
@@ -301,6 +301,15 @@ export const AppStore = signalStore(
       chatFilterService = inject(ChatFilterService),
       publishService = inject(PublishService)
     ) => ({
+      // ------- loginAsync -------
+      async loginAsync() {
+        if (!appStore.user()) {
+          const user = await lastValueFrom(accountService.login());
+          localStorage.setItem('user', JSON.stringify(user));
+          patchState(appStore, { user });
+          console.log('>>> AppStore: user loaded');
+        }
+      },
       setSelectedAppListType(appListType: AppListType) {
         patchState(appStore, { selectedListType: appListType });
         console.log('>>> AppStore: selectedListType set to', appListType);
@@ -652,15 +661,6 @@ export const AppStore = signalStore(
           isAdvertisementListLoading: false,
         });
       },
-      // ------- loginAsync -------
-      async loginAsync() {
-        if (!appStore.user()) {
-          const user = await lastValueFrom(accountService.login());
-          localStorage.setItem('user', JSON.stringify(user));
-          patchState(appStore, { user });
-          console.log('>>> AppStore: user loaded');
-        }
-      },
       // ------- getPendingValidationCountAsync -------
       async getPendingValidationCountAsync() {
         if (appStore.user()?.isAdmin) {
@@ -684,22 +684,6 @@ export const AppStore = signalStore(
           console.log(
             '>>> AppStore: pendingValidationAdvertisementsCount loaded'
           );
-        }
-      },
-      // ------- getChatFiltersAsync -------
-      async getChatFiltersAsync() {
-        if (appStore.areChatFiltersLoaded() === false) {
-          const chatFilters = await lastValueFrom(chatFilterService.getAll());
-          const chatFiltersWithDates = chatFilters.map((cf) => ({
-            ...cf,
-            created: new Date(cf.created),
-          }));
-          patchState(
-            appStore,
-            addEntities(chatFiltersWithDates, chatFilterConfig)
-          );
-          patchState(appStore, { areChatFiltersLoaded: true });
-          console.log('>>> AppStore: chatFilters loaded');
         }
       },
       // ------- updateChatFilterPaginationParamsAsync -------
@@ -1025,7 +1009,7 @@ export const AppStore = signalStore(
         }
       },
       // ------- forcePublication -------
-      forcePublication(adminComment?: string) {
+      forcePublicationAdmin(adminComment?: string) {
         if (!appStore.user()?.isAdmin) {
           console.error('>>> AppStore: user is not admin');
           return;

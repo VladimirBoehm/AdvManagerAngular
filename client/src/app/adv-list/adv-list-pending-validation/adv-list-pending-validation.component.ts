@@ -1,7 +1,13 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  effect,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { SharedModule } from '../../_framework/modules/sharedModule';
 import { EmptyListPlaceholderComponent } from '../../_framework/component/empty-list-placeholder/empty-list-placeholder.component';
-import { SkeletonFullScreenComponent } from '../../_framework/component/skeleton-full-screen/skeleton-full-screen.component';
 import { Router } from '@angular/router';
 import { DateHelper } from '../../_framework/component/helpers/dateHelper';
 import { Localization } from '../../_framework/component/helpers/localization';
@@ -14,6 +20,8 @@ import { ListFilterComponent } from '../../_framework/component/adv-list-filter/
 import { Advertisement } from '../../_models/advertisement';
 import { AdvListHelper } from '../adv-list.helper';
 import { AppListType } from '../../_framework/constants/advListType';
+import { RefreshListNotification } from '../refresh-list-notification';
+import { patchState } from '@ngrx/signals';
 
 @Component({
   selector: 'app-adv-list-pending-validation',
@@ -22,6 +30,7 @@ import { AppListType } from '../../_framework/constants/advListType';
     SharedModule,
     EmptyListPlaceholderComponent,
     ListFilterComponent,
+    RefreshListNotification,
   ],
   templateUrl: './adv-list-pending-validation.component.html',
   styleUrl: './adv-list-pending-validation.component.scss',
@@ -34,6 +43,23 @@ export class AdvListPendingValidationComponent implements OnInit, OnDestroy {
   advListHelper = inject(AdvListHelper);
   Localization = Localization;
   dateHelper = DateHelper;
+  shouldShowRefreshInfo = signal(false);
+
+  constructor() {
+    if (this.appStore.pendingValidationCacheInfo().size === 0) {
+      this.cleanListsToRefresh();
+    }
+    effect(
+      () => {
+        if (
+          this.appStore.listsToRefresh().includes(AppListType.PendingValidation)
+        ) {
+          this.shouldShowRefreshInfo.set(true);
+        }
+      },
+      { allowSignalWrites: true }
+    );
+  }
 
   async ngOnInit() {
     this.appStore.setSelectedAppListType(AppListType.PendingValidation);
@@ -48,6 +74,23 @@ export class AdvListPendingValidationComponent implements OnInit, OnDestroy {
       pageNumber,
       sortOption
     );
+  }
+
+  refresh = () => {
+    this.shouldShowRefreshInfo.set(false);
+    this.cleanListsToRefresh();
+    this.appStore.clearCacheInfo(AppListType.PendingValidation);
+    this.initialize();
+  };
+
+  cleanListsToRefresh() {
+    patchState(this.appStore as any, {
+      listsToRefresh: this.appStore
+        .listsToRefresh()
+        ?.filter(
+          (listType: AppListType) => listType !== AppListType.PendingValidation
+        ),
+    });
   }
 
   onItemClickValidate(advertisement: Advertisement) {

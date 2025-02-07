@@ -61,7 +61,6 @@ export class SignalRService {
         if (this.appStore.selectedAdvertisement()?.id === advertisementId) {
           this.appStore.setSelectedAdvertisement(updatedAdvertisement!);
         }
-
         this.toastr
           .success(Localization.getWord('advertisement_validated'))
           .onTap.pipe(take(1))
@@ -93,7 +92,6 @@ export class SignalRService {
         if (this.appStore.selectedAdvertisement()?.id === advertisementId) {
           this.appStore.setSelectedAdvertisement(updatedAdvertisement!);
         }
-
         this.toastr
           .warning(Localization.getWord('advertisement_rejected'))
           .onTap.pipe(take(1))
@@ -112,51 +110,22 @@ export class SignalRService {
     this.hubConnection.on(
       'NewValidationRequest',
       (advertisement: Advertisement) => {
-        const cache = this.appStore.pendingValidationCacheInfo();
-        if (cache.size === 1) {
-          const [paginationParams, ids] = Array.from(cache.entries())[0];
-          if (paginationParams.totalItems < paginationParams.pageSize) {
-            const updatedIds = [...ids, advertisement.id];
-            paginationParams.totalItems++;
-            const updatedCache = new Map();
-            updatedCache.set(cloneDeep(paginationParams), updatedIds);
-            patchState(
-              this.appStore as any,
-              addEntity(advertisement, pendingValidationConfig)
-            );
-            patchState(this.appStore as any, {
-              pendingValidationCacheInfo: updatedCache,
-              pendingValidationPaginationParams: cloneDeep(paginationParams),
-            });
-          }
-          this.toastr
-            .info(Localization.getWord('validation_request'))
-            .onTap.pipe(take(1))
-            .subscribe(() => {
-              if (advertisement) {
-                this.appStore.setSelectedAdvertisement(advertisement);
-                this.router.navigateByUrl('/app-advertisement-validate');
-              }
-            });
-        } else {
-          this.appStore.clearCacheInfo(AppListType.PendingValidation);
-          patchState(this.appStore as any, {
-            pendingValidationCount: this.appStore.pendingValidationCount() + 1,
-            pendingValidationPaginationParams: cloneDeep(
-              getDefaultPaginationParams(defaultPageSize)
-            ),
+        patchState(this.appStore as any, {
+          pendingValidationCount: this.appStore.pendingValidationCount() + 1,
+          listsToRefresh: [
+            ...this.appStore.listsToRefresh(),
+            AppListType.PendingValidation,
+          ],
+        });
+        this.toastr
+          .info(Localization.getWord('validation_request'))
+          .onTap.pipe(take(1))
+          .subscribe(() => {
+            if (advertisement) {
+              this.appStore.getPendingValidationAdvertisementsAsync();
+              this.router.navigateByUrl('/app-adv-list-pending-validation');
+            }
           });
-          this.appStore.getPendingValidationAdvertisementsAsync();
-          this.toastr
-            .info(Localization.getWord('validation_request'))
-            .onTap.pipe(take(1))
-            .subscribe(() => {
-              if (advertisement) {
-                this.appStore.getPendingValidationAdvertisementsAsync();
-                this.router.navigateByUrl('/app-adv-list-pending-validation');
-              }
-            });
-        }
       }
     );
     this.hubConnection.on(
@@ -187,7 +156,6 @@ export class SignalRService {
         if (this.appStore.selectedAdvertisement()?.id === advertisement.id) {
           this.appStore.updateSelectedAdvertisement(advertisement);
         }
-
         this.toastr
           .warning(Localization.getWord('cancel_publication_admin'))
           .onTap.pipe(take(1))
@@ -207,14 +175,11 @@ export class SignalRService {
         );
       }
     );
-    this.hubConnection.on(
-      'UpdateClientList',
-      (listType: AppListType) => {
-        patchState(this.appStore as any, {
-          listUpdatedViaSignalR: listType,
-        });
-      }
-    );
+    this.hubConnection.on('UpdateClientList', (listType: AppListType) => {
+      patchState(this.appStore as any, {
+        listsToRefresh: [...this.appStore.listsToRefresh(), listType],
+      });
+    });
   }
 
   //  ----------- Helpers -----------
@@ -223,8 +188,13 @@ export class SignalRService {
     advertisement: Advertisement,
     isForced: boolean
   ) => {
-    this.appStore.clearCacheInfo(AppListType.AllHistory);
-    this.appStore.clearCacheInfo(AppListType.PrivateHistory);
+    patchState(this.appStore as any, {
+      listsToRefresh: [
+        ...this.appStore.listsToRefresh(),
+        AppListType.PrivateHistory,
+        AppListType.AllHistory,
+      ],
+    });
     this.appStore.updateAdvertisementInList(
       AppListType.MyAdvertisements,
       advertisement
@@ -251,7 +221,6 @@ export class SignalRService {
     } else {
       message = Localization.getWord('advertisement_placed');
     }
-
     this.toastr
       .success(message)
       .onTap.pipe(take(1))

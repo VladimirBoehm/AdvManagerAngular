@@ -112,7 +112,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   };
 
   forcePublication = (adminComment?: string) => {
-    this.appStore.forcePublication(adminComment);
+    this.appStore.forcePublicationAdmin(adminComment);
     this.modalRef?.hide();
     this.back();
   };

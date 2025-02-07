@@ -1,7 +1,5 @@
-import { PaginationParams } from '../_entities/paginationParams';
-import {
-  arePaginationParamsEqual,
-} from './app.store.helper';
+import { PaginationParams } from '../../_entities/paginationParams';
+import { arePaginationParamsEqual } from '../app.store.helper';
 
 describe('equalTests', () => {
   let paginationParams1: PaginationParams;

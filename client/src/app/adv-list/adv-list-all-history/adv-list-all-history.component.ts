@@ -1,4 +1,11 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  effect,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Router } from '@angular/router';
 import { SortOption } from '../../_entities/sortOption';
@@ -12,6 +19,8 @@ import { TelegramBackButtonService } from '../../_services/telegramBackButton.se
 import { AppStore } from '../../appStore/app.store';
 import { AdvListHelper } from '../adv-list.helper';
 import { AppListType } from '../../_framework/constants/advListType';
+import { patchState } from '@ngrx/signals';
+import { RefreshListNotification } from '../refresh-list-notification';
 
 @Component({
   selector: 'app-adv-list-all-history',
@@ -20,6 +29,7 @@ import { AppListType } from '../../_framework/constants/advListType';
     SharedModule,
     EmptyListPlaceholderComponent,
     ListFilterComponent,
+    RefreshListNotification,
   ],
   templateUrl: './adv-list-all-history.component.html',
   styleUrl: './adv-list-all-history.component.scss',
@@ -31,7 +41,21 @@ export class AdvListAllHistoryComponent implements OnInit, OnDestroy {
   busyService = inject(BusyService);
   advListHelper = inject(AdvListHelper);
   Localization = Localization;
+  shouldShowRefreshInfo = signal(false);
 
+  constructor() {
+    if (this.appStore.allHistoryCacheInfo().size === 0) {
+      this.cleanListsToRefresh();
+    }
+    effect(
+      () => {
+        if (this.appStore.listsToRefresh().includes(AppListType.AllHistory)) {
+          this.shouldShowRefreshInfo.set(true);
+        }
+      },
+      { allowSignalWrites: true }
+    );
+  }
 
   async ngOnInit() {
     this.appStore.setSelectedAppListType(AppListType.AllHistory);
@@ -44,6 +68,24 @@ export class AdvListAllHistoryComponent implements OnInit, OnDestroy {
   private async initialize(pageNumber?: number, sortOption?: SortOption) {
     await this.appStore.getAdvertisementAllHistoryAsync(pageNumber, sortOption);
   }
+
+  refresh = () => {
+    this.shouldShowRefreshInfo.set(false);
+    this.cleanListsToRefresh();
+    this.appStore.clearCacheInfo(AppListType.AllHistory);
+    this.initialize();
+  };
+
+  cleanListsToRefresh() {
+    patchState(this.appStore as any, {
+      listsToRefresh: this.appStore
+        .listsToRefresh()
+        ?.filter(
+          (listType: AppListType) => listType !== AppListType.AllHistory
+        ),
+    });
+  }
+
   sortChanged($event: SortOption) {
     //reset page number
     this.initialize(0, $event);
@@ -52,7 +94,6 @@ export class AdvListAllHistoryComponent implements OnInit, OnDestroy {
   handlePageEvent(e: PageEvent) {
     this.initialize(e.pageIndex);
   }
-
 
   ngOnDestroy(): void {
     this.backButtonService.removeBackButtonHandler();

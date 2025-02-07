@@ -1,11 +1,11 @@
-import { PaginationParams } from '../_entities/paginationParams';
+import { PaginationParams } from '../../_entities/paginationParams';
 import {
   getUpdatedSearchRow,
   arePaginationParamsEqual,
   getPaginationParamsContainsId,
   deleteFromCache,
   getDefaultPaginationParams,
-} from './app.store.helper';
+} from '../app.store.helper';
 
 describe('deleteFromCache', () => {
   let sameSearch: Map<PaginationParams, number[]>;

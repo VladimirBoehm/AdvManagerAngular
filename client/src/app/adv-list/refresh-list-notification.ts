@@ -1,5 +1,4 @@
-import { Component, inject, input } from '@angular/core';
-import { SharedModule } from '../_framework/modules/sharedModule';
+import { Component, input } from '@angular/core';
 import { Localization } from '../_framework/component/helpers/localization';
 
 @Component({

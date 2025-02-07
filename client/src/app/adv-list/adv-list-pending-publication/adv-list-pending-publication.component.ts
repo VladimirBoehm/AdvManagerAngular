@@ -9,7 +9,6 @@ import {
 import { SharedModule } from '../../_framework/modules/sharedModule';
 import { ListFilterComponent } from '../../_framework/component/adv-list-filter/list-filter.component';
 import { EmptyListPlaceholderComponent } from '../../_framework/component/empty-list-placeholder/empty-list-placeholder.component';
-import { SkeletonFullScreenComponent } from '../../_framework/component/skeleton-full-screen/skeleton-full-screen.component';
 import { Localization } from '../../_framework/component/helpers/localization';
 import { Router } from '@angular/router';
 import { BusyService } from '../../_services/busy.service';
@@ -22,7 +21,7 @@ import { DatePipe } from '@angular/common';
 import { AdvListHelper } from '../adv-list.helper';
 import { AppListType } from '../../_framework/constants/advListType';
 import { patchState } from '@ngrx/signals';
-import { RefreshListNotification } from '../refreshListNotification';
+import { RefreshListNotification } from '../refresh-list-notification';
 
 @Component({
   selector: 'app-adv-list-pending-publication',
@@ -48,11 +47,15 @@ export class AdvListPendingPublicationComponent implements OnInit, OnDestroy {
   shouldShowRefreshInfo = signal(false);
 
   constructor() {
+    if (this.appStore.pendingPublicationCacheInfo().size === 0) {
+      this.cleanListsToRefresh();
+    }
     effect(
       () => {
         if (
-          this.appStore.listUpdatedViaSignalR() ===
-          AppListType.PendingPublication
+          this.appStore
+            .listsToRefresh()
+            .includes(AppListType.PendingPublication)
         ) {
           this.shouldShowRefreshInfo.set(true);
         }
@@ -77,12 +80,20 @@ export class AdvListPendingPublicationComponent implements OnInit, OnDestroy {
 
   refresh = () => {
     this.shouldShowRefreshInfo.set(false);
-    patchState(this.appStore as any, {
-      listUpdatedViaSignalR: undefined,
-    });
+    this.cleanListsToRefresh();
     this.appStore.clearCacheInfo(AppListType.PendingPublication);
     this.initialize();
   };
+
+  cleanListsToRefresh() {
+    patchState(this.appStore as any, {
+      listsToRefresh: this.appStore
+        .listsToRefresh()
+        ?.filter(
+          (listType: AppListType) => listType !== AppListType.PendingPublication
+        ),
+    });
+  }
 
   sortChanged($event: SortOption) {
     //reset page number
