@@ -3,4 +3,5 @@ export interface AdImage {
   userId: number;
   url?: string;
   file?: File;
+  advertisementId?: number;
 }

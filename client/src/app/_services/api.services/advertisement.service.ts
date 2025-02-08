@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Advertisement } from '../../_models/advertisement';
 import { environment } from '../../../environments/environment';
-import { catchError, Observable, retry } from 'rxjs';
+import { catchError, lastValueFrom, Observable, retry } from 'rxjs';
 import { UpdateAdvertisementAdminRequest } from '../../_models/updateAdvertisementAdminRequest';
 import { UpdateAdvertisementStatusRequest } from '../../_models/updateAdvertisementStatusRequest';
 import { PaginationParams } from '../../_entities/paginationParams';
@@ -15,26 +15,48 @@ export class AdvertisementService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
 
-  async save(advertisement: Advertisement): Promise<Observable<Advertisement>> {
+  async save(
+    advertisement: Advertisement,
+    image?: File
+  ): Promise<Advertisement> {
     const formData = new FormData();
+    delete advertisement.adImage;
     formData.append('advertisementJson', JSON.stringify(advertisement));
-    if (advertisement.adImage && advertisement.adImage.file) {
-      try {
-       // formData.append('file', advertisement.adImage.file);
-      } catch (error) {
-        console.error('Error fetching or reconstructing file:', error);
-      }
+
+    let advertisementResponse = await lastValueFrom(
+      this.http
+        .post<Advertisement>(this.baseUrl + 'advertisement/save', formData)
+        .pipe(
+          retry(3),
+          catchError((error) => {
+            console.error('Error saving advertisement:', error);
+            throw error;
+          })
+        )
+    );
+
+    if (image) {
+      const imageFormData = new FormData();
+      imageFormData.append('image', image);
+
+      advertisementResponse = await lastValueFrom(
+        this.http
+          .post<Advertisement>(
+            this.baseUrl +
+              `advertisement/saveImage/${advertisementResponse.id}`,
+            imageFormData
+          )
+          .pipe(
+            retry(3),
+            catchError((error) => {
+              console.error('Error saving advertisement:', error);
+              throw error;
+            })
+          )
+      );
     }
 
-    return this.http
-      .post<Advertisement>(this.baseUrl + 'advertisement/save', formData)
-      .pipe(
-        retry(3),
-        catchError((error) => {
-          console.error('Error saving advertisement:', error);
-          throw error;
-        })
-      );
+    return advertisementResponse;
   }
 
   async update(advertisement: Advertisement) {
@@ -48,7 +70,7 @@ export class AdvertisementService {
     ) {
       if (advertisement.adImage && advertisement.adImage.file)
         try {
-          formData.append('file', advertisement.adImage.file);
+          formData.append('image', advertisement.adImage.file);
         } catch (error) {
           console.error('Error fetching or reconstructing file:', error);
         }

@@ -62,6 +62,7 @@ export class AdvertisementEditComponent implements OnInit {
   maxMessageLength: number = 650;
   advertisementId: number = 0;
   userImages: AdImage[] = [];
+  uploadedImage: File | undefined;
 
   Localization = Localization;
 
@@ -123,7 +124,8 @@ export class AdvertisementEditComponent implements OnInit {
 
     if (this.appStore.selectedAdvertisement()?.id === 0) {
       await this.appStore.createAdvertisementAsync(
-        this.appStore.selectedAdvertisement()!
+        this.appStore.selectedAdvertisement()!,
+        this.uploadedImage
       );
       this.router.navigateByUrl('app-advertisement-preview');
     } else {
@@ -163,11 +165,11 @@ export class AdvertisementEditComponent implements OnInit {
         adImage: {
           id: 0,
           userId: this.appStore.user()?.userId ?? 0,
-          file: new File([input.files[0]], input.files[0].name, {
-            type: input.files[0].type,
-          }),
           url: URL.createObjectURL(input.files[0]),
         },
+      });
+      this.uploadedImage = new File([input.files[0]], input.files[0].name, {
+        type: input.files[0].type,
       });
     }
   }
