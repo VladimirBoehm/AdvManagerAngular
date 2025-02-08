@@ -1,4 +1,11 @@
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { TelegramBackButtonService } from '../../_services/telegramBackButton.service';
 import { AppStore } from '../../appStore/app.store';
 import { Router } from '@angular/router';
@@ -22,6 +29,7 @@ export class AdvListMyAdvertisementsComponent implements OnInit, OnDestroy {
   private backButtonService = inject(TelegramBackButtonService);
   readonly appStore = inject(AppStore);
   private router = inject(Router);
+  private changeDetector = inject(ChangeDetectorRef);
 
   advListHelper = inject(AdvListHelper);
   Localization = Localization;
@@ -36,6 +44,7 @@ export class AdvListMyAdvertisementsComponent implements OnInit, OnDestroy {
     this.isLoading.set(true);
     await this.appStore.getMyAdvertisementsAsync();
     this.isLoading.set(false);
+    this.changeDetector.detectChanges();
   }
 
   getStatus(advertisement: Advertisement): string {

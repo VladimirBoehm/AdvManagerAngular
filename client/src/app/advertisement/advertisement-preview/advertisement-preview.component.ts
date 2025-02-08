@@ -41,7 +41,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   private modalService = inject(BsModalService);
   private router = inject(Router);
   readonly appStore = inject(AppStore);
-  publishService = inject(PublishService);
+  
   advertisementHelper = inject(AdvertisementHelper);
   confirmationService = inject(ConfirmationMatDialogService);
   busyService = inject(BusyService);
@@ -50,7 +50,6 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   advListType = AppListType;
   dateHelper = DateHelper;
   modalRef?: BsModalRef;
-  nextPublishDate?: Date;
   timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   Localization = Localization;
 
@@ -88,16 +87,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   }
 
   publishDialogShow() {
-    this.publishService
-      .getRegularPublishNextDate(this.appStore.selectedAdvertisement()?.id ?? 0)
-      .subscribe({
-        next: (result: Date) => {
-          this.nextPublishDate = result;
-        },
-        error: (err) => {
-          console.error('Error by getting regularPublishNextDate:', err);
-        },
-      });
+
 
     this.modalRef = this.modalService.show(this.modalDialogPublicationInfo);
   }
@@ -180,8 +170,8 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
     this.appStore.sendToValidationAsync();
   }
 
-  modalDialogPublishConfirm = () => {
-    this.appStore.confirmPublication(this.nextPublishDate);
+  modalDialogPublishConfirm = (nextPublishDate: Date ) => {
+    this.appStore.confirmPublication(nextPublishDate);
     this.modalRef?.hide();
   };
 

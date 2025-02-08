@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   effect,
   inject,
@@ -38,6 +39,7 @@ export class AdvListPendingValidationComponent implements OnInit, OnDestroy {
   private backButtonService = inject(TelegramBackButtonService);
   readonly appStore = inject(AppStore);
   private router = inject(Router);
+  private changeDetector = inject(ChangeDetectorRef);
   advListHelper = inject(AdvListHelper);
   Localization = Localization;
   dateHelper = DateHelper;
@@ -75,6 +77,7 @@ export class AdvListPendingValidationComponent implements OnInit, OnDestroy {
       sortOption
     );
     this.isLoading.set(false);
+    this.changeDetector.detectChanges();
   }
 
   refresh = () => {

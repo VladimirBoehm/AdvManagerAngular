@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   effect,
   inject,
@@ -34,6 +35,7 @@ import { RefreshListNotification } from '../refresh-list-notification';
 })
 export class AdvListAllHistoryComponent implements OnInit, OnDestroy {
   private backButtonService = inject(TelegramBackButtonService);
+  private changeDetector = inject(ChangeDetectorRef);
   readonly appStore = inject(AppStore);
   private router = inject(Router);
   advListHelper = inject(AdvListHelper);
@@ -67,6 +69,7 @@ export class AdvListAllHistoryComponent implements OnInit, OnDestroy {
     this.isLoading.set(true);
     await this.appStore.getAdvertisementAllHistoryAsync(pageNumber, sortOption);
     this.isLoading.set(false);
+    this.changeDetector.detectChanges();
   }
 
   refresh = () => {
