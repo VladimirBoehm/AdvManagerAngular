@@ -22,12 +22,11 @@ export class AdvertisementService {
   ): Promise<Observable<Advertisement>> {
     const formData = new FormData();
     const advertisementCopy = cloneDeep(advertisement);
-    delete advertisementCopy.adImage?.url;
-    delete advertisementCopy.adImage?.file;
-    formData.append('advertisementJson', JSON.stringify(advertisementCopy));
+    delete advertisementCopy.adImage;
     if (image) {
       formData.append('image', image);
     }
+    formData.append('advertisementJson', JSON.stringify(advertisementCopy));
 
     return this.http
       .post<Advertisement>(this.baseUrl + 'advertisement/save', formData)
@@ -43,12 +42,13 @@ export class AdvertisementService {
   async update(advertisement: Advertisement, image?: File) {
     const formData = new FormData();
     const advertisementCopy = cloneDeep(advertisement);
-    delete advertisementCopy.adImage?.url;
-    delete advertisementCopy.adImage?.file;
-    formData.append('advertisementJson', JSON.stringify(advertisementCopy));
+    delete advertisementCopy.adImage;
+
     if (image) {
       formData.append('image', image);
     }
+    formData.append('advertisementJson', JSON.stringify(advertisementCopy));
+
     return this.http
       .put<Advertisement>(this.baseUrl + 'advertisement', formData)
       .pipe(
