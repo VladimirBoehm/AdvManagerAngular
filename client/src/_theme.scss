@@ -15,18 +15,14 @@ $neutral-gray: #6f6f6f;
 $neutral-gray-opacity: #6f6f6fda;
 
 $toast-error-bg: #a02405e7;
-$toast-success-bg: #779c4c;
-$toast-info-bg: #4b8ebb;
-$toast-warning-bg: #ffa600;
+$toast-success-bg: #779c4ce7;
+$toast-info-bg: #4b8ebbe7;
+$toast-warning-bg: #ffa600e7;
 
 $margin-list-from-top-buttons: 10px;
 $margin-list-from-bottom: 20px;
 
 $buttons-top-panel-min-hight: 66px;
-
-
-
-
 
 @mixin transition-ease {
   transition: all 0.5s ease-in-out;
