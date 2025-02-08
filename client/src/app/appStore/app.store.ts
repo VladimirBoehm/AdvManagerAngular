@@ -964,9 +964,12 @@ export const AppStore = signalStore(
         }
       },
       // ------- createAdvertisementAsync -------
-      async createAdvertisementAsync(advertisement: Advertisement) {
+      async createAdvertisementAsync(
+        advertisement: Advertisement,
+        image?: File
+      ) {
         const advertisementResponse = await lastValueFrom(
-          await advertisementService.save(advertisement)
+          await advertisementService.save(advertisement, image)
         );
         patchState(
           appStore,
@@ -976,10 +979,13 @@ export const AppStore = signalStore(
         console.log('>>> AppStore: advertisementResponse created');
       },
       // ------- updateAdvertisementAsync -------
-      async updateAdvertisementAsync(advertisement: Advertisement) {
+      async updateAdvertisementAsync(
+        advertisement: Advertisement,
+        image?: File
+      ) {
         this.updateSelectedAdvertisement(advertisement);
         const advertisementResponse = await lastValueFrom(
-          await advertisementService.update(advertisement)
+          await advertisementService.update(advertisement, image)
         );
         this.updateAdvertisementInList(
           AppListType.MyAdvertisements,

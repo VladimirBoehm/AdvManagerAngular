@@ -51,6 +51,7 @@ export class AdvertisementEditComponent implements OnInit {
   readonly appStore = inject(AppStore);
   matErrorService = inject(MatErrorService);
   busyService = inject(BusyService);
+  private uploadedImage: File | undefined;
 
   modalRef?: BsModalRef;
   editForm: FormGroup = new FormGroup({});
@@ -122,12 +123,14 @@ export class AdvertisementEditComponent implements OnInit {
 
     if (this.appStore.selectedAdvertisement()?.id === 0) {
       await this.appStore.createAdvertisementAsync(
-        this.appStore.selectedAdvertisement()!
+        this.appStore.selectedAdvertisement()!,
+        this.uploadedImage
       );
       this.router.navigateByUrl('app-advertisement-preview');
     } else {
       await this.appStore.updateAdvertisementAsync(
-        this.appStore.selectedAdvertisement()!
+        this.appStore.selectedAdvertisement()!,
+        this.uploadedImage
       );
       this.router.navigateByUrl('app-advertisement-preview');
     }
@@ -162,10 +165,10 @@ export class AdvertisementEditComponent implements OnInit {
         adImage: {
           id: 0,
           userId: this.appStore.user()?.userId ?? 0,
-          file: input.files[0],
           url: URL.createObjectURL(input.files[0]),
         },
       });
+      this.uploadedImage = input.files[0];
     }
   }
 

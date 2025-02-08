@@ -15,12 +15,15 @@ export class AdvertisementService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
 
-  async save(advertisement: Advertisement): Promise<Observable<Advertisement>> {
+  async save(
+    advertisement: Advertisement,
+    image?: File
+  ): Promise<Observable<Advertisement>> {
     const formData = new FormData();
     formData.append('advertisementJson', JSON.stringify(advertisement));
-    if (advertisement.adImage && advertisement.adImage.file) {
+    if (image) {
       try {
-        formData.append('file', advertisement.adImage.file);
+        formData.append('file', image);
       } catch (error) {
         console.error('Error fetching or reconstructing file:', error);
       }
@@ -37,21 +40,17 @@ export class AdvertisementService {
       );
   }
 
-  async update(advertisement: Advertisement) {
+  async update(advertisement: Advertisement, image?: File) {
     const formData = new FormData();
     formData.append('advertisementJson', JSON.stringify(advertisement));
-
     if (
-      advertisement.adImage &&
-      advertisement.adImage.id === 0 &&
-      advertisement.adImage.file
+      image
     ) {
-      if (advertisement.adImage && advertisement.adImage.file)
-        try {
-          formData.append('file', advertisement.adImage.file);
-        } catch (error) {
-          console.error('Error fetching or reconstructing file:', error);
-        }
+      try {
+        formData.append('file', image);
+      } catch (error) {
+        console.error('Error fetching or reconstructing file:', error);
+      }
     }
     return this.http
       .put<Advertisement>(this.baseUrl + 'advertisement', formData)
