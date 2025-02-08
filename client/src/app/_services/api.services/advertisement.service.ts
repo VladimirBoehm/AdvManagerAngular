@@ -8,13 +8,12 @@ import { UpdateAdvertisementStatusRequest } from '../../_models/updateAdvertisem
 import { PaginationParams } from '../../_entities/paginationParams';
 import { getPaginationHeaders } from '../../_framework/component/helpers/paginationHelper';
 import { ManagePublish } from '../../_entities/managePublish';
-import { ToastrService } from 'ngx-toastr';
+import { cloneDeep } from 'lodash';
 @Injectable({
   providedIn: 'root',
 })
 export class AdvertisementService {
   private http = inject(HttpClient);
-  private toastr = inject(ToastrService);
   private baseUrl = environment.apiUrl;
 
   async save(
@@ -22,9 +21,12 @@ export class AdvertisementService {
     image?: File
   ): Promise<Observable<Advertisement>> {
     const formData = new FormData();
-    formData.append('advertisementJson', JSON.stringify(advertisement));
+    const advertisementCopy = cloneDeep(advertisement);
+    delete advertisementCopy.adImage?.url;
+    delete advertisementCopy.adImage?.file;
+    formData.append('advertisementJson', JSON.stringify(advertisementCopy));
     if (image) {
-      formData.append('file', image);
+      formData.append('image', image);
     }
 
     return this.http
@@ -32,8 +34,6 @@ export class AdvertisementService {
       .pipe(
         retry(3),
         catchError((error) => {
-          this.toastr.error(JSON.stringify(error));
-
           console.error('Error saving advertisement:', error);
           throw error;
         })
@@ -42,9 +42,12 @@ export class AdvertisementService {
 
   async update(advertisement: Advertisement, image?: File) {
     const formData = new FormData();
-    formData.append('advertisementJson', JSON.stringify(advertisement));
+    const advertisementCopy = cloneDeep(advertisement);
+    delete advertisementCopy.adImage?.url;
+    delete advertisementCopy.adImage?.file;
+    formData.append('advertisementJson', JSON.stringify(advertisementCopy));
     if (image) {
-      formData.append('file', image);
+      formData.append('image', image);
     }
     return this.http
       .put<Advertisement>(this.baseUrl + 'advertisement', formData)
