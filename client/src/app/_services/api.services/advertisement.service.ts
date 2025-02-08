@@ -23,9 +23,9 @@ export class AdvertisementService {
     const formData = new FormData();
     const advertisementCopy = cloneDeep(advertisement);
     delete advertisementCopy.adImage;
-    if (image) {
-      formData.append('image', image);
-    }
+    //if (image) {
+    formData.append('image', image!);
+    // }
     //formData.append('advertisementJson', JSON.stringify(advertisementCopy));
 
     return this.http
