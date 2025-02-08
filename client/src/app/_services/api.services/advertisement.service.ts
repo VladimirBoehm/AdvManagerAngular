@@ -27,6 +27,11 @@ export class AdvertisementService {
       try {
         formData.append('file', image);
       } catch (error) {
+        if (error instanceof Error) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.error('An unknown error occurred.');
+        }
         console.error('Error fetching or reconstructing file:', error);
       }
     }
@@ -67,6 +72,11 @@ export class AdvertisementService {
       .pipe(
         retry(3),
         catchError((error) => {
+          if (error instanceof Error) {
+            this.toastr.error(error.message);
+          } else {
+            this.toastr.error('An unknown error occurred.');
+          }
           console.error('Error updating advertisement:', error);
           throw error;
         })
