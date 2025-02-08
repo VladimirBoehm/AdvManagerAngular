@@ -8,11 +8,13 @@ import { UpdateAdvertisementStatusRequest } from '../../_models/updateAdvertisem
 import { PaginationParams } from '../../_entities/paginationParams';
 import { getPaginationHeaders } from '../../_framework/component/helpers/paginationHelper';
 import { ManagePublish } from '../../_entities/managePublish';
+import { ToastrService } from 'ngx-toastr';
 @Injectable({
   providedIn: 'root',
 })
 export class AdvertisementService {
   private http = inject(HttpClient);
+  private toastr = inject(ToastrService);
   private baseUrl = environment.apiUrl;
 
   async save(
@@ -34,6 +36,11 @@ export class AdvertisementService {
       .pipe(
         retry(3),
         catchError((error) => {
+          if (error instanceof Error) {
+            this.toastr.error(error.message);
+          } else {
+            this.toastr.error('An unknown error occurred.');
+          }
           console.error('Error saving advertisement:', error);
           throw error;
         })
@@ -43,12 +50,15 @@ export class AdvertisementService {
   async update(advertisement: Advertisement, image?: File) {
     const formData = new FormData();
     formData.append('advertisementJson', JSON.stringify(advertisement));
-    if (
-      image
-    ) {
+    if (image) {
       try {
         formData.append('file', image);
       } catch (error) {
+        if (error instanceof Error) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.error('An unknown error occurred.');
+        }
         console.error('Error fetching or reconstructing file:', error);
       }
     }
