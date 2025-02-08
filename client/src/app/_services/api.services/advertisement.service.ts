@@ -39,6 +39,55 @@ export class AdvertisementService {
       );
   }
 
+  uploadAdvertisementUsingXHR(
+    advertisement: Advertisement,
+    image?: File
+  ): Promise<Advertisement> {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      const url = this.baseUrl + 'advertisement/save';
+
+      const formData = new FormData();
+
+      const advertisementCopy: Partial<Advertisement> = {
+        title: advertisement.title,
+        message: advertisement.message,
+        statusId: advertisement.statusId,
+        // Добавьте другие необходимые поля, исключая ненужные свойства
+      };
+
+      formData.append('advertisementJson', JSON.stringify(advertisementCopy));
+
+      if (image) {
+        formData.append('image', image);
+      }
+
+      xhr.open('POST', url);
+
+      // Обработка ответа сервера
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+              const response: Advertisement = JSON.parse(xhr.responseText);
+              resolve(response);
+            } catch (error) {
+              reject(new Error('Parsing error: ' + error));
+            }
+          } else {
+            reject(new Error(`Request error, status: ${xhr.status}`));
+          }
+        }
+      };
+
+      xhr.onerror = () => {
+        reject(new Error('Network error'));
+      };
+
+      xhr.send(formData);
+    });
+  }
+
   async update(advertisement: Advertisement, image?: File) {
     const formData = new FormData();
     const advertisementCopy = cloneDeep(advertisement);

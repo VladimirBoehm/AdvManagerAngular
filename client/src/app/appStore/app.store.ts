@@ -968,9 +968,15 @@ export const AppStore = signalStore(
         advertisement: Advertisement,
         image?: File
       ) {
-        const advertisementResponse = await lastValueFrom(
-          await advertisementService.save(advertisement, image)
-        );
+        // const advertisementResponse = await lastValueFrom(
+        //   await advertisementService.save(advertisement, image)
+        // );
+
+        const advertisementResponse =
+          await advertisementService.uploadAdvertisementUsingXHR(
+            advertisement,
+            image
+          );
         patchState(
           appStore,
           addEntity(advertisementResponse, myAdvertisementsConfig)
