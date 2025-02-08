@@ -26,7 +26,7 @@ export class AdvertisementService {
     if (image) {
       formData.append('image', image);
     }
-    formData.append('advertisementJson', JSON.stringify(advertisementCopy));
+    //formData.append('advertisementJson', JSON.stringify(advertisementCopy));
 
     return this.http
       .post<Advertisement>(this.baseUrl + 'advertisement/save', formData)
