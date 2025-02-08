@@ -20,7 +20,7 @@ export class AdvertisementService {
     formData.append('advertisementJson', JSON.stringify(advertisement));
     if (advertisement.adImage && advertisement.adImage.file) {
       try {
-        formData.append('file', advertisement.adImage.file);
+       // formData.append('file', advertisement.adImage.file);
       } catch (error) {
         console.error('Error fetching or reconstructing file:', error);
       }
