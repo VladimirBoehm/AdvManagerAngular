@@ -30,7 +30,7 @@ export class AdvertisementService {
         if (error instanceof Error) {
           this.toastr.error(error.message);
         } else {
-          this.toastr.error('An unknown error occurred.');
+          this.toastr.error('4.An unknown error occurred.');
         }
         console.error('Error fetching or reconstructing file:', error);
       }
@@ -44,7 +44,7 @@ export class AdvertisementService {
           if (error instanceof Error) {
             this.toastr.error(error.message);
           } else {
-            this.toastr.error('An unknown error occurred.');
+            this.toastr.error('3. An unknown error occurred.');
           }
           console.error('Error saving advertisement:', error);
           throw error;
@@ -62,7 +62,7 @@ export class AdvertisementService {
         if (error instanceof Error) {
           this.toastr.error(error.message);
         } else {
-          this.toastr.error('An unknown error occurred.');
+          this.toastr.error('1. An unknown error occurred.');
         }
         console.error('Error fetching or reconstructing file:', error);
       }
@@ -75,7 +75,7 @@ export class AdvertisementService {
           if (error instanceof Error) {
             this.toastr.error(error.message);
           } else {
-            this.toastr.error('An unknown error occurred.');
+            this.toastr.error('2. An unknown error occurred.');
           }
           console.error('Error updating advertisement:', error);
           throw error;
