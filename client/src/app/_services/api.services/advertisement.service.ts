@@ -24,16 +24,7 @@ export class AdvertisementService {
     const formData = new FormData();
     formData.append('advertisementJson', JSON.stringify(advertisement));
     if (image) {
-      try {
-        formData.append('file', image);
-      } catch (error) {
-        if (error instanceof Error) {
-          this.toastr.error(error.message);
-        } else {
-          this.toastr.error('4.An unknown error occurred.');
-        }
-        console.error('Error fetching or reconstructing file:', error);
-      }
+      formData.append('file', image);
     }
 
     return this.http
@@ -41,11 +32,8 @@ export class AdvertisementService {
       .pipe(
         retry(3),
         catchError((error) => {
-          if (error instanceof Error) {
-            this.toastr.error(error.message);
-          } else {
-            this.toastr.error('3. An unknown error occurred.');
-          }
+          this.toastr.error(JSON.stringify(error));
+
           console.error('Error saving advertisement:', error);
           throw error;
         })
@@ -56,27 +44,13 @@ export class AdvertisementService {
     const formData = new FormData();
     formData.append('advertisementJson', JSON.stringify(advertisement));
     if (image) {
-      try {
-        formData.append('file', image);
-      } catch (error) {
-        if (error instanceof Error) {
-          this.toastr.error(error.message);
-        } else {
-          this.toastr.error('1. An unknown error occurred.');
-        }
-        console.error('Error fetching or reconstructing file:', error);
-      }
+      formData.append('file', image);
     }
     return this.http
       .put<Advertisement>(this.baseUrl + 'advertisement', formData)
       .pipe(
         retry(3),
         catchError((error) => {
-          if (error instanceof Error) {
-            this.toastr.error(error.message);
-          } else {
-            this.toastr.error('2. An unknown error occurred.');
-          }
           console.error('Error updating advertisement:', error);
           throw error;
         })
