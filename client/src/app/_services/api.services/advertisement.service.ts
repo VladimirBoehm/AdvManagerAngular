@@ -8,12 +8,14 @@ import { UpdateAdvertisementStatusRequest } from '../../_models/updateAdvertisem
 import { PaginationParams } from '../../_entities/paginationParams';
 import { getPaginationHeaders } from '../../_framework/component/helpers/paginationHelper';
 import { ManagePublish } from '../../_entities/managePublish';
+import { ToastrService } from 'ngx-toastr';
 @Injectable({
   providedIn: 'root',
 })
 export class AdvertisementService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
+  private toastr = inject(ToastrService);
 
   async save(
     advertisement: Advertisement,
@@ -49,11 +51,14 @@ export class AdvertisementService {
           .pipe(
             retry(3),
             catchError((error) => {
+              this.toastr.success(JSON.stringify(error));
               console.error('Error saving advertisement:', error);
               throw error;
             })
           )
       );
+    }
+    {
     }
 
     return advertisementResponse;
