@@ -964,19 +964,10 @@ export const AppStore = signalStore(
         }
       },
       // ------- createAdvertisementAsync -------
-      async createAdvertisementAsync(
-        advertisement: Advertisement,
-        image?: File
-      ) {
-        // const advertisementResponse = await lastValueFrom(
-        //   await advertisementService.save(advertisement, image)
-        // );
-
-        const advertisementResponse =
-          await advertisementService.uploadAdvertisementUsingXHR(
-            advertisement,
-            image
-          );
+      async createAdvertisementAsync(advertisement: Advertisement) {
+        const advertisementResponse = await lastValueFrom(
+          await advertisementService.save(advertisement)
+        );
         patchState(
           appStore,
           addEntity(advertisementResponse, myAdvertisementsConfig)
@@ -985,13 +976,10 @@ export const AppStore = signalStore(
         console.log('>>> AppStore: advertisementResponse created');
       },
       // ------- updateAdvertisementAsync -------
-      async updateAdvertisementAsync(
-        advertisement: Advertisement,
-        image?: File
-      ) {
+      async updateAdvertisementAsync(advertisement: Advertisement) {
         this.updateSelectedAdvertisement(advertisement);
         const advertisementResponse = await lastValueFrom(
-          await advertisementService.update(advertisement, image)
+          await advertisementService.update(advertisement)
         );
         this.updateAdvertisementInList(
           AppListType.MyAdvertisements,

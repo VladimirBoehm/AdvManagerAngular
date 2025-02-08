@@ -23,6 +23,7 @@ import { BusyService } from '../../_services/busy.service';
 import { Localization } from '../../_framework/component/helpers/localization';
 import { ToastrService } from 'ngx-toastr';
 import { AppStore } from '../../appStore/app.store';
+import { cloneDeep } from 'lodash';
 
 @Component({
   selector: 'app-advertisement-edit',
@@ -51,7 +52,6 @@ export class AdvertisementEditComponent implements OnInit {
   readonly appStore = inject(AppStore);
   matErrorService = inject(MatErrorService);
   busyService = inject(BusyService);
-  private uploadedImage: File | undefined;
 
   modalRef?: BsModalRef;
   editForm: FormGroup = new FormGroup({});
@@ -123,14 +123,12 @@ export class AdvertisementEditComponent implements OnInit {
 
     if (this.appStore.selectedAdvertisement()?.id === 0) {
       await this.appStore.createAdvertisementAsync(
-        this.appStore.selectedAdvertisement()!,
-        this.uploadedImage
+        this.appStore.selectedAdvertisement()!
       );
       this.router.navigateByUrl('app-advertisement-preview');
     } else {
       await this.appStore.updateAdvertisementAsync(
-        this.appStore.selectedAdvertisement()!,
-        this.uploadedImage
+        this.appStore.selectedAdvertisement()!
       );
       this.router.navigateByUrl('app-advertisement-preview');
     }
@@ -165,10 +163,12 @@ export class AdvertisementEditComponent implements OnInit {
         adImage: {
           id: 0,
           userId: this.appStore.user()?.userId ?? 0,
+          file: new File([input.files[0]], input.files[0].name, {
+            type: input.files[0].type,
+          }),
           url: URL.createObjectURL(input.files[0]),
         },
       });
-      this.uploadedImage = input.files[0];
     }
   }
 

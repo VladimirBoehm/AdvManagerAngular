@@ -8,7 +8,6 @@ import { UpdateAdvertisementStatusRequest } from '../../_models/updateAdvertisem
 import { PaginationParams } from '../../_entities/paginationParams';
 import { getPaginationHeaders } from '../../_framework/component/helpers/paginationHelper';
 import { ManagePublish } from '../../_entities/managePublish';
-import { cloneDeep } from 'lodash';
 @Injectable({
   providedIn: 'root',
 })
@@ -16,17 +15,16 @@ export class AdvertisementService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
 
-  async save(
-    advertisement: Advertisement,
-    image?: File
-  ): Promise<Observable<Advertisement>> {
+  async save(advertisement: Advertisement): Promise<Observable<Advertisement>> {
     const formData = new FormData();
-    const advertisementCopy = cloneDeep(advertisement);
-    delete advertisementCopy.adImage;
-    //if (image) {
-    formData.append('image', image!);
-    // }
-    //formData.append('advertisementJson', JSON.stringify(advertisementCopy));
+    formData.append('advertisementJson', JSON.stringify(advertisement));
+    if (advertisement.adImage && advertisement.adImage.file) {
+      try {
+        formData.append('file', advertisement.adImage.file);
+      } catch (error) {
+        console.error('Error fetching or reconstructing file:', error);
+      }
+    }
 
     return this.http
       .post<Advertisement>(this.baseUrl + 'advertisement/save', formData)
@@ -39,65 +37,22 @@ export class AdvertisementService {
       );
   }
 
-  uploadAdvertisementUsingXHR(
-    advertisement: Advertisement,
-    image?: File
-  ): Promise<Advertisement> {
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      const url = this.baseUrl + 'advertisement/save';
-
-      const formData = new FormData();
-
-      const advertisementCopy: Partial<Advertisement> = {
-        title: advertisement.title,
-        message: advertisement.message,
-        statusId: advertisement.statusId,
-        // Добавьте другие необходимые поля, исключая ненужные свойства
-      };
-
-      formData.append('advertisementJson', JSON.stringify(advertisementCopy));
-
-      if (image) {
-        formData.append('image', image);
-      }
-
-      xhr.open('POST', url);
-
-      // Обработка ответа сервера
-      xhr.onreadystatechange = () => {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-          if (xhr.status >= 200 && xhr.status < 300) {
-            try {
-              const response: Advertisement = JSON.parse(xhr.responseText);
-              resolve(response);
-            } catch (error) {
-              reject(new Error('Parsing error: ' + error));
-            }
-          } else {
-            reject(new Error(`Request error, status: ${xhr.status}`));
-          }
-        }
-      };
-
-      xhr.onerror = () => {
-        reject(new Error('Network error'));
-      };
-
-      xhr.send(formData);
-    });
-  }
-
-  async update(advertisement: Advertisement, image?: File) {
+  async update(advertisement: Advertisement) {
     const formData = new FormData();
-    const advertisementCopy = cloneDeep(advertisement);
-    delete advertisementCopy.adImage;
+    formData.append('advertisementJson', JSON.stringify(advertisement));
 
-    if (image) {
-      formData.append('image', image);
+    if (
+      advertisement.adImage &&
+      advertisement.adImage.id === 0 &&
+      advertisement.adImage.file
+    ) {
+      if (advertisement.adImage && advertisement.adImage.file)
+        try {
+          formData.append('file', advertisement.adImage.file);
+        } catch (error) {
+          console.error('Error fetching or reconstructing file:', error);
+        }
     }
-    formData.append('advertisementJson', JSON.stringify(advertisementCopy));
-
     return this.http
       .put<Advertisement>(this.baseUrl + 'advertisement', formData)
       .pipe(
