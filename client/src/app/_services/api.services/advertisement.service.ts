@@ -38,6 +38,7 @@ export class AdvertisementService {
     );
 
     if (image) {
+      this.toastr.success(JSON.stringify(image.size));
       const imageFormData = new FormData();
       imageFormData.append('image', image);
 
