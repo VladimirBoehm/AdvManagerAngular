@@ -59,8 +59,7 @@ export class AdvertisementService {
           )
       );
     }
-    {
-    }
+
 
     return advertisementResponse;
   }
