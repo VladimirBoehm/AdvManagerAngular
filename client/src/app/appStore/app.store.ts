@@ -964,15 +964,10 @@ export const AppStore = signalStore(
         }
       },
       // ------- createAdvertisementAsync -------
-      async createAdvertisementAsync(
-        advertisement: Advertisement,
-        image?: File
-      ) {
-        const advertisementResponse = await advertisementService.save(
-          advertisement,
-          image
+      async createAdvertisementAsync(advertisement: Advertisement) {
+        const advertisementResponse = await lastValueFrom(
+          await advertisementService.save(advertisement)
         );
-
         patchState(
           appStore,
           addEntity(advertisementResponse, myAdvertisementsConfig)

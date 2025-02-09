@@ -2,83 +2,52 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Advertisement } from '../../_models/advertisement';
 import { environment } from '../../../environments/environment';
-import { catchError, lastValueFrom, Observable, retry } from 'rxjs';
+import { catchError, Observable, retry } from 'rxjs';
 import { UpdateAdvertisementAdminRequest } from '../../_models/updateAdvertisementAdminRequest';
 import { UpdateAdvertisementStatusRequest } from '../../_models/updateAdvertisementStatusRequest';
 import { PaginationParams } from '../../_entities/paginationParams';
 import { getPaginationHeaders } from '../../_framework/component/helpers/paginationHelper';
 import { ManagePublish } from '../../_entities/managePublish';
-import { ToastrService } from 'ngx-toastr';
+import { FileService } from '../../appStore/file.service';
 @Injectable({
   providedIn: 'root',
 })
 export class AdvertisementService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
-  private toastr = inject(ToastrService);
+  private fileService = inject(FileService);
 
-  async save(
-    advertisement: Advertisement,
-    image?: File
-  ): Promise<Advertisement> {
+  async save(advertisement: Advertisement): Promise<Observable<Advertisement>> {
     const formData = new FormData();
-    delete advertisement.adImage;
     formData.append('advertisementJson', JSON.stringify(advertisement));
 
-    let advertisementResponse = await lastValueFrom(
-      this.http
-        .post<Advertisement>(this.baseUrl + 'advertisement/save', formData)
-        .pipe(
-          retry(3),
-          catchError((error) => {
-            console.error('Error saving advertisement:', error);
-            throw error;
-          })
-        )
-    );
-
+    const image = await this.fileService.getFirst();
     if (image) {
-      this.toastr.success(JSON.stringify(image.size));
-      const imageFormData = new FormData();
-      imageFormData.append('image', image);
-
-      advertisementResponse = await lastValueFrom(
-        this.http
-          .post<Advertisement>(
-            this.baseUrl +
-              `advertisement/saveImage/${advertisementResponse.id}`,
-            imageFormData
-          )
-          .pipe(
-            retry(3),
-            catchError((error) => {
-              this.toastr.success(JSON.stringify(error));
-              console.error('Error saving advertisement:', error);
-              throw error;
-            })
-          )
-      );
+      const blob = new Blob([image.data], { type: image.type });
+      formData.append('image', blob, image.name);
+      this.fileService.deleteAll();
     }
 
-
-    return advertisementResponse;
+    return this.http
+      .post<Advertisement>(this.baseUrl + 'advertisement/save', formData)
+      .pipe(
+        retry(3),
+        catchError((error) => {
+          console.error('Error saving advertisement:', error);
+          throw error;
+        })
+      );
   }
 
   async update(advertisement: Advertisement) {
     const formData = new FormData();
     formData.append('advertisementJson', JSON.stringify(advertisement));
 
-    if (
-      advertisement.adImage &&
-      advertisement.adImage.id === 0 &&
-      advertisement.adImage.file
-    ) {
-      if (advertisement.adImage && advertisement.adImage.file)
-        try {
-          formData.append('image', advertisement.adImage.file);
-        } catch (error) {
-          console.error('Error fetching or reconstructing file:', error);
-        }
+    const image = await this.fileService.getFirst();
+    if (image) {
+      const blob = new Blob([image.data], { type: image.type });
+      formData.append('image', blob, image.name);
+      this.fileService.deleteAll();
     }
     return this.http
       .put<Advertisement>(this.baseUrl + 'advertisement', formData)

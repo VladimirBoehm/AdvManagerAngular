@@ -24,6 +24,7 @@ import { Localization } from '../../_framework/component/helpers/localization';
 import { ToastrService } from 'ngx-toastr';
 import { AppStore } from '../../appStore/app.store';
 import { cloneDeep } from 'lodash';
+import { FileService } from '../../appStore/file.service';
 
 @Component({
   selector: 'app-advertisement-edit',
@@ -49,6 +50,7 @@ export class AdvertisementEditComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
   private router = inject(Router);
   private toastr = inject(ToastrService);
+  private fileService = inject(FileService);
   readonly appStore = inject(AppStore);
   matErrorService = inject(MatErrorService);
   busyService = inject(BusyService);
@@ -62,7 +64,6 @@ export class AdvertisementEditComponent implements OnInit {
   maxMessageLength: number = 650;
   advertisementId: number = 0;
   userImages: AdImage[] = [];
-  uploadedImage: File | undefined;
 
   Localization = Localization;
 
@@ -124,8 +125,7 @@ export class AdvertisementEditComponent implements OnInit {
 
     if (this.appStore.selectedAdvertisement()?.id === 0) {
       await this.appStore.createAdvertisementAsync(
-        this.appStore.selectedAdvertisement()!,
-        this.uploadedImage
+        this.appStore.selectedAdvertisement()!
       );
       this.router.navigateByUrl('app-advertisement-preview');
     } else {
@@ -140,7 +140,7 @@ export class AdvertisementEditComponent implements OnInit {
     this.fileInput.nativeElement.click();
   }
 
-  onFileSelected(event: Event) {
+  async onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const allowedExtensions = ['jpg', 'jpeg', 'png'];
@@ -168,9 +168,8 @@ export class AdvertisementEditComponent implements OnInit {
           url: URL.createObjectURL(input.files[0]),
         },
       });
-      this.uploadedImage = new File([input.files[0]], input.files[0].name, {
-        type: input.files[0].type,
-      });
+
+      await this.fileService.saveFile(input.files[0]);
     }
   }
 
