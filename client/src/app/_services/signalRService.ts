@@ -80,7 +80,7 @@ export class SignalRService {
             this.appStore.setSelectedAdvertisement(advertisement);
             this.router.navigateByUrl('/app-advertisement-preview');
           });
-        this.hapticFeedback();
+        this.hapticFeedback('warning');
       }
     );
 
@@ -152,7 +152,7 @@ export class SignalRService {
             this.appStore.getMyAdvertisementsAsync();
             this.router.navigateByUrl('/app-advertisement-preview');
           });
-        this.hapticFeedback();
+        this.hapticFeedback('warning');
       }
     );
     this.hubConnection.on(
@@ -220,9 +220,9 @@ export class SignalRService {
       });
   };
 
-  hapticFeedback() {
+  hapticFeedback(type: 'success' | 'warning' | 'error' = 'success') {
     if (window.Telegram?.WebApp?.HapticFeedback) {
-      window.Telegram.WebApp.HapticFeedback.impactOccurred();
+      window.Telegram.WebApp.HapticFeedback.impactOccurred(type);
     }
   }
 }
