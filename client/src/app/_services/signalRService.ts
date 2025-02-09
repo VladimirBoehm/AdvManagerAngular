@@ -71,7 +71,7 @@ export class SignalRService {
         if (this.appStore.selectedAdvertisement()?.id === advertisement.id) {
           this.appStore.updateSelectedAdvertisement(advertisement);
         }
-        this.hapticFeedback('warning');
+        this.hapticFeedback('medium');
         this.toastr
           .warning(Localization.getWord('advertisement_rejected'))
           .onTap.pipe(take(1))
@@ -143,7 +143,7 @@ export class SignalRService {
         if (this.appStore.selectedAdvertisement()?.id === advertisement.id) {
           this.appStore.updateSelectedAdvertisement(advertisement);
         }
-        this.hapticFeedback('warning');
+        this.hapticFeedback('medium');
         this.toastr
           .warning(Localization.getWord('cancel_publication_admin'))
           .onTap.pipe(take(1))
@@ -219,11 +219,13 @@ export class SignalRService {
       });
   };
 
-  hapticFeedback(type: 'success' | 'warning' | 'error' = 'success') {
+  hapticFeedback(
+    type: 'light' | 'medium' | 'heavy' | 'rigid' | 'soft' = 'light'
+  ) {
     const tg = window.Telegram?.WebApp;
     if (tg?.HapticFeedback) {
-      tg.HapticFeedback.notificationOccurred(type);
-
+      console.log('HapticFeedback');
+      tg.HapticFeedback.impactOccurred(type);
     }
   }
 }
