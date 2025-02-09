@@ -220,8 +220,10 @@ export class SignalRService {
   };
 
   hapticFeedback(type: 'success' | 'warning' | 'error' = 'success') {
-    if (window.Telegram?.WebApp?.HapticFeedback) {
-      window.Telegram.WebApp.HapticFeedback.notificationOccurred(type);
+    const tg = window.Telegram?.WebApp;
+    if (tg?.HapticFeedback) {
+      tg.HapticFeedback.notificationOccurred(type);
+
     }
   }
 }
