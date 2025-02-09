@@ -48,6 +48,7 @@ export class SignalRService {
         if (this.appStore.selectedAdvertisement()?.id === advertisement.id) {
           this.appStore.updateSelectedAdvertisement(advertisement);
         }
+        this.hapticFeedback();
         this.toastr
           .success(Localization.getWord('advertisement_validated'))
           .onTap.pipe(take(1))
@@ -56,7 +57,6 @@ export class SignalRService {
             this.appStore.setSelectedAdvertisement(advertisement);
             this.router.navigateByUrl('/app-advertisement-preview');
           });
-        this.hapticFeedback();
       }
     );
 
@@ -71,7 +71,7 @@ export class SignalRService {
         if (this.appStore.selectedAdvertisement()?.id === advertisement.id) {
           this.appStore.updateSelectedAdvertisement(advertisement);
         }
-
+        this.hapticFeedback('warning');
         this.toastr
           .warning(Localization.getWord('advertisement_rejected'))
           .onTap.pipe(take(1))
@@ -80,7 +80,6 @@ export class SignalRService {
             this.appStore.setSelectedAdvertisement(advertisement);
             this.router.navigateByUrl('/app-advertisement-preview');
           });
-        this.hapticFeedback('warning');
       }
     );
 
@@ -94,6 +93,7 @@ export class SignalRService {
             AppListType.PendingValidation,
           ],
         });
+        this.hapticFeedback();
         this.toastr
           .info(Localization.getWord('validation_request'))
           .onTap.pipe(take(1))
@@ -111,7 +111,6 @@ export class SignalRService {
             this.appStore.setSelectedAdvertisement(advertisement);
             this.router.navigateByUrl('/app-advertisement-validate');
           });
-        this.hapticFeedback();
       }
     );
     this.hubConnection.on(
@@ -144,6 +143,7 @@ export class SignalRService {
         if (this.appStore.selectedAdvertisement()?.id === advertisement.id) {
           this.appStore.updateSelectedAdvertisement(advertisement);
         }
+        this.hapticFeedback('warning');
         this.toastr
           .warning(Localization.getWord('cancel_publication_admin'))
           .onTap.pipe(take(1))
@@ -152,7 +152,6 @@ export class SignalRService {
             this.appStore.getMyAdvertisementsAsync();
             this.router.navigateByUrl('/app-advertisement-preview');
           });
-        this.hapticFeedback('warning');
       }
     );
     this.hubConnection.on(
