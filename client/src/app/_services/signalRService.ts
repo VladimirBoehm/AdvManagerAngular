@@ -222,7 +222,7 @@ export class SignalRService {
 
   hapticFeedback(type: 'success' | 'warning' | 'error' = 'success') {
     if (window.Telegram?.WebApp?.HapticFeedback) {
-      window.Telegram.WebApp.HapticFeedback.impactOccurred(type);
+      window.Telegram.WebApp.HapticFeedback.notificationOccurred(type);
     }
   }
 }
