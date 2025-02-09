@@ -56,6 +56,7 @@ export class SignalRService {
             this.appStore.setSelectedAdvertisement(advertisement);
             this.router.navigateByUrl('/app-advertisement-preview');
           });
+        this.hapticFeedback();
       }
     );
 
@@ -79,6 +80,7 @@ export class SignalRService {
             this.appStore.setSelectedAdvertisement(advertisement);
             this.router.navigateByUrl('/app-advertisement-preview');
           });
+        this.hapticFeedback();
       }
     );
 
@@ -109,12 +111,14 @@ export class SignalRService {
             this.appStore.setSelectedAdvertisement(advertisement);
             this.router.navigateByUrl('/app-advertisement-validate');
           });
+        this.hapticFeedback();
       }
     );
     this.hubConnection.on(
       'AdvertisementPlaced',
       (advertisement: Advertisement) => {
         this.placementNotificationHandler(advertisement, false);
+        this.hapticFeedback();
       }
     );
 
@@ -122,6 +126,7 @@ export class SignalRService {
       'AdvertisementForced',
       (advertisement: Advertisement) => {
         this.placementNotificationHandler(advertisement, true);
+        this.hapticFeedback();
       }
     );
     this.hubConnection.on(
@@ -147,6 +152,7 @@ export class SignalRService {
             this.appStore.getMyAdvertisementsAsync();
             this.router.navigateByUrl('/app-advertisement-preview');
           });
+        this.hapticFeedback();
       }
     );
     this.hubConnection.on(
@@ -213,4 +219,10 @@ export class SignalRService {
         this.router.navigateByUrl('/app-advertisement-preview');
       });
   };
+
+  hapticFeedback() {
+    if (window.Telegram?.WebApp?.HapticFeedback) {
+      window.Telegram.WebApp.HapticFeedback.impactOccurred();
+    }
+  }
 }
