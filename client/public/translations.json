@@ -3,6 +3,32 @@
     "ru": "Валидировать",
     "en": "Validate"
   },
+  "advertisement_validated": {
+    "ru": "Объявление подтверждено!",
+    "en": "Advertisement validated!"
+  },
+  "advertisement_rejected": {
+    "ru": "Объявление отклонено!",
+    "en": "Advertisement rejected!"
+  },
+  "validation_request": {
+    "ru": "Новый запрос на валидацию!",
+    "en": "New validation request!"
+  },
+  "advertisement_placed": {
+    "ru": "Объявление размещено!",
+    "en": "Advertisement placed!"
+  },
+
+  "advertisement_forced": {
+    "ru": "Объявление размещено преждевременно!",
+    "en": "Advertisement placed prematurely!"
+  },
+  "cancel_publication_admin": {
+    "ru": "Объявление снято с размещения администратором!",
+    "en": "Advertisement removed from placement by administrator!"
+  },
+
   "validate_subtitle": {
     "ru": "Объявления для валидации",
     "en": "Advertisements for validation"
@@ -206,10 +232,6 @@
   "placement_depends_on_activity": {
     "ru": "*Размещение объявлений зависит от активности в группе",
     "en": "*Advertisement placement depends on group activity"
-  },
-  "advertisement_rejected": {
-    "ru": "Объявление отклонено!",
-    "en": "Advertisement rejected!"
   },
   "sent_to_admin_for_confirmation": {
     "ru": "Отправлено администратору для подтверждения!",
@@ -555,5 +577,13 @@
   "file_too_large": {
     "ru": "Файл слишком большой. Максимально допустимый размер - {size} МБ.",
     "en": "File is too large. Maximum size allowed is {size} MB."
-  }
+  },
+  "refresh": {
+    "ru": "Обновить",
+    "en": "Refresh"
+  },
+  "new_advertisements": {
+  "ru": "Появились новые объявления!",
+  "en": "New advertisements have appeared!"
+}
 }

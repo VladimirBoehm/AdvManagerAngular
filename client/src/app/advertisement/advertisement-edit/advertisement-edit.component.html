@@ -76,8 +76,8 @@
 
           <div class="d-flex flex-column align-items-start mt-1">
             <div class="d-flex">
+              @if (!this.appStore.selectedAdvertisement()?.adImage) {
               <button
-                *ngIf="!this.appStore.selectedAdvertisement()?.adImage"
                 class="btn empty-button p-0 text-start"
                 type="button"
                 (click)="triggerFileInput()"
@@ -101,9 +101,8 @@
                   (change)="onFileSelected($event)"
                 />
               </button>
-
+              } @if (this.appStore.selectedAdvertisement()?.adImage) {
               <button
-                *ngIf="this.appStore.selectedAdvertisement()?.adImage"
                 class="btn empty-button ps-0 text-start"
                 type="button"
                 (click)="deleteImage()"
@@ -117,14 +116,9 @@
                 </span>
                 <div class="text-muted my-info-text">
                   {{ Localization.getWord("delete") }}
-                </div>
-              </button>
-
-              <div
-                *ngIf="this.appStore.selectedAdvertisement()?.adImage"
-                class="image-container"
-                style="width: 100px"
-              >
+                </div></button
+              >} @if (this.appStore.selectedAdvertisement()?.adImage) {
+              <div class="image-container" style="width: 100px">
                 <img
                   [src]="this.appStore.selectedAdvertisement()?.adImage?.url"
                   (click)="showImage()"
@@ -132,12 +126,12 @@
                   class="preview-image rounded"
                 />
               </div>
+              }
             </div>
-
+            @if (!appStore.selectedAdvertisement()?.linkName) {
             <button
               type="button"
               class="btn empty-button p-0"
-              *ngIf="!appStore.selectedAdvertisement()?.linkName"
               (click)="showAddAdvertisementButtonDialog()"
               [disabled]="busyService.isLoading()"
             >
@@ -151,14 +145,12 @@
                 <div class="text-muted my-info-text" style="margin-left: 0">
                   {{ Localization.getWord("button") }}
                 </div>
-              </div>
-            </button>
+              </div></button
+            >}
           </div>
 
-          <div
-            class="d-flex flex-column mt-2"
-            *ngIf="appStore.selectedAdvertisement()?.linkName"
-          >
+          @if (appStore.selectedAdvertisement()?.linkName) {
+          <div class="d-flex flex-column mt-2">
             <div
               class="background-rectangle-panel-common p-2 d-flex flex-column"
             >
@@ -198,6 +190,7 @@
               </button>
             </div>
           </div>
+          }
         </div>
       </div>
     </div>

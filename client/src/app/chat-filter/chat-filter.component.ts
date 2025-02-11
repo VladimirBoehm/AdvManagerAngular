@@ -10,11 +10,11 @@ import { ListFilterComponent } from '../_framework/component/adv-list-filter/lis
 import { SortOption } from '../_entities/sortOption';
 import { BusyService } from '../_services/busy.service';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
-import { SkeletonFullScreenComponent } from '../_framework/component/skeleton-full-screen/skeleton-full-screen.component';
 import { Localization } from '../_framework/component/helpers/localization';
 import { AppStore } from '../appStore/app.store';
 import { Subscription } from 'rxjs';
 import { AddChatFilterDialog } from './dialogs/add-chat-filter.dialog';
+
 
 @Component({
   selector: 'app-chat-filter',
@@ -23,7 +23,6 @@ import { AddChatFilterDialog } from './dialogs/add-chat-filter.dialog';
     SharedModule,
     EmptyListPlaceholderComponent,
     ListFilterComponent,
-    SkeletonFullScreenComponent,
     AddChatFilterDialog,
   ],
   templateUrl: './chat-filter.component.html',
@@ -37,6 +36,7 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
   private backButtonService = inject(TelegramBackButtonService);
   private router = inject(Router);
   readonly appStore = inject(AppStore);
+
   private routerSubscription!: Subscription;
   busyService = inject(BusyService);
 
@@ -51,7 +51,7 @@ export class ChatFilterComponent implements OnInit, OnDestroy {
     this.appStore.getChatFiltersAsync();
     this.backButtonService.setCloseDialogHandler(() => this.closeDialog());
     this.backButtonService.setBackButtonHandler(() => {
-      this.router.navigate(['']);
+      this.router.navigateByUrl('');
     });
   }
 

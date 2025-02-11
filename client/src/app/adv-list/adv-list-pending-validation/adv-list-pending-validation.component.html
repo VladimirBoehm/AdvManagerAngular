@@ -5,7 +5,7 @@
         <div class="col-6 d-flex justify-content-start ps-0">
           <app-adv-list-filter
             (onChanged)="sortChanged($event)"
-            [disabled]="appStore.isAdvertisementListLoading()"
+            [disabled]="isLoading()"
             [sortOption]="
               appStore.pendingValidationPaginationParams().sortOption
             "
@@ -18,7 +18,7 @@
           appStore.pendingValidationPaginationParams().pageSize){
 
           <paginator-localization
-            [disabled]="appStore.isAdvertisementListLoading()"
+            [disabled]="isLoading()"
             #paginator
             (page)="handlePageEvent($event)"
             [length]="appStore.pendingValidationPaginationParams().totalItems"
@@ -32,11 +32,15 @@
       </div>
     </div>
 
+    @if(shouldShowRefreshInfo()){
+    <refresh-list-notification [refresh]="refresh"></refresh-list-notification>
+    }
+
     <div class="list-container">
       <div class="text-center text-muted mb-1">
         {{ Localization.getWord("validate_title") }}
       </div>
-      @if(appStore.isAdvertisementListLoading()){
+      @if(isLoading()){
       <div class="skeleton-panel mt-2"></div>
       } @else {
       <mat-action-list class="flex-grow-1">

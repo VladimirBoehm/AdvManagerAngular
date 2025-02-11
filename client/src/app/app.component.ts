@@ -1,8 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { Localization } from './_framework/component/helpers/localization';
 import { DatePipe } from '@angular/common';
 import { AdvListHelper } from './adv-list/adv-list.helper';
+import { SignalRService } from './_services/signalRService';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -12,14 +14,18 @@ import { AdvListHelper } from './adv-list/adv-list.helper';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   Localization = Localization;
   router = inject(Router);
+  signalRService = inject(SignalRService);
   title = 'Chatbot';
 
-  constructor() {
+  async ngOnInit() {
     this.Localization.setLanguage(
       window.Telegram.WebApp.initDataUnsafe?.user?.language_code ?? 'en'
     );
+    await this.signalRService.createHubConnection();
   }
+
+
 }

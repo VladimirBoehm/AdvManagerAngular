@@ -20,7 +20,7 @@
               (click)="create()"
               [disabled]="
                 appStore.sortedMyAdvertisements().length > 2 ||
-                appStore.isAdvertisementListLoading()
+                isLoading()
               "
             >
               <span class="material-symbols-outlined text-muted">
@@ -50,7 +50,7 @@
       <div class="text-center text-muted mb-1">
         {{ Localization.getWord("my_ads_title") }}
       </div>
-      @if(appStore.isAdvertisementListLoading()){
+      @if(isLoading()){
       <div class="skeleton-panel mt-2"></div>
       } @else {
       <mat-action-list class="flex-grow-1">

@@ -13,6 +13,8 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { loadingInterceptor } from './_interceptors/loading.interceptor';
 import { errorInterceptor } from './_interceptors/error.interceptor';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideIndexedDb } from 'ngx-indexed-db';
+import { dbConfig } from './appStore/file.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -31,5 +33,6 @@ export const appConfig: ApplicationConfig = {
       positionClass: 'toast-top-full-width',
     }),
     importProvidersFrom(ModalModule.forRoot()),
+    provideIndexedDb(dbConfig),
   ],
 };

@@ -5,7 +5,7 @@
         <div class="col-6 d-flex justify-content-start ps-0">
           <app-adv-list-filter
             (onChanged)="sortChanged($event)"
-            [disabled]="busyService.isLoading()"
+            [disabled]="isLoading()"
             [sortOption]="appStore.allHistoryPaginationParams().sortOption"
             [isExtended]="true"
           ></app-adv-list-filter>
@@ -16,7 +16,7 @@
           appStore.allHistoryPaginationParams().pageSize){
 
           <paginator-localization
-            [disabled]="busyService.isLoading()"
+            [disabled]="isLoading()"
             #paginator
             (page)="handlePageEvent($event)"
             [length]="appStore.allHistoryPaginationParams().totalItems"
@@ -28,11 +28,15 @@
       </div>
     </div>
 
+    @if(shouldShowRefreshInfo()){
+    <refresh-list-notification [refresh]="refresh"></refresh-list-notification>
+    }
+
     <div class="list-container">
       <div class="text-center text-muted mb-1">
         {{ this.Localization.getWord("history_title") }}
       </div>
-      @if(busyService.isLoading()){
+      @if(isLoading()){
       <div class="skeleton-panel mt-2"></div>
       } @else {
       <mat-action-list class="flex-grow-1">

@@ -41,7 +41,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   private modalService = inject(BsModalService);
   private router = inject(Router);
   readonly appStore = inject(AppStore);
-  publishService = inject(PublishService);
+  
   advertisementHelper = inject(AdvertisementHelper);
   confirmationService = inject(ConfirmationMatDialogService);
   busyService = inject(BusyService);
@@ -50,7 +50,6 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   advListType = AppListType;
   dateHelper = DateHelper;
   modalRef?: BsModalRef;
-  nextPublishDate?: Date;
   timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   Localization = Localization;
 
@@ -70,7 +69,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   }
 
   edit() {
-    this.router.navigate(['/app-advertisement-edit']);
+    this.router.navigateByUrl('/app-advertisement-edit');
   }
 
   delete() {
@@ -88,16 +87,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   }
 
   publishDialogShow() {
-    this.publishService
-      .getRegularPublishNextDate(this.appStore.selectedAdvertisement()?.id ?? 0)
-      .subscribe({
-        next: (result: Date) => {
-          this.nextPublishDate = result;
-        },
-        error: (err) => {
-          console.error('Error by getting regularPublishNextDate:', err);
-        },
-      });
+
 
     this.modalRef = this.modalService.show(this.modalDialogPublicationInfo);
   }
@@ -112,7 +102,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   };
 
   forcePublication = (adminComment?: string) => {
-    this.appStore.forcePublication(adminComment);
+    this.appStore.forcePublicationAdmin(adminComment);
     this.modalRef?.hide();
     this.back();
   };
@@ -180,8 +170,8 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
     this.appStore.sendToValidationAsync();
   }
 
-  modalDialogPublishConfirm = () => {
-    this.appStore.confirmPublication(this.nextPublishDate);
+  modalDialogPublishConfirm = (nextPublishDate: Date ) => {
+    this.appStore.confirmPublication(nextPublishDate);
     this.modalRef?.hide();
   };
 
@@ -217,22 +207,22 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   back() {
     switch (this.appStore.selectedListType()) {
       case AppListType.MyAdvertisements:
-        this.router.navigate(['/app-adv-list-my-advertisements']);
+        this.router.navigateByUrl('/app-adv-list-my-advertisements');
         break;
       case AppListType.PendingPublication:
-        this.router.navigate(['/app-adv-list-pending-publication']);
+        this.router.navigateByUrl('/app-adv-list-pending-publication');
         break;
       case AppListType.PendingValidation:
-        this.router.navigate(['/app-adv-list-pending-validation']);
+        this.router.navigateByUrl('/app-adv-list-pending-validation');
         break;
       case AppListType.AllHistory:
-        this.router.navigate(['/app-adv-list-all-history']);
+        this.router.navigateByUrl('/app-adv-list-all-history');
         break;
       case AppListType.PrivateHistory:
-        this.router.navigate(['/app-adv-list-private-history']);
+        this.router.navigateByUrl('/app-adv-list-private-history');
         break;
       default:
-        this.router.navigate(['']);
+        this.router.navigateByUrl('');
         break;
     }
   }

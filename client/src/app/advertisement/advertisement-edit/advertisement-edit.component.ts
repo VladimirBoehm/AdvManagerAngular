@@ -23,6 +23,8 @@ import { BusyService } from '../../_services/busy.service';
 import { Localization } from '../../_framework/component/helpers/localization';
 import { ToastrService } from 'ngx-toastr';
 import { AppStore } from '../../appStore/app.store';
+import { cloneDeep } from 'lodash';
+import { FileService } from '../../appStore/file.service';
 
 @Component({
   selector: 'app-advertisement-edit',
@@ -48,6 +50,7 @@ export class AdvertisementEditComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
   private router = inject(Router);
   private toastr = inject(ToastrService);
+  private fileService = inject(FileService);
   readonly appStore = inject(AppStore);
   matErrorService = inject(MatErrorService);
   busyService = inject(BusyService);
@@ -66,7 +69,7 @@ export class AdvertisementEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.backButtonService.setBackButtonHandler(() => {
-      this.router.navigate(['app-adv-list-my-advertisements']);
+      this.router.navigateByUrl('app-adv-list-my-advertisements');
     });
 
     this.initializeForm();
@@ -124,12 +127,12 @@ export class AdvertisementEditComponent implements OnInit {
       await this.appStore.createAdvertisementAsync(
         this.appStore.selectedAdvertisement()!
       );
-      this.router.navigate(['app-advertisement-preview']);
+      this.router.navigateByUrl('app-advertisement-preview');
     } else {
       await this.appStore.updateAdvertisementAsync(
         this.appStore.selectedAdvertisement()!
       );
-      this.router.navigate(['app-advertisement-preview']);
+      this.router.navigateByUrl('app-advertisement-preview');
     }
   }
 
@@ -137,7 +140,7 @@ export class AdvertisementEditComponent implements OnInit {
     this.fileInput.nativeElement.click();
   }
 
-  onFileSelected(event: Event) {
+  async onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const allowedExtensions = ['jpg', 'jpeg', 'png'];
@@ -157,14 +160,16 @@ export class AdvertisementEditComponent implements OnInit {
         return;
       }
 
+      console.log('>>> file input', input.files[0]);
       this.appStore.updateSelectedAdvertisement({
         adImage: {
           id: 0,
           userId: this.appStore.user()?.userId ?? 0,
-          file: input.files[0],
           url: URL.createObjectURL(input.files[0]),
         },
       });
+
+      await this.fileService.saveFile(input.files[0]);
     }
   }
 

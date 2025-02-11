@@ -1,8 +1,10 @@
-import { Component, inject, input, Input } from '@angular/core';
+import { Component, inject, input, Input, OnInit, signal } from '@angular/core';
 import { Localization } from '../../../_framework/component/helpers/localization';
 import { ThreeDotsLoadingComponent } from '../../../_framework/component/custom-loading-bar/three-dots-loading.component';
 import { BusyService } from '../../../_services/busy.service';
 import { SharedModule } from '../../../_framework/modules/sharedModule';
+import { AppStore } from '../../../appStore/app.store';
+import { PublishService } from '../../../_services/api.services/publish.service';
 
 @Component({
   selector: 'modal-dialog-publication-info',
@@ -17,10 +19,7 @@ import { SharedModule } from '../../../_framework/modules/sharedModule';
         </div>
         <app-three-dots-loading
           class="ms-2"
-          *ngIf="
-            busyService.isLoading() && !nextPublishDate();
-            else nextPublishDateTemplate
-          "
+          *ngIf="isLoading(); else nextPublishDateTemplate"
         ></app-three-dots-loading>
         <ng-template #nextPublishDateTemplate>
           <div class="text-center ">
@@ -35,8 +34,8 @@ import { SharedModule } from '../../../_framework/modules/sharedModule';
       <div class="d-flex justify-content-end">
         <button
           class="btn empty-button me-4"
-          (click)="confirm()()"
-          [disabled]="busyService.isLoading()"
+          (click)="confirm()(nextPublishDate()!)"
+          [disabled]="isLoading()"
         >
           <div>{{ Localization.getWord('confirm') }}</div>
         </button>
@@ -49,11 +48,26 @@ import { SharedModule } from '../../../_framework/modules/sharedModule';
   imports: [ThreeDotsLoadingComponent, SharedModule],
   standalone: true,
 })
-export class PublicationInfoDialog {
+export class PublicationInfoDialog implements OnInit {
   Localization = Localization;
-  busyService = inject(BusyService);
-
-  nextPublishDate = input.required<Date | undefined>();
-  confirm = input.required<() => void>();
+  isLoading = signal<boolean>(true);
+  nextPublishDate = signal<Date | undefined>(undefined);
+  confirm = input.required<(nextPublishDate: Date) => void>();
   close = input.required<() => void>();
+  readonly appStore = inject(AppStore);
+  publishService = inject(PublishService);
+
+  ngOnInit(): void {
+    this.publishService
+      .getRegularPublishNextDate(this.appStore.selectedAdvertisement()?.id ?? 0)
+      .subscribe({
+        next: (result: Date) => {
+          this.nextPublishDate.set(result);
+          this.isLoading.set(false);
+        },
+        error: (err) => {
+          console.error('Error by getting regularPublishNextDate:', err);
+        },
+      });
+  }
 }

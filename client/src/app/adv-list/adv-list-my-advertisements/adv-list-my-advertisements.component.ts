@@ -1,4 +1,11 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { TelegramBackButtonService } from '../../_services/telegramBackButton.service';
 import { AppStore } from '../../appStore/app.store';
 import { Router } from '@angular/router';
@@ -7,7 +14,6 @@ import { AdvertisementStatus } from '../../_framework/constants/advertisementSta
 import { Localization } from '../../_framework/component/helpers/localization';
 import { SharedModule } from '../../_framework/modules/sharedModule';
 import { EmptyListPlaceholderComponent } from '../../_framework/component/empty-list-placeholder/empty-list-placeholder.component';
-import { SkeletonFullScreenComponent } from '../../_framework/component/skeleton-full-screen/skeleton-full-screen.component';
 import { DateHelper } from '../../_framework/component/helpers/dateHelper';
 import { AdvListHelper } from '../adv-list.helper';
 import { AppListType } from '../../_framework/constants/advListType';
@@ -15,11 +21,7 @@ import { AppListType } from '../../_framework/constants/advListType';
 @Component({
   selector: 'app-adv-list-my-advertisements',
   standalone: true,
-  imports: [
-    SharedModule,
-    EmptyListPlaceholderComponent,
-    SkeletonFullScreenComponent,
-  ],
+  imports: [SharedModule, EmptyListPlaceholderComponent],
   templateUrl: './adv-list-my-advertisements.component.html',
   styleUrl: './adv-list-my-advertisements.component.scss',
 })
@@ -27,17 +29,22 @@ export class AdvListMyAdvertisementsComponent implements OnInit, OnDestroy {
   private backButtonService = inject(TelegramBackButtonService);
   readonly appStore = inject(AppStore);
   private router = inject(Router);
+  private changeDetector = inject(ChangeDetectorRef);
 
   advListHelper = inject(AdvListHelper);
   Localization = Localization;
   dateHelper = DateHelper;
+  isLoading = signal(false);
 
   async ngOnInit() {
     this.appStore.setSelectedAppListType(AppListType.MyAdvertisements);
     this.backButtonService.setBackButtonHandler(() => {
-      this.router.navigate(['']);
+      this.router.navigateByUrl('');
     });
+    this.isLoading.set(true);
     await this.appStore.getMyAdvertisementsAsync();
+    this.isLoading.set(false);
+    this.changeDetector.detectChanges();
   }
 
   getStatus(advertisement: Advertisement): string {
@@ -64,7 +71,7 @@ export class AdvListMyAdvertisementsComponent implements OnInit, OnDestroy {
   }
 
   openPrivateHistory() {
-    this.router.navigate(['app-adv-list-private-history']);
+    this.router.navigateByUrl('app-adv-list-private-history');
   }
 
   create() {
@@ -77,7 +84,7 @@ export class AdvListMyAdvertisementsComponent implements OnInit, OnDestroy {
       adImage: undefined,
     };
     this.appStore.setSelectedAdvertisement(advertisement);
-    this.router.navigate(['/app-advertisement-edit']);
+    this.router.navigateByUrl('/app-advertisement-edit');
   }
 
   getCreationDate(advertisement: Advertisement): string {

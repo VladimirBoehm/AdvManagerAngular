@@ -38,6 +38,10 @@ body {
   }
 }
 
+mat-list {
+  overflow: auto;
+}
+
 .home-symbols-outlined {
   color: $dark-brownish-red;
   font-size: 36px;
@@ -201,10 +205,6 @@ mat-progress-spinner {
   border-radius: 8px;
 }
 
-.toast-error {
-  background-color: #a02405e7 !important;
-  color: #ffffff !important;
-}
 .container-fluid {
   padding-left: 0;
   padding-right: 0;
@@ -264,4 +264,28 @@ mat-progress-spinner {
   100% {
     background-position: -200% 0;
   }
+}
+
+.toast-top-full-width {
+  top: 4px !important;
+}
+
+.toast-error {
+  background-color: $toast-error-bg !important;
+  color: #ffffff !important;
+}
+
+.toast-success {
+  background-color: $toast-success-bg !important;
+  color: #ffffff !important;
+}
+
+.toast-info {
+  background-color: $toast-info-bg !important;
+  color: #ffffff !important;
+}
+
+.toast-warning {
+  background-color: $toast-warning-bg !important;
+  color: #ffffff !important;
 }
