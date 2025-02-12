@@ -17,6 +17,7 @@ import { EmptyListPlaceholderComponent } from '../../_framework/component/empty-
 import { DateHelper } from '../../_framework/component/helpers/dateHelper';
 import { AdvListHelper } from '../adv-list.helper';
 import { AppListType } from '../../_framework/constants/advListType';
+import { FileService } from '../../appStore/file.service';
 
 @Component({
   selector: 'app-adv-list-my-advertisements',
@@ -30,6 +31,7 @@ export class AdvListMyAdvertisementsComponent implements OnInit, OnDestroy {
   readonly appStore = inject(AppStore);
   private router = inject(Router);
   private changeDetector = inject(ChangeDetectorRef);
+  private fileService = inject(FileService);
 
   advListHelper = inject(AdvListHelper);
   Localization = Localization;
@@ -83,6 +85,7 @@ export class AdvListMyAdvertisementsComponent implements OnInit, OnDestroy {
       statusId: 0,
       adImage: undefined,
     };
+    this.fileService.deleteAll();
     this.appStore.setSelectedAdvertisement(advertisement);
     this.router.navigateByUrl('/app-advertisement-edit');
   }
