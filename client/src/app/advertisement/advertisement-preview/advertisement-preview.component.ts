@@ -16,6 +16,7 @@ import { AppStore } from '../../appStore/app.store';
 import { PublicationInfoDialog } from './dialogs/publication-Info.dialog';
 import { CancelPublicationAdminDialog } from './dialogs/cancel-publication-admin.dialog';
 import { ForcePublicationAdminDialog } from './dialogs/force-publication-admin.dialog';
+import { FileService } from '../../appStore/file.service';
 
 @Component({
   selector: 'app-advertisement-preview',
@@ -41,7 +42,8 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   private modalService = inject(BsModalService);
   private router = inject(Router);
   readonly appStore = inject(AppStore);
-  
+  private fileService = inject(FileService);
+
   advertisementHelper = inject(AdvertisementHelper);
   confirmationService = inject(ConfirmationMatDialogService);
   busyService = inject(BusyService);
@@ -69,6 +71,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   }
 
   edit() {
+    this.fileService.deleteAll();
     this.router.navigateByUrl('/app-advertisement-edit');
   }
 
@@ -87,8 +90,6 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
   }
 
   publishDialogShow() {
-
-
     this.modalRef = this.modalService.show(this.modalDialogPublicationInfo);
   }
 
@@ -170,7 +171,7 @@ export class AdvertisementPreviewComponent implements OnInit, OnDestroy {
     this.appStore.sendToValidationAsync();
   }
 
-  modalDialogPublishConfirm = (nextPublishDate: Date ) => {
+  modalDialogPublishConfirm = (nextPublishDate: Date) => {
     this.appStore.confirmPublication(nextPublishDate);
     this.modalRef?.hide();
   };
