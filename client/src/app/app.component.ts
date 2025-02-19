@@ -8,7 +8,7 @@ import { lastValueFrom } from 'rxjs';
 import { AccountService } from './_services/api.services/account.service';
 import { patchState } from '@ngrx/signals';
 import { AppStore } from './appStore/app.store';
-import { TurtleLoader } from "./_framework/component/loaders/turtle-loader/turtle-loader";
+import { TurtleLoader } from './_framework/component/loaders/turtle-loader/turtle-loader';
 
 @Component({
   selector: 'app-root',
@@ -28,6 +28,8 @@ export class AppComponent implements OnInit {
   isLoading = signal(true);
 
   async ngOnInit() {
+    const startTime = Date.now();
+
     const user = await lastValueFrom(this.accountService.login());
     localStorage.setItem('user', JSON.stringify(user));
     patchState(this.appStore as any, { user });
@@ -36,6 +38,13 @@ export class AppComponent implements OnInit {
       window.Telegram.WebApp.initDataUnsafe?.user?.language_code ?? 'en'
     );
     await this.signalRService.createHubConnection();
+
+    // to show intro min 2 sec :)
+    const elapsed = Date.now() - startTime;
+    if (elapsed < 5500) {
+      await new Promise((resolve) => setTimeout(resolve, 5500 - elapsed));
+    }
+
     this.isLoading.set(false);
   }
 }
