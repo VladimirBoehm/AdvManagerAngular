@@ -1,2 +1,11 @@
-<router-outlet> </router-outlet>
+@if (isLoading()) {
+<div
+  style="width: 100%; height: 100%; background-color: black"
+  class="d-flex justify-content-center align-items-center"
+>
+  <turtle-loader></turtle-loader>
+</div>
 
+} @else {
+<router-outlet> </router-outlet>
+}
