@@ -132,13 +132,6 @@ export const AppStore = signalStore(
   withEntities(pendingPublicationConfig),
   withEntities(pendingValidationConfig),
   withLogger('appState'),
-  withHooks({
-    async onInit(appStore, accountService = inject(AccountService)) {
-      const user = await lastValueFrom(accountService.login());
-      localStorage.setItem('user', JSON.stringify(user));
-      patchState(appStore, { user });
-    },
-  }),
   withComputed(
     ({
       chatFilterEntities,

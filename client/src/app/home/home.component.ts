@@ -6,7 +6,7 @@ import { BusyService } from '../_services/busy.service';
 import { Localization } from '../_framework/component/helpers/localization';
 import { ImpressumComponent } from './impressum/impressum.component';
 import { AppStore } from '../appStore/app.store';
-import { ThreeDotsLoadingComponent } from '../_framework/component/custom-loading-bar/three-dots-loading.component';
+import { ThreeDotsLoadingComponent } from '../_framework/component/loaders/custom-loading-bar/three-dots-loading.component';
 
 @Component({
   selector: 'app-home',
@@ -26,14 +26,13 @@ export class HomeComponent implements OnInit {
   busyService = inject(BusyService);
   readonly appStore = inject(AppStore);
   Localization = Localization;
-
   isImpressumInfoShown = signal<boolean>(false);
 
   constructor() {
     this.impressumClose = this.impressumClose.bind(this);
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.appStore.getPendingValidationCountAsync();
     if (window.Telegram?.WebApp) {
       window.Telegram?.WebApp?.expand();

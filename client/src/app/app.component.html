@@ -1,2 +1,8 @@
-<router-outlet> </router-outlet>
+@if (isLoading()) {
+<div class="full-screen-container">
+  <turtle-loader></turtle-loader>
+</div>
 
+} @else {
+<router-outlet> </router-outlet>
+}

@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { SharedModule } from '../../modules/sharedModule';
+import { SharedModule } from '../../../modules/sharedModule';
 
 @Component({
   selector: 'app-skeleton-full-screen',

@@ -1,6 +1,6 @@
 import { Component, inject, input, Input, OnInit, signal } from '@angular/core';
 import { Localization } from '../../../_framework/component/helpers/localization';
-import { ThreeDotsLoadingComponent } from '../../../_framework/component/custom-loading-bar/three-dots-loading.component';
+import { ThreeDotsLoadingComponent } from '../../../_framework/component/loaders/custom-loading-bar/three-dots-loading.component';
 import { BusyService } from '../../../_services/busy.service';
 import { SharedModule } from '../../../_framework/modules/sharedModule';
 import { AppStore } from '../../../appStore/app.store';

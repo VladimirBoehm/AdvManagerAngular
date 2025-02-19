@@ -1,15 +1,19 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { Localization } from './_framework/component/helpers/localization';
 import { DatePipe } from '@angular/common';
 import { AdvListHelper } from './adv-list/adv-list.helper';
 import { SignalRService } from './_services/signalRService';
-import { environment } from '../environments/environment';
+import { lastValueFrom } from 'rxjs';
+import { AccountService } from './_services/api.services/account.service';
+import { patchState } from '@ngrx/signals';
+import { AppStore } from './appStore/app.store';
+import { TurtleLoader } from './_framework/component/loaders/turtle-loader/turtle-loader';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, TurtleLoader],
   providers: [DatePipe, AdvListHelper],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -18,14 +22,29 @@ export class AppComponent implements OnInit {
   Localization = Localization;
   router = inject(Router);
   signalRService = inject(SignalRService);
+  readonly accountService = inject(AccountService);
+  readonly appStore = inject(AppStore);
   title = 'Chatbot';
+  isLoading = signal(true);
 
   async ngOnInit() {
+    const startTime = Date.now();
+
+    const user = await lastValueFrom(this.accountService.login());
+    localStorage.setItem('user', JSON.stringify(user));
+    patchState(this.appStore as any, { user });
+
     this.Localization.setLanguage(
       window.Telegram.WebApp.initDataUnsafe?.user?.language_code ?? 'en'
     );
     await this.signalRService.createHubConnection();
+
+    // to show pretty loader min 5 sec :)
+    const elapsed = Date.now() - startTime;
+    if (elapsed < 5500) {
+      await new Promise((resolve) => setTimeout(resolve, 5500 - elapsed));
+    }
+
+    this.isLoading.set(false);
   }
-
-
 }
