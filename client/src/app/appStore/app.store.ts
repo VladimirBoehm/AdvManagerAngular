@@ -42,6 +42,7 @@ import { PublishService } from '../_services/api.services/publish.service';
 import { DateHelper } from '../_framework/component/helpers/dateHelper';
 import cloneDeep from 'lodash-es/cloneDeep';
 import { ManagePublish } from '../_entities/managePublish';
+import { ErrorLogClientService } from '../_services/api.services/errorLogClient.service';
 
 export const defaultPageSize = 6;
 const chatFilterPageSize = 999;
@@ -291,7 +292,8 @@ export const AppStore = signalStore(
       accountService = inject(AccountService),
       advertisementService = inject(AdvertisementService),
       chatFilterService = inject(ChatFilterService),
-      publishService = inject(PublishService)
+      publishService = inject(PublishService),
+      errorLogService = inject(ErrorLogClientService)
     ) => ({
       // ------- loginAsync -------
       async loginAsync() {
@@ -958,15 +960,25 @@ export const AppStore = signalStore(
       },
       // ------- createAdvertisementAsync -------
       async createAdvertisementAsync(advertisement: Advertisement) {
-        const advertisementResponse = await lastValueFrom(
-          await advertisementService.save(advertisement)
-        );
-        patchState(
-          appStore,
-          addEntity(advertisementResponse, myAdvertisementsConfig)
-        );
-        this.setSelectedAdvertisement(advertisementResponse);
-        console.log('>>> AppStore: advertisementResponse created');
+        try {
+          const advertisementResponse = await lastValueFrom(
+            await advertisementService.save(advertisement)
+          );
+          patchState(
+            appStore,
+            addEntity(advertisementResponse, myAdvertisementsConfig)
+          );
+          this.setSelectedAdvertisement(advertisementResponse);
+          console.log('>>> AppStore: advertisementResponse created');
+        } catch (error) {
+          errorLogService.send({
+            errorMessage: JSON.stringify(
+              error,
+              Object.getOwnPropertyNames(error)
+            ),
+            additionalInfo: 'app.store.ts: createAdvertisementAsync()',
+          });
+        }
       },
       // ------- updateAdvertisementAsync -------
       async updateAdvertisementAsync(advertisement: Advertisement) {

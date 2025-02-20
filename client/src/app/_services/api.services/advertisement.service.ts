@@ -9,6 +9,7 @@ import { PaginationParams } from '../../_entities/paginationParams';
 import { getPaginationHeaders } from '../../_framework/component/helpers/paginationHelper';
 import { ManagePublish } from '../../_entities/managePublish';
 import { FileService } from '../../appStore/file.service';
+import { ErrorLogClientService } from './errorLogClient.service';
 @Injectable({
   providedIn: 'root',
 })
@@ -16,6 +17,7 @@ export class AdvertisementService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
   private fileService = inject(FileService);
+  private errorLogService = inject(ErrorLogClientService);
 
   async save(advertisement: Advertisement): Promise<Observable<Advertisement>> {
     const formData = new FormData();
@@ -34,6 +36,16 @@ export class AdvertisementService {
         retry(3),
         catchError((error) => {
           console.error('Error saving advertisement:', error);
+          this.errorLogService.send({
+            errorMessage: JSON.stringify(
+              error,
+              Object.getOwnPropertyNames(error)
+            ),
+            additionalInfo: "AdvertisementService: save(): " +  JSON.stringify(
+              formData,
+              Object.getOwnPropertyNames(formData)
+            ),
+          });
           throw error;
         })
       );
