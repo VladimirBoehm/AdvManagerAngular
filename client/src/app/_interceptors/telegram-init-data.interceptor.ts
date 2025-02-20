@@ -12,7 +12,7 @@ export const telegramInitDataInterceptor: HttpInterceptorFn = (req, next) => {
   if (initData) {
     const clonedRequest = req.clone({
       setHeaders: {
-        initData: initData,
+        initData: initData.toString(),
       },
     });
     return next(clonedRequest);
