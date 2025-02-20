@@ -22,12 +22,12 @@ export class AdvertisementService {
   async save(advertisement: Advertisement): Promise<Observable<Advertisement>> {
     const formData = new FormData();
     try {
-      formData.append('advertisementJson', JSON.stringify(advertisement));
+      await formData.append('advertisementJson', JSON.stringify(advertisement));
 
       const image = await this.fileService.getFirst();
       if (image) {
         const blob = new Blob([image.data], { type: image.type });
-        formData.append('image', blob, image.name);
+        await formData.append('image', blob, image.name);
         this.fileService.deleteAll();
       }
 
