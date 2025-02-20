@@ -22,22 +22,30 @@ export class AdvertisementService {
   async save(advertisement: Advertisement): Promise<Observable<Advertisement>> {
     const formData = new FormData();
     try {
-      await formData.append('advertisementJson', JSON.stringify(advertisement));
+      formData.append('advertisementJson', JSON.stringify(advertisement));
 
-      const image = await this.fileService.getFirst();
+      const image: { data: BlobPart; type: string; name: string } | undefined =
+        await this.fileService.getFirst();
       if (image) {
-        const blob = new Blob([image.data], { type: image.type });
-        await formData.append('image', blob, image.name);
+        const blob: Blob = new Blob([image.data], { type: image.type });
+        formData.append('image', blob, image.name);
         this.fileService.deleteAll();
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 300));
       return this.http
         .post<Advertisement>(this.baseUrl + 'advertisement/save', formData)
         .pipe(
           retry(3),
-          catchError((error) => {
+          catchError((error: any) => {
             console.error('Error saving advertisement(response):', error);
+            const formDataEntries: {
+              key: string;
+              value: FormDataEntryValue;
+            }[] = [];
+            formData.forEach((value, key) => {
+              formDataEntries.push({ key, value });
+            });
+
             this.errorLogService.send({
               errorMessage: JSON.stringify(
                 error,
@@ -45,18 +53,22 @@ export class AdvertisementService {
               ),
               additionalInfo:
                 'advertisementService.ts(response): save(): ' +
-                JSON.stringify(formData, Object.getOwnPropertyNames(formData)),
+                JSON.stringify(formDataEntries),
             });
             throw error;
           })
         );
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving advertisement(request):', error);
+      const formDataEntries: { key: string; value: FormDataEntryValue }[] = [];
+      formData.forEach((value, key) => {
+        formDataEntries.push({ key, value });
+      });
       this.errorLogService.send({
         errorMessage: JSON.stringify(error, Object.getOwnPropertyNames(error)),
         additionalInfo:
           'advertisementService.ts(request): save(): ' +
-          JSON.stringify(formData, Object.getOwnPropertyNames(formData)),
+          JSON.stringify(formDataEntries),
       });
       throw error;
     }
