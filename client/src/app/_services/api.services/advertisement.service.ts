@@ -41,15 +41,9 @@ export class AdvertisementService {
     } catch (error: any) {
       console.error('Error saving advertisement(request):', error);
       this.toastr.error(Localization.getWord('error_occurred_contact_admin'));
-      const formDataEntries: { key: string; value: FormDataEntryValue }[] = [];
-      formData.forEach((value, key) => {
-        formDataEntries.push({ key, value });
-      });
       this.errorLogService.send({
         errorMessage: JSON.stringify(error, Object.getOwnPropertyNames(error)),
-        additionalInfo:
-          'advertisementService.ts(request): save(): ' +
-          JSON.stringify(formDataEntries),
+        additionalInfo: 'advertisementService.ts(request): save()',
       });
       throw error;
     }
@@ -63,22 +57,13 @@ export class AdvertisementService {
           this.toastr.error(
             Localization.getWord('error_occurred_contact_admin')
           );
-          const formDataEntries: {
-            key: string;
-            value: FormDataEntryValue;
-          }[] = [];
-          formData.forEach((value, key) => {
-            formDataEntries.push({ key, value });
-          });
 
           this.errorLogService.send({
             errorMessage: JSON.stringify(
               error,
               Object.getOwnPropertyNames(error)
             ),
-            additionalInfo:
-              'advertisementService.ts(response): save(): ' +
-              JSON.stringify(formDataEntries),
+            additionalInfo: 'advertisementService.ts(response): save()',
           });
           throw error;
         })
