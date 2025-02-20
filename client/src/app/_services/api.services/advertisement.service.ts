@@ -21,34 +21,44 @@ export class AdvertisementService {
 
   async save(advertisement: Advertisement): Promise<Observable<Advertisement>> {
     const formData = new FormData();
-    formData.append('advertisementJson', JSON.stringify(advertisement));
+    try {
+      formData.append('advertisementJson', JSON.stringify(advertisement));
 
-    const image = await this.fileService.getFirst();
-    if (image) {
-      const blob = new Blob([image.data], { type: image.type });
-      formData.append('image', blob, image.name);
-      this.fileService.deleteAll();
+      const image = await this.fileService.getFirst();
+      if (image) {
+        const blob = new Blob([image.data], { type: image.type });
+        formData.append('image', blob, image.name);
+        this.fileService.deleteAll();
+      }
+
+      return this.http
+        .post<Advertisement>(this.baseUrl + 'advertisement/save', formData)
+        .pipe(
+          retry(3),
+          catchError((error) => {
+            console.error('Error saving advertisement(response):', error);
+            this.errorLogService.send({
+              errorMessage: JSON.stringify(
+                error,
+                Object.getOwnPropertyNames(error)
+              ),
+              additionalInfo:
+                'advertisementService.ts(response): save(): ' +
+                JSON.stringify(formData, Object.getOwnPropertyNames(formData)),
+            });
+            throw error;
+          })
+        );
+    } catch (error) {
+      console.error('Error saving advertisement(request):', error);
+      this.errorLogService.send({
+        errorMessage: JSON.stringify(error, Object.getOwnPropertyNames(error)),
+        additionalInfo:
+          'advertisementService.ts(request): save(): ' +
+          JSON.stringify(formData, Object.getOwnPropertyNames(formData)),
+      });
+      throw error;
     }
-
-    return this.http
-      .post<Advertisement>(this.baseUrl + 'advertisement/save', formData)
-      .pipe(
-        retry(3),
-        catchError((error) => {
-          console.error('Error saving advertisement:', error);
-          this.errorLogService.send({
-            errorMessage: JSON.stringify(
-              error,
-              Object.getOwnPropertyNames(error)
-            ),
-            additionalInfo: "AdvertisementService: save(): " +  JSON.stringify(
-              formData,
-              Object.getOwnPropertyNames(formData)
-            ),
-          });
-          throw error;
-        })
-      );
   }
 
   async update(advertisement: Advertisement) {
