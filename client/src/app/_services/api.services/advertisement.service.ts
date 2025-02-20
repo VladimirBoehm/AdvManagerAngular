@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Advertisement } from '../../_models/advertisement';
 import { environment } from '../../../environments/environment';
@@ -45,8 +45,11 @@ export class AdvertisementService {
       });
       throw error;
     }
+    const headers = new HttpHeaders().append('enctype', 'multipart/form-data');
     return this.http
-      .post<Advertisement>(this.baseUrl + 'advertisement/save', formData)
+      .post<Advertisement>(this.baseUrl + 'advertisement/save', formData, {
+        headers,
+      })
       .pipe(
         retry(3),
         catchError((error: any) => {
