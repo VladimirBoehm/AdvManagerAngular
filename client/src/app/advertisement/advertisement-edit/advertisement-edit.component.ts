@@ -3,6 +3,7 @@ import {
   ElementRef,
   inject,
   OnInit,
+  signal,
   ViewChild,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -64,6 +65,9 @@ export class AdvertisementEditComponent implements OnInit {
   maxMessageLength: number = 650;
   advertisementId: number = 0;
   userImages: AdImage[] = [];
+
+  //--------------TEST----------------
+  errorMessage = signal<string |undefined>(undefined);
 
   Localization = Localization;
 
@@ -136,7 +140,7 @@ export class AdvertisementEditComponent implements OnInit {
         this.router.navigateByUrl('app-advertisement-preview');
       }
     } catch (error) {
-      this.toastr.error((error as any).status);
+      this.errorMessage.set(JSON.stringify(error));
     }
   }
 

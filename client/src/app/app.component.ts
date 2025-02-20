@@ -39,7 +39,7 @@ export class AppComponent implements OnInit {
     );
     await this.signalRService.createHubConnection();
 
-    //to show pretty loader min 5 sec :)
+    //to show pretty loader min 3 sec :)
     const elapsed = Date.now() - startTime;
     if (elapsed < 3500) {
       await new Promise((resolve) => setTimeout(resolve, 3500 - elapsed));

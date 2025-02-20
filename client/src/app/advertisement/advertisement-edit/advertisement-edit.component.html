@@ -1,4 +1,9 @@
 <body class="p-1">
+  @if(errorMessage()){
+  <div style="background-color: antiquewhite" class="mt-5">
+    {{ errorMessage() }}
+  </div>
+  } @else {
   <form
     id="editForm"
     [formGroup]="editForm"
@@ -195,6 +200,7 @@
       </div>
     </div>
   </form>
+  }
 
   <ng-template #imageShowTemplate>
     <app-image-preview-modal
