@@ -10,16 +10,12 @@ export const telegramInitDataInterceptor: HttpInterceptorFn = (req, next) => {
   const initData = window.Telegram?.WebApp?.initData;
 
   if (initData) {
-    try {
-      const clonedRequest = req.clone({
-        setHeaders: {
-          initData: initData.toString(),
-        },
-      });
-      return next(clonedRequest);
-    } catch (error) {
-      throw new Error('Error setting initData header');
-    }
+    const clonedRequest = req.clone({
+      setHeaders: {
+        initData: initData,
+      },
+    });
+    return next(clonedRequest);
   }
   return next(req);
 };
