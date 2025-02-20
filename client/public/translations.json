@@ -19,7 +19,10 @@
     "ru": "Объявление размещено!",
     "en": "Advertisement placed!"
   },
-
+  "error_occurred_contact_admin": {
+    "ru": "Произошла ошибка, обратитесь к администратору",
+    "en": "An error occurred, please contact the administrator"
+  },
   "advertisement_forced": {
     "ru": "Объявление размещено преждевременно!",
     "en": "Advertisement placed prematurely!"
@@ -583,7 +586,7 @@
     "en": "Refresh"
   },
   "new_advertisements": {
-  "ru": "Появились новые объявления!",
-  "en": "New advertisements have appeared!"
-}
+    "ru": "Появились новые объявления!",
+    "en": "New advertisements have appeared!"
+  }
 }

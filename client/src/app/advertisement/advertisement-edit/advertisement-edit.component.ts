@@ -16,15 +16,15 @@ import {
 } from './dialogs/add-advertisement-button-modal/add-advertisement-button-modal.component';
 import { MatErrorService } from '../../_framework/component/errors/mat-error-service';
 import { AdvertisementStatus } from '../../_framework/constants/advertisementStatus';
-import { AppListType } from '../../_framework/constants/advListType';
 import { SharedModule } from '../../_framework/modules/sharedModule';
 import { ImagePreviewModalComponent } from '../../_framework/component/image-preview-modal/image-preview-modal.component';
 import { BusyService } from '../../_services/busy.service';
 import { Localization } from '../../_framework/component/helpers/localization';
 import { ToastrService } from 'ngx-toastr';
 import { AppStore } from '../../appStore/app.store';
-import { cloneDeep } from 'lodash';
 import { FileService } from '../../appStore/file.service';
+import { ErrorLogClientService } from '../../_services/api.services/errorLogClient.service';
+import { ErrorLogClient } from '../../_models/errorLogClient';
 
 @Component({
   selector: 'app-advertisement-edit',
@@ -54,6 +54,7 @@ export class AdvertisementEditComponent implements OnInit {
   readonly appStore = inject(AppStore);
   matErrorService = inject(MatErrorService);
   busyService = inject(BusyService);
+  errorLogService = inject(ErrorLogClientService);
 
   modalRef?: BsModalRef;
   editForm: FormGroup = new FormGroup({});
@@ -64,7 +65,6 @@ export class AdvertisementEditComponent implements OnInit {
   maxMessageLength: number = 650;
   advertisementId: number = 0;
   userImages: AdImage[] = [];
-
   Localization = Localization;
 
   ngOnInit(): void {
@@ -117,22 +117,31 @@ export class AdvertisementEditComponent implements OnInit {
   }
 
   async save() {
-    this.appStore.updateSelectedAdvertisement({
-      title: this.editForm.controls['title']?.value,
-      message: this.editForm.controls['message']?.value,
-      statusId: AdvertisementStatus.new,
-    });
+    try {
+      this.appStore.updateSelectedAdvertisement({
+        title: this.editForm.controls['title']?.value,
+        message: this.editForm.controls['message']?.value,
+        statusId: AdvertisementStatus.new,
+      });
 
-    if (this.appStore.selectedAdvertisement()?.id === 0) {
-      await this.appStore.createAdvertisementAsync(
-        this.appStore.selectedAdvertisement()!
-      );
-      this.router.navigateByUrl('app-advertisement-preview');
-    } else {
-      await this.appStore.updateAdvertisementAsync(
-        this.appStore.selectedAdvertisement()!
-      );
-      this.router.navigateByUrl('app-advertisement-preview');
+      if (this.appStore.selectedAdvertisement()?.id === 0) {
+        await this.appStore.createAdvertisementAsync(
+          this.appStore.selectedAdvertisement()!
+        );
+        this.router.navigateByUrl('app-advertisement-preview');
+      } else {
+        await this.appStore.updateAdvertisementAsync(
+          this.appStore.selectedAdvertisement()!
+        );
+        this.router.navigateByUrl('app-advertisement-preview');
+      }
+    } catch (error) {
+      this.toastr.error(Localization.getWord('error_occurred_contact_admin'));
+      const errorLogClient = {
+        errorMessage: JSON.stringify(error, Object.getOwnPropertyNames(error)),
+        additionalInfo: 'advertisement-edit.component.ts: save()',
+      } as ErrorLogClient;
+      this.errorLogService.send(errorLogClient);
     }
   }
 
