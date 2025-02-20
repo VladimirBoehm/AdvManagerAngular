@@ -22,7 +22,10 @@ export class AdvertisementService {
   async save(advertisement: Advertisement): Promise<Observable<Advertisement>> {
     const formData = new FormData();
     try {
-      formData.append('advertisementJson', JSON.stringify(advertisement));
+      formData.append(
+        'advertisementJson',
+        decodeURIComponent(encodeURIComponent(JSON.stringify(advertisement)))
+      );
 
       const image: { data: BlobPart; type: string; name: string } | undefined =
         await this.fileService.getFirst();
@@ -45,11 +48,9 @@ export class AdvertisementService {
       });
       throw error;
     }
-    const headers = new HttpHeaders().append('enctype', 'multipart/form-data');
+
     return this.http
-      .post<Advertisement>(this.baseUrl + 'advertisement/save', formData, {
-        headers,
-      })
+      .post<Advertisement>(this.baseUrl + 'advertisement/save', formData)
       .pipe(
         retry(3),
         catchError((error: any) => {
@@ -78,7 +79,10 @@ export class AdvertisementService {
 
   async update(advertisement: Advertisement) {
     const formData = new FormData();
-    formData.append('advertisementJson', JSON.stringify(advertisement));
+    formData.append(
+      'advertisementJson',
+      decodeURIComponent(encodeURIComponent(JSON.stringify(advertisement)))
+    );
 
     const image = await this.fileService.getFirst();
     if (image) {
