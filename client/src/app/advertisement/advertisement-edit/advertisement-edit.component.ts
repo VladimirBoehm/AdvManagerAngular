@@ -117,22 +117,26 @@ export class AdvertisementEditComponent implements OnInit {
   }
 
   async save() {
-    this.appStore.updateSelectedAdvertisement({
-      title: this.editForm.controls['title']?.value,
-      message: this.editForm.controls['message']?.value,
-      statusId: AdvertisementStatus.new,
-    });
+    try {
+      this.appStore.updateSelectedAdvertisement({
+        title: this.editForm.controls['title']?.value,
+        message: this.editForm.controls['message']?.value,
+        statusId: AdvertisementStatus.new,
+      });
 
-    if (this.appStore.selectedAdvertisement()?.id === 0) {
-      await this.appStore.createAdvertisementAsync(
-        this.appStore.selectedAdvertisement()!
-      );
-      this.router.navigateByUrl('app-advertisement-preview');
-    } else {
-      await this.appStore.updateAdvertisementAsync(
-        this.appStore.selectedAdvertisement()!
-      );
-      this.router.navigateByUrl('app-advertisement-preview');
+      if (this.appStore.selectedAdvertisement()?.id === 0) {
+        await this.appStore.createAdvertisementAsync(
+          this.appStore.selectedAdvertisement()!
+        );
+        this.router.navigateByUrl('app-advertisement-preview');
+      } else {
+        await this.appStore.updateAdvertisementAsync(
+          this.appStore.selectedAdvertisement()!
+        );
+        this.router.navigateByUrl('app-advertisement-preview');
+      }
+    } catch (error) {
+      this.toastr.error((error as any).status);
     }
   }
 
