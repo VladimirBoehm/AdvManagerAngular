@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Advertisement } from '../../_models/advertisement';
 import { environment } from '../../../environments/environment';
@@ -10,6 +10,8 @@ import { getPaginationHeaders } from '../../_framework/component/helpers/paginat
 import { ManagePublish } from '../../_entities/managePublish';
 import { FileService } from '../../appStore/file.service';
 import { ErrorLogClientService } from './errorLogClient.service';
+import { ToastrService } from 'ngx-toastr';
+import { Localization } from '../../_framework/component/helpers/localization';
 @Injectable({
   providedIn: 'root',
 })
@@ -17,7 +19,9 @@ export class AdvertisementService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
   private fileService = inject(FileService);
+  private toastr = inject(ToastrService);
   private errorLogService = inject(ErrorLogClientService);
+  Localization = Localization;
 
   async save(advertisement: Advertisement): Promise<Observable<Advertisement>> {
     const formData = new FormData();
@@ -36,6 +40,7 @@ export class AdvertisementService {
       }
     } catch (error: any) {
       console.error('Error saving advertisement(request):', error);
+      this.toastr.error(Localization.getWord('error_occurred_contact_admin'));
       const formDataEntries: { key: string; value: FormDataEntryValue }[] = [];
       formData.forEach((value, key) => {
         formDataEntries.push({ key, value });
