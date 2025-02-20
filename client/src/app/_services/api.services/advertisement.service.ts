@@ -60,6 +60,9 @@ export class AdvertisementService {
         retry(3),
         catchError((error: any) => {
           console.error('Error saving advertisement(response):', error);
+          this.toastr.error(
+            Localization.getWord('error_occurred_contact_admin')
+          );
           const formDataEntries: {
             key: string;
             value: FormDataEntryValue;
