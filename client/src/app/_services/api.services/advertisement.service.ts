@@ -31,7 +31,7 @@ export class AdvertisementService {
         this.fileService.deleteAll();
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 300));
       return this.http
         .post<Advertisement>(this.baseUrl + 'advertisement/save', formData)
         .pipe(
