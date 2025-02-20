@@ -54,7 +54,7 @@ export class AdvertisementEditComponent implements OnInit {
   readonly appStore = inject(AppStore);
   matErrorService = inject(MatErrorService);
   busyService = inject(BusyService);
-  errorLogService = inject(ErrorLogClientService);
+  private errorLogService = inject(ErrorLogClientService);
 
   modalRef?: BsModalRef;
   editForm: FormGroup = new FormGroup({});
