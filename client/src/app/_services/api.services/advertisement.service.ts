@@ -10,6 +10,8 @@ import { getPaginationHeaders } from '../../_framework/component/helpers/paginat
 import { ManagePublish } from '../../_entities/managePublish';
 import { FileService } from '../../appStore/file.service';
 import { ErrorLogClientService } from './errorLogClient.service';
+import { ToastrService } from 'ngx-toastr';
+import { Localization } from '../../_framework/component/helpers/localization';
 @Injectable({
   providedIn: 'root',
 })
@@ -17,12 +19,17 @@ export class AdvertisementService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
   private fileService = inject(FileService);
+  private toastr = inject(ToastrService);
   private errorLogService = inject(ErrorLogClientService);
+  Localization = Localization;
 
   async save(advertisement: Advertisement): Promise<Observable<Advertisement>> {
     const formData = new FormData();
     try {
-      formData.append('advertisementJson', JSON.stringify(advertisement));
+      formData.append(
+        'advertisementJson',
+        decodeURIComponent(encodeURIComponent(JSON.stringify(advertisement)))
+      );
 
       const image: { data: BlobPart; type: string; name: string } | undefined =
         await this.fileService.getFirst();
@@ -33,6 +40,7 @@ export class AdvertisementService {
       }
     } catch (error: any) {
       console.error('Error saving advertisement(request):', error);
+      this.toastr.error(Localization.getWord('error_occurred_contact_admin'));
       const formDataEntries: { key: string; value: FormDataEntryValue }[] = [];
       formData.forEach((value, key) => {
         formDataEntries.push({ key, value });
@@ -45,12 +53,16 @@ export class AdvertisementService {
       });
       throw error;
     }
+
     return this.http
       .post<Advertisement>(this.baseUrl + 'advertisement/save', formData)
       .pipe(
         retry(3),
         catchError((error: any) => {
           console.error('Error saving advertisement(response):', error);
+          this.toastr.error(
+            Localization.getWord('error_occurred_contact_admin')
+          );
           const formDataEntries: {
             key: string;
             value: FormDataEntryValue;
@@ -75,7 +87,10 @@ export class AdvertisementService {
 
   async update(advertisement: Advertisement) {
     const formData = new FormData();
-    formData.append('advertisementJson', JSON.stringify(advertisement));
+    formData.append(
+      'advertisementJson',
+      decodeURIComponent(encodeURIComponent(JSON.stringify(advertisement)))
+    );
 
     const image = await this.fileService.getFirst();
     if (image) {
