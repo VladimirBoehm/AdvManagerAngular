@@ -31,16 +31,16 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
               Localization.getWord('authorization_error'),
               error.status
             );
-            break;
+            throw error;
           case 404:
             toastr.error(Localization.getWord('page_not_found'));
-            break;
+            throw error;
           case 500:
             toastr.error(Localization.getWord('server_error'), error.status);
-            break;
+            throw error;
           default:
             toastr.error(Localization.getWord('something_went_wrong'));
-            break;
+            throw error;
         }
       }
       throw error;
