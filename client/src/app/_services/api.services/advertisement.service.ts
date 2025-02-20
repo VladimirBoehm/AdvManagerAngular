@@ -31,33 +31,6 @@ export class AdvertisementService {
         formData.append('image', blob, image.name);
         this.fileService.deleteAll();
       }
-
-      return this.http
-        .post<Advertisement>(this.baseUrl + 'advertisement/save', formData)
-        .pipe(
-          retry(3),
-          catchError((error: any) => {
-            console.error('Error saving advertisement(response):', error);
-            const formDataEntries: {
-              key: string;
-              value: FormDataEntryValue;
-            }[] = [];
-            formData.forEach((value, key) => {
-              formDataEntries.push({ key, value });
-            });
-
-            this.errorLogService.send({
-              errorMessage: JSON.stringify(
-                error,
-                Object.getOwnPropertyNames(error)
-              ),
-              additionalInfo:
-                'advertisementService.ts(response): save(): ' +
-                JSON.stringify(formDataEntries),
-            });
-            throw error;
-          })
-        );
     } catch (error: any) {
       console.error('Error saving advertisement(request):', error);
       const formDataEntries: { key: string; value: FormDataEntryValue }[] = [];
@@ -72,6 +45,32 @@ export class AdvertisementService {
       });
       throw error;
     }
+    return this.http
+      .post<Advertisement>(this.baseUrl + 'advertisement/save', formData)
+      .pipe(
+        retry(3),
+        catchError((error: any) => {
+          console.error('Error saving advertisement(response):', error);
+          const formDataEntries: {
+            key: string;
+            value: FormDataEntryValue;
+          }[] = [];
+          formData.forEach((value, key) => {
+            formDataEntries.push({ key, value });
+          });
+
+          this.errorLogService.send({
+            errorMessage: JSON.stringify(
+              error,
+              Object.getOwnPropertyNames(error)
+            ),
+            additionalInfo:
+              'advertisementService.ts(response): save(): ' +
+              JSON.stringify(formDataEntries),
+          });
+          throw error;
+        })
+      );
   }
 
   async update(advertisement: Advertisement) {
