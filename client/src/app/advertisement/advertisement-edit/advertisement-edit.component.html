@@ -83,14 +83,9 @@
                 (click)="triggerFileInput()"
                 [disabled]="busyService.isLoading()"
               >
-                <div class="d-flex flex-column align-items-start">
-                  <span
-                    class="material-symbols-outlined text-muted"
-                    style="font-size: 48px; margin-left: 0"
-                  >
-                    image
-                  </span>
-                  <div class="text-muted my-info-text" style="margin-left: 0">
+                <div class="d-flex flex-column align-items-center ms-2">
+                  <img src="/icons/image.svg" alt="Advertisement Icon" />
+                  <div class="text-muted my-info-text mt-1">
                     {{ Localization.getWord("image") }}
                   </div>
                 </div>
@@ -131,18 +126,13 @@
             @if (!appStore.selectedAdvertisement()?.linkName) {
             <button
               type="button"
-              class="btn empty-button p-0"
+              class="btn empty-button p-0 mt-4 mb-2"
               (click)="showAddAdvertisementButtonDialog()"
               [disabled]="busyService.isLoading()"
             >
-              <div class="d-flex flex-column align-items-start">
-                <span
-                  class="material-symbols-outlined text-muted"
-                  style="font-size: 48px; margin-left: 0"
-                >
-                  link
-                </span>
-                <div class="text-muted my-info-text" style="margin-left: 0">
+              <div class="d-flex flex-column align-items-start ms-2">
+                <img src="/icons/link.svg" alt="Advertisement Icon"/>
+                <div class="text-muted my-info-text mt-1">
                   {{ Localization.getWord("button") }}
                 </div>
               </div></button
