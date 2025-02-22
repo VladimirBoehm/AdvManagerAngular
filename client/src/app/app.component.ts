@@ -45,7 +45,7 @@ export class AppComponent implements OnInit {
     const minDelay = 1750;
     const maxDelay = 3500;
     const randomDelay =
-      Math.floor(Math.random() * (maxDelay - minDelay + 1)) + minDelay;
+      Math.floor(Math.random() * (maxDelay - minDelay)) + minDelay;
 
     if (elapsed < randomDelay && environment.isProd) {
       await new Promise((resolve) =>
