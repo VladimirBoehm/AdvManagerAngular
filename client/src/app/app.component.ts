@@ -40,7 +40,7 @@ export class AppComponent implements OnInit {
     );
     await this.signalRService.createHubConnection();
 
-    //to show pretty loader min 3 sec :)
+    //to show pretty loader :)
     const elapsed = Date.now() - startTime;
     const minDelay = 1750;
     const maxDelay = 3500;
