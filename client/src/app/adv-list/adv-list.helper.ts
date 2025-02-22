@@ -27,16 +27,19 @@ export class AdvListHelper {
     return `${userName} ${firstName || lastName}`.trim();
   }
 
-  getShadowIconClass(advertisement: Advertisement): string {
+  getAdvStatusIcon(advertisement: Advertisement): string {
     switch (advertisement.statusId) {
-      case AdvertisementStatus.rejected:
-        return 'icon-rejected-shadow';
       case AdvertisementStatus.pendingPublication:
-        return 'icon-pending-publication-shadow';
+        return '/icons/adv-pending-publication.svg';
+      case AdvertisementStatus.pendingValidation:
+        return '/icons/adv-pending-validation.svg';
+      case AdvertisementStatus.rejected:
+        return '/icons/adv-rejected.svg';
       case AdvertisementStatus.validated:
-        return 'icon-validated-shadow';
+        return '/icons/adv-validated.svg';
+
       default:
-        return 'icon-default-shadow';
+        return '/icons/adv-new.svg';
     }
   }
 

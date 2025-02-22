@@ -19,8 +19,7 @@
               class="btn empty-button"
               (click)="create()"
               [disabled]="
-                appStore.sortedMyAdvertisements().length > 2 ||
-                isLoading()
+                appStore.sortedMyAdvertisements().length > 2 || isLoading()
               "
             >
               <span class="material-symbols-outlined text-muted">
@@ -45,7 +44,6 @@
         </div>
       </div>
     </div>
-
     <div class="list-container">
       <div class="text-center text-muted mb-1">
         {{ Localization.getWord("my_ads_title") }}
@@ -61,15 +59,13 @@
           class="d-flex align-items-center"
           (click)="advListHelper.onItemClick(advertisement)"
         >
+          <img
+            matListItemIcon
+            [src]="advListHelper.getAdvStatusIcon(advertisement)"
+            alt="Advertisement Icon"
+            class="adv-list-icon"
+          />
           <mat-list-item>
-            <mat-icon matListItemIcon>
-              <span
-                class="material-symbols-outlined me-3"
-                [ngClass]="advListHelper.getShadowIconClass(advertisement)"
-              >
-                sticky_note_2
-              </span></mat-icon
-            >
             <div matListItemTitle>{{ advertisement.title }}</div>
             <div matListItemLine class="mt-2">
               <!--

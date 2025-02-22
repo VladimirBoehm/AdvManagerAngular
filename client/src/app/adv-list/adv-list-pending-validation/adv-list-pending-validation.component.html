@@ -51,15 +51,14 @@
           class="d-flex align-items-center"
           (click)="onItemClickValidate(advertisement)"
         >
+          <img
+          class="adv-list-icon"
+            matListItemIcon
+            [src]="advListHelper.getAdvStatusIcon(advertisement)"
+            alt="Advertisement Icon"
+            class="adv-list-icon"
+          />
           <mat-list-item>
-            <mat-icon matListItemIcon>
-              <span
-                class="material-symbols-outlined me-3"
-                [ngClass]="advListHelper.getShadowIconClass(advertisement)"
-              >
-                sticky_note_2
-              </span></mat-icon
-            >
             <div matListItemTitle>{{ advertisement.title }}</div>
             <div class="d-flex justify-content-start mt-2" matListItemLine>
               {{ Localization.getWord("from") }}
