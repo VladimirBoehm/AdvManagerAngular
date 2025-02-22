@@ -9,6 +9,7 @@ import { AccountService } from './_services/api.services/account.service';
 import { patchState } from '@ngrx/signals';
 import { AppStore } from './appStore/app.store';
 import { TurtleLoader } from './_framework/component/loaders/turtle-loader/turtle-loader';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -39,10 +40,17 @@ export class AppComponent implements OnInit {
     );
     await this.signalRService.createHubConnection();
 
-    //to show pretty loader min 3 sec :)
+    //to show pretty loader :)
     const elapsed = Date.now() - startTime;
-    if (elapsed < 3500) {
-      await new Promise((resolve) => setTimeout(resolve, 3500 - elapsed));
+    const minDelay = 1750;
+    const maxDelay = 3500;
+    const randomDelay =
+      Math.floor(Math.random() * (maxDelay - minDelay)) + minDelay;
+
+    if (elapsed < randomDelay && environment.isProd) {
+      await new Promise((resolve) =>
+        setTimeout(resolve, randomDelay - elapsed)
+      );
     }
 
     this.isLoading.set(false);
