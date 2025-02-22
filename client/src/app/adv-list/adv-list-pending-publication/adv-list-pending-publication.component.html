@@ -51,15 +51,13 @@
           class="d-flex align-items-center"
           (click)="advListHelper.onItemClick(advertisement)"
         >
+          <img
+            matListItemIcon
+            [src]="advListHelper.getAdvStatusIcon(advertisement)"
+            alt="Advertisement Icon"
+            class="adv-list-icon"
+          />
           <mat-list-item>
-            <mat-icon matListItemIcon>
-              <span
-                class="material-symbols-outlined me-3"
-                [ngClass]="advListHelper.getShadowIconClass(advertisement)"
-              >
-                sticky_note_2
-              </span></mat-icon
-            >
             <div matListItemTitle>{{ advertisement.title }}</div>
             <div matListItemLine class="mt-2">
               <!--
