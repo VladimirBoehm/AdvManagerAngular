@@ -77,7 +77,7 @@
           {{ appStore.selectedAdvertisement()?.publishFrequency }}
           {{
             getDayWord(appStore.selectedAdvertisement()?.publishFrequency ?? 0)
-          }}.
+          }}
         </div>
 
         <ng-template #oneTime>
@@ -234,12 +234,12 @@
     appStore.selectedAdvertisement()?.adminMessage?.length &&
     (appStore.user()?.isAdmin || appStore.user()?.userId ===
     appStore.selectedAdvertisement()?.userId)) {
-    <div class="input-group mt-2 pb-4">
-      <span class="input-group-text" id="adminMessage">
+    <div class="input-group mt-2 container-border">
+      <span class="input-group-text admin-comment-label" id="adminMessage">
         <div>{{ Localization.getWord("comment") }}</div>
       </span>
       <textarea
-        class="form-control"
+        class="form-control admin-comment"
         placeholder="{{ Localization.getWord('comment_short') }}"
         disabled="true"
         rows="3"

@@ -69,28 +69,12 @@ mat-list {
   color: $muted-red-brown;
 }
 
-.violet {
-  color: $violet;
-}
-
 .warm-gray {
   color: $warm-gray;
 }
 
-.yellow {
-  color: $yellow;
-}
-
-.green {
-  color: $green;
-}
-
 .red {
   color: $red;
-}
-
-.blue {
-  color: $blue;
 }
 
 a {
@@ -189,10 +173,14 @@ mat-progress-spinner {
   transform: translate(-50%, -50%);
 }
 
-.background-rectangle-panel-common {
-  background-color: $soft-beige-background-opacity;
+.container-border {
   border-radius: 8px;
   border: 1px solid $muted-red-brown-opacity;
+}
+
+.background-rectangle-panel-common {
+  @extend .container-border;
+  background-color: $soft-beige-background-opacity;
   min-height: $buttons-top-panel-min-hight;
 }
 
@@ -214,22 +202,6 @@ mat-progress-spinner {
 .container-fluid {
   padding-left: 0;
   padding-right: 0;
-}
-
-.icon-default-shadow {
-  text-shadow: 0px 2px 2px rgba(0, 0, 0, 0.4);
-}
-
-.icon-rejected-shadow {
-  text-shadow: 0px 2px 2px rgba(150, 97, 97, 1);
-}
-
-.icon-pending-publication-shadow {
-  text-shadow: 0px 2px 2px rgb(98, 127, 158);
-}
-
-.icon-validated-shadow {
-  text-shadow: 0px 2px 2px rgb(132, 155, 107);
 }
 
 .slide-in-animation {
@@ -294,4 +266,22 @@ mat-progress-spinner {
 .toast-warning {
   background-color: $toast-warning-bg !important;
   color: #ffffff !important;
+  border: 0;
+}
+
+.alert.alert-success {
+  background-color: $alert-success-bg !important;
+  color: $alert-success-color !important;
+  border: 0;
+}
+
+.alert.alert-info {
+  background-color: $alert-info-bg !important;
+  color: $alert-info-color !important;
+  border: 0;
+}
+
+.alert.alert-warning {
+  background-color: $alert-warning-bg !important;
+  border: 0;
 }
