@@ -103,14 +103,11 @@
                 (click)="deleteImage()"
                 [disabled]="busyService.isLoading()"
               >
-                <span
-                  class="material-symbols-outlined text-muted"
-                  style="font-size: 48px"
-                >
-                  close
-                </span>
-                <div class="text-muted my-info-text">
-                  {{ Localization.getWord("delete") }}
+                <div class="d-flex flex-column align-items-center ms-2">
+                  <img src="/icons/close.svg" alt="Advertisement Icon" />
+                  <div class="text-muted my-info-text mt-1">
+                    {{ Localization.getWord("delete") }}
+                  </div>
                 </div></button
               >} @if (this.appStore.selectedAdvertisement()?.adImage) {
               <div class="image-container" style="width: 100px">
@@ -126,12 +123,12 @@
             @if (!appStore.selectedAdvertisement()?.linkName) {
             <button
               type="button"
-              class="btn empty-button p-0 mt-4 mb-2"
+              class="btn empty-button p-0 mt-4 mb-4"
               (click)="showAddAdvertisementButtonDialog()"
               [disabled]="busyService.isLoading()"
             >
               <div class="d-flex flex-column align-items-start ms-2">
-                <img src="/icons/link.svg" alt="Advertisement Icon"/>
+                <img src="/icons/link.svg" alt="Advertisement Icon" />
                 <div class="text-muted my-info-text mt-1">
                   {{ Localization.getWord("button") }}
                 </div>
