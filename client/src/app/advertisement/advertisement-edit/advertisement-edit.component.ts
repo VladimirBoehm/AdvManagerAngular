@@ -3,6 +3,7 @@ import {
   ElementRef,
   inject,
   OnInit,
+  signal,
   ViewChild,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -53,8 +54,8 @@ export class AdvertisementEditComponent implements OnInit {
   private fileService = inject(FileService);
   readonly appStore = inject(AppStore);
   matErrorService = inject(MatErrorService);
-  busyService = inject(BusyService);
   private errorLogService = inject(ErrorLogClientService);
+  isLoading = signal(false);
 
   modalRef?: BsModalRef;
   editForm: FormGroup = new FormGroup({});
@@ -117,6 +118,7 @@ export class AdvertisementEditComponent implements OnInit {
   }
 
   async save() {
+    this.isLoading.set(true);
     try {
       this.appStore.updateSelectedAdvertisement({
         title: this.editForm.controls['title']?.value,
@@ -143,6 +145,7 @@ export class AdvertisementEditComponent implements OnInit {
       } as ErrorLogClient;
       this.errorLogService.send(errorLogClient);
     }
+    this.isLoading.set(false);
   }
 
   triggerFileInput() {

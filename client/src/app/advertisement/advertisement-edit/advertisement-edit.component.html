@@ -12,9 +12,9 @@
           <button
             class="btn empty-button"
             type="submit"
-            [disabled]="editForm.invalid || busyService.isLoading()"
+            [disabled]="editForm.invalid || isLoading()"
           >
-            <ng-container *ngIf="busyService.isLoading(); else defaultIcon">
+            <ng-container *ngIf="isLoading(); else defaultIcon">
               <mat-spinner [diameter]="24"></mat-spinner>
             </ng-container>
             <ng-template #defaultIcon>
@@ -32,7 +32,7 @@
             <mat-label>{{ Localization.getWord("title_label") }}</mat-label>
             <input
               matInput
-              [readonly]="busyService.isLoading()"
+              [readonly]="isLoading()"
               formControlName="title"
             />
             @if (matErrorService.getHasError(editForm.controls['title'])){
@@ -59,7 +59,7 @@
               type="text"
               name="message"
               formControlName="message"
-              [readonly]="busyService.isLoading()"
+              [readonly]="isLoading()"
             ></textarea>
             @if (matErrorService.getHasError(editForm.controls['message'])){
             <mat-error>{{
@@ -81,7 +81,7 @@
                 class="btn empty-button p-0 text-start"
                 type="button"
                 (click)="triggerFileInput()"
-                [disabled]="busyService.isLoading()"
+                [disabled]="isLoading()"
               >
                 <div class="d-flex flex-column align-items-center ms-2">
                   <img src="/icons/image.svg" alt="Advertisement Icon" />
@@ -101,7 +101,7 @@
                 class="btn empty-button ps-0 text-start"
                 type="button"
                 (click)="deleteImage()"
-                [disabled]="busyService.isLoading()"
+                [disabled]="isLoading()"
               >
                 <div class="d-flex flex-column align-items-center ms-2">
                   <img src="/icons/close.svg" alt="Advertisement Icon" />
@@ -125,7 +125,7 @@
               type="button"
               class="btn empty-button p-0 mt-4 mb-4"
               (click)="showAddAdvertisementButtonDialog()"
-              [disabled]="busyService.isLoading()"
+              [disabled]="isLoading()"
             >
               <div class="d-flex flex-column align-items-start ms-2">
                 <img src="/icons/link.svg" alt="Advertisement Icon" />
@@ -163,7 +163,7 @@
                 type="button"
                 class="btn empty-button semi-transparent"
                 (click)="removeAdvertisementButton()"
-                [disabled]="busyService.isLoading()"
+                [disabled]="isLoading()"
               >
                 {{ Localization.getWord("delete") }}
               </button>
@@ -171,7 +171,7 @@
                 type="button"
                 class="btn empty-button semi-transparent"
                 (click)="showAddAdvertisementButtonDialog()"
-                [disabled]="busyService.isLoading()"
+                [disabled]="isLoading()"
               >
                 {{ Localization.getWord("edit") }}
               </button>
