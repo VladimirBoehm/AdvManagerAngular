@@ -41,12 +41,13 @@
         @for (item of appStore.sortedChatFilters(); track item.id) {
 
         <div class="d-flex align-items-center">
+          <img
+            matListItemIcon
+            src="/icons/chat-filter-item.svg"
+            alt="Advertisement Icon"
+            class="adv-list-icon"
+          />
           <mat-list-item>
-            <mat-icon matListItemIcon>
-              <span class="material-symbols-outlined me-3">
-                font_download_off
-              </span></mat-icon
-            >
             <div matListItemTitle>{{ item.value }}</div>
             <div matListItemLine class="mt-1">
               <!--
