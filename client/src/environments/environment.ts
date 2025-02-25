@@ -1,7 +1,7 @@
 const prodHostname = 'gray-coast-0eea7ee03.5.azurestaticapps.net';
 const prodApi = 'https://chatcontrolwebapi.azurewebsites.net/';
 //----------------------------------------------------------------
-const testApi = 'https://5tfz74c2-7117.euw.devtunnels.ms/';
+const testApi = 'https://qzfw4pn9-7117.euw.devtunnels.ms/';
 
 function determineApiUrl(): string {
   const hostname = window.location.hostname;
