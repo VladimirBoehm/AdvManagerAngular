@@ -256,10 +256,6 @@
     "ru": "Автор:",
     "en": "Author:"
   },
-  "comment": {
-    "ru": "Комментарий:",
-    "en": "Comment:"
-  },
   "comment_short": {
     "ru": "Комментарий",
     "en": "Comment"

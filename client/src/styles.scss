@@ -21,11 +21,11 @@ body {
 
 .list-container {
   background-color: $soft-beige-background-opacity;
-  border-radius: 8px;
+  border-radius: $border-radius;
   padding: 16px;
   margin-top: $margin-list-from-top-buttons;
   margin-bottom: $margin-list-from-bottom;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px $border-radius rgba(0, 0, 0, 0.1);
   max-width: 100%;
   overflow: hidden;
   display: flex;
@@ -175,7 +175,7 @@ mat-progress-spinner {
 }
 
 .container-border {
-  border-radius: 8px;
+  border-radius: $border-radius;
   border: 1px solid $muted-red-brown-opacity;
 }
 
@@ -187,17 +187,17 @@ mat-progress-spinner {
 
 .background-rectangle-panel-shadow {
   @extend .background-rectangle-panel-common;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 1);
+  box-shadow: 0px 4px $border-radius rgba(0, 0, 0, 1);
 }
 
 .modal-body {
   background-color: $soft-beige-background;
-  border-radius: 8px;
+  border-radius: $border-radius;
 }
 
 .my-dialog {
   background-color: $soft-beige-background;
-  border-radius: 8px;
+  border-radius: $border-radius;
 }
 
 .container-fluid {
