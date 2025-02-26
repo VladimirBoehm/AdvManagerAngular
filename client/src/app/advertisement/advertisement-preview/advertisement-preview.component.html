@@ -234,13 +234,13 @@
     appStore.selectedAdvertisement()?.adminMessage?.length &&
     (appStore.user()?.isAdmin || appStore.user()?.userId ===
     appStore.selectedAdvertisement()?.userId)) {
-    <div class="input-group mt-2 container-border">
-      <span class="input-group-text admin-comment-label" id="adminMessage">
-        <div>{{ Localization.getWord("comment") }}</div>
-      </span>
+
+    <div class="mt-2 admin-comment-panel p-1">
+      <div class="text-muted my-info-text mb-2 mt-1 text-center">
+        {{ Localization.getWord("admin_comment") }}
+      </div>
       <textarea
-        class="form-control admin-comment"
-        placeholder="{{ Localization.getWord('comment_short') }}"
+        class="admin-comment"
         disabled="true"
         rows="3"
         name="adminMessage"

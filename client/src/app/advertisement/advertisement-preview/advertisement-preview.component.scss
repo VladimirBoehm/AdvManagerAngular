@@ -1,17 +1,16 @@
+@import "../../../styles.scss";
+
 .admin-comment {
+  border-radius: $border-radius;
   height: 105px;
-  line-height: 100px;
-  padding-top: 0;
-  padding-bottom: 0;
-  background-color: rgba(235, 224, 209, 0.937);
+  width: 100%;
+  padding: 5px;
+  background-color: $soft-beige-background;
   font-style: italic;
 }
 
-.admin-comment-label {
-  font-size: 15px;
-  padding-top: 0;
-  padding-bottom: 0;
-  background-color: rgba(235, 224, 209, 0.937);
+
+.admin-comment-panel {
+  @extend .container-border;
+  background-color: $alert-warning-bg;
 }
-
-
