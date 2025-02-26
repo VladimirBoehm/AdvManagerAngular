@@ -240,12 +240,14 @@
         {{ Localization.getWord("admin_comment") }}
       </div>
       <textarea
-        class="admin-comment"
-        disabled="true"
-        rows="3"
-        name="adminMessage"
-        [ngModel]="appStore.selectedAdvertisement()?.adminMessage"
-      ></textarea>
+      cdkTextareaAutosize
+      cdkAutosizeMinRows="2"
+      cdkAutosizeMaxRows="5"
+      class="admin-comment"
+      readonly
+      name="adminMessage"
+      [ngModel]="appStore.selectedAdvertisement()?.adminMessage"
+    ></textarea>
     </div>
     }
 

@@ -2,13 +2,13 @@
 
 .admin-comment {
   border-radius: $border-radius;
-  height: 105px;
   width: 100%;
   padding: 5px;
   background-color: $soft-beige-background;
   font-style: italic;
+  resize: none;
+  overflow-y: auto;
 }
-
 
 .admin-comment-panel {
   @extend .container-border;
