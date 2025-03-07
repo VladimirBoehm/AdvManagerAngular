@@ -7,7 +7,7 @@ import {
   withState,
   withComputed,
 } from '@ngrx/signals';
-import { lastValueFrom } from 'rxjs';
+import { lastValueFrom, Observable } from 'rxjs';
 import { User } from '../_models/user';
 import { AccountService } from '../_services/api.services/account.service';
 import { AdvertisementService } from '../_services/api.services/advertisement.service';
@@ -35,6 +35,7 @@ import {
   getPaginatedResponse,
   getSelectedAdvertisement,
   getUser,
+  lastValueFromWrapper,
   withLogger,
 } from './app.store.helper';
 import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
@@ -43,6 +44,8 @@ import { DateHelper } from '../_framework/component/helpers/dateHelper';
 import cloneDeep from 'lodash-es/cloneDeep';
 import { ManagePublish } from '../_entities/managePublish';
 import { ErrorLogClientService } from '../_services/api.services/errorLogClient.service';
+import { HttpResponse } from '@angular/common/http';
+import { ResponseWrapper } from '../_entities/responseWrapper';
 
 export const defaultPageSize = 6;
 const chatFilterPageSize = 999;
@@ -478,12 +481,12 @@ export const AppStore = signalStore(
           return;
         }
 
-        const response = await lastValueFrom(
+        const response = await lastValueFromWrapper(
           advertisementService.getMyAdvertisements(
             appStore.myAdvertisementsPaginationParams()
           )
         );
-        const advertisements = response.body as Advertisement[];
+        const advertisements = response.body?.data as Advertisement[];
         const paginatedResponse = getPaginatedResponse(response);
 
         patchState(

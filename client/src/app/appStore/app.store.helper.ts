@@ -1,4 +1,4 @@
-import { effect } from '@angular/core';
+import { effect, inject } from '@angular/core';
 import { signalStoreFeature, withHooks, getState } from '@ngrx/signals';
 import { SortOption } from '../_entities/sortOption';
 import { DEFAULT_SORT_OPTION } from '../_framework/constants/defaultSortOption';
@@ -7,6 +7,9 @@ import { User } from '../_models/user';
 import { PaginationParams } from '../_entities/paginationParams';
 import { forEach } from 'lodash-es';
 import { HttpResponse } from '@angular/common/http';
+import { lastValueFrom, Observable } from 'rxjs';
+import { ResponseWrapper } from '../_entities/responseWrapper';
+import { ToastrService } from 'ngx-toastr';
 
 export function getDefaultSortOptions(): SortOption {
   return {
@@ -15,6 +18,17 @@ export function getDefaultSortOptions(): SortOption {
     searchType: DEFAULT_SORT_OPTION.searchType,
     searchValue: DEFAULT_SORT_OPTION.searchValue,
   };
+}
+
+export async function lastValueFromWrapper<T>(
+  observable: Observable<HttpResponse<ResponseWrapper<T>>>
+): Promise<HttpResponse<ResponseWrapper<T>>> {
+  const response = await lastValueFrom(observable);
+  if (!response.body?.isSuccessful) {
+    const toastr = inject(ToastrService);
+    toastr.error(response.body?.messages.join(', '));
+  }
+  return response;
 }
 
 export function getDefaultPaginationParams(

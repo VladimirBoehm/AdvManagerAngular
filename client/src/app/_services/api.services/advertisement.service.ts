@@ -12,6 +12,7 @@ import { FileService } from '../../appStore/file.service';
 import { ErrorLogClientService } from './errorLogClient.service';
 import { ToastrService } from 'ngx-toastr';
 import { Localization } from '../../_framework/component/helpers/localization';
+import { ResponseWrapper } from '../../_entities/responseWrapper';
 @Injectable({
   providedIn: 'root',
 })
@@ -129,10 +130,13 @@ export class AdvertisementService {
   // MY ADVERTISEMENTS
   getMyAdvertisements(paginationParams: PaginationParams) {
     const params = getPaginationHeaders(paginationParams);
-    return this.http.get<Advertisement[]>(this.baseUrl + 'advertisement', {
-      observe: 'response',
-      params,
-    });
+    return this.http.get<ResponseWrapper<Advertisement[]>>(
+      this.baseUrl + 'advertisement',
+      {
+        observe: 'response',
+        params,
+      }
+    );
   }
 
   // ALL_HISTORY
