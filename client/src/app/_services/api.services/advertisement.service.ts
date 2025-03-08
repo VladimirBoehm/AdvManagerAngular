@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Advertisement } from '../../_models/advertisement';
 import { environment } from '../../../environments/environment';
@@ -24,7 +24,9 @@ export class AdvertisementService {
   private errorLogService = inject(ErrorLogClientService);
   Localization = Localization;
 
-  async save(advertisement: Advertisement): Promise<Observable<Advertisement>> {
+  async save(
+    advertisement: Advertisement
+  ): Promise<Observable<ResponseWrapper<Advertisement>>> {
     const formData = new FormData();
     try {
       formData.append(
@@ -50,7 +52,10 @@ export class AdvertisementService {
     }
 
     return this.http
-      .post<Advertisement>(this.baseUrl + 'advertisement/save', formData)
+      .post<ResponseWrapper<Advertisement>>(
+        this.baseUrl + 'advertisement/save',
+        formData
+      )
       .pipe(
         retry(3),
         catchError((error: any) => {
@@ -85,7 +90,10 @@ export class AdvertisementService {
       this.fileService.deleteAll();
     }
     return this.http
-      .put<Advertisement>(this.baseUrl + 'advertisement', formData)
+      .put<ResponseWrapper<Advertisement>>(
+        this.baseUrl + 'advertisement',
+        formData
+      )
       .pipe(
         retry(3),
         catchError((error) => {
@@ -118,7 +126,7 @@ export class AdvertisementService {
   // PUBLICATION
   getPendingPublicationAdvertisements(paginationParams: PaginationParams) {
     const params = getPaginationHeaders(paginationParams);
-    return this.http.get<Advertisement[]>(
+    return this.http.get<ResponseWrapper<Advertisement[]>>(
       this.baseUrl + 'advertisement/getPendingPublicationAdvertisements',
       {
         observe: 'response',
@@ -128,7 +136,9 @@ export class AdvertisementService {
   }
 
   // MY ADVERTISEMENTS
-  getMyAdvertisements(paginationParams: PaginationParams) {
+  getMyAdvertisements(
+    paginationParams: PaginationParams
+  ): Observable<HttpResponse<ResponseWrapper<Advertisement[]>>> {
     const params = getPaginationHeaders(paginationParams);
     return this.http.get<ResponseWrapper<Advertisement[]>>(
       this.baseUrl + 'advertisement',

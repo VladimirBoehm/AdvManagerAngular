@@ -35,7 +35,6 @@ import {
   getPaginatedResponse,
   getSelectedAdvertisement,
   getUser,
-  lastValueFromWrapper,
   withLogger,
 } from './app.store.helper';
 import { AdvertisementStatus } from '../_framework/constants/advertisementStatus';
@@ -481,7 +480,7 @@ export const AppStore = signalStore(
           return;
         }
 
-        const response = await lastValueFromWrapper(
+        const response = await lastValueFrom(
           advertisementService.getMyAdvertisements(
             appStore.myAdvertisementsPaginationParams()
           )
@@ -548,7 +547,7 @@ export const AppStore = signalStore(
             appStore.pendingPublicationPaginationParams()
           )
         );
-        const advertisements = response.body as Advertisement[];
+        const advertisements = response.body?.data as Advertisement[];
         const paginatedResponse = getPaginatedResponse(response);
 
         patchState(
@@ -969,9 +968,9 @@ export const AppStore = signalStore(
           );
           patchState(
             appStore,
-            addEntity(advertisementResponse, myAdvertisementsConfig)
+            addEntity(advertisementResponse.data, myAdvertisementsConfig)
           );
-          this.setSelectedAdvertisement(advertisementResponse);
+          this.setSelectedAdvertisement(advertisementResponse.data);
           console.log('>>> AppStore: advertisementResponse created');
         } catch (error) {
           errorLogService.send({
@@ -991,7 +990,7 @@ export const AppStore = signalStore(
         );
         this.updateAdvertisementInList(
           AppListType.MyAdvertisements,
-          advertisementResponse
+          advertisementResponse.data
         );
         console.log('>>> AppStore: advertisement updated');
       },

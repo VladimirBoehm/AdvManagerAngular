@@ -11,7 +11,9 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError((error) => {
       if (!environment.isProd) console.error(error);
-      if (error) {
+      if (error.error.isSuccessful === false && error.error.messages) {
+        toastr.error(error.error.messages.join(', '));
+      } else if (error) {
         switch (error.status) {
           case 400:
             if (error.error.errors) {
@@ -22,6 +24,8 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
                 }
               }
               throw modalStateErrors.flat();
+            } else if (error.error.messages) {
+              toastr.error(error.error.messages.join(', '));
             } else {
               toastr.error(error.error, error.status);
             }
@@ -31,16 +35,16 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
               Localization.getWord('authorization_error'),
               error.status
             );
-            throw error;
+            break;
           case 404:
             toastr.error(Localization.getWord('page_not_found'));
-            throw error;
+            break;
           case 500:
             toastr.error(Localization.getWord('server_error'), error.status);
-            throw error;
+            break;
           default:
             toastr.error(Localization.getWord('something_went_wrong'));
-            throw error;
+            break;
         }
       }
       throw error;
