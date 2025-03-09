@@ -7,7 +7,7 @@ import {
   withState,
   withComputed,
 } from '@ngrx/signals';
-import { lastValueFrom, Observable } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import { User } from '../_models/user';
 import { AccountService } from '../_services/api.services/account.service';
 import { AdvertisementService } from '../_services/api.services/advertisement.service';
@@ -20,7 +20,6 @@ import {
   withEntities,
   removeAllEntities,
 } from '@ngrx/signals/entities';
-import { withHooks } from '@ngrx/signals';
 import { ChatFilter } from '../_models/chatFilter';
 import { ChatFilterService } from '../_services/api.services/chat-filter.service';
 import { PaginationParams } from '../_entities/paginationParams';
@@ -43,8 +42,6 @@ import { DateHelper } from '../_framework/component/helpers/dateHelper';
 import cloneDeep from 'lodash-es/cloneDeep';
 import { ManagePublish } from '../_entities/managePublish';
 import { ErrorLogClientService } from '../_services/api.services/errorLogClient.service';
-import { HttpResponse } from '@angular/common/http';
-import { ResponseWrapper } from '../_entities/responseWrapper';
 
 export const defaultPageSize = 6;
 const chatFilterPageSize = 999;
@@ -393,7 +390,7 @@ export const AppStore = signalStore(
           )
         );
 
-        const advertisements = response.body as Advertisement[];
+        const advertisements = response.body?.data as Advertisement[];
         const paginatedResponse = getPaginatedResponse(response);
 
         patchState(appStore, addEntities(advertisements, privateHistoryConfig));
@@ -455,7 +452,7 @@ export const AppStore = signalStore(
             appStore.allHistoryPaginationParams()
           )
         );
-        const advertisements = response.body as Advertisement[];
+        const advertisements = response.body?.data as Advertisement[];
         const paginatedResponse = getPaginatedResponse(response);
 
         patchState(appStore, addEntities(advertisements, allHistoryConfig));
@@ -619,7 +616,7 @@ export const AppStore = signalStore(
             appStore.pendingValidationPaginationParams()
           )
         );
-        const advertisements = response.body as Advertisement[];
+        const advertisements = response.body?.data as Advertisement[];
         const paginatedResponse = getPaginatedResponse(response);
 
         patchState(
@@ -865,7 +862,24 @@ export const AppStore = signalStore(
           advertisement
         );
         lastValueFrom(
-          advertisementService.validateAdvertisementAdmin(advertisement)
+          advertisementService.confirmValidationAdmin(advertisement)
+        );
+      },
+      rejectValidationAdmin(advertisement: Advertisement) {
+        if (!appStore.user()?.isAdmin) {
+          console.error('>>> AppStore: user is not admin');
+          return;
+        }
+        this.deleteAdvertisementFromList(
+          AppListType.PendingValidation,
+          advertisement.id
+        );
+        this.updateAdvertisementInList(
+          AppListType.MyAdvertisements,
+          advertisement
+        );
+        lastValueFrom(
+          advertisementService.rejectValidationAdmin(advertisement)
         );
       },
       // ------- clearCacheInfo -------

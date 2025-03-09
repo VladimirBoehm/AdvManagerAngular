@@ -3,8 +3,6 @@ import { inject, Injectable } from '@angular/core';
 import { Advertisement } from '../../_models/advertisement';
 import { environment } from '../../../environments/environment';
 import { catchError, Observable, retry } from 'rxjs';
-import { UpdateAdvertisementAdminRequest } from '../../_models/updateAdvertisementAdminRequest';
-import { UpdateAdvertisementStatusRequest } from '../../_models/updateAdvertisementStatusRequest';
 import { PaginationParams } from '../../_entities/paginationParams';
 import { getPaginationHeaders } from '../../_framework/component/helpers/paginationHelper';
 import { ManagePublish } from '../../_entities/managePublish';
@@ -13,6 +11,8 @@ import { ErrorLogClientService } from './errorLogClient.service';
 import { ToastrService } from 'ngx-toastr';
 import { Localization } from '../../_framework/component/helpers/localization';
 import { ResponseWrapper } from '../../_entities/responseWrapper';
+import { RejectValidationAdminRequest } from '../../_models/rejectValidationAdminRequest';
+import { ConfirmValidationAdminRequest } from '../../_models/confirmValidationAdminRequest';
 @Injectable({
   providedIn: 'root',
 })
@@ -104,16 +104,14 @@ export class AdvertisementService {
   }
 
   sendToValidation(id: number) {
-    return this.http.post<UpdateAdvertisementStatusRequest>(
+    return this.http.post(
       this.baseUrl + `advertisement/sendToValidation/${id}`,
       null
     );
   }
 
   delete(id: number) {
-    return this.http.delete<Advertisement>(
-      this.baseUrl + `advertisement/${id}`
-    );
+    return this.http.delete(this.baseUrl + `advertisement/${id}`);
   }
 
   cancelPublication(id: number) {
@@ -152,7 +150,7 @@ export class AdvertisementService {
   // ALL_HISTORY
   getAdvertisementAllHistory(paginationParams: PaginationParams) {
     const params = getPaginationHeaders(paginationParams);
-    return this.http.get<Advertisement[]>(
+    return this.http.get<ResponseWrapper<Advertisement[]>>(
       this.baseUrl + 'advertisementHistory',
       {
         observe: 'response',
@@ -164,7 +162,7 @@ export class AdvertisementService {
   // PRIVATE_HISTORY
   getAdvertisementPrivateHistory(paginationParams: PaginationParams) {
     const params = getPaginationHeaders(paginationParams);
-    return this.http.get<Advertisement[]>(
+    return this.http.get<ResponseWrapper<Advertisement[]>>(
       this.baseUrl + 'advertisementHistory/getAdvertisementPrivateHistory',
       {
         observe: 'response',
@@ -191,8 +189,8 @@ export class AdvertisementService {
   // VALIDATION
   getPendingValidationAdvertisements(paginationParams: PaginationParams) {
     const params = getPaginationHeaders(paginationParams);
-    return this.http.get<Advertisement[]>(
-      this.baseUrl + 'advertisementAdmin/getPendingAdvertisements',
+    return this.http.get<ResponseWrapper<Advertisement[]>>(
+      this.baseUrl + 'advertisementAdmin/getPendingValidations',
       {
         observe: 'response',
         params,
@@ -202,21 +200,32 @@ export class AdvertisementService {
 
   getPendingValidationAdvertisementsCount(): Observable<number> {
     return this.http.get<number>(
-      this.baseUrl + 'advertisementAdmin/getPendingAdvertisementsCount'
+      this.baseUrl + 'advertisementAdmin/getPendingValidationsCount'
     );
   }
 
-  validateAdvertisementAdmin(advertisement: Advertisement) {
-    const updateAdvertisementAdminRequest: UpdateAdvertisementAdminRequest = {
+  confirmValidationAdmin(advertisement: Advertisement) {
+    const updateAdvertisementAdminRequest: ConfirmValidationAdminRequest = {
       advertisementId: advertisement.id,
-      advertisementStatus: advertisement.statusId,
-      publishFrequency: advertisement.publishFrequency,
+      publishFrequency: advertisement.publishFrequency ?? 0,
       adminMessage: advertisement.adminMessage,
     };
 
     return this.http.post(
-      this.baseUrl + 'advertisementAdmin',
+      this.baseUrl + 'advertisementAdmin/confirmValidation',
       updateAdvertisementAdminRequest
+    );
+  }
+
+  rejectValidationAdmin(advertisement: Advertisement) {
+    const rejectValidationAdminRequest: RejectValidationAdminRequest = {
+      advertisementId: advertisement.id,
+      adminMessage: advertisement.adminMessage,
+    };
+
+    return this.http.post(
+      this.baseUrl + 'advertisementAdmin/rejectValidation',
+      rejectValidationAdminRequest
     );
   }
 }
