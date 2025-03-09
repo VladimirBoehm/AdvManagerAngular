@@ -10,12 +10,16 @@ import { SharedModule } from '../../_framework/modules/sharedModule';
 import { AdvertisementMainDataComponent } from '../advertisement-main-data/advertisement-main-data.component';
 import { Localization } from '../../_framework/component/helpers/localization';
 import { AppStore } from '../../appStore/app.store';
-import { ApproveValidationDialog } from "./dialogs/approve-validation.dialog";
+import { ApproveValidationDialog } from './dialogs/approve-validation.dialog';
 
 @Component({
   selector: 'app-advertisement-validate',
   standalone: true,
-  imports: [SharedModule, AdvertisementMainDataComponent, ApproveValidationDialog],
+  imports: [
+    SharedModule,
+    AdvertisementMainDataComponent,
+    ApproveValidationDialog,
+  ],
   templateUrl: './advertisement-validate.component.html',
   styleUrl: './advertisement-validate.component.scss',
   providers: [MatErrorService],
@@ -73,6 +77,7 @@ export class AdvertisementValidateComponent implements OnInit {
     this.commentCounter = titleValue.length;
   }
 
+  //TODO delete
   modalDialogConfirm = (
     advertisementStatus: AdvertisementStatus,
     frequency?: number
@@ -93,6 +98,22 @@ export class AdvertisementValidateComponent implements OnInit {
     this.back();
   };
 
+  rejectValidationConfirm = () => {
+    const selectedAdvertisement = this.appStore.selectedAdvertisement();
+    if (!selectedAdvertisement || selectedAdvertisement.id === undefined) {
+      console.error('Selected advertisement is invalid');
+      return;
+    }
+    const updatedAdvertisement = { ...selectedAdvertisement };
+    updatedAdvertisement.statusId = AdvertisementStatus.rejected;
+    updatedAdvertisement.adminMessage =
+      this.editForm.controls['adminMessage']?.value;
+
+    this.hideDialog();
+    this.appStore.rejectValidationAdmin(updatedAdvertisement);
+    this.back();
+  };
+
   hideDialog = () => {
     this.modalRef?.hide();
   };
@@ -109,7 +130,7 @@ export class AdvertisementValidateComponent implements OnInit {
       })
       .subscribe((result) => {
         if (result === true) {
-          this.modalDialogConfirm(AdvertisementStatus.rejected);
+          this.rejectValidationConfirm();
         }
       });
   }

@@ -1,10 +1,10 @@
-import { Component, inject, input, Input, OnInit, signal } from '@angular/core';
+import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { Localization } from '../../../_framework/component/helpers/localization';
 import { ThreeDotsLoadingComponent } from '../../../_framework/component/loaders/custom-loading-bar/three-dots-loading.component';
-import { BusyService } from '../../../_services/busy.service';
 import { SharedModule } from '../../../_framework/modules/sharedModule';
 import { AppStore } from '../../../appStore/app.store';
 import { PublishService } from '../../../_services/api.services/publish.service';
+import { ResponseWrapper } from '../../../_entities/responseWrapper';
 
 @Component({
   selector: 'modal-dialog-publication-info',
@@ -61,8 +61,8 @@ export class PublicationInfoDialog implements OnInit {
     this.publishService
       .getRegularPublishNextDate(this.appStore.selectedAdvertisement()?.id ?? 0)
       .subscribe({
-        next: (result: Date) => {
-          this.nextPublishDate.set(result);
+        next: (result: ResponseWrapper<Date>) => {
+          this.nextPublishDate.set(result.data);
           this.isLoading.set(false);
         },
         error: (err) => {
