@@ -8,6 +8,10 @@ declare global {
 }
 
 export const telegramInitDataInterceptor: HttpInterceptorFn = (req, next) => {
+  if (req.method === 'OPTIONS') {
+    return next(req);
+  }
+
   const initData = window.Telegram?.WebApp?.initData;
   const jwtToken = localStorage.getItem(LOCAL_STORAGE_CONSTANTS.JWT_TOKEN);
 
@@ -15,7 +19,7 @@ export const telegramInitDataInterceptor: HttpInterceptorFn = (req, next) => {
     const clonedRequest = req.clone({
       setHeaders: {
         initData: initData,
-         Authorization: `Bearer ${jwtToken}`,
+        Authorization: `Bearer ${jwtToken}`,
       },
     });
     return next(clonedRequest);
