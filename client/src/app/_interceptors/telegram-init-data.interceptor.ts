@@ -9,13 +9,13 @@ declare global {
 
 export const telegramInitDataInterceptor: HttpInterceptorFn = (req, next) => {
   const initData = window.Telegram?.WebApp?.initData;
-  //const jwtToken = localStorage.getItem(LOCAL_STORAGE_CONSTANTS.JWT_TOKEN);
+  const jwtToken = localStorage.getItem(LOCAL_STORAGE_CONSTANTS.JWT_TOKEN);
 
   if (initData) {
     const clonedRequest = req.clone({
       setHeaders: {
         initData: initData,
-        // Authorization: `Bearer ${jwtToken}`,
+         Authorization: `Bearer ${jwtToken}`,
       },
     });
     return next(clonedRequest);
