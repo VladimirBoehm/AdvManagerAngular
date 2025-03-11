@@ -19,8 +19,7 @@ export const telegramInitDataInterceptor: HttpInterceptorFn = (req, next) => {
     const clonedRequest = req.clone({
       setHeaders: {
         initData: initData,
-        //Authorization: `Bearer ${jwtToken}`,
-        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsIkNyZWF0ZWQiOiIwOTo1MDoyOSIsImlzcyI6InZsYWRpbWlyLnRlbGVncmFtLmJvdC5jb20ifQ.NNsuv926vo91b-Qjp1EpvDdb75wVR1OlV6pfB6VAV1E`,
+        Authorization: `Bearer ${jwtToken}`,
       },
     });
     return next(clonedRequest);
