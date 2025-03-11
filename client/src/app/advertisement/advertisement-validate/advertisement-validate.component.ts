@@ -77,7 +77,7 @@ export class AdvertisementValidateComponent implements OnInit {
     this.commentCounter = titleValue.length;
   }
 
-  //TODO delete
+
   modalDialogConfirm = (
     advertisementStatus: AdvertisementStatus,
     frequency?: number
