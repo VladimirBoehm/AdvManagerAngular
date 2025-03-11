@@ -15,7 +15,7 @@ export const telegramInitDataInterceptor: HttpInterceptorFn = (req, next) => {
     const clonedRequest = req.clone({
       setHeaders: {
         initData: initData,
-         Authorization: `Bearer ${jwtToken}`,
+        // Authorization: `Bearer ${jwtToken}`,
       },
     });
     return next(clonedRequest);
