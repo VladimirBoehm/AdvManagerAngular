@@ -42,6 +42,7 @@ import { DateHelper } from '../_framework/component/helpers/dateHelper';
 import cloneDeep from 'lodash-es/cloneDeep';
 import { ManagePublish } from '../_entities/managePublish';
 import { ErrorLogClientService } from '../_services/api.services/errorLogClient.service';
+import { LOCAL_STORAGE_CONSTANTS } from '../_framework/constants/localStorageConstants';
 
 export const defaultPageSize = 6;
 const chatFilterPageSize = 999;
@@ -288,21 +289,11 @@ export const AppStore = signalStore(
   withMethods(
     (
       appStore,
-      accountService = inject(AccountService),
       advertisementService = inject(AdvertisementService),
       chatFilterService = inject(ChatFilterService),
       publishService = inject(PublishService),
       errorLogService = inject(ErrorLogClientService)
     ) => ({
-      // ------- loginAsync -------
-      async loginAsync() {
-        if (!appStore.user()) {
-          const user = await lastValueFrom(accountService.login());
-          localStorage.setItem('user', JSON.stringify(user));
-          patchState(appStore, { user });
-          console.log('>>> AppStore: user loaded');
-        }
-      },
       setSelectedAppListType(appListType: AppListType) {
         patchState(appStore, { selectedListType: appListType });
         console.log('>>> AppStore: selectedListType set to', appListType);
@@ -330,7 +321,7 @@ export const AppStore = signalStore(
         };
         patchState(appStore, { selectedAdvertisement: updatedAdvertisement });
         localStorage.setItem(
-          'selectedAdvertisement',
+          LOCAL_STORAGE_CONSTANTS.SELECTED_ADVERTISEMENT,
           JSON.stringify(updatedAdvertisement)
         );
         console.log('>>> AppStore: selectedAdvertisement updated');
@@ -341,7 +332,7 @@ export const AppStore = signalStore(
           selectedAdvertisement: cloneDeep(advertisement),
         });
         localStorage.setItem(
-          'selectedAdvertisement',
+          LOCAL_STORAGE_CONSTANTS.SELECTED_ADVERTISEMENT,
           JSON.stringify(advertisement)
         );
         console.log('>>> AppStore: selectedAdvertisement set');
