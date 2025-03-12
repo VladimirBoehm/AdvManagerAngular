@@ -15,9 +15,10 @@ export const telegramInitDataInterceptor: HttpInterceptorFn = (req, next) => {
   const initData = window.Telegram?.WebApp?.initData;
   const jwtToken = localStorage.getItem(LOCAL_STORAGE_CONSTANTS.JWT_TOKEN);
 
-  const headers: Record<string, string> = {
-    Authorization: `Bearer ${jwtToken || ''}`,
-  };
+  const headers: Record<string, string> = {};
+  if (jwtToken) {
+    headers['Authorization'] = `Bearer ${jwtToken}`;
+  }
 
   if (initData) {
     headers['initData'] = initData;
