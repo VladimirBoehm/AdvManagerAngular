@@ -33,7 +33,9 @@ export class HomeComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.appStore.getPendingValidationCountAsync();
+    if (this.appStore.user()?.isAdmin) {
+      this.appStore.getPendingValidationCountAsync();
+    }
     if (window.Telegram?.WebApp) {
       window.Telegram?.WebApp?.expand();
       window.Telegram?.WebApp?.BackButton?.hide();

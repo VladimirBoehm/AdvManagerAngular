@@ -10,6 +10,7 @@ import { patchState } from '@ngrx/signals';
 import { AppStore } from './appStore/app.store';
 import { TurtleLoader } from './_framework/component/loaders/turtle-loader/turtle-loader';
 import { environment } from '../environments/environment';
+import { LOCAL_STORAGE_CONSTANTS } from './_framework/constants/localStorageConstants';
 
 @Component({
   selector: 'app-root',
@@ -31,9 +32,13 @@ export class AppComponent implements OnInit {
   async ngOnInit() {
     const startTime = Date.now();
 
-    const user = await lastValueFrom(this.accountService.login());
-    localStorage.setItem('user', JSON.stringify(user));
-    patchState(this.appStore as any, { user });
+    const loginResponse = await lastValueFrom(this.accountService.login());
+    localStorage.setItem(
+      LOCAL_STORAGE_CONSTANTS.USER,
+      JSON.stringify(loginResponse.data.user)
+    );
+    localStorage.setItem(LOCAL_STORAGE_CONSTANTS.JWT_TOKEN, loginResponse.data.jwtToken);
+    patchState(this.appStore as any, { user: loginResponse.data.user });
 
     this.Localization.setLanguage(
       window.Telegram.WebApp.initDataUnsafe?.user?.language_code ?? 'en'

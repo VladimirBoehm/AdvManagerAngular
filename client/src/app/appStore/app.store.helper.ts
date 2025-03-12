@@ -7,6 +7,7 @@ import { User } from '../_models/user';
 import { PaginationParams } from '../_entities/paginationParams';
 import { forEach } from 'lodash-es';
 import { HttpResponse } from '@angular/common/http';
+import { LOCAL_STORAGE_CONSTANTS } from '../_framework/constants/localStorageConstants';
 
 export function getDefaultSortOptions(): SortOption {
   return {
@@ -16,8 +17,6 @@ export function getDefaultSortOptions(): SortOption {
     searchValue: DEFAULT_SORT_OPTION.searchValue,
   };
 }
-
-
 
 export function getDefaultPaginationParams(
   defaultPageSize: number,
@@ -32,7 +31,9 @@ export function getDefaultPaginationParams(
 }
 
 export function getSelectedAdvertisement(): Advertisement | null {
-  const selectedAdvertisement = localStorage.getItem('selectedAdvertisement');
+  const selectedAdvertisement = localStorage.getItem(
+    LOCAL_STORAGE_CONSTANTS.SELECTED_ADVERTISEMENT
+  );
   if (selectedAdvertisement) {
     try {
       return JSON.parse(selectedAdvertisement);
@@ -45,7 +46,7 @@ export function getSelectedAdvertisement(): Advertisement | null {
 }
 
 export function getUser(): User | null {
-  const user = localStorage.getItem('user');
+  const user = localStorage.getItem(LOCAL_STORAGE_CONSTANTS.USER);
   return user ? JSON.parse(user) : null;
 }
 

@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { User } from '../../_models/user';
-import { Observable, shareReplay, tap } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
+import { LoginResponse } from '../../_models/loginResponse';
+import { ResponseWrapper } from '../../_entities/responseWrapper';
 @Injectable({
   providedIn: 'root',
 })
@@ -10,9 +11,9 @@ export class AccountService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
 
-  login(): Observable<User> {
+  login(): Observable<ResponseWrapper<LoginResponse>> {
     return this.http
-      .get<User>(this.baseUrl + 'account/getLoginData')
+      .get<ResponseWrapper<LoginResponse>>(this.baseUrl + 'account/login')
       .pipe(shareReplay());
   }
 }
