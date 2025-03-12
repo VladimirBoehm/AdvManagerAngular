@@ -10,6 +10,7 @@
   height: var(--size);
   aspect-ratio: 1;
   position: relative;
+  overflow: hidden;
 }
 
 .loader .box {

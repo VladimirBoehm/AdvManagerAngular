@@ -30,11 +30,9 @@ export class AppComponent implements OnInit {
   isLoading = signal(true);
 
   async ngOnInit() {
-    console.log('ngOnInit');
     const startTime = Date.now();
 
     const loginResponse = await lastValueFrom(this.accountService.login());
-    console.log('received loginResponse');
     localStorage.setItem(
       LOCAL_STORAGE_CONSTANTS.USER,
       JSON.stringify(loginResponse.data.user)
@@ -44,12 +42,10 @@ export class AppComponent implements OnInit {
       loginResponse.data.jwtToken
     );
     patchState(this.appStore as any, { user: loginResponse.data.user });
-    console.log('patchState completed');
     this.Localization.setLanguage(
       window.Telegram.WebApp.initDataUnsafe?.user?.language_code ?? 'en'
     );
     await this.signalRService.createHubConnection();
-    console.log('HubConnection completed');
 
     //to show pretty loader :)
     const elapsed = Date.now() - startTime;
