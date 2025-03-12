@@ -10,7 +10,6 @@
   height: var(--size);
   aspect-ratio: 1;
   position: relative;
-  overflow: hidden;
 }
 
 .loader .box {
@@ -22,6 +21,7 @@
   box-shadow: rgba(0, 0, 0, 0.3) 0px 10px 10px -0px;
   backdrop-filter: blur(5px);
   animation: ripple var(--duration) infinite ease-in-out;
+  overflow: hidden;
 }
 
 .loader .box:nth-child(1) {
