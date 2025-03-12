@@ -30,6 +30,7 @@ export class AppComponent implements OnInit {
   isLoading = signal(true);
 
   async ngOnInit() {
+    console.log('ngOnInit');
     const startTime = Date.now();
 
     const loginResponse = await lastValueFrom(this.accountService.login());
