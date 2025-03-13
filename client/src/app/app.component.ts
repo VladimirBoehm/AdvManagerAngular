@@ -31,7 +31,7 @@ export class AppComponent implements OnInit {
 
   async ngOnInit() {
     const startTime = Date.now();
-
+    localStorage.removeItem(LOCAL_STORAGE_CONSTANTS.JWT_TOKEN);
     const loginResponse = await lastValueFrom(this.accountService.login());
     localStorage.setItem(
       LOCAL_STORAGE_CONSTANTS.USER,
